@@ -1,0 +1,84 @@
+{% extends 'core/base/base.html' %}
+
+{% load static %}
+{% load compress %}
+{% load election_tags %}
+
+{% block title %}Election{% endblock %}
+
+{% block css %}
+{% compress css file election %}
+<link rel="stylesheet" type="text/x-scss" href="{% static 'scss/election_main.scss' %}">
+{% endcompress %}
+{% endblock %}
+
+{% block main %}
+<div class="d-flex flex-row h-auto margin">
+  <div class="container-fluid mx-0">
+    <!-- Page Title -->
+    <div class="row">
+      <div class="col page-title-box text-center py-1">
+        {{ election }} Election
+      </div>
+    </div>
+    <!-- Election Info -->
+    <div class="card mb-3 shadow">
+      <div class="row align-items-center">
+        <!-- Election Image -->
+        <div class="col-auto ml-3">
+          {{ election.image_tag }}
+        </div>
+        <div class="col">
+          <div class="card-body">
+            <p class="card-text">
+              {{ election.intro_msg|safe }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Instructions -->
+    <div class="card mb-5 shadow">
+      <div class="row align-items-center">
+        <!-- Election Image -->
+        <div class="col-auto ml-3">
+          <img src="{% static 'img/important-dist.png' %}" width="150px" height="150px" alt="Important" />
+        </div>
+        <div class="col">
+          <div class="card-body">
+            <h5 class="card-title font-weight-bolder">Instructions</h5>
+            <p class="card-text">
+              {{ election.instructions|safe }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- "Candidates" Heading -->
+    <div class="row justify-content-center">
+      <div class="section-heading">Candidates</div>
+    </div>
+    <!-- Candidates -->
+    <div class="row justify-content-center" id="candidates">
+      {% for candidate in election.candidates.all %}
+      <div class="card mr-3 mb-3 text-center">
+        <!-- Candidate Image -->
+        {{ candidate.image_tag }}
+        <div class="card-body">
+          <!-- Name -->
+          <h5 class="card-title">
+            {{ candidate.name }}
+          </h5>
+          <!-- Profile Link -->
+          <p class="card-text">
+            <a href="{% url 'candidate' name=candidate.name|replace_space %}">Candidate Profile</a>
+          </p>
+          <!-- Register Button -->
+          <button type="button" class="btn btn-success">Vote</button>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}
