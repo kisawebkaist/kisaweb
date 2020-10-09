@@ -1,0 +1,14 @@
+- model: core.models.Footer
+  pk: 1
+  fields:
+    location: KAIST, 291 Daehak-ro, Yuseong-gu, Daejeon 34141, Republic of Korea
+    phnum_eng: +82-10-2750-6709
+    phnum_kor: +82-10-5039-5433
+    email: kisa@kaist.ac.kr
+    fb_link: https://www.facebook.com/groups/KAIST.KISA
+    yt_link: https://www.youtube.com/channel/UCsjJvtRBrNPZu8emypWHUBw/featured
+
+- model: core.models.EmptyQueryset
+  pk: 1
+  fields:
+    events: No events posted yet
