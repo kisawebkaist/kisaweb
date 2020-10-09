@@ -1,0 +1,23 @@
+#!/usr/bin/env python
+
+import subprocess, sys
+
+
+def no_commit_master():
+    """Prevent commit to local master branch"""
+    branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD'], text=True).rstrip()
+    red = '\033[91m'
+    reset = '\033[0m'
+
+    if branch == 'master':
+        print()
+        print(red + "pre-commit hook: You cannot commit to master." + reset)
+        print(red + "If you really want to do this, use --no-verify to bypass this pre-commit hook." + reset)
+        print()
+        sys.exit(1)
+
+
+if __name__ == '__main__':
+    no_commit_master()
+    sys.exit(0)
+
