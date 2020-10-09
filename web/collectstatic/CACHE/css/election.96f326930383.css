@@ -1,0 +1,9 @@
+/* line 1, election/static/scss/election_main.scss */
+#candidates .card {
+  width: 202px;
+  margin-right: 20px; }
+
+/* line 6, election/static/scss/election_main.scss */
+#candidates .card-img-top {
+  width: 100%;
+  object-fit: cover; }

@@ -1,0 +1,62 @@
+.navbar-brand {
+    line-height: 90%;
+    width: 150px;
+    padding-left: 60px;
+    padding-right: 10px;
+    background-image: url("/static/img/kisa-logo-no-bg.png");
+    background-size: 50px 50px;
+    background-repeat: no-repeat;
+}
+
+.brand-text {
+    font-family: 'Charm';
+    font-size: 14px;
+}
+
+footer {
+    padding-top: 40px;
+    padding-bottom: 20px;
+}
+
+footer a {
+    transition: 0.3s;
+}
+
+footer a:hover {
+    text-decoration: none;
+    color: rgba(255, 255, 255, .75);
+}
+
+.footer-about a {
+    text-decoration: underline !important;
+    text-decoration-style: dotted !important;
+}
+
+.footer-info {
+    font-size: 13px;
+    text-align: left;
+    margin-bottom: 3px;
+}
+
+.footer-info-color {
+    color: rgba(255, 255, 255, .5);
+}
+
+.footer-font {
+    font-family: 'Open Sans', sans-serif;
+}
+
+.footer-icon {
+    padding-right: 5px;
+}
+
+.follow-us-icon {
+    font-size: 20px;
+    padding-right: 8px;
+}
+
+@media screen and (max-width: 1200px) {
+    .br-lg {
+        /* display: none; */
+    }
+}
