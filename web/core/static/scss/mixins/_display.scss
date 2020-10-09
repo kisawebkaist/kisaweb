@@ -1,0 +1,26 @@
+@mixin variable-display($type, $width, $value) {
+    $new-width: $width;
+    @if $type == max {
+        @if $value == none { $new-width: $new-width - 1px; }
+        @else { $new-width: $new-width + 1px; }
+    }
+    @media (#{$type}-width: $new-width + 0px) {
+        .d-#{$type}#{$width}-#{$value} {
+            display: $value;
+        }
+    }
+}
+
+$width-values: (815, 1080);
+$display-values: (block, none);
+$type-values: (min, max);
+
+@mixin generate-display() {
+    @each $width-value in $width-values {
+        @each $display-value in $display-values {
+            @each $type-value in $type-values {
+                @include variable-display($type-value, $width-value, $display-value);
+            }
+        }
+    }
+}

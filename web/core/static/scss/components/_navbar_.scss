@@ -1,0 +1,38 @@
+@import "vars";
+
+.navbar-brand {
+    line-height: 90%;
+    width: 150px;
+    padding-left: 60px;
+    padding-right: 10px;
+    background-image: url("/static/img/navbar-icon.png");
+    background-size: 50px 50px;
+    background-repeat: no-repeat;
+}
+
+.brand-text {
+    font-family: 'Charm';
+    font-size: 14px;
+}
+
+.navbar {
+    a { transition: 0.3s; }
+    .nav-item:not(:last-child) { margin-right: 13px; }
+}
+
+.dropdown-item {
+    color: $navbar-dark-color_;
+}
+
+.dropdown-item:hover, .dropdown-item:focus {
+    color: $navbar-dark-hover-color_;
+    background-color: $dark_;
+}
+
+.dropdown-toggle::after {
+    transition: transform 0.15s linear;
+}
+
+.show.dropdown .dropdown-toggle::after {
+    transform: translateY(3px);
+}
