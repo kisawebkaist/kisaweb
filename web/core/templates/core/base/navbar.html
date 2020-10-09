@@ -1,0 +1,60 @@
+{% load static %}
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand mr-4" href="{% url 'homepage' %}">
+    <!-- Logo set as css background image (base.css) -->
+    <span class="text-light brand-text">KAIST International</span><br />
+    <span class="text-light brand-text">Students Organization</span>
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-contents" aria-controls="navbar-contents" aria-expanded="false" aria-label="Toggle navbar">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <!-- Menu items -->
+  <div class="collapse navbar-collapse ml-4" id="navbar-contents">
+    <div class="navbar-nav mr-auto">
+      <a class="nav-item nav-link" href="{% url 'homepage' %}">Home</a>
+      <!-- KAIST Life Dropdown -->
+      <div class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" id="klife-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          KAIST Life
+        </a>
+        <div class="dropdown-menu bg-dark mt-0 border-0" aria-labelledby="klife-dropdown">
+          <a class="dropdown-item" href="#">Country Reps</a>
+          <a class="dropdown-item" href="#">Clubs</a>
+          <a class="dropdown-item" href="#">Course Resources</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">How to's</a>
+          <a class="dropdown-item" href="#">Life & Academics</a>
+          <a class="dropdown-item" href="#">Tips for Life</a>
+        </div>
+      </div>
+      <!-- Dropdown end -->
+      <a class="nav-item nav-link" href="{% url 'events' %}">Events</a>
+      <!-- Welfare Dropdown -->
+      <div class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" id="welfare-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Welfare
+        </a>
+        <div class="dropdown-menu bg-dark mt-0 border-0" aria-labelledby="welfare-dropdown">
+          <a class="dropdown-item" href="#">KISA Voice</a>
+          <a class="dropdown-item" href="#">KISA Books: Buy & Sell</a>
+          <a class="dropdown-item" href="#">Internships</a>
+          <a class="dropdown-item" href="#">KAIST ARA</a>
+        </div>
+      </div>
+      <!-- Dropdown end -->
+      <a class="nav-item nav-link" href="#">About Us</a>
+      <!-- Election -->
+      <!-- {% if election_link_visible %}
+      <a class="nav-item nav-link text-warning" href="{% url 'election' semyear=election_semyear %}">Election</a>
+      {% endif %} -->
+      <a class="nav-item nav-link" href="{% url 'admin:index' %}">Admin</a>
+      <!-- Documentation -->
+      {% if user.is_staff %}
+      <a class="nav-item nav-link" href="{% url 'docs_root' %}" target="_blank">Docs</a>
+      {% endif %}
+    </div>
+      <a class="btn btn-secondary" href="#">Login with KSSO</a>
+  </div>
+</nav>

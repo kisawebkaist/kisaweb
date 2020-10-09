@@ -1,0 +1,24 @@
+@mixin variable-margin($side, $margin, $type, $width) {
+    $new-width: $width;
+    $firstletter: str-slice($side, 0, 1);
+    @media (#{$type}-width: $new-width + 0px) {
+        .m#{$firstletter}-#{$type}#{$width}-#{$margin} {
+            margin-#{$side}: $margin + 0px;
+        }
+    }
+}
+
+// $width-values and $type-values located in mixins/_display.scss
+$margin-values: (30);
+$sides: ('top', 'bottom', 'left', 'right');
+@mixin generate-margin {
+    @each $width-value in $width-values {
+        @each $type-value in $type-values {
+            @each $margin-value in $margin-values {
+                @each $side in $sides {
+                    @include variable-margin($side, $margin-value, $type-value, $width-value);
+                }
+            }
+        }
+    }
+}

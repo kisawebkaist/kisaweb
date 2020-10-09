@@ -1,0 +1,44 @@
+<footer class="bg-dark text-light">
+  <div class="d-flex flex-lg-row flex-column mx-0 align-items-stretch justify-items-around px-5">
+    <div class="footer-about mb-3">
+      <h6 class="footer-font font-weight-bold">KISA</h6>
+      <p class="footer-info mb-2 text-justify">
+        {{ kisa_text }}
+      </p>
+      <a class="footer-info" href="">Our Team</a>
+    </div>
+    <div class="offset-lg-1 mb-3">
+      <h6 class="footer-font font-italic">Contact us</h6>
+      <p class="footer-info">
+        <i class="fas fa-map-marker-alt footer-icon"></i>
+        &nbsp;{{ footer.location }}
+      </p>
+      <p class="footer-info">
+        <i class="fas fa-phone footer-icon"></i>
+        (English): {{ footer.phnum_eng }}
+      </p>
+      <p class="footer-info">
+        <i class="fas fa-phone footer-icon"></i>
+        (Korean): {{ footer.phnum_kor }}
+      </p>
+      <p class="footer-info">
+        <i class="fas fa-envelope footer-icon"></i>
+        {{ footer.email }}
+      </p>
+    </div>
+    <div class="offset-lg-1">
+      <h6 class="footer-font font-italic">Follow us</h6>
+      <p>
+        <a class="follow-us-icon" href="{{ footer.fb_link }}">
+          <i class="fab fa-facebook"></i>
+        </a>
+        <a class="follow-us-icon" href="">
+          <i class="fab fa-instagram "></i>
+        </a>
+        <a class="follow-us-icon" href="{{ footer.yt_link ">
+          <i class="fab fa-youtube"></i>
+        </a>
+      </p>
+    </div>
+  </div>
+</footer>

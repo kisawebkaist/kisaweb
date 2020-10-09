@@ -1,0 +1,16 @@
+@import "components/navbar_";
+@import "components/footer";
+@import "components/page";
+@import "mixins/display";
+@import "mixins/margin";
+
+.btn {
+    box-shadow: none !important;
+}
+
+.custom-control-input:focus ~ .custom-control-label::before {
+    box-shadow: none !important;
+}
+
+@include generate-display();
+@include generate-margin();
