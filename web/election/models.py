@@ -2,6 +2,8 @@ from django import forms
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.html import mark_safe
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 from tinymce.models import HTMLField
 
@@ -36,7 +38,7 @@ class Election(models.Model):
     image = models.ImageField(upload_to=ELECTION_MEDIA_UPLOAD_URL, blank=True, null=True)
 
     def __str__(self):
-        month = int(self.start_datetime.strftime('%-m'))
+        month = int(self.start_datetime.strftime('%m'))
         year = self.start_datetime.strftime('%Y')
         if month < 8:
             semester = 'Spring'
@@ -50,3 +52,12 @@ class Election(models.Model):
         else:
             path = self.image.url
         return mark_safe(f'<img src="{path}" alt="Election Image" width="150px" height="150px" />')
+
+'''
+    class "Voter" is designed for extending the "User"
+    model to be associated with a vote.
+'''
+
+class Voter(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='voter')
+    voted_candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE, related_name='voters')
