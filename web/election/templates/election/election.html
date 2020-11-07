@@ -13,6 +13,9 @@
 {% endblock %}
 
 {% block main %}
+
+{% include 'election/messages.html' %}
+
 <div class="d-flex flex-row h-auto margin">
   <div class="container-fluid mx-0">
     <!-- Page Title -->
@@ -69,12 +72,15 @@
           <h5 class="card-title">
             {{ candidate.name }}
           </h5>
-          <!-- Profile Link -->
-          <p class="card-text">
-            <a href="{% url 'candidate' name=candidate.name|replace_space %}">Candidate Profile</a>
-          </p>
-          <!-- Register Button -->
-          <button type="button" class="btn btn-success">Vote</button>
+          {% with url_name=candidate.name|replace_space %}
+            <!-- Profile Link -->
+            <p class="card-text">
+              <a href="{% url 'candidate' name=url_name %}">Candidate Profile</a>
+            </p>
+            <!-- Voting Button -->
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#AlertVote{{ url_name }}">Vote</button>
+            {% include 'election/votealert.html' %}
+          {% endwith %}
         </div>
       </div>
       {% endfor %}
