@@ -49,12 +49,26 @@
       <!-- {% if election_link_visible %}
       <a class="nav-item nav-link text-warning" href="{% url 'election' semyear=election_semyear %}">Election</a>
       {% endif %} -->
+      {% if user.is_staff %}
+      <!-- Admin site -->
       <a class="nav-item nav-link" href="{% url 'admin:index' %}">Admin</a>
       <!-- Documentation -->
-      {% if user.is_staff %}
       <a class="nav-item nav-link" href="{% url 'docs_root' %}" target="_blank">Docs</a>
       {% endif %}
     </div>
-      <a class="btn btn-secondary" href="#">Login with KSSO</a>
+      <!-- Login -->
+      {% if not user.is_authenticated %}
+        {% if authmethod == logindev %}
+        <a class="btn btn-secondary" href="{% url 'admin:login' %}">Login</a>
+        {% else %}
+        <a class="btn btn-secondary" href="{% url 'login' %}">Login</a>
+        {% endif %}
+      {% else %}
+        {% if user.is_staff %}
+        <a class="btn btn-secondary" href="{% url 'admin:logout' %}">Logout</a>
+        {% else %}
+        <a class="btn btn-secondary" href="{% url 'logout' %}">Logout</a>
+        {% endif %}
+      {% endif %}
   </div>
 </nav>
