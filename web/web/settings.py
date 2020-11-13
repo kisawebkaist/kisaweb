@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'core',  # core pages (eg. homepage, about page, etc)
     'events',
     'election',
+    'sso',
 ]
 
 MIDDLEWARE = [
@@ -94,6 +95,7 @@ TEMPLATES = [
                 # 'election.context_processors.navbar_election_link_visible',
                 'core.context_processors.footer',
                 'core.context_processors.empty_queryset',
+                'core.context_processors.login_type',
             ],
         },
     },
@@ -161,8 +163,6 @@ STATICFILES_FINDERS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-LOGIN_URL = '/login/'
-
 DATETIME_INPUT_FORMATS += ['%Y-%m-%d %I:%M %p']  # 2020-01-20 06:30 PM
 
 
@@ -183,3 +183,15 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 DOCS_ROOT = os.path.join(BASE_DIR, 'docs/build/html')
 DOCS_ACCESS = 'staff'
 ## -------------------------- ##
+
+
+## -- SSO -- ##
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'homepage'
+LOGOUT_REDIRECT_URL = 'homepage'
+
+LOGIN_DEV = 1
+LOGIN_PROD = 2
+
+KISA_AUTH_METHOD = LOGIN_DEV
+## --------- ##
