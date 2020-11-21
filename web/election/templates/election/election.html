@@ -64,25 +64,35 @@
     <!-- Candidates -->
     <div class="row justify-content-center" id="candidates">
       {% for candidate in election.candidates.all %}
-      <div class="card mr-3 mb-3 text-center">
-        <!-- Candidate Image -->
-        {{ candidate.image_tag }}
-        <div class="card-body">
-          <!-- Name -->
-          <h5 class="card-title">
-            {{ candidate.name }}
-          </h5>
-          {% with url_name=candidate.name|replace_space %}
-            <!-- Profile Link -->
-            <p class="card-text">
-              <a href="{% url 'candidate' name=url_name %}">Candidate Profile</a>
-            </p>
-            <!-- Voting Button -->
-            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#AlertVote{{ url_name }}">Vote</button>
-            {% include 'election/votealert.html' %}
-          {% endwith %}
+        <div class="card mr-3 mb-3 text-center">
+          <!-- Candidate Image -->
+          {{ candidate.image_tag }}
+          <div class="card-body">
+            <!-- Name -->
+            <h5 class="card-title">
+              {{ candidate.name }}
+            </h5>
+            {% with url_name=candidate.name|replace_space %}
+              <!-- Profile Link -->
+              <p class="card-text">
+                <a href="{% url 'candidate' name=url_name %}">Candidate Profile</a>
+              </p>
+              {% if request.user.is_authenticated %}
+                {% if not has_voted %}
+                  <!-- Voting Button -->
+                  <button type="button" class="btn btn-success" data-toggle="modal" data-target="#AlertVote{{ url_name }}">Vote</button>
+                  {% include 'election/votealert.html' %}
+                {% else %}
+                  <!-- Already Voted Button -->
+                  <button type="button" class="btn btn-outline-light">Already voted</button>
+                {% endif %}
+              {% else %}
+                <!-- Disabled Voting Button -->
+                <button type="button" class="btn btn-success" disabled>Login to vote</button>
+              {% endif %}
+            {% endwith %}
+          </div>
         </div>
-      </div>
       {% endfor %}
     </div>
   </div>
