@@ -30,7 +30,3 @@ isort
 
 # Git
 pre-commit
-
-# Production
-gunicorn
-setproctitle
