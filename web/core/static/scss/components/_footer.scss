@@ -1,0 +1,41 @@
+@import "vars";
+
+footer {
+    padding-top: 40px;
+    padding-bottom: 20px;
+}
+
+footer a {
+    transition: 0.3s;
+}
+
+footer a:hover {
+    text-decoration: none;
+    color: $navbar-dark-hover-color_;
+}
+
+.footer-about a {
+    text-decoration: underline !important;
+    text-decoration-style: dotted !important;
+}
+
+.footer-info {
+    font-size: 13px;
+    text-align: left;
+    margin-bottom: 3px;
+    color: $navbar-dark-color_;
+}
+
+.footer-font {
+    font-family: 'Open Sans', sans-serif;
+}
+
+.footer-icon {
+    padding-right: 5px;
+}
+
+.follow-us-icon {
+    font-size: 20px;
+    padding-right: 8px;
+    color: $navbar-dark-color_;
+}

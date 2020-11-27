@@ -1,0 +1,37 @@
+# Python Basics
+wheel
+pillow
+python-dotenv
+PyYAML
+
+# Django
+django==3.0
+django-compressor==2.*
+django-libsass==0.*
+django-tinymce==3.0.*
+django-crispy-forms==1.9.*
+django-docs
+django-stubs==1.5.*
+django-phone-field==1.8.*
+
+# Testing
+pytest
+pytest-django
+pytest-cov
+
+# Sphinx
+sphinx
+sphinx-rtd-theme
+
+# Linters / Formatters
+pylint
+black
+isort
+
+# Git
+pre-commit
+
+# Production
+gunicorn
+setproctitle
+

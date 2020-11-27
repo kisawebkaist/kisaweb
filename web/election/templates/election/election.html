@@ -1,0 +1,161 @@
+{% extends 'core/base/base.html' %}
+
+{% load static %}
+{% load compress %}
+{% load election_tags %}
+
+{% block title %}Election{% endblock %}
+
+{% block css %}
+{% compress css file election %}
+<link rel="stylesheet" type="text/x-scss" href="{% static 'scss/election_main.scss' %}">
+{% endcompress %}
+{% endblock %}
+
+{% block main %}
+
+{% include 'election/messages.html' %}
+
+<div class="d-flex flex-row h-auto margin">
+  <div class="container-fluid mx-0">
+    <!-- Page Title -->
+    <div class="row">
+      <div class="col page-title-box text-center py-1">
+        {% if election and election.is_open %}{{ election }} Election
+        {% elif not election.is_open %}Election not open yet
+        {% else %}Election not set yet
+        {% endif %}
+      </div>
+    </div>
+    {% if election and election.is_open %}
+    {% if user.is_authenticated %}
+    <!-- Election Info -->
+    <div class="card mb-3 shadow">
+      <div class="row align-items-center">
+        <!-- Election Image -->
+        <div class="col-auto ml-3">
+          {{ election.image_tag }}
+        </div>
+        <div class="col">
+          <div class="card-body">
+            <p class="card-text">
+              {{ election.intro_msg|safe }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Instructions -->
+    <div class="card mb-5 shadow">
+      <div class="row align-items-center">
+        <!-- Election Image -->
+        <div class="col-auto ml-3">
+          <img src="{% static 'img/important-dist.png' %}" width="150px" height="150px" alt="Important" />
+        </div>
+        <div class="col">
+          <div class="card-body">
+            <h5 class="card-title font-weight-bolder">Instructions</h5>
+            <p class="card-text">
+              {{ election.instructions|safe }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- "Debate" Heading -->
+    <div class="row justify-content-center">
+      <div class="section-heading">Debate</div>
+    </div>
+    <!-- Debate -->
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-12 col-sm-10 col-md-7">
+          {% if election.debate_url %}
+          <div class="embed-responsive embed-responsive-{{ election.embed_video_ratio }}">
+            <iframe class="embed-responsive-item" src="{{ election.debate_url }}" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          {% if user.is_staff %}
+          <div class="form-group form-inline pt-4">
+            Change embedded video player aspect ratio:&nbsp;
+            <select class="custom-select ratio-select" data-embed-ratio-url="{% url 'debate_embed_ratio_change' %}">
+              {% for x, y in election.EMBED_VIDEO_RATIO_CHOICES %}
+              {% if x == election.embed_video_ratio %}
+              <option value="{{ x }}" selected>{{ x }}</option>
+              {% else %}
+              <option value="{{ x }}">{{ x }}</option>
+              {% endif %}
+              {% endfor %}
+            </select>
+          </div>
+          {% endif %}
+          {% else %}
+          <div class="text-center"><em>No debate video yet. Please check back later.</em></div>
+          {% endif %}
+        </div>
+      </div>
+    <!-- "Candidates" Heading -->
+    <div class="row justify-content-center pt-5">
+      <div class="section-heading">Candidates</div>
+    </div>
+    <!-- Candidates -->
+    <div class="row justify-content-center" id="candidates">
+      {% for candidate in election.candidates.all %}
+        <div class="card mr-3 mb-3 text-center">
+          <!-- Candidate Image -->
+          {{ candidate.image_tag }}
+          <div class="card-body">
+            <!-- Name -->
+            <h5 class="card-title">
+              {{ candidate.name }}
+            </h5>
+            {% with url_name=candidate.name|replace_space %}
+              <!-- Profile Link -->
+              <p class="card-text">
+                <a href="{% url 'candidate' name=url_name %}">Candidate Profile</a>
+              </p>
+              {% if request.user.is_authenticated %}
+                {% if not has_voted and election.candidates.all|length > 1 %}
+                  <!-- Voting Button -->
+                  <button type="button" class="btn btn-success" data-toggle="modal" data-target="#AlertVote{{ url_name }}">Vote</button>
+                  {% include 'election/votealert.html' %}
+                {% elif not has_voted and election.candidates.all|length_is:"1" %}
+                  <button type="button" class="btn btn-success vote-single" value="yes" data-url="{% url 'vote' name=url_name %}">Yes</button>
+                  <button type="button" class="btn btn-secondary vote-single" value="no" data-url="{% url 'vote' name=url_name %}">No</button>
+                {% else %}
+                  <!-- Already Voted Button -->
+                  <button type="button" class="btn btn-outline-light">Already voted</button>
+                {% endif %}
+              {% else %}
+              <!-- Login Voting Button -->
+              {% if authmethod == logindev %}
+              <a class="btn btn-success" href="{% url 'admin:login' %}?next={% url 'election' %}">Login to vote</a>
+              {% else %}
+              <a class="btn btn-success" href="{% url 'login' %}?next={% url 'election' %}">Login to vote</a>
+              {% endif %}
+              {% endif %}
+            {% endwith %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <!-- Login View Election -->
+    <div class="text-center">
+      {% if authmethod == logindev %}
+      <a class="btn btn-success" href="{% url 'admin:login' %}?next={% url 'election' %}">Login to view election</a>
+      {% else %}
+      <a class="btn btn-success" href="{% url 'login' %}?next={% url 'election' %}">Login to view election</a>
+      {% endif %}
+    </div>
+    {% endif %}
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+{% compress js file election %}
+<script src="{% static 'js/election_single_candidate_vote.js' %}"></script>
+<script src="{% static 'js/election_embed_video_ratio.js' %}"></script>
+{% endcompress %}
+{% endblock %}

@@ -1,0 +1,8 @@
+#candidates .card {
+    width: 202px; // image-width + 2px
+}
+
+#candidates .card-img-top {
+    width: 100%;
+    object-fit: cover;
+}
