@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+{% load static %}
+{% load compress %}
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}Home{% endblock %} - KISA (KAIST International Student Association)</title>
+    <!-- Favicon -->
+    <link rel="icon" href="{% static 'img/favicon.png' %}">
+
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <!-- Bootstrap CSS local fallback -->
+    <script src="{% static 'js/bootstrap_css_fallback.js' %}"></script>
+
+    <!-- Bootstrap-Datetimepicker CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css' %}">
+
+    <!-- Fonts (Fallbacks not implemented) -->
+    <link href='https://fonts.googleapis.com/css?family=Charm' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap" rel="stylesheet">
+
+    <!-- Icons (Fallbacks not implemented) -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css">
+
+    <!-- Custom CSS for base template (header, footer, etc) -->
+    {% compress css file base %}
+    <link href="{% static 'scss/base.scss' %}" rel="stylesheet" type="text/x-scss">
+    {% endcompress %}
+
+    <!-- Custom CSS -->
+    {% block css %}{% endblock %}
+  </head>
+  <body class="d-flex flex-column min-vh-100">
+    <!-- Navbar -->
+    {% include 'core/base/navbar.html' %}
+
+    <!-- Contents of the page -->
+    <div class="flex-grow-1">
+    {% block main %}{% endblock %}
+    </div>
+
+    <!-- Footer -->
+    {% include 'core/base/footer.html' %}
+
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <!-- jQuery local fallback -->
+    <script src="{% static 'js/jquery_fallback.js' %}"></script>
+
+    <!-- Popper JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <!-- Popper JS local fallback -->
+    <script src="{% static 'js/popperjs_fallback.js' %}"></script>
+
+    <!-- Bootstrap JS CDN -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <!-- Bootstrap JS local fallback -->
+    <script src="{% static 'js/bootstrap_js_fallback.js' %}"></script>
+
+    <!-- Moment JS CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js" integrity="sha512-rmZcZsyhe0/MAjquhTgiUcb4d9knaFc7b5xAfju483gbEXTkeJRUMIPk6s3ySZMYUHEcjKbjLjyddGWMrNEvZg==" crossorigin="anonymous"></script>
+    <!-- Moment JS local fallback -->
+    <script src="{% static 'js/momentjs_fallback.js' %}"></script>
+
+    <!-- Bootstrap-Datetimepicker JS -->
+    <script src="{% static 'bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js' %}"></script>
+
+    <!-- Custom JS for base template (header, footer, etc) -->
+    {% compress js file base %}
+    <script src="{% static 'js/base.js' %}"></script>
+    {% endcompress %}
+
+    <!-- CSRF Token Global Variable -->
+    <script>
+      const CSRF_TOKEN = '{{ csrf_token }}';
+    </script>
+
+    <!-- Custom JS -->
+    {% block js %}{% endblock %}
+  </body>
+</html>

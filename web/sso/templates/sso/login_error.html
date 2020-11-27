@@ -1,0 +1,28 @@
+{% extends 'core/base/base.html' %}
+
+{% load static %}
+{% load compress %}
+
+{% block title %}Login Error{% endblock %}
+
+{% block main %}
+<div class="d-flex flex-row h-auto margin">
+  <div class="container-fluid mx-0">
+    <!-- Page Title -->
+    <div class="row">
+      <div class="col page-title-box text-center py-1">
+        Login Error
+      </div>
+    </div>
+    <!-- Contents -->
+    <div>
+      Login attempt failed. Please try again.<br>
+      <small>
+        If the problem persists, please contact
+        <a href="mailto:{{ loginerror.email }}">{{ loginerror.email }}</a>
+        (KISA Web Team).
+      </small>
+    </div>
+  </div>
+</div>
+{% endblock %}

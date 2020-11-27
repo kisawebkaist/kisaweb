@@ -1,0 +1,27 @@
+{% extends 'core/base/base.html' %}
+
+{% load static %}
+{% load compress %}
+
+{% block title %}Agreement to Personal Data Usage{% endblock %}
+
+{% block main %}
+<div class="d-flex flex-row h-auto margin">
+  <div class="container-fluid mx-0">
+    <!-- Page Title -->
+    <div class="row">
+      <div class="col page-title-box text-center py-1">
+        Agreement to Personal Data Usage
+      </div>
+    </div>
+    <!-- Contents -->
+    <div>{{ agreement.english }}</div>
+    <div>{{ agreement.korean }}</div>
+  </div>
+  <form action="{% url 'agreement-form' %}" method="post">
+    {% csrf_token %}
+    <button class="btn btn-success" type="submit" name="agree" value="agree">I agree</button>
+    <button class="btn" type="submit" name="agree" value="disagree">I disagree</button>
+  </form>
+</div>
+{% endblock %}
