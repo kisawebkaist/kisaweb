@@ -1,0 +1,25 @@
+{% extends 'core/base/base.html' %}
+
+{% load static %}
+{% load compress %}
+
+{% block title %}Course Resources{% endblock %}
+
+{% block main %}
+<div class="d-flex flex-row h-auto margin">
+  <div class="container-fluid mx-0">
+    <!-- Page Title -->
+    <div class="row">
+      <div class="col page-title-box text-center py-1">
+        Course Resources
+      </div>
+    </div>
+    <!-- Contents -->
+    <ul>
+      {% for resource in resources %}
+      <li><b>{{ resource.class_id }} - {{ resource.class_name }}</b>: <a href="{{ resource.url }}">Google Drive</a></li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock %}
