@@ -9,7 +9,15 @@ $(function() {
                     'type': vote_type,
                     'csrfmiddlewaretoken': CSRF_TOKEN,
                 },
-                success: (response) => {location.reload()},
+                success: (response) => {
+                    if (response == 'novote') {
+                        alert('It is not the voting period.');
+                        location.reload();
+                    }
+                    else if (response == 'Success') {
+                        location.reload();
+                    }
+                },
                 error: () => {alert('Error');},
             });
         }
