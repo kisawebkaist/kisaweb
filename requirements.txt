@@ -3,6 +3,7 @@ wheel
 pillow
 python-dotenv
 PyYAML
+ipython
 
 # Django
 django==3.0
@@ -25,6 +26,7 @@ sphinx-rtd-theme
 
 # Linters / Formatters
 pylint
+pylint-django
 black
 isort
 
