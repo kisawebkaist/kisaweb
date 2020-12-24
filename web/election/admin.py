@@ -2,7 +2,7 @@ from django import forms
 from django.contrib import admin
 from django.utils.html import mark_safe
 
-from .models import Candidate, Election, Voter
+from .models import Candidate, Election
 
 # Register your models here.
 
@@ -24,9 +24,6 @@ class CandidateAdmin(admin.ModelAdmin):
         'name',
         'image_tag',
         'kisa_history_template_string',
-        'votes',
-        'yes',
-        'no',
     ]
 
     def image_tag(self, obj):
@@ -44,7 +41,7 @@ class CandidateAdmin(admin.ModelAdmin):
 
     kisa_history_template_string.short_description = 'Kisa History'
 
-    readonly_fields = ['image_tag', 'votes', 'yes', 'no']
+    readonly_fields = ['image_tag']
 
 
 class ElectionAdmin(admin.ModelAdmin):
@@ -86,4 +83,3 @@ class VoterAdmin(admin.ModelAdmin):
 
 admin.site.register(Candidate, CandidateAdmin)
 admin.site.register(Election, ElectionAdmin)
-admin.site.register(Voter, VoterAdmin)

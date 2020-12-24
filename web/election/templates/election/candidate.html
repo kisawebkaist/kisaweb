@@ -17,7 +17,7 @@
     <!-- Page Title -->
     <div class="row">
       <div class="col page-title-box text-center py-1">
-        {{ election }} Election Candidate
+        {{ election }} Election Candidate {{ candidate }}
       </div>
     </div>
     {% if user.is_authenticated %}
@@ -86,11 +86,4 @@
   </div>
 </div>
 
-{% endblock %}
-
-
-{% block js %}
-{% compress js file election %}
-<script src="{% static 'js/election_embed_video_ratio.js' %}"></script>
-{% endcompress %}
 {% endblock %}

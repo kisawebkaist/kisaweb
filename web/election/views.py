@@ -10,11 +10,8 @@ from .models import Election, Candidate, Voter
 
 # Create your views here.
 
-def election(request):
-    try:
-        latest_election = Election.objects.latest('start_datetime')
-    except Election.DoesNotExist:
-        latest_election = None
+def election(request, semyear):
+    latest_election = Election.objects.latest('start_datetime')
     context = {
         'election': latest_election,
         'has_voted': hasattr(request.user, 'voter'),
@@ -88,7 +85,5 @@ def change_embed_ratio(request, pk=None):
     if pk:
         model = Candidate.objects.get(pk=pk)
     else:
-        model = Election.objects.latest('start_datetime')
-    response = model.change_embed_ratio(request.POST.get('ratio'))
-    if not response: response = 'Success'
-    return HttpResponse(response)
+        print('DEBUG: This should\'nt happen!!!!')
+    return redirect(reverse('election', kwargs={'semyear': semyear}))

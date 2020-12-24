@@ -1,0 +1,4 @@
+$('#register, #deregister').on('click',function(){const $type=$(this).attr('id');$.ajax({type:'POST',url:$(this).attr('data-event-registration-url'),data:{'type':$type,'csrfmiddlewaretoken':CSRF_TOKEN,},success:(response)=>{if(response=='Success'){if($type=='register'){$(this).attr('id','deregister');$(this).removeClass('btn-success').addClass('btn-secondary');$(this).html('Deregister');}
+else{$(this).attr('id','register');$(this).removeClass('btn-secondary').addClass('btn-success');$(this).html('Register');}
+$text=$(this).siblings('.fa-user');}
+else{alert('Error1');}},error:()=>{alert('Error0');},});});;

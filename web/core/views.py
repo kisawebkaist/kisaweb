@@ -1,6 +1,5 @@
-from django.shortcuts import render, HttpResponse, redirect
+from django.shortcuts import render, HttpResponse
 
-from .models import CourseResources
 
 # Create your views here.
 
