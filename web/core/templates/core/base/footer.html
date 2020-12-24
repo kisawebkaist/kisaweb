@@ -13,6 +13,7 @@
         <i class="fas fa-map-marker-alt footer-icon"></i>
         &nbsp;{{ footer.location }}
       </p>
+      <!--
       <p class="footer-info">
         <i class="fas fa-phone footer-icon"></i>
         (English): {{ footer.phnum_eng }}
@@ -21,6 +22,7 @@
         <i class="fas fa-phone footer-icon"></i>
         (Korean): {{ footer.phnum_kor }}
       </p>
+      -->
       <p class="footer-info">
         <i class="fas fa-envelope footer-icon"></i>
         {{ footer.email }}
@@ -29,13 +31,13 @@
     <div class="offset-lg-1">
       <h6 class="footer-font font-italic">Follow us</h6>
       <p>
-        <a class="follow-us-icon" href="{{ footer.fb_link }}">
+        <a class="follow-us-icon" href="{{ footer.fb_link }}" target="_blank">
           <i class="fab fa-facebook"></i>
         </a>
-        <a class="follow-us-icon" href="">
+        <a class="follow-us-icon" href="{{ footer.yt_link }}" target="_blank">
           <i class="fab fa-instagram "></i>
         </a>
-        <a class="follow-us-icon" href="{{ footer.yt_link ">
+        <a class="follow-us-icon" href="{{ footer.yt_link }}" target="_blank">
           <i class="fab fa-youtube"></i>
         </a>
       </p>

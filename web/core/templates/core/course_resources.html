@@ -17,7 +17,11 @@
     <!-- Contents -->
     <ul>
       {% for resource in resources %}
-      <li><b>{{ resource.class_id }} - {{ resource.class_name }}</b>: <a href="{{ resource.url }}">Google Drive</a></li>
+      <li><b>{{ resource.class_id }} - {{ resource.class_name }}</b>:
+        {% for url in resource.url.all %}
+        <a href="{{ url.url }}" target="_blank">Link</a>&nbsp;&nbsp;
+        {% endfor %}
+      </li>
       {% endfor %}
     </ul>
   </div>

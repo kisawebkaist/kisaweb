@@ -9,7 +9,7 @@ def homepage(request):
 
 
 def course_resources(request):
-    resources = CourseResources.objects.all()
+    resources = CourseResources.objects.order_by('class_id')
     return render(request, 'core/course_resources.html', context={
         'resources': resources,
     })
