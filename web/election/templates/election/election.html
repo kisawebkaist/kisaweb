@@ -21,9 +21,9 @@
     <!-- Page Title -->
     <div class="row">
       <div class="col page-title-box text-center py-1">
-        {% if election and election.is_open %}{{ election }} Election
+        {% if not election %}Election not yet set
         {% elif not election.is_open %}Election not open yet
-        {% else %}Election not set yet
+        {% else %}{{ election }} Election
         {% endif %}
       </div>
     </div>
@@ -97,6 +97,8 @@
     <div class="row justify-content-center pt-5">
       <div class="section-heading">Candidates</div>
     </div>
+    <!-- If not voting periord -->
+    <p class="text-center pb-3"><em><b>Voting period:</b> {{ election.start_datetime|date:"P D, jS M, Y" }} ~ {{ election.end_datetime|date:"P D, jS M, Y" }}</em></p>
     <!-- Candidates -->
     <div class="row justify-content-center" id="candidates">
       {% for candidate in election.candidates.all %}

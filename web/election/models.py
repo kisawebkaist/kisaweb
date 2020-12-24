@@ -49,15 +49,19 @@ class Candidate(models.Model):
         return mark_safe(f'<img src="{path}" alt="Candidate Image" width="200" height="200" />')
 
     def vote(self):
-        self.votes = models.F('votes') + .5
+        self.votes += 1
+        self.save(update_fields=['votes'])
+
+    def remove_vote(self):
+        self.votes -= 1
         self.save(update_fields=['votes'])
 
     def vote_yes(self):
-        self.yes = models.F('yes') + .5
+        self.yes += 1
         self.save(update_fields=['yes'])
 
     def vote_no(self):
-        self.no = models.F('no') + .5
+        self.no += 1
         self.save(update_fields=['no'])
 
     def change_embed_ratio(self, ratio):
@@ -130,3 +134,10 @@ class Voter(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='voter')
     voted_candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE, related_name='voters')
     vote_type = models.CharField(max_length=10, blank=True)
+    is_kisa = models.BooleanField(default=False)
+
+
+@receiver(models.signals.post_delete, sender=Voter)
+def delete_voter(sender, instance, *args, **kwargs):
+    voted_candidate = instance.voted_candidate
+    voted_candidate.remove_vote()
