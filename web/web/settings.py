@@ -59,7 +59,7 @@ INSTALLED_APPS = [
 
     ## ---- Created by KISA webteam ---- ##
     'core',  # core pages (eg. homepage, about page, etc)
-    'events',
+    # 'events',
     'election',
     'sso',
 ]
