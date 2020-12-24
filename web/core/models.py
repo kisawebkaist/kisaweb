@@ -34,10 +34,3 @@ class EmptyQueryset(models.Model):
         if not self.pk and EmptyQueryset.objects.all():
             raise ValidationError('There is can be only one EmptyQueryset instance')
         return super().save(*args, **kwargs)
-
-
-class CourseResources(models.Model):
-    class_id = models.CharField(max_length=255, unique=True)
-    class_name = models.CharField(max_length=255)
-    url = models.CharField(max_length=512, blank=True)
-
