@@ -2,7 +2,7 @@ from django import forms
 from django.contrib import admin
 from django.utils.html import mark_safe
 
-from .models import Candidate, Election, Voter
+from .models import Candidate, Election
 
 # Register your models here.
 
@@ -24,9 +24,6 @@ class CandidateAdmin(admin.ModelAdmin):
         'name',
         'image_tag',
         'kisa_history_template_string',
-        'votes',
-        'yes',
-        'no',
     ]
 
     def image_tag(self, obj):
@@ -44,7 +41,7 @@ class CandidateAdmin(admin.ModelAdmin):
 
     kisa_history_template_string.short_description = 'Kisa History'
 
-    readonly_fields = ['image_tag', 'votes', 'yes', 'no']
+    readonly_fields = ['image_tag']
 
 
 class ElectionAdmin(admin.ModelAdmin):
@@ -57,23 +54,5 @@ class ElectionAdmin(admin.ModelAdmin):
         return mark_safe('<br />'.join([c.name for c in obj.candidates.all()]))
 
 
-class VoterAdmin(admin.ModelAdmin):
-    list_display = ['user', 'voted_candidate', 'vote_type']
-    search_fields = ['user']
-
-    def get_actions(self, request):
-        actions = super().get_actions(request)
-        if 'delete_selected' in actions:
-            del actions['delete_selected']
-        return actions
-
-    def has_add_permission(self, request, obj=None):
-        return False
-
-    def has_delete_permission(self, request, obj=None):
-        return False
-
-
 admin.site.register(Candidate, CandidateAdmin)
 admin.site.register(Election, ElectionAdmin)
-admin.site.register(Voter, VoterAdmin)
