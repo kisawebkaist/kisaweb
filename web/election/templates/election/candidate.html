@@ -17,11 +17,80 @@
     <!-- Page Title -->
     <div class="row">
       <div class="col page-title-box text-center py-1">
-        {{ election }} Election Candidate {{ candidate }}
+        {{ election }} Election Candidate
       </div>
     </div>
-    
+    {% if user.is_authenticated %}
+    <!-- Candidate Info -->
+    <!-- Name -->
+    <div class="text-center py-1"><h1>{{ candidate.name }}</h1></div>
+    <!-- Image -->
+    <div class="text-center">{{ candidate.image_tag }}</div>
+    <!-- KISA History -->
+    <div class="text-center pt-4 pb-2"><h4>KISA History</h4></div>
+    <div class="text-center">{{ candidate.kisa_history|safe }}</div>
+    <!-- Manifesto -->
+    <div class="text-center pt-4 pb-2"><h4>Manifesto</h4></div>
+    <div class="text-justify">{{ candidate.manifesto|safe }}</div>
+    <!-- Speech -->
+    <div class="text-center pt-4 pb-2"><h4>Speech</h4></div>
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-12 col-sm-10 col-md-7">
+          {% if candidate.speech_url %}
+          <div class="embed-responsive embed-responsive-{{ candidate.embed_video_ratio }}">
+            <iframe class="embed-responsive-item" src="{{ candidate.speech_url }}" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          {% if user.is_staff %}
+          <div class="form-group form-inline pt-4">
+            Change embedded video player aspect ratio:&nbsp;
+            <select class="custom-select ratio-select" data-embed-ratio-url="{% url 'candidate_embed_ratio_change' pk=candidate.pk %}">
+              {% for x, y in candidate.EMBED_VIDEO_RATIO_CHOICES %}
+              {% if x == candidate.embed_video_ratio %}
+              <option value="{{ x }}" selected>{{ x }}</option>
+              {% else %}
+              <option value="{{ x }}">{{ x }}</option>
+              {% endif %}
+              {% endfor %}
+            </select>
+          </div>
+          {% endif %}
+          {% else %}
+          <div class="text-center"><em>No speech video yet. Please check back later.</em></div>
+          {% endif %}
+        </div>
+      </div>
+      <!-- Go Back -->
+      <div class="row justify-content-center">
+        <div class="card mt-5 bg-light">
+          <div class="card-body">
+            <div class="text-center pb-2"><h6>To vote for this candidate, please go to the election page.</h6></div>
+            <div class="text-center"><a class="btn btn-info" href="{% url 'election' %}">
+              <i class="fas fa-chevron-left pr-1"></i>
+              {{ election }} Election
+            </a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <!-- Login View Candidate -->
+    <div class="text-center">
+      {% if authmethod == logindev %}
+      <a class="btn btn-success" href="{% url 'admin:login' %}?next={% url 'candidate' name=candidate.name %}">Login to view candidate</a>
+      {% else %}
+      <a class="btn btn-success" href="{% url 'login' %}?next={% url 'candidate' name=candidate.name %}">Login to view candidate</a>
+      {% endif %}
+    </div>
+    {% endif %}
   </div>
 </div>
 
+{% endblock %}
+
+
+{% block js %}
+{% compress js file election %}
+<script src="{% static 'js/election_embed_video_ratio.js' %}"></script>
+{% endcompress %}
 {% endblock %}

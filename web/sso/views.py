@@ -52,8 +52,14 @@ def login_error(request):
     })
 
 
+def agreement_show(request):
+    user_data = request.session.get(TEMP_USERDATA_SESSION_KEY, None)
+    agreement = Agreement.objects.all()[0]
+    return render(request, 'sso/agreement.html', context={'user_data': user_data, 'agreement': agreement})
+
+
 @require_http_methods(['POST'])
-def agreement(request):
+def agreement_process(request):
     agree_status = request.POST['agree']
     if agree_status == 'agree':
         user_data = request.session.get(TEMP_USERDATA_SESSION_KEY)
@@ -61,7 +67,7 @@ def agreement(request):
             return redirect('/')
         user = User(
             username=user_data['kaist_uid'],
-            first_name=user_data['given_name'],
+            first_name=user_data['givenname'],
             last_name=user_data['sn'],
             email=user_data['mail'] or ''
         )
@@ -72,6 +78,13 @@ def agreement(request):
             del request.session[TEMP_USERDATA_SESSION_KEY]
 
     return redirect('/')
+
+
+def agreement(request):
+    if request.method == "GET":
+        return agreement_show(request)
+    elif request.method == "POST":
+        return agreement_process(request)
 
 
 def validate_view(request):
