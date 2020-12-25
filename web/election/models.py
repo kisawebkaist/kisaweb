@@ -28,7 +28,6 @@ class Candidate(models.Model):
             path = self.image.url
         return mark_safe(f'<img src="{path}" alt="Candidate Image" width="200" height="200" />')
 
-<<<<<<< HEAD
     def vote(self):
         self.votes += 1
         self.save(update_fields=['votes'])
@@ -54,30 +53,6 @@ class Candidate(models.Model):
             return 'Error'
 
 
-||||||| 4e9c7df
-    def vote(self):
-        self.votes = models.F('votes') + .5
-        self.save(update_fields=['votes'])
-
-    def vote_yes(self):
-        self.yes = models.F('yes') + .5
-        self.save(update_fields=['yes'])
-
-    def vote_no(self):
-        self.no = models.F('no') + .5
-        self.save(update_fields=['no'])
-
-    def change_embed_ratio(self, ratio):
-        lst = [i[0] for i in self.EMBED_VIDEO_RATIO_CHOICES]
-        if ratio in lst:
-            self.embed_video_ratio = ratio
-            self.save(update_fields=['embed_video_ratio'])
-        else:
-            return 'Error'
-
-
-=======
->>>>>>> 1b438b8a24d083a4fb94f4f339788666b04b80f7
 
 class Election(models.Model):
     start_datetime = models.DateTimeField()
