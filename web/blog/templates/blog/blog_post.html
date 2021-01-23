@@ -1,0 +1,49 @@
+{% extends 'blog/templates/blog/blog_base.html' %} 
+
+{% load static %}
+{% load compress %}
+
+{% block title %} Blog {% endblock %}
+
+{% block content %}
+  <div class="d-flex justify-content-center align-items-center flex-wrap mt-3">
+    <div class="card" style="width:75%">
+      <div class="caption">
+        <!-- Post Image -->
+        {% if post.image %}
+          <div class="text-center">
+            <img src="{{ post.image.url }}" class="img-fluid">
+          </div>
+        {% endif %}
+        <div class="card-body">
+          <!-- Edit Button -->
+          <div class="col text-left">
+            {% if request.user == post.author or user_can_change %}
+              <div class="card-text">
+                <i class="fas fa-edit text-primary"></i>
+                <a href="{% url 'blog:modify' category_slug=post.category.slug post_slug=post.slug %}">Edit</a>
+              </div>
+            {% endif %}
+          </div>
+          <h1 class="text-center mt-3">{{ post.title }}</h1>
+          <div class="card-body">
+            <!-- Post Content -->
+            <p>{{ post.content|safe }}</p>
+            <div class="float-right m-4">
+              <div>
+                <!-- Author -->
+                <div class="text-center">
+                  <h6 class="text-muted">{{ post.author }}</h6>  
+                </div>
+                <!-- Date -->
+                <div class="text-center">
+                  <a class="text-muted">{{ post.created|date:"d M Y" }}</a>
+                </div>
+              </div>
+            </div>
+          </div> 
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

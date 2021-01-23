@@ -1,0 +1,61 @@
+{% extends 'blog/templates/blog/blog_base.html' %} 
+
+{% load static %}
+{% load compress %}
+
+{% block title %} Blog {% endblock %}
+
+{% block content %}
+  <div class="d-flex justify-content-around align-items-start flex-wrap mt-3">
+    {% for post in posts %}
+      <div class="card shadow m-3 bg-light" style="width: {{ post.default_preview_size }}px">
+        <!-- Post Image Preview -->
+        <div class="pre-image-container">
+          {% if post.image %}
+            {{ post.get_image_tag }} 
+          {% else %}
+            <div class="card-img-top pre-image" style=" width:100%;height:{{ post.default_preview_size }}px;background-color:#F5F5F5;">
+            </div>
+          {% endif %} 
+          <!-- Sub-category Post Hover Animation -->
+          <link rel="stylesheet" href="{% static 'css/sub_category_style.css' %}">
+          <style>
+            .hidden-layer {
+              height: {{ post.default_preview_size }}px;
+            }
+            .pre-image-container {
+              height: {{ post.default_preview_size }}px;
+            }
+          </style>        
+          {% if category != post.category %} 
+            <!-- Hidden Layer for Category Info Text -->
+            <div class="hidden-layer">
+              <h4 class="text-light">{{ post.category }}</h4>
+            </div>
+          {% endif %}
+        </div>
+        <!-- Author -->
+        <h6 class="card-title text-left text-muted m-2">Author: {{ post.author }}</h6>
+        <div class="card-body">
+          <!-- Title -->
+          <h3 class="card-title text-center" ><a class="text-dark" href="{%url 'blog:post' category_slug=post.category.slug post_slug=post.slug%}">{{ post.title }}</a></h3>
+          <div class="row mt-3">
+            <!-- Edit Button -->
+            <div class="col text-left">
+              {% if request.user == post.author or user_can_change %}
+                <div class="card-text">
+                  <i class="fas fa-edit text-primary"></i>
+                  <a href="{% url 'blog:modify' category_slug=post.category.slug post_slug=post.slug %}">Edit</a>
+                </div>
+              {% endif %}
+            </div>
+            <!-- Date -->
+            <div class="col text-right">
+              <a class="text-muted">{{ post.created|date:"d M Y" }}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

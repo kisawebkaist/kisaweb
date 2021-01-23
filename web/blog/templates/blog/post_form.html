@@ -1,0 +1,33 @@
+{% extends 'core/base/base.html' %}
+
+{% load static %}
+{% load compress %}
+{% load crispy_forms_tags %}
+
+{% block title %}Blog{% endblock %}
+
+{% block main %}
+<div class="d-flex flex-row h-auto margin">
+  <div class="container-fluid mx-0">
+    <!-- Page Title -->
+    <div class="row">
+      <div class="col page-title-box text-center py-1">
+        {% if update %}
+        Update Post - {{ post.title }}
+        {% else %}
+        Create Post
+        {% endif %}
+      </div>
+    </div>
+    <!-- Crispy form (Post Form) -->
+    {% crispy form %}
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+  {% compress js file events %}
+    <script src="{% static 'js/post_image_preview.js' %}"></script>
+    <script src="{% static 'js/post_delete.js' %}"></script>
+  {% endcompress %}
+{% endblock %}

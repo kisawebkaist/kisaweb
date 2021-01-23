@@ -1,0 +1,42 @@
+/*
+  This file is created for styling the hovering effect
+  on the previews of the blog posts that belong to
+  one of the sub categories of the category being viewed.
+*/
+
+.pre-image-container {
+  width: 100%;
+  background-color: #F5F5F5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.pre-image {
+  transition: .5s ease;
+  backface-visibility: hidden;
+}
+
+.hidden-layer {
+  transition: .5s ease;
+  opacity: 0;
+  position: absolute;
+  width: 100.5%;
+  top: -0.25%;
+  left: -0.25%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background-color: black;
+}
+
+.pre-image-container:hover .pre-image {
+  opacity: 0.45;
+}
+
+.pre-image-container:hover .hidden-layer {
+  opacity: 0.65;
+}
