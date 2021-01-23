@@ -20,6 +20,19 @@ $(function() {
     width_default = $width.attr('value');
     $image_dim_reset = $('#image_dim_reset');
 
+    $('#reset-id-reset').on("click", () => {
+        // getting the currently uploaded image (used for Update View)
+        currently = $("span[class='text-break']"); 
+        if(currently.length > 0) { // if UpdateView
+            normal_img_link = $(currently[0].getElementsByTagName('a')[0]).attr('href');
+            $image_preview.attr('src', normal_img_link);
+        }
+        else { // if CreateView
+            $image_preview.attr('src', '/static/img/events-default-dev-dist.png');
+        }
+        $("label[for='image']")[1].textContent = '---';
+    });
+
     $('#image').change(function() {
         readURL(this, $image_preview);
     });
