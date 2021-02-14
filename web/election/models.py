@@ -17,9 +17,29 @@ class Candidate(models.Model):
     speech_url = models.CharField(max_length=512, blank=True, null=True)
     kisa_history = HTMLField()
     image = models.ImageField(upload_to=ELECTION_MEDIA_UPLOAD_URL, blank=True, null=True)
+    votes = models.IntegerField(default=0)
+    yes = models.IntegerField(default=0)
+    no = models.IntegerField(default=0)
+
+    EMBED_VIDEO_RATIO_CHOICES = [
+        ('21by9', '21by9'),
+        ('16by9', '16by9'),
+        ('4by3', '4by3'),
+        ('1by1', '1by1'),
+    ]
+    embed_video_ratio = models.CharField(max_length=10, default='16by9', choices=EMBED_VIDEO_RATIO_CHOICES)
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.speech_url and 'https://www.youtube.com/watch?v=' in self.speech_url:
+            self.speech_url = self.speech_url.replace(
+                'https://www.youtube.com/watch?v=',
+                'https://www.youtube.com/embed/'
+            )
+        super().save(*args, **kwargs)
 
     def image_tag(self):
         if not self.image:
@@ -61,6 +81,16 @@ class Election(models.Model):
     intro_msg = HTMLField()
     instructions = HTMLField()
     image = models.ImageField(upload_to=ELECTION_MEDIA_UPLOAD_URL, blank=True, null=True)
+    debate_url = models.CharField(max_length=512, blank=True, null=True)
+    is_open = models.BooleanField(default=False)
+
+    EMBED_VIDEO_RATIO_CHOICES = [
+        ('21by9', '21by9'),
+        ('16by9', '16by9'),
+        ('4by3', '4by3'),
+        ('1by1', '1by1'),
+    ]
+    embed_video_ratio = models.CharField(max_length=10, default='16by9', choices=EMBED_VIDEO_RATIO_CHOICES)
 
     def __str__(self):
         month = int(self.start_datetime.strftime('%m'))
@@ -71,12 +101,29 @@ class Election(models.Model):
             semester = 'Fall'
         return f'{semester} {year}'
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.debate_url and 'https://www.youtube.com/watch?v=' in self.debate_url:
+            self.debate_url = self.debate_url.replace(
+                'https://www.youtube.com/watch?v=',
+                'https://www.youtube.com/embed/'
+            )
+        super().save(*args, **kwargs)
+
     def image_tag(self):
         if not self.image:
             path = '/static/img/election-default-dist.png'
         else:
             path = self.image.url
         return mark_safe(f'<img src="{path}" alt="Election Image" width="150px" height="150px" />')
+
+    def change_embed_ratio(self, ratio):
+        lst = [i[0] for i in self.EMBED_VIDEO_RATIO_CHOICES]
+        if ratio in lst:
+            self.embed_video_ratio = ratio
+            self.save(update_fields=['embed_video_ratio'])
+        else:
+            return 'Error'
 
 '''
     class "Voter" is designed for extending the "User"
