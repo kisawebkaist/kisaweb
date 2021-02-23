@@ -57,9 +57,15 @@
               {{ event.event_start_datetime|date:"D, M j, H:i" }} - {{ event.event_end_datetime|date:"D, M j, H:i" }}
             </p>
             <p class="card-text mb-0">
+              {% if event.is_link %}
+              <!-- Link -->
+                <i class="fas fa-link"></i>
+                <a href="{{ event.link }}" target="_blank">{{ event.link }}</a>
+              {% else %}
               <!-- Location -->
-              <i class="fas fa-map-marker-alt"></i>
-              {{ event.location }}
+                <i class="fas fa-map-marker-alt"></i>
+                {{ event.location }}
+              {% endif %}
             </p>
             <!-- Important Message -->
             {% if event.important_message %}
@@ -73,8 +79,12 @@
               {{ event.description|truncatewords_html:event.descr_truncate_num|safe }}
             </div>
             <!-- 'striptags' is used before 'wordcount' to not include HTML tags in wordcount -->
-            <div class="mt-n3 mb-3 read-more" style="display: {% if event.description|striptags|wordcount > event.descr_truncate_num %}block{% else %}none{% endif %};">
-              <a href="{% url 'event_detail' event.slug %}">Read More &rarr;</a>
+            <!-- Read More -->
+            <div class="mt-n3 read-more" style="display: {% if event.description|striptags|wordcount > event.descr_truncate_num %}block{% else %}none{% endif %};">
+              <button type="button" class="btn btn-link pl-0 readmore">Read More &rarr;</button>
+            </div>
+            <div class="mt-n3 read-less" style="display: none">
+              <button type="button" class="btn btn-link pl-0 readless">&larr; Read Less</button>
             </div>
             {% if perms.events %}
             <div class="mb-3 descr_truncate_num">
@@ -131,5 +141,6 @@
 {% compress js file events %}
 <script src="{% static 'js/event_registration.js' %}"></script>
 <script src="{% static 'js/event_truncation.js' %}"></script>
+<script src="{% static 'js/event_readmore.js' %}"></script>
 {% endcompress %}
 {% endblock %}
