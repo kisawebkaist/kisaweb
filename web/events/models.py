@@ -70,7 +70,10 @@ class Event(models.Model):
     slug = models.SlugField(max_length=100, unique=True, blank=True)
 
     default_location = 'TBA'
-    location = models.CharField(max_length=100, default=default_location)
+    location = models.CharField(max_length=100, default=default_location, blank=True)
+
+    is_link = models.BooleanField(default=False)
+    link = models.URLField(default='TBA', blank=True)
 
     event_start_datetime = models.DateTimeField()
     event_end_datetime = models.DateTimeField()

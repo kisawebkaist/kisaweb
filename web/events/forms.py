@@ -60,7 +60,12 @@ class EventForm(forms.ModelForm):
         self.helper.layout = Layout(
             Row(
                 Column('title'),
-                Column('location'),
+                Column('location'),  # Check bug fix below
+                Column(UneditableField('link')),
+            ),
+            Row(
+                Column(css_class='col-lg-4'),
+                Column('is_link', css_class='col-lg-8 col-md'),
             ),
             Row(
                 Column('event_start_datetime', css_class='col-lg-3 col-md-6'),
@@ -109,6 +114,9 @@ class EventForm(forms.ModelForm):
             ),
         )
         # 1. if this name is changed, change is needed in 'image_preview.js'
+
+        # This is a temporary bug fix. "Location" field is "not required" in models.py but crispy forms seems to ignore it somehow.
+        self.fields['location'].required = False
 
     def clean(self):
         cleaned_data = self.cleaned_data
