@@ -1,1 +1,63 @@
 {% extends 'core/base/base.html' %}
+
+{% load static %}
+{% load compress %}
+{% load events_tags %}
+
+{% block css %}
+{% compress css file events %}
+<link rel="stylesheet" type="text/x-scss" href="{% static 'scss/homepage_main.scss' %}">
+{% endcompress %}
+{% endblock %}
+
+{% block main %}
+<div class="intro-banner">
+  <img src="{% static 'img/lib.jpg' %}" alt="Intro banner background">
+  <p class="banner-text">KAIST INTERNATIONAL STUDENTS ASSOCIATION</p>
+</div>
+<div class="d-flex h-auto margin">
+  <div class="container-fluid mx-0">
+    <div class="d-flex flex-column">
+      <p class="text-center">Founded in 2004. KAIST Internation Student Association (KISA) represents international community of KAIST</p>
+      <div class="container d-flex justify-content-center">
+        <a class="btn btn-dark py-2" href="mailto:kisa@kaist.ac.kr" role="button">Share your voice</a>
+      </div>
+    </div>
+    <hr>
+    <h2>Events</h2>
+    <div style="overflow-x: auto;" class="row d-flex flex-row flex-nowrap">
+      {% for event in event_list %}
+      <div class="ml-3">
+        <div class="card card-block event-card mb-3">
+          <div class="container">
+            <h5 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" class="mt-2 card-title text-center">{{event.title}}</h5>
+          </div>
+          <div class="card-img-top text-center">
+            {% image_tag event listview=True %}
+          </div>
+          <div class="mt-2 read-more text-center">
+            <a class="" href="{% url 'event_detail' event.slug %}">Learn more &rarr;</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <hr>
+    <div class="d-flex flex-row flex-wrap justify-content-around">
+      <div class="mb-3 members-picture">
+        <img src="{% static 'img/members.png' %}" class="img-thumbnail" alt="Members">
+      </div>
+      <div class="d-flex flex-column justify-content-around">
+        <h2 class="text-center">Meet the members</h2>
+        <div class="members-text">
+          <p class="text-center">Who’s on the Council, and what do we do? Search, learn about, and contact your representatives here.</p>
+        </div>
+        <div class="d-flex justify-content-center">
+          <a class="btn btn-dark py-2" href="#" role="button">About us</a>
+        </div>
+      </div>
+    </div>
+    <h2></h2>
+  </div>
+</div>
+{% endblock %}
