@@ -37,7 +37,8 @@ SECRET_KEY = os.environ['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(int(os.environ.get('DJANGO_DEBUG', default=0)))
 
-ALLOWED_HOSTS = os.environ['DJANGO_ALLOWED_HOSTS'].split()
+ALLOWED_HOSTS = ["127.0.0.1"]
+#os.environ['DJANGO_ALLOWED_HOSTS'].split()
 
 
 # Application definition
