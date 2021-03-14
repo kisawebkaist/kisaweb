@@ -19,9 +19,13 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+    # path('grappelli/', include('grappelli.urls')), # grappelli URLS
+    # path('jet/', include('jet.urls', 'jet')),  # Django JET URLS
+    # path('jet/dashboard/', include('jet.dashboard.urls', 'jet-dashboard')),  # Django JET dashboard URLS
     path('admin/', admin.site.urls),
 
     path('tinymce/', include('tinymce.urls')),
+    path('maintenance-mode/', include('maintenance_mode.urls')),
     path('', include('core.urls')),
 ]
 
