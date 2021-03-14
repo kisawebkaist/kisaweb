@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.html import mark_safe
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.urls import reverse
 from django.utils.text import slugify
 
@@ -72,7 +72,7 @@ class Event(models.Model):
     default_location = 'TBA'
     location = models.CharField(max_length=100, default=default_location, blank=True)
 
-    is_link = models.BooleanField(default=False)
+    is_link = models.BooleanField(default=False, verbose_name='Event is online (i.e. has link)')
     link = models.URLField(default='TBA', blank=True)
 
     event_start_datetime = models.DateTimeField()
@@ -82,7 +82,7 @@ class Event(models.Model):
 
     max_occupancy = models.PositiveSmallIntegerField(blank=True, null=True)
     current_occupancy = models.PositiveSmallIntegerField(blank=True, default=0)
-    participants = models.ManyToManyField(User, blank=True)
+    participants = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
     important_message = models.CharField(max_length=200, blank=True)
 
     description = HTMLField()
@@ -94,13 +94,16 @@ class Event(models.Model):
     image_height = models.PositiveSmallIntegerField(blank=True, default=default_image_size)
     image_width = models.PositiveSmallIntegerField(blank=True, default=default_image_size)
 
+    has_registration_form = models.BooleanField(default=False)
+    registration_form_src = models.CharField(max_length=255, blank=True)
+
     def __str__(self):
         return self.title
 
     def get_absolute_url(self):
         """Sets the success url for :mod:`events.views.EventCreate` and :mod:`events.views.EventUpdate`.
         """
-        return reverse('event_detail', args=[self.slug])
+        return reverse('events')
 
     def save(self, *args, **kwargs):
         """In addition to the default save method, it saves the :attr:`Event.slug` field of the instance.
@@ -170,3 +173,4 @@ class Event(models.Model):
         # if the below logic is changed, then change might be needed in 'event_truncation.js'
         self.descr_truncate_num = num if num >= self.min_descr_truncate_num else self.min_descr_truncate_num
         self.save(update_fields=['descr_truncate_num'])
+

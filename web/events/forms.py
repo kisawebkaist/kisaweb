@@ -23,6 +23,20 @@ from tinymce.widgets import TinyMCE
 from .models import Event
 
 
+# class EventForm(forms.ModelForm):
+#     class Meta:
+#         model = Event
+#         fields = '__all__'
+
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.helper = FormHelper()
+#         self.helper.form_method = 'post'
+
+
+
+### Below is a custom made form kept for future reference ###
+
 class EventForm(forms.ModelForm):
     max_occupancy_is_current_occupancy = forms.BooleanField(
         required=False,
@@ -61,7 +75,7 @@ class EventForm(forms.ModelForm):
             Row(
                 Column('title'),
                 Column('location'),  # Check bug fix below
-                Column(UneditableField('link')),
+                Column('link'),
             ),
             Row(
                 Column(css_class='col-lg-4'),
@@ -107,7 +121,7 @@ class EventForm(forms.ModelForm):
             Row(
                 Column(
                     Submit('submit', 'Save Event', css_class='mr-2'),
-                    Reset('reset', 'Reset Form', css_class='btn btn-secondary mr-2'),
+                    # Reset('reset', 'Reset Form', css_class='btn btn-secondary mr-2'),
                     Submit('cancel', 'Cancel', formnovalidate='', css_class='btn btn-warning mr-2'),
                 ),
                 css_class='my-4',
@@ -119,14 +133,17 @@ class EventForm(forms.ModelForm):
         self.fields['location'].required = False
 
     def clean(self):
-        cleaned_data = self.cleaned_data
+        try:
+            cleaned_data = self.cleaned_data
+        except ValidationError:
+            return None
         rsd = cleaned_data['registration_start_datetime']
         red = cleaned_data['registration_end_datetime']
 
         if bool(rsd) ^ bool(red):
             raise ValidationError('Fill both registration datetimes or check the no registration box.', code='incomplete')
-        else:
-            return cleaned_data
+
+        return cleaned_data
 
     def save(self, commit=True):
         if commit:
