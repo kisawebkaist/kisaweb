@@ -1,0 +1,39 @@
+{% extends 'core/base/base.html' %}
+
+{% load static %}
+{% load compress %}
+
+{% block title %}Important Links{% endblock %}
+
+{% block main %}
+<div class="d-flex flex-row h-auto margin">
+  <div class="container-fluid mx-0">
+    <!-- Page Title -->
+    <div class="row">
+      <div class="col page-title-box text-center py-1">
+        Important Links
+      </div>
+    </div>
+    <!-- Welfare links -->
+    {% if navbar %}
+    <h5>Welfare</h5>
+    <ul>
+      {% if navbar.kisa_voice_link %}
+      <li><a class="dropdown-item" href="{{ navbar.kisa_voice_link }}">KISA Voice</a></li>
+      {% endif %}
+      {% if navbar.kisa_books_link %}
+      <li><a class="dropdown-item" href="{{ navbar.kisa_books_link }}">KISA Books: Buy & Sell</a></li>
+      {% endif %}
+      {% if navbar.internships_link %}
+      <li><a class="dropdown-item" href="{{ navbar.internships_link }}">Internships</a></li>
+      {% endif %}
+      {% if navbar.kaist_ara_link %}
+      <li><a class="dropdown-item" href="{{ navbar.kaist_ara_link }}">KAIST ARA</a></li>
+      {% endif %}
+    {% endif %}
+    <!-- Course Resources -->
+    <h5><a href="{% url 'course_resources' %}">Course Resources</a></h5>
+  </div>
+</div>
+{% endblock %}
+

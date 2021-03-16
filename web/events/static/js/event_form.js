@@ -1,5 +1,20 @@
 // Script used in event_form.html
 
+// $('#id_is_link').on('click', function() {
+//     $link = $('#id_link');
+//     $location = $('#id_location');
+//     if ($(this).prop('checked')) {
+//         $link.prop('disabled', false);
+//         $location.val('TBA');
+//         $location.prop('disabled', true);
+//     }
+//     else {
+//         $link.val('TBA');
+//         $link.prop('disabled', true);
+//         $location.prop('disabled', false);
+//     };
+// });
+
 $('#id_no_registration').on('click', function() {
     $regis_start = $('#id_registration_start_datetime');
     $regis_end = $('#id_registration_end_datetime');

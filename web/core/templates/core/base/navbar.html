@@ -15,7 +15,8 @@
     <div class="navbar-nav mr-auto">
       <a class="nav-item nav-link" href="{% url 'homepage' %}">Home</a>
       <!-- KAIST Life Dropdown -->
-      <!-- <div class="nav-item dropdown">
+      <!--
+      <div class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" id="klife-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           KAIST Life
         </a>
@@ -28,35 +29,45 @@
           <a class="dropdown-item" href="#">Life & Academics</a>
           <a class="dropdown-item" href="#">Tips for Life</a>
         </div>
-      </div> -->
+      </div>
+      -->
       <!-- Dropdown end -->
-      <!-- Election -->
-      <a class="nav-item nav-link text-warning" href="{% url 'election' %}">Election</a>
+      <a class="nav-item nav-link" href="{% url 'events' %}">Events</a>
       <!-- Welfare Dropdown -->
+      {% if navbar %}
       <div class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" id="welfare-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Welfare
         </a>
         <div class="dropdown-menu bg-dark mt-0 border-0" aria-labelledby="welfare-dropdown">
-          <!-- KISA Voice -->
-          <a class="dropdown-item" href="https://docs.google.com/forms/d/e/1FAIpQLSe-H7GFHY-3U5aKNsGvS_DySOH3qb93Yth_EV3lmz5NaPG28Q/viewform" target="_blank">KISA Voice</a>
-          <!-- KISA Books Buy/Sell -->
-          <a class="dropdown-item" href="https://www.facebook.com/groups/817190881629523/" target="_blank">KISA Books: Buy & Sell</a>
-          <!-- Internships -->
-          <a class="dropdown-item" href="https://www.facebook.com/groups/354446485098522/" target="_blank">Internships</a>
-          <!-- KAIST ARA -->
-          <a class="dropdown-item" href="https://newara.sparcs.org/" target="_blank">KAIST ARA</a>
+          {% if navbar.kisa_voice_link %}
+          <a class="dropdown-item" href="{{ navbar.kisa_voice_link }}">KISA Voice</a>
+          {% endif %}
+          {% if navbar.kisa_books_link %}
+          <a class="dropdown-item" href="{{ navbar.kisa_books_link }}">KISA Books: Buy & Sell</a>
+          {% endif %}
+          {% if navbar.internships_link %}
+          <a class="dropdown-item" href="{{ navbar.internships_link }}">Internships</a>
+          {% endif %}
+          {% if navbar.kaist_ara_link %}
+          <a class="dropdown-item" href="{{ navbar.kaist_ara_link }}">KAIST ARA</a>
+          {% endif %}
         </div>
       </div>
+      {% endif %}
+      <!-- Dropdown end -->
       <!-- Course Resources -->
       <a class="nav-item nav-link" href="{% url 'course_resources' %}">Course Resources</a>
-      <!-- Dropdown end -->
-      <!-- <a class="nav-item nav-link" href="#">About Us</a> -->
+      <!--<a class="nav-item nav-link" href="#">About Us</a>-->
+      <!-- Election -->
+      <!-- {% if election_link_visible %}
+      <a class="nav-item nav-link text-warning" href="{% url 'election' semyear=election_semyear %}">Election</a>
+      {% endif %} -->
       {% if user.is_staff %}
       <!-- Admin site -->
       <a class="nav-item nav-link" href="{% url 'admin:index' %}">Admin</a>
       <!-- Documentation -->
-      <a class="nav-item nav-link" href="{% url 'docs_root' %}" target="_blank">Docs</a>
+      <!--<a class="nav-item nav-link" href="{% url 'docs_root' %}" target="_blank">Docs</a>-->
       {% endif %}
     </div>
       <!-- Login -->

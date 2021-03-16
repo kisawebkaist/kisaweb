@@ -11,7 +11,7 @@ class CandidateAdminForm(forms.ModelForm):
         model = Candidate
         fields = '__all__'
         widgets = {
-           'kisa_history': forms.Textarea(attrs={
+            'kisa_history': forms.Textarea(attrs={
                 'placeholder': 'text',
             }),
         }
