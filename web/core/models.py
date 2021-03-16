@@ -52,3 +52,9 @@ class CourseResources(models.Model):
     def __str__(self):
         return self.class_id
 
+
+class Navbar(models.Model):
+    kisa_voice_link = models.URLField(blank=True)
+    kisa_books_link = models.URLField(blank=True)
+    internships_link = models.URLField(blank=True)
+    kaist_ara_link = models.URLField(blank=True)
