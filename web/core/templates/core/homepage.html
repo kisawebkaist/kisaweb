@@ -15,16 +15,18 @@
   <img src="{% static 'img/lib.jpg' %}" alt="Intro banner background">
   <p class="banner-text">KAIST INTERNATIONAL STUDENTS ASSOCIATION</p>
 </div>
+ 
 <div class="d-flex h-auto margin">
-  <div class="container-fluid mx-0">
+  <div class="container-fluid mx-0 my-3">
     <div class="d-flex flex-column">
-      <p class="text-center">Founded in 2004. KAIST Internation Student Association (KISA) represents international community of KAIST</p>
+      <p class="text-center heading">Founded in 2004. KAIST Internation Student Association (KISA) represents international community of KAIST</p>
       <div class="container d-flex justify-content-center">
-        <a class="btn btn-dark py-2" href="https://docs.google.com/forms/d/e/1FAIpQLSfF9xFyQfvV1ZVmNgm9PaE-I-oq7rYb-t_4eQ4jNwEFAwTsNw/viewform" role="button">Share your voice</a>
+        <a class="btn btn-dark py-2 px-4 my-2 button-text" href="https://docs.google.com/forms/d/e/1FAIpQLSfF9xFyQfvV1ZVmNgm9PaE-I-oq7rYb-t_4eQ4jNwEFAwTsNw/viewform" role="button">Share your voice</a>
       </div>
     </div>
     <hr>
-    <h2>Events</h2>
+    <div class = "container my-4">
+    <h2 class = "mb-3">Events</h2>
     <div style="overflow-x: auto;" class="row d-flex flex-row flex-nowrap">
       {% for event in event_list %}
       <div class="ml-3">
@@ -42,31 +44,56 @@
       </div>
       {% endfor %}
     </div>
+
     <hr>
-    <div class="d-flex flex-row flex-wrap justify-content-around">
+
+    <div class="d-flex flex-row flex-wrap justify-content-around my-4">
       <div class="mb-3 members-picture">
-        <img src="{% static 'img/members.png' %}" class="img-thumbnail" alt="Members">
+        <img src="{% static 'img/members.png' %}" class="img-thumbnail " alt="Members">
       </div>
       <div class="d-flex flex-column justify-content-around">
         <h2 class="text-center">Meet the members</h2>
         <div class="members-text">
-          <p class="text-center">Who’s on the Council, and what do we do? Search, learn about, and contact your representatives here.</p>
+          <p class="text-center paragraph">Who’s on the Council, and what do we do? Search, learn about, and contact your representatives here.</p>
         </div>
         <div class="d-flex justify-content-center">
-          <a class="btn btn-dark py-2" href="#" role="button">About us</a>
+          <a class="btn btn-dark py-2 px-5 button-text" href="#" role="button">About us</a>
         </div>
       </div>
     </div>
+
     <hr>
-    <div>
+
+    <div class = " container my-4">
     <h2>KISA Divisions</h2>
-    <p>KISA is comprised of four divisions. Click to learn more about each of them.</p>
-    <div class="row">
-        <div class="col divisions"><img src="{% static 'img/finance.png' %}" alt="Finance"></div>
-        <div class="col divisions"><img src="{% static 'img/events.png' %}" alt="Events"></div></div>
-        <div class="col divisions"><img src="{% static 'img/welfare.png' %}" alt="Welfare"></div></div>
-        <div class="col divisions"><img src="{% static 'img/web.png' %}" alt="Web"></div></div>
-    </div>
+    <p class="paragraph">KISA is comprised of four divisions. Learn more about each of them.</p>
+      <div class="row no-gutters divisions">
+          <div class="col-xs-6 col-md-2  mx-0 my-3 events">
+             <a href = "#">
+                <img src="{% static 'img/events.png' %}" class = "division" alt="Events">
+              </a>
+          </div>
+          <div class="col-xs-6 col-md-2 mx-0 my-3 finance">
+            <a href = "#">
+              <img src="{% static 'img/finance.png' %}" class = "division" alt="Finance">
+            </a>
+          </div>
+          <div class="col-xs-6 col-md-2  my-3 web">
+            <a href = "#">
+              <img src="{% static 'img/promotions.png' %}" class = "division"  alt="Promotions">
+            </a>
+          </div>
+          <div class="col-xs-6 col-md-2  my-3 welfare">
+            <a href = "#">
+              <img src="{% static 'img/welfare.png' %}" class = "division" alt="Welfare">
+            </a>
+          </div>
+          <div class="col-xs-6 col-md-2  my-3 web">
+            <a href = "#">
+              <img src="{% static 'img/web.png' %}" class = "division"  alt="Web">
+            </a>
+          </div>
+      </div>
     </div>
   </div>
 </div>

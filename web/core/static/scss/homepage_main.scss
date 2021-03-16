@@ -61,3 +61,24 @@ $mobile-breakpoint: 768px;
 .members-text {
     max-width: 420px;
 }
+
+.divisions img:hover{
+    opacity: 0.75;
+}
+
+.heading{
+    font-size: 1.3em;
+}
+
+.paragraph{
+    font-size: 1.2em;
+}
+
+.button-text{
+    font-size: 1.1em;
+}
+
+.division{
+    max-width: 90%;
+    height: auto;
+}
