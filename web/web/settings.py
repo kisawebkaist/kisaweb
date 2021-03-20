@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'events',
     'election',
     'sso',
+    'blog',
 ]
 
 MIDDLEWARE = [

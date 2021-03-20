@@ -1,0 +1,59 @@
+{% extends 'core/base/base.html' %} 
+
+{% load static %}
+{% load compress %}
+
+{% block title %}Blog{% endblock %}
+
+{% block main %}
+
+<div class="d-flex flex-row h-auto margin">  
+  <div class="container-fluid mx-0">
+    <!-- Page Title -->
+    {% if post_slug == None%}
+      <div class="row">
+        <div class="col page-title-box text-center py-1">
+          {% if category != None %}
+            {{ category }}
+          {% else %}
+            Blog
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+    <div class="row">
+      <!-- Category nav-bar -->
+      <div class="col navbar navbar-expand-sm navbar-light bg-light">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#blog-categories" aria-controls="navbar-contents" aria-expanded="false" aria-label="Toggle navbar">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse ml-2" id="blog-categories">
+          <div class="navbar-nav mr-auto">
+            {{ blog_navbar | safe}}
+          </div>
+        </div>
+        <!-- Create PostCategory Button -->
+        {% if perms.events %}
+          <div class="row mt-2">
+            <a href="{% url 'create_category' %}" class="btn btn-outline-dark rounded-pill"><i class="fa fa-plus"></i>&nbsp;Category</a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+    <!-- Create Post Button -->
+    {% if perms.events %}
+      <div class="row mt-2 justify-content-end">
+        <a href="{% url 'create_post' %}" class="btn btn-outline-info rounded-pill"><i class="fa fa-plus"></i>&nbsp;Post</a>
+      </div>
+    {% endif %}
+  {% block content %} {% endblock %}   
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+  {% compress js file events %}
+    <!-- Dropdown menu script file -->
+    <script src="{% static 'js/post_dropdown.js' %}"></script>
+  {% endcompress %}
+{% endblock %}

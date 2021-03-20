@@ -1,0 +1,171 @@
+from django.db import models
+from django.contrib.auth.models import User
+from tinymce.models import HTMLField
+from django.utils.text import slugify
+from django.core.validators import RegexValidator
+from django.urls import reverse
+from django.utils.html import mark_safe 
+from PIL import Image
+
+alphanumeric = RegexValidator(r'^[0-9a-zA-Z]*$', 'Only alphanumeric characters are allowed.')
+
+# Create your models here.
+
+class PostCategory(models.Model):
+  '''
+    Attrs:
+      Name -> name of the category
+      Slug -> slug (Check: https://docs.djangoproject.com/en/3.1/glossary/)
+      Parent Category -> It keeps the parent category information
+  '''
+  name = models.CharField(max_length=100, unique=True, blank=False, validators=[alphanumeric])
+  slug = models.SlugField(max_length=100, null=True, unique=True, editable=False)
+  parent_category = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
+
+  def __str__(self):
+    if self.parent_category != None:
+      return str(self.parent_category) + ' / ' + self.name
+    return self.name
+
+  def get_absolute_url(self):
+    return reverse('category', kwargs={'category_slug': self.slug})
+
+  def save(self, *args, **kwargs):
+
+    # Before saving, it needs to have a unique slug
+    self.slug = self.get_unique_slug()
+
+    return super(PostCategory, self).save(*args, **kwargs)
+
+  def get_unique_slug(self):
+    slug = slugify(self.name)
+
+    # If it has a parent category, '-_sub_-' is added between their slung values
+    if self.parent_category != None:
+      slug = self.parent_category.slug + '-_sub_-' + slug
+    
+    # Find a unique slung
+
+    unique_slug = slug
+    counter = 1
+
+    while True:
+      filter_set = PostCategory.objects.filter(slug=unique_slug)
+      if not filter_set.exists():
+        break
+      if len(filter_set.all()) == 1 and filter_set.first() == self:
+        break        
+      unique_slug = f'{slug}-{counter}'
+      counter += 1
+
+    return unique_slug
+
+class Post(models.Model):
+  '''
+    Attrs:
+      Title -> Title of the post
+      Slug -> Slug of the post (Check: https://docs.djangoproject.com/en/3.1/glossary/)
+      Content -> Content
+      Author -> Author
+      Category -> Category of the post
+      Create Date -> When the post is created
+      Update Date -> Last modification date
+      Default Preview Size -> Default preview image size (while previewing on the post listing)
+      Image -> Image of the post
+  '''
+  title = models.CharField(max_length=100, default='')
+  slug = models.SlugField(max_length=100, editable=False)
+  content = HTMLField()
+  author = models.ForeignKey(User, on_delete=models.CASCADE)
+  category = models.ForeignKey(PostCategory, on_delete=models.CASCADE)
+  created = models.DateTimeField(auto_now_add=True)
+  modified = models.DateTimeField(auto_now=True)
+  default_preview_size = 300
+  image = models.ImageField(upload_to='blog/img', blank=True, null=True)
+
+  def save(self, *args, **kwargs):
+    
+    # Before saving, it needs to have a unique slug
+    self.slug = self.get_unique_slug()
+    
+    # Before returning the save result, create a preview image
+    save_result = super(Post, self).save(*args, **kwargs)
+
+    if self.image.name == '' or self.image.name == None: #it means either the file is erased or not added
+      return save_result
+
+    # Creates a cropped preview image and stores in the media/blog/img directory 
+    self.create_thumbnail_image(self.image.path)
+
+    return save_result
+
+  def get_absolute_url(self):
+    return reverse('post', kwargs={'category_slug': self.category.slug, 'post_slug': self.slug})
+
+  def create_thumbnail_image(self, image_path):
+    
+    # Open the image with PIL
+    saved_image = Image.open(image_path)
+    saved_image.thumbnail((self.default_preview_size, self.default_preview_size), Image.ANTIALIAS)
+    # Re-format the path-name of the preview image
+    path = self.get_preview_format(self.image.path)
+
+    # Save the cropped image
+    saved_image.save(path)
+
+    return path
+
+  def get_preview_format(self, path):
+
+    # Simply insert '_pre' before the extension
+    pos_dot = path.rfind('.')
+    return path[:pos_dot] + '_pre' + path[pos_dot:]
+
+  def get_unique_slug(self):
+    slug = slugify(self.title)
+
+    # Get a unique slug
+
+    unique_slug = slug
+    counter = 1
+    while True:
+      filter_set = Post.objects.filter(slug=unique_slug, category=self.category)
+      if not filter_set.exists():
+        break
+      if len(filter_set.all()) == 1 and filter_set.first() == self:
+        break        
+      unique_slug = f'{slug}-{counter}'
+      counter += 1
+    return unique_slug
+
+  '''
+    This function is used for rendering the image preview on 
+    HTML document. It basically returns an image tag with the
+    corresponding properties.
+  '''
+  def get_image_tag(self, css_class='', tag_id=None, pre=True):
+    if css_class == '':
+      css_class = 'pre-image'
+
+    tag_id_str = ''
+    if tag_id:
+      tag_id = tag_id + '_preview'
+      tag_id_str = f'id="{tag_id}"'
+    
+    style = ''
+    if 'form-image' in css_class:
+      style += 'max-width:100%;'
+      style += 'height: auto;'  
+      if not self.image:
+        path = ''
+      else:
+        path = self.image.url
+    else:
+      path = self.get_image_path(pre)  
+      
+    return mark_safe(f'<img src="{path}" class="{css_class}" {tag_id_str} alt="No Image" style="{style}"/>')
+
+  def get_image_path(self, pre):
+    if pre:
+      return self.get_preview_format(self.image.url)
+    return self.image.url

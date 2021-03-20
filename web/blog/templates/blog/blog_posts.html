@@ -1,0 +1,86 @@
+{% extends 'blog/templates/blog/blog_base.html' %} 
+
+{% load static %}
+{% load compress %}
+
+{% block title %} Blog {% endblock %}
+
+{% block content %}
+  <div class="d-flex justify-content-around align-items-start flex-wrap mt-3">
+    {% for post in posts %}
+      <div class="card shadow m-3 bg-light" style="width: {{ post.default_preview_size }}px">
+        <!-- Post Image Preview -->
+        <div class="pre-image-container">
+          {% if post.image %}
+            {{ post.get_image_tag }} 
+          {% else %}
+            <div class="card-img-top pre-image" style=" width:100%;height:{{ post.default_preview_size }}px;background-color:#F5F5F5;">
+            </div>
+          {% endif %} 
+          <!-- Sub-category Post Hover Animation -->
+          <link rel="stylesheet" href="{% static 'css/sub_category_style.css' %}">
+          <style>
+            .hidden-layer {
+              height: {{ post.default_preview_size }}px;
+            }
+            .pre-image-container {
+              height: {{ post.default_preview_size }}px;
+            }
+          </style>        
+          {% if category != post.category %} 
+            <!-- Hidden Layer for Category Info Text -->
+            <div class="hidden-layer">
+              <h4 class="text-light">{{ post.category }}</h4>
+            </div>
+          {% endif %}
+        </div>
+        <!-- Author -->
+        <h6 class="card-title text-left text-muted m-2">Author: {{ post.author }}</h6>
+        <div class="card-body">
+          <!-- Title -->
+          <h3 class="card-title text-center" ><a class="text-dark" href="{%url 'post' category_slug=post.category.slug post_slug=post.slug%}">{{ post.title }}</a></h3>
+          <div class="row mt-3">
+            <!-- Edit Button -->
+            <div class="col text-left">
+              {% if request.user == post.author or user_can_change %}
+                <div class="card-text">
+                  <i class="fas fa-edit text-primary"></i>
+                  <a href="{% url 'modify' category_slug=post.category.slug post_slug=post.slug %}">Edit</a>
+                </div>
+              {% endif %}
+            </div>
+            <!-- Date -->
+            <div class="col text-right">
+              <a class="text-muted">{{ post.created|date:"d M Y" }}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  <div class="pagination justify-content-around mt-3">
+    <span class="step-links">
+        {% if posts.has_previous %}
+          <a href="?page=1" class="btn btn-primary btn-sm">&laquo;</a>
+          <a href="?page={{ posts.previous_page_number }}" class="btn btn-primary btn-sm">&lt;</a>
+        {% else %}
+          <a href="#" class="btn btn-primary btn-sm disabled">&laquo;</a>
+          <a href="#" class="btn btn-primary btn-sm disabled">&lt;</a>
+        {% endif %}
+        {% for id in page_ids %}
+            {% if id == cur_page%}
+              <a href="?page={{ id }}" class="btn btn-danger btn-sm">{{ id }}</a>
+            {% else %}
+              <a href="?page={{ id }}" class="btn btn-primary btn-sm">{{ id }}</a>
+            {% endif %}
+        {% endfor %}
+        {% if posts.has_next %}
+            <a href="?page={{ posts.next_page_number }}" class="btn btn-primary btn-sm">&gt;</a>
+            <a href="?page={{ posts.paginator.num_pages }}" class="btn btn-primary btn-sm">&raquo;</a>
+        {% else %}
+            <a href="#" class="btn btn-primary btn-sm disabled">&gt;</a>
+            <a href="#" class="btn btn-primary btn-sm disabled">&raquo;</a>
+        {% endif %}
+    </span>
+</div>
+{% endblock %}
