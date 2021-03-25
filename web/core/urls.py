@@ -9,7 +9,7 @@ urlpatterns = [
     path('course-resources', views.course_resources, name='course_resources'),
     path('important-links', views.important_links, name='important_links'),
 
-    path('events/', include('events.urls')),
+    # path('events/', include('events.urls')),
     path('election/', include('election.urls')),
     path('docs/', include('docs.urls')),
     path('sso/', include('sso.urls')),
