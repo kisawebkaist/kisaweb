@@ -26,7 +26,7 @@ DEV_SETTINGS = 1
 PROD_SETTINGS = 2
 
 # Single point setup for dev/prod changes
-CURRENT_SETTINGS = PROD_SETTINGS
+CURRENT_SETTINGS = DEV_SETTINGS
 
 if CURRENT_SETTINGS == DEV_SETTINGS:
     dotenv_file = os.path.join(BASE_DIR, '.env.dev')
