@@ -53,7 +53,7 @@ def navbar(request):
     else:
         f = open('data/required.yaml')
         parsed = yaml.safe_load(f)
-        data = next((d for d in parsed if d['model']=='code.models.Navbar'))['fields']
+        data = next((d for d in parsed if d['model']=='core.models.Navbar'))['fields']
         navbar_ = Navbar.objects.create(**data)
         f.close()
 
