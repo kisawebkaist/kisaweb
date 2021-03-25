@@ -72,7 +72,7 @@ INSTALLED_APPS = [
 
     ## ---- Created by KISA webteam ---- ##
     'core',  # core pages (eg. homepage, about page, etc)
-    # 'events',
+    'events',
     'election',
     'sso',  # contains the User model
 ]
@@ -108,7 +108,7 @@ TEMPLATES = [
 
                 # -- Created by KISA Team -- #
                 # 'election.context_processors.navbar_election_link_visible',
-                'core.context_processors.footer',       
+                'core.context_processors.footer',
                 'core.context_processors.navbar',
                 'core.context_processors.empty_queryset',
                 'core.context_processors.login_type',
