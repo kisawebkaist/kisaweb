@@ -1,51 +1,30 @@
-<div class="container-fluid">
-    <div id="tags-field" class="row p-2 rounded" style="background-color: #EEEEEE;">
-        <!--Example button-->
-        <button id="tag-1" class="btn btn-info btn-sm m-1">Hello <i class="fas fa-times fa-sm"></i>
-        </button>
-        <button id="tag-2" class="btn btn-info btn-sm m-1">
-            Hi <i class="fas fa-times fa-sm"></i>
-        </button>
-        <button id="tag-1" class="btn btn-info btn-sm m-1">
-            Hello <i class="fas fa-times fa-sm"></i>
-        </button>
-        <button id="tag-2" class="btn btn-info btn-sm m-1">
-            Hi <i class="fas fa-times fa-sm"></i>
-        </button>
-        <button id="tag-1" class="btn btn-info btn-sm m-1">
-            Hello <i class="fas fa-times fa-sm"></i>
-        </button>
-        <button id="tag-2" class="btn btn-info btn-sm m-1">
-            Hi <i class="fas fa-times fa-sm"></i>
-        </button>
-        <button id="tag-1" class="btn btn-info btn-sm m-1">
-            Hello <i class="fas fa-times fa-sm"></i>
-        </button>
-        <button id="tag-2" class="btn btn-info btn-sm m-1">
-            Hi <i class="fas fa-times fa-sm"></i>
-        </button>
-        <button id="tag-1" class="btn btn-info btn-sm m-1">
-            Hello <i class="fas fa-times fa-sm"></i>
-        </button>
-        <button id="tag-2" class="btn btn-info btn-sm m-1">
-            Hi <i class="fas fa-times fa-sm"></i>
-        </button>
-
-    </div>
-    <div id="filter-field" class="row mt-2 mb-2 d-flex">
-        <div>
-            <input type="search" id="tag-search" class="form-control" placeholder="Search" style="display:none"/>
-        </div>
-        <div>
-            <button id="tag-list-toggler" class="btn btn-dark" data-toggle="collapse" data-target="#tag-list">Filter Tags</button>
+<div class = "d-flex flex-column justify-content-start flex-wrap align-items-start button-list bg-light rounded">
+    <div class = "mt-4 mb-2 ml-3">
+        <div class = "control-buttons-container pl-1">
+            <!-- this is to reset the button list-->
+            <button class = "btn btn-danger" id="tag-reset">
+                Reset
+            </button>
+            <!-- this is to press search, will make a GET reuest to the backend with selected tags as parameters-->
+            <button class = "btn btn-info" id="tag-search">
+                Search
+            </button>
         </div>
     </div>
-    <div id="tag-list" class="row collapse">
-        <button id="tag-1" class="btn btn-secondary btn-sm m-1">
-            Hello
-        </button>
-        <button id="tag-2" class="btn btn-secondary btn-sm m-1">
-            Hi
-        </button>
+    <!--This is for the full button list-->
+    <div class = "button-list-container d-flex flex-row flex-wrap justify-content-start align-items-center">
+            <div class = "container button-container" id="tag-field">
+                {% for tag in tagData %}
+                <!-- <button class = "tag btn btn-outline-primary btn-sm m-1" id = "{{ tag.id }}" value="{{ tag.title }}>
+                    {{tag.title}}
+                </button> -->
+                {% endfor %}
+                <!-- Test tags for example purposes -->
+                <button id="tag-1" value="tag-1" class="tag btn btn-outline-primary btn-sm m-1"> Tag1 </button>
+                <button id="tag-2" value="tag-2" class="tag btn btn-outline-primary btn-sm m-1"> Tag2 </button>
+                <button id="tag-3" value="tag-3" class="tag btn btn-outline-primary btn-sm m-1"> Tag3 </button>
+                <button id="tag-4" value="tag-4" class="tag btn btn-outline-primary btn-sm m-1"> Tag4 </button>
+                <button id="tag-5" value="tag-5" class="tag btn btn-outline-primary btn-sm m-1"> Tag5 </button>
+            </div>
     </div>
 </div>
