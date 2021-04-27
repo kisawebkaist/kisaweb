@@ -12,14 +12,13 @@ $('button#tag-reset').click(function() {
 $('button#tag-search').click(function() {
     let tags = document.querySelectorAll(".tag.active");
     if (tags.length > 0) {
-        $("#results-area").empty();
         let tagValues = [];
-        for (let i = 0; i < tags.length; i++) 
+        for (let i = 0; i < tags.length; i++)
             tagValues.push(tags[i].value);
-        updateGetRequestParams("tags[]", tagValues);
+        updateGetRequestParams("tags", tagValues);
     }
     else {
-        updateGetRequestParams("tags[]", null);
+        updateGetRequestParams("tags", null);
     }
     window.location.assign(url.href);
 });
@@ -33,6 +32,14 @@ updateGetRequestParams = (key, value) => {
     }
 };
 
+// Set all tags in url parameter as active
 $(document).ready(() => {
-    url = new URL(window.location.href);    
+    url = new URL(window.location.href);
+    let tagParams = url.searchParams.get("tags");
+    if (tagParams != null) {
+        let selectedTags = tagParams.split(",");
+        for (let i = 0; i < selectedTags.length; i++) {
+            $(`#${"tag-" + selectedTags[i]}`).addClass("active");
+        }
+    }
 });
