@@ -29,7 +29,7 @@
     {% endif %}
     <!-- Events -->
     {% for event in event_list %}
-    <div class="card mb-3 shadow" id="event">
+    <div class="card mb-3 shadow" id="event-{{ event.id }}">
       <!-- Image -->
       <div class="d-min815-none card-img-top text-center">
         {% image_tag event listview=True %}
@@ -41,7 +41,7 @@
           {% image_tag event listview=True %}
         </div>
         <div class="col">
-          <div class="card-body" id="{{ event.id }}">
+          <div class="card-body">
             <!-- Edit Button -->
             {% if perms.events %}
             <div class="card-text mb-2">
