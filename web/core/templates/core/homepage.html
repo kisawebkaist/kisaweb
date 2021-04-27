@@ -38,7 +38,7 @@
             {% image_tag event listview=True %}
           </div>
           <div class="mt-2 read-more text-center">
-            <a class="" href="{% url 'event_detail' event.slug %}">Learn more &rarr;</a>
+            <a class="" href="{% url 'events'%}#event-{{ event.id }}">Learn more &rarr;</a>
           </div>
         </div>
       </div>
@@ -69,27 +69,27 @@
     <p class="paragraph">KISA is comprised of four divisions. Learn more about each of them.</p>
       <div class="row no-gutters divisions">
           <div class="col-xs-6 col-md-2  mx-0 my-3 events">
-             <a href = "#">
+             <a>
                 <img src="{% static 'img/events.png' %}" class = "division" alt="Events">
               </a>
           </div>
           <div class="col-xs-6 col-md-2 mx-0 my-3 finance">
-            <a href = "#">
+            <a>
               <img src="{% static 'img/finance.png' %}" class = "division" alt="Finance">
             </a>
           </div>
           <div class="col-xs-6 col-md-2  my-3 web">
-            <a href = "#">
+            <a>
               <img src="{% static 'img/promotions.png' %}" class = "division"  alt="Promotions">
             </a>
           </div>
           <div class="col-xs-6 col-md-2  my-3 welfare">
-            <a href = "#">
+            <a>
               <img src="{% static 'img/welfare.png' %}" class = "division" alt="Welfare">
             </a>
           </div>
           <div class="col-xs-6 col-md-2  my-3 web">
-            <a href = "#">
+            <a>
               <img src="{% static 'img/web.png' %}" class = "division"  alt="Web">
             </a>
           </div>
