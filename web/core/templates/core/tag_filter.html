@@ -15,16 +15,16 @@
     <div class = "button-list-container d-flex flex-row flex-wrap justify-content-start align-items-center">
             <div class = "container button-container" id="tag-field">
                 {% for tag in tagData %}
-                <!-- <button class = "tag btn btn-outline-primary btn-sm m-1" id = "{{ tag.id }}" value="{{ tag.title }}>
+                <!-- <button class = "tag btn btn-outline-primary btn-sm m-1 rounded-pill" id="tag-{{ tag.title }}"" value="{{ tag.title }}"">
                     {{tag.title}}
                 </button> -->
                 {% endfor %}
                 <!-- Test tags for example purposes -->
-                <button id="tag-1" value="tag-1" class="tag btn btn-outline-primary btn-sm m-1"> Tag1 </button>
-                <button id="tag-2" value="tag-2" class="tag btn btn-outline-primary btn-sm m-1"> Tag2 </button>
-                <button id="tag-3" value="tag-3" class="tag btn btn-outline-primary btn-sm m-1"> Tag3 </button>
-                <button id="tag-4" value="tag-4" class="tag btn btn-outline-primary btn-sm m-1"> Tag4 </button>
-                <button id="tag-5" value="tag-5" class="tag btn btn-outline-primary btn-sm m-1"> Tag5 </button>
+                <button id="tag-first" value="first" class="tag btn btn-outline-primary btn-sm m-1 rounded-pill"> Tag1 </button>
+                <button id="tag-second" value="second" class="tag btn btn-outline-primary btn-sm m-1 rounded-pill"> Tag2 </button>
+                <button id="tag-third" value="third" class="tag btn btn-outline-primary btn-sm m-1 rounded-pill"> Tag3 </button>
+                <button id="tag-fourth" value="fourth" class="tag btn btn-outline-primary btn-sm m-1 rounded-pill"> Tag4 </button>
+                <button id="tag-fifth" value="fifth" class="tag btn btn-outline-primary btn-sm m-1 rounded-pill"> Tag5 </button>
             </div>
     </div>
 </div>
