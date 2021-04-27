@@ -11,13 +11,28 @@ $('button#tag-reset').click(function() {
 // Grab the selected tags when search button is pressed and make GET request
 $('button#tag-search').click(function() {
     let tags = document.querySelectorAll(".tag.active");
-    if (tags.length >= 1) {
+    if (tags.length > 0) {
         $("#results-area").empty();
         let tagValues = [];
-        for (let i = 0; i < tags.length; i++) tagValues.push(tags[i].value);
-
-        $.get( "", { "tags[]": tagValues } ); // routes to http://domain.com/app
-        // If you want to route the GET request to some other url, edit the first parameter above
-        // For example: $.get( "search", { "tags[]": tagValues } ); will route the request to http://domain.com/app/search
+        for (let i = 0; i < tags.length; i++) 
+            tagValues.push(tags[i].value);
+        updateGetRequestParams("tags[]", tagValues);
     }
+    else {
+        updateGetRequestParams("tags[]", null);
+    }
+    window.location.assign(url.href);
+});
+
+updateGetRequestParams = (key, value) => {
+    if(value == null) {
+        url.searchParams.delete(key);
+    }
+    else {
+        url.searchParams.set(key, value);
+    }
+};
+
+$(document).ready(() => {
+    url = new URL(window.location.href);    
 });
