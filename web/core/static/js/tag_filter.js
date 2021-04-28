@@ -39,7 +39,7 @@ $(document).ready(() => {
     if (tagParams != null) {
         let selectedTags = tagParams.split(",");
         for (let i = 0; i < selectedTags.length; i++) {
-            $(`#${"tag-" + selectedTags[i]}`).addClass("active");
+            $(`.tag[value="${selectedTags[i]}"]`).addClass("active");
         }
     }
 });
