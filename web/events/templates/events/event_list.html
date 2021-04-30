@@ -21,11 +21,6 @@
         Events
       </div>
     </div>
-    <!-- 
-      Test filter 
-      Note: Please remove this after testing the tag-filtering system
-    -->
-    {% include 'core/tag_filter.html' %}
     <!-- Add Event Button -->
     {% if perms.events %}
     <div class="row mb-3">
@@ -157,10 +152,5 @@
 <script src="{% static 'js/event_registration.js' %}"></script>
 <script src="{% static 'js/event_truncation.js' %}"></script>
 <script src="{% static 'js/event_readmore.js' %}"></script>
-<!--
-  This is the js file associated with the tag filter interface
-  Note: please remove after you are done with testing.
--->
-<script src="{% static 'js/tag_filter.js' %}"></script>
 {% endcompress %}
 {% endblock %}
