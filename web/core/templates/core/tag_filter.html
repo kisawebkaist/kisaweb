@@ -14,17 +14,11 @@
     <!--This is for the full button list-->
     <div class = "button-list-container d-flex flex-row flex-wrap justify-content-start align-items-center">
             <div class = "container button-container" id="tag-field">
-                {% for tag in tagData %}
-                <!-- <button class = "tag btn btn-outline-primary btn-sm m-1 rounded-pill" value="{{ tag.tag_name }}">
+                {% for tag in tagObjects %}
+                <button class = "tag btn btn-outline-primary btn-sm m-1 rounded-pill" value="{{ tag.tag_name }}">
                     {{ tag.tag_name }}
-                </button> -->
+                </button>
                 {% endfor %}
-                <!-- Test tags for example purposes -->
-                <button id="tag-first" value="first" class="tag btn btn-outline-primary btn-sm m-1 rounded-pill"> Tag1 </button>
-                <button id="tag-second" value="second" class="tag btn btn-outline-primary btn-sm m-1 rounded-pill"> Tag2 </button>
-                <button id="tag-third" value="third" class="tag btn btn-outline-primary btn-sm m-1 rounded-pill"> Tag3 </button>
-                <button id="tag-fourth" value="fourth" class="tag btn btn-outline-primary btn-sm m-1 rounded-pill"> Tag4 </button>
-                <button id="tag-fifth" value="fifth" class="tag btn btn-outline-primary btn-sm m-1 rounded-pill"> Tag5 </button>
             </div>
     </div>
 </div>
