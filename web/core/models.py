@@ -3,7 +3,19 @@ from django.core.exceptions import ValidationError
 
 from phone_field import PhoneField
 
-# Create your models here.
+# Abstract Classes
+
+class Tag(models.Model):
+    
+    tag_name = models.CharField(max_length=50, blank=False, unique=True)
+    
+    def __str__(self):
+        return self.tag_name
+    
+    class Meta:
+        abstract = True
+
+# End of Abstract Classes
 
 class Footer(models.Model):
     kisa_text = models.CharField(max_length=500, blank=True)
