@@ -66,6 +66,10 @@ class Event(models.Model):
         default_image_size (int):
             The default HTML width and height of the image.
     """
+    
+    class Meta:
+        ordering = ['-id']
+
     title = models.CharField(max_length=100, default='')
     slug = models.SlugField(max_length=100, unique=True, blank=True)
 
