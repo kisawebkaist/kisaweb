@@ -3,7 +3,7 @@ from django.utils.html import mark_safe
 
 import yaml
 
-from .models import Footer, EmptyQueryset
+from .models import Footer, EmptyQueryset, Navbar
 from web.settings import KISA_AUTH_METHOD, LOGIN_DEV, LOGIN_PROD
 
 
@@ -35,6 +35,7 @@ def footer(request):
         parsed = yaml.safe_load(f)
         data = next((d for d in parsed if d['model']=='core.models.Footer'))['fields']
         footer_ = Footer.objects.create(**data)
+        f.close()
 
     br_tag = '<br class="d-none d-xl-block" />'
     line_len = 70
@@ -44,6 +45,19 @@ def footer(request):
         'footer': footer_,
         'kisa_text': kisa_text,
     }
+
+
+def navbar(request):
+    if Navbar.objects.all().exists():
+        navbar_ = Navbar.objects.all()[0]
+    else:
+        f = open('data/required.yaml')
+        parsed = yaml.safe_load(f)
+        data = next((d for d in parsed if d['model']=='core.models.Navbar'))['fields']
+        navbar_ = Navbar.objects.create(**data)
+        f.close()
+
+    return {'navbar': navbar_}
 
 
 def empty_queryset(request):

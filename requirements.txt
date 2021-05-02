@@ -4,6 +4,7 @@ pillow
 python-dotenv
 PyYAML
 ipython
+requests
 
 # Django
 django==3.0
@@ -14,6 +15,7 @@ django-crispy-forms==1.9.*
 django-docs
 django-stubs==1.5.*
 django-phone-field==1.8.*
+django-maintenance-mode==0.15.*
 
 # Testing
 pytest
