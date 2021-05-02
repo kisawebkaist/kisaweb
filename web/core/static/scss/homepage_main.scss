@@ -1,0 +1,84 @@
+//z-index is used for increasing the text readability of intro text
+.intro-banner {
+    overflow: hidden;
+    position: relative;
+    text-align: center;
+}
+
+//black transparent cover on top of intro banner image
+.intro-banner:after {
+    z-index: 1;
+    content:'';
+    position:absolute;
+    width:100%;
+    height:100%;
+    top:0;
+    left:0;
+    background:rgba(0,0,0,0.3);
+    opacity:1;
+}
+
+.intro-banner img {
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.intro-banner .banner-text {
+    z-index: 2;
+    position: absolute;
+    color: white;
+    font-size: 3vw;
+    font-weight: bold;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+$mobile-breakpoint: 768px;
+@media (max-width: $mobile-breakpoint) {
+    .intro-banner img {
+        width: 150%;
+        margin-left: 50%;   
+        transform: translateX(-50%); 
+    }
+    
+    .intro-banner .banner-text {
+        font-size: 6vw;
+    }
+}
+
+.card-block {
+    height: 350px;
+    width: 265px;
+}
+
+.members-picture {
+    width: 480px;
+    height: auto;
+}
+
+.members-text {
+    max-width: 420px;
+}
+
+.divisions img:hover{
+    opacity: 0.75;
+}
+
+.heading{
+    font-size: 1.3em;
+}
+
+.paragraph{
+    font-size: 1.2em;
+}
+
+.button-text{
+    font-size: 1.1em;
+}
+
+.division{
+    max-width: 90%;
+    height: auto;
+}
