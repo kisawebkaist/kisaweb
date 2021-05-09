@@ -1,4 +1,0 @@
-function readURL(input,$preview){if(input.files&&input.files[0]){var reader=new FileReader();reader.onload=function(e){$preview.attr('src',e.target.result);};reader.readAsDataURL(input.files[0]);}}
-$(function(){$image_preview=$('#image_preview');$('#reset-id-reset').on("click",()=>{currently=$("span[class='text-break']");if(currently.length>0){normal_img_link=$(currently[0].getElementsByTagName('a')[0]).attr('href');$image_preview.attr('src',normal_img_link);}
-else{$image_preview.attr('src','');}
-$("label[for='image']")[1].textContent='---';});$('#image').on("change",function(){readURL(this,$image_preview);});});;$('#post_delete').on('click',function(){if(confirm(`Do you want to delete this post?`)){$.ajax({type:'POST',url:$(this).attr('data-post-delete-url'),data:{'csrfmiddlewaretoken':CSRF_TOKEN,},success:(e)=>{window.location.href=e},error:()=>{alert('Error')},});}});;
