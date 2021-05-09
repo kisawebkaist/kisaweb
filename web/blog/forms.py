@@ -78,7 +78,7 @@ class PostForm(forms.ModelForm):
     self.helper.layout = Layout(
         Row(
           Column('title'),
-          Column('category', 'author'),
+          Column('category'),
         ),
         Row(
           Column('content'),

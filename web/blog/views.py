@@ -159,7 +159,7 @@ def category_view(request, category_slug):
     return HttpResponse('Category Does Not Exist', status=404)
 
   posts = Post.objects.filter(category__in=category_objects).order_by('-created').all()
-  paginator = Paginator(posts, 1)
+  paginator = Paginator(posts, 3)
   page_number = request.GET.get('page')
 
   if page_number == None:
@@ -282,8 +282,8 @@ class PostCreate(CreateView):
   '''
   def get_form(self, form_class=None):
     form = super().get_form(form_class)
-    form.fields['author'].widget = forms.HiddenInput()
-    form.fields['author'].initial = self.request.user
+    #form.fields['author'].widget = forms.HiddenInput()
+    #form.fields['author'].initial = self.request.user
     return form
 
   '''
@@ -324,7 +324,7 @@ class PostUpdate(UpdateView):
 
   def get_form(self, form_class=None):
     form = super().get_form(form_class)
-    form.fields['author'].widget = forms.HiddenInput()
+    #form.fields['author'].widget = forms.HiddenInput()
 
     uri = self.request.build_absolute_uri()[:-1].split('/')
     cancel_url = reverse('post', kwargs={'category_slug': uri[-2], 'post_slug': uri[-1]})

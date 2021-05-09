@@ -8,7 +8,7 @@
 {% block content %}
   <div class="d-flex justify-content-around align-items-start flex-wrap mt-3">
     {% for post in posts %}
-      <div class="card shadow m-3 bg-light" style="width: {{ post.default_preview_size }}px">
+      <div class="card shadow m-3 bg-light" style="width: {{ post.default_preview_size }}px;">
         <!-- Post Image Preview -->
         <div class="pre-image-container">
           {% if post.image %}
@@ -34,20 +34,16 @@
             </div>
           {% endif %}
         </div>
-        <!-- Author -->
-        <h6 class="card-title text-left text-muted m-2">Author: {{ post.author }}</h6>
         <div class="card-body">
           <!-- Title -->
           <h3 class="card-title text-center" ><a class="text-dark" href="{%url 'post' category_slug=post.category.slug post_slug=post.slug%}">{{ post.title }}</a></h3>
           <div class="row mt-3">
             <!-- Edit Button -->
             <div class="col text-left">
-              {% if request.user == post.author or user_can_change %}
-                <div class="card-text">
-                  <i class="fas fa-edit text-primary"></i>
-                  <a href="{% url 'modify' category_slug=post.category.slug post_slug=post.slug %}">Edit</a>
-                </div>
-              {% endif %}
+              <div class="card-text">
+                <i class="fas fa-edit text-primary"></i>
+                <a href="{% url 'modify' category_slug=post.category.slug post_slug=post.slug %}">Edit</a>
+              </div>
             </div>
             <!-- Date -->
             <div class="col text-right">

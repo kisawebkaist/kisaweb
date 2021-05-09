@@ -9,7 +9,7 @@ from .models import Post, PostCategory
 # Register your models here.
 
 class PostAdmin(admin.ModelAdmin):
-  list_display = ['title', 'slug', 'author', 'category']
+  list_display = ['title', 'slug', 'category']
 
 class PostCategoryAdmin(admin.ModelAdmin):
   list_display = ['name', 'slug', 'parent_category']

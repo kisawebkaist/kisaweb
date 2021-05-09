@@ -66,7 +66,6 @@ class Post(models.Model):
       Title -> Title of the post
       Slug -> Slug of the post (Check: https://docs.djangoproject.com/en/3.1/glossary/)
       Content -> Content
-      Author -> Author
       Category -> Category of the post
       Create Date -> When the post is created
       Update Date -> Last modification date
@@ -76,7 +75,7 @@ class Post(models.Model):
   title = models.CharField(max_length=100, default='')
   slug = models.SlugField(max_length=100, editable=False)
   content = HTMLField()
-  author = models.ForeignKey(User, on_delete=models.CASCADE)
+  #author = models.ForeignKey(User, on_delete=models.CASCADE)
   category = models.ForeignKey(PostCategory, on_delete=models.CASCADE)
   created = models.DateTimeField(auto_now_add=True)
   modified = models.DateTimeField(auto_now=True)
