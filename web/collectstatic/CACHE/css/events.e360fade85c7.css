@@ -1,0 +1,80 @@
+/* line 2, core/static/scss/homepage_main.scss */
+.intro-banner {
+  overflow: hidden;
+  position: relative;
+  text-align: center; }
+
+/* line 9, core/static/scss/homepage_main.scss */
+.intro-banner:after {
+  z-index: 1;
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.3);
+  opacity: 1; }
+
+/* line 21, core/static/scss/homepage_main.scss */
+.intro-banner img {
+  z-index: 0;
+  width: 100%;
+  height: 100%; }
+
+/* line 27, core/static/scss/homepage_main.scss */
+.intro-banner .banner-text {
+  z-index: 2;
+  position: absolute;
+  color: white;
+  font-size: 3vw;
+  font-weight: bold;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); }
+
+@media (max-width: 768px) {
+  /* line 40, core/static/scss/homepage_main.scss */
+  .intro-banner img {
+    width: 150%;
+    margin-left: 50%;
+    transform: translateX(-50%); }
+  /* line 46, core/static/scss/homepage_main.scss */
+  .intro-banner .banner-text {
+    font-size: 6vw; } }
+
+/* line 51, core/static/scss/homepage_main.scss */
+.card-block {
+  height: 350px;
+  width: 265px; }
+
+/* line 56, core/static/scss/homepage_main.scss */
+.members-picture {
+  width: 480px;
+  height: auto; }
+
+/* line 61, core/static/scss/homepage_main.scss */
+.members-text {
+  max-width: 420px; }
+
+/* line 65, core/static/scss/homepage_main.scss */
+.divisions img:hover {
+  opacity: 0.75; }
+
+/* line 69, core/static/scss/homepage_main.scss */
+.heading {
+  font-size: 1.3em; }
+
+/* line 73, core/static/scss/homepage_main.scss */
+.paragraph {
+  font-size: 1.2em; }
+
+/* line 77, core/static/scss/homepage_main.scss */
+.button-text {
+  font-size: 1.1em;
+  font-weight: bold; }
+
+/* line 82, core/static/scss/homepage_main.scss */
+.division {
+  max-width: 90%;
+  height: auto; }

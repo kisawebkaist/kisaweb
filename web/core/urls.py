@@ -6,6 +6,8 @@ from . import views
 
 urlpatterns = [
     path('', views.homepage, name='homepage'),
+    path('course-resources', views.course_resources, name='course_resources'),
+    path('important-links', views.important_links, name='important_links'),
 
     path('events/', include('events.urls')),
     path('election/', include('election.urls')),

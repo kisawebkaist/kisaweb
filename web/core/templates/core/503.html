@@ -1,0 +1,20 @@
+{% extends 'core/base/base.html' %}
+
+{% load static %}
+{% load compress %}
+
+{% block title %}503 Error{% endblock %}
+
+{% block main %}
+<div class="d-flex flex-row h-auto margin">
+  <div class="container-fluid mx-0">
+    <!-- Page Title -->
+    <div class="row">
+      <div class="col text-center py-1">
+        <h3>Website is temporarily down for maintenance. Please click <a href="{% url 'homepage' %}">here</a> for pages that are available right now.</h3>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

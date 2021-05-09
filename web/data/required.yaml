@@ -13,3 +13,10 @@
   pk: 1
   fields:
     events: No events posted yet
+
+- model: core.models.Navbar
+  pk: 1
+  fields:
+    kisa_voice_link: https://docs.google.com/forms/d/e/1FAIpQLSe-H7GFHY-3U5aKNsGvS_DySOH3qb93Yth_EV3lmz5NaPG28Q/viewform
+    kisa_books_link: https://www.facebook.com/groups/817190881629523/
+    internships_link: https://www.facebook.com/groups/354446485098522/

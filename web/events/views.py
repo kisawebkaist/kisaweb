@@ -19,10 +19,10 @@ class EventList(ListView):
     model = Event
 
 
-class EventDetail(DetailView):
-    slug_field = 'slug'
-    slug_url_kwarg = 'slug'
-    model = Event
+# class EventDetail(DetailView):
+#     slug_field = 'slug'
+#     slug_url_kwarg = 'slug'
+#     model = Event
 
 
 @login_required

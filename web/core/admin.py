@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import CourseResources, Footer, CourseUrl
+from .models import CourseResources, Footer, CourseUrl, Navbar
 
 # Register your models here.
 
@@ -16,3 +16,4 @@ class CourseResourceAdmin(admin.ModelAdmin):
 admin.site.register(CourseResources, CourseResourceAdmin)
 admin.site.register(CourseUrl)
 admin.site.register(Footer)
+admin.site.register(Navbar)
