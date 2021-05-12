@@ -1,21 +1,51 @@
-from django.db import models
 from django.core.exceptions import ValidationError
-
+from django.db import models
+from django.utils import timezone
+from django.utils.text import slugify
 from phone_field import PhoneField
+from tinymce.models import HTMLField
 
 # Abstract Classes
 
+
 class Tag(models.Model):
-    
+
     tag_name = models.CharField(max_length=50, blank=False, unique=True)
-    
+
     def __str__(self):
         return self.tag_name
-    
+
     class Meta:
         abstract = True
 
+
+class Content(models.Model):
+    title = models.CharField(max_length=200, blank=False)
+    content = HTMLField()
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+    slug = models.SlugField(max_length=100, null=True, unique=True, editable=False)
+
+    def save(self, *args, **kwargs):
+
+        # Saving must occur for the datetime fields to be set automatically, so set it manually if it doesn't exist
+        if self.created is None:
+            self.created = timezone.now()
+
+        datetime_stamp = self.created.strftime('%Y-%m-%d')
+        self.slug = f'{slugify(self.title)}-{datetime_stamp}'
+
+        return super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.slug
+
+    class Meta:
+        abstract = True
+
+
 # End of Abstract Classes
+
 
 class Footer(models.Model):
     kisa_text = models.CharField(max_length=500, blank=True)
