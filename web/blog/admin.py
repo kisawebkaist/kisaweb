@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Post, PostCategory
+from .models import Post, PostTag
 
 '''
   This file contains which fields of a model to be
@@ -9,10 +9,13 @@ from .models import Post, PostCategory
 # Register your models here.
 
 class PostAdmin(admin.ModelAdmin):
-  list_display = ['title', 'slug', 'category']
+  list_display = ['title', 'slug', 'get_tags']
+  
+  def get_tags(self, obj):
+    return ['#' + p.tag_name for p in obj.tags.all()]
 
-class PostCategoryAdmin(admin.ModelAdmin):
-  list_display = ['name', 'slug', 'parent_category']
+class PostTagAdmin(admin.ModelAdmin):
+  list_display = ['tag_name']
 
 admin.site.register(Post, PostAdmin)
-admin.site.register(PostCategory, PostCategoryAdmin)
+admin.site.register(PostTag, PostTagAdmin)
