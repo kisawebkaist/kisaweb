@@ -32,20 +32,8 @@
             {{ blog_navbar | safe}}
           </div>
         </div>
-        <!-- Create PostCategory Button -->
-        {% if perms.events %}
-          <div class="row mt-2">
-            <a href="{% url 'create_category' %}" class="btn btn-outline-dark rounded-pill"><i class="fa fa-plus"></i>&nbsp;Category</a>
-          </div>
-        {% endif %}
       </div>
     </div>
-    <!-- Create Post Button -->
-    {% if perms.events %}
-      <div class="row mt-2 justify-content-end">
-        <a href="{% url 'create_post' %}" class="btn btn-outline-info rounded-pill"><i class="fa fa-plus"></i>&nbsp;Post</a>
-      </div>
-    {% endif %}
   {% block content %} {% endblock %}   
   </div>
 </div>

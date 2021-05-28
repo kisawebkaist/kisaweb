@@ -8,15 +8,58 @@
 # from django import forms
 # from crispy_forms.layout import HTML, Hidden
 # from django.contrib.auth.decorators import login_required
-# from django.core.paginator import Paginator
+from django.core.paginator import Paginator
 
 from django.http.response import HttpResponse
+from django.shortcuts import render
+from django.db.models import Count
+from .models import Post, PostTag
+
+RESULTS_PER_PAGE = 3
 
 def post_view(request, post_slug):
   return HttpResponse('TODO')
 
 def blog_view(request):
-  return HttpResponse('TODO')
+  searched_tags = request.GET.get('tags', '').split(',')
+  posts = Post.objects.order_by('-created').all()
+  if searched_tags != ['']:
+
+    posts = Post.objects.filter(tags__tag_name__in=searched_tags).annotate(num_tags=Count('tags')).filter(num_tags=len(searched_tags)).order_by('-created')
+    # print(searched_tags)
+    # print(posts)
+
+  # Pagination from previous implementation
+  paginator = Paginator(posts, RESULTS_PER_PAGE)
+  page_number = request.GET.get('page')
+
+  if page_number == None:
+    page_number = '1'
+
+  page_obj = paginator.get_page(page_number)
+  page_number = page_obj.number
+
+  cnt_page_links = 5
+  page_ids_l, page_ids_r = list(), list()
+  add, sub = 1, 1
+  for i in range(cnt_page_links):
+    if page_number + add <= paginator.num_pages:
+      page_ids_r.append(page_number + add)
+      add += add
+  for i in range(cnt_page_links):
+    if page_number - sub >= 1:
+      page_ids_l.append(page_number - sub)
+      sub += sub
+  page_ids = page_ids_l[::-1] + [page_number] + page_ids_r
+
+  context = {
+    'tagObjects': PostTag.objects.order_by('tag_name').all(),
+    'posts': page_obj,
+    'num_results': len(posts),
+    'page_ids': page_ids,
+    'cur_page': page_number
+  }
+  return render(request, 'blog/blog_posts.html', context)
 
 # '''
 #   The functions below are used for creating the HTML format for the

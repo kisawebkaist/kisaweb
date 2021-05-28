@@ -5,8 +5,11 @@
 
 {% block title %} Blog {% endblock %}
 
-{% block content %}
-  <div class="d-flex justify-content-around align-items-start flex-wrap mt-3">
+{% block main %}
+{% include 'core/tag_filter.html' %}
+
+<h4 class="text-muted ml-5">Results: {{ num_results }}</h4>
+<div class="d-flex justify-content-around align-items-start flex-wrap mt-3">
     {% for post in posts %}
       <div class="card shadow m-3 bg-light" style="width: {{ post.default_preview_size }}px;">
         <!-- Post Image Preview -->
@@ -19,30 +22,28 @@
           {% endif %} 
           <!-- Sub-category Post Hover Animation -->
           <link rel="stylesheet" href="{% static 'css/sub_category_style.css' %}">
-          <style>
-            .hidden-layer {
-              height: {{ post.default_preview_size }}px;
-            }
-            .pre-image-container {
-              height: {{ post.default_preview_size }}px;
-            }
-          </style>        
-          {% if category != post.category %} 
+               
+          <!-- {% if category != post.category %}  -->
             <!-- Hidden Layer for Category Info Text -->
-            <div class="hidden-layer">
-              <h4 class="text-light">{{ post.category }}</h4>
-            </div>
-          {% endif %}
+            <!-- <div class="hidden-layer"> -->
+              <!-- <h4 class="text-light">{{ post.category }}</h4> -->
+            <!-- </div> -->
+          <!-- {% endif %} -->
         </div>
         <div class="card-body">
+		  
           <!-- Title -->
-          <h3 class="card-title text-center" ><a class="text-dark" href="{%url 'post' category_slug=post.category.slug post_slug=post.slug%}">{{ post.title }}</a></h3>
+          <h3 class="card-title text-center" ><a class="text-dark" href="#">{{ post.title }}</a></h3>
+		  {% for tag in post.tags.all %}
+			<small class="text-info">#{{ tag }}</small>
+			{% endfor %}
           <div class="row mt-3">
+			
             <!-- Edit Button -->
             <div class="col text-left">
               <div class="card-text">
                 <i class="fas fa-edit text-primary"></i>
-                <a href="{% url 'modify' category_slug=post.category.slug post_slug=post.slug %}">Edit</a>
+                <a href="#">Edit</a>
               </div>
             </div>
             <!-- Date -->
@@ -52,7 +53,10 @@
           </div>
         </div>
       </div>
+	  {% empty %}
+		  <h3>No results</h3>
     {% endfor %}
+	
   </div>
   <div class="pagination justify-content-around mt-3">
     <span class="step-links">
@@ -79,4 +83,12 @@
         {% endif %}
     </span>
 </div>
+
+
+{% endblock %}
+
+{% block js %}
+{% compress js file events %}
+<script src="{% static 'js/tag_filter.js' %}"></script>
+{% endcompress %}
 {% endblock %}
