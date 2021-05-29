@@ -7,37 +7,46 @@
 
 {% block content %}
   <div class="d-flex justify-content-center align-items-center flex-wrap mt-3">
-    <div class="card" style="width:75%">
+    <div class="card w-75">
       <div class="caption">
         <!-- Post Image -->
-        {% if post.image %}
+        {% if image %}
           <div class="text-center">
-            <img src="{{ post.image.url }}" class="img-fluid">
+            <img src="{{ image.url }}" class="img-fluid">
           </div>
         {% endif %}
-        <div class="card-body">
+      </div>
+      <div class="card-body">
+        <!-- Head Part -->
+        <div class="d-flex justify-content-between mt-1">
           <!-- Edit Button -->
-          <div class="col text-left">
+          <div class="text-left">
             <div class="card-text">
               <i class="fas fa-edit text-primary"></i>
-              <a href="{% url 'modify' category_slug=post.category.slug post_slug=post.slug %}">Edit</a>
+              <a href="#">Edit</a>
             </div>
           </div>
-          <h1 class="text-center mt-3">{{ post.title }}</h1>
-          <div class="card-body">
-            <!-- Post Content -->
-            <p>{{ post.content|safe }}</p>
-            <div class="float-right m-4">
-              <div>
-                <!-- Date -->
-                <div class="text-center">
-                  <a class="text-muted">{{ post.created|date:"d M Y" }}</a>
-                </div>
+          <div class="text-right">
+            <!-- Date -->
+            <a class="text-muted">{{ created|date:"d M Y" }}</a>
+          </div>
+        </div>
+        <div class="d-flex justify-content-center w-100 my-1">
+          <div class="w-75">
+            <h1 class="text-center">{{title}}</h1>
+            <div class="d-flex justify-content-center my-3"> 
+              <div class="d-flex justify-content-center w-50 flex-wrap">
+                {% for tag in tags.all %}
+                  <small class="text-info mx-2">#{{ tag }}</small>
+                {% endfor %}
               </div>
             </div>
-          </div> 
-        </div>
-      </div>
+          </div>
+        </div> 
+        <div class="card-body">
+          <!-- Post Content -->
+          <div>{{ content|safe }}</div>
+        </div> 
     </div>
   </div>
 {% endblock %}

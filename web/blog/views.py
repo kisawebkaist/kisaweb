@@ -15,10 +15,20 @@ from django.shortcuts import render
 from django.db.models import Count
 from .models import Post, PostTag
 
-RESULTS_PER_PAGE = 3
+RESULTS_PER_PAGE = 16
 
 def post_view(request, post_slug):
-  return HttpResponse('TODO')
+  blog_post = Post.objects.filter(slug=post_slug).first()
+  if blog_post == None:
+    return HttpResponse('Blog Post Does Not Exist', status=404)
+  context = {
+    'content': blog_post.content,
+    'title': blog_post.title,
+    'tags': blog_post.tags,
+    'image': blog_post.image,
+    'created': blog_post.created,
+  }
+  return render(request, 'blog/blog_post.html', context)
 
 def blog_view(request):
   searched_tags = request.GET.get('tags', '').split(',')

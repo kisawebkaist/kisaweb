@@ -11,7 +11,7 @@
 <h4 class="text-muted ml-5">Results: {{ num_results }}</h4>
 <div class="d-flex justify-content-around align-items-start flex-wrap mt-3">
     {% for post in posts %}
-      <div class="card shadow m-3 bg-light" style="width: {{ post.default_preview_size }}px;">
+      <div class="card shadow m-3 bg-light" style="width: {{ post.default_preview_size|add:2 }}px;">
         <!-- Post Image Preview -->
         <div class="pre-image-container">
           {% if post.image %}
@@ -33,7 +33,7 @@
         <div class="card-body">
 		  
           <!-- Title -->
-          <h3 class="card-title text-center" ><a class="text-dark" href="#">{{ post.title }}</a></h3>
+          <h3 class="card-title text-center" ><a class="text-dark" href="{% url 'post_view' post_slug=post.slug%}">{{ post.title }}</a></h3>
 		  {% for tag in post.tags.all %}
 			<small class="text-info">#{{ tag }}</small>
 			{% endfor %}
