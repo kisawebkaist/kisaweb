@@ -66,7 +66,7 @@ class PostTag(Tag):
 
 class Post(Content):
   tags = models.ManyToManyField(PostTag)
-  default_preview_size = 300
+  default_preview_size = 375 # Testing larger images for design
   image = models.ImageField(upload_to='blog/img', blank=True, null=True)
 
   def save(self, *args, **kwargs):
