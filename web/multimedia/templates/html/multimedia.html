@@ -1,0 +1,18 @@
+<div class = "container">
+    <div class = "video-container">
+        {% for vid in video %}
+        <div class = "video">
+            <video controls>
+                <source src = "{{vid.src}}">
+            </video>
+        </div>
+        {% endfor %}
+    </div>
+    <div class = "image-container">
+        {% for img in image %}
+        <div class = "image">
+            <img src = {{img.src}} alt = {{img.alt}}>
+        </div>
+        {% endfor %}
+    </div>
+</div>

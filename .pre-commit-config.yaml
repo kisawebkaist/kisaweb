@@ -16,7 +16,7 @@ repos:
       - id: bandit
         args: ['-iii', '-ll']
   - repo: https://gitlab.com/pycqa/flake8
-    rev: 3.8.4
+    rev: 3.9.1
     hooks:
       - id: flake8
   - repo: local
@@ -28,10 +28,14 @@ repos:
         types: [python]
         exclude: "[a-zA-Z]*/(migrations|tests)/(.)*"
   - repo: https://github.com/psf/black
-    rev: 20.8b1
+    rev: 21.4b2
     hooks:
       - id: black
   - repo: https://github.com/pycqa/isort
+<<<<<<< Updated upstream
     rev: 5.7.0
+=======
+    rev: 5.8.0
+>>>>>>> Stashed changes
     hooks:
       - id: isort
