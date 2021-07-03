@@ -18,7 +18,7 @@
     {% for post in posts %}
       <div class="grid-item card shadow m-3 mr-3 p-2 bg-light">
         <!-- Post Image Preview -->
-        <div class="pre-image-container">
+        <div class="pre-image-container text-center">
           {% if post.image %}
             {{ post.get_image_tag }} 
           {% else %}
