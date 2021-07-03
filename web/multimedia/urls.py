@@ -1,5 +1,5 @@
 from django.urls import path
-import .views as views
+import multimedia.views as views
 
 urlpatterns = [
     path('videos/<slug>', views.Video.as_view()), 

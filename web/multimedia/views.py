@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from django.http import HttpResponse, JsonResponse, Http404
-import .models as model
+import multimedia.models as model
 class Video(View):
     def get(self, request, slug):
         video   = model.Video.objects.filter(slug = slug)
         if video.exists():
+            video       = list(video)[0]
             videoFile   = video.file.url
             return redirect(videoFile)
         else:
@@ -15,6 +16,7 @@ class Image(View):
     def get(self, request, slug):
         image   = model.Image.objects.filter(slug = slug)
         if image.exists():
+            image       = list(image)[0]
             imageFile   = image.file.url
             return redirect(imageFile)
         else:
@@ -22,10 +24,11 @@ class Image(View):
 
 class Multimedia(View):
     def get(self, request, slug):
-        multimedia  = model.Multimedia.objects.filter(slug, slug)
+        multimedia  = model.Multimedia.objects.filter(slug = slug)
         if multimedia.exists():
-            image   = multimedia.images.objects.all()
-            video   = multimedia.videos.objects.all()
+            multimedia = list(multimedia)[0]
+            image   = multimedia.images.all()
+            video   = multimedia.videos.all()
             imgDict = [{'title' : img.title, 'alt' : img.alt, 'slug' : img.slug, 'src' : img.file.url} for img in image]
             vidDict = [{'title' : vid.title, 'slug': vid.slug, 'src' : vid.file.url} for vid in video]
             respDic = {

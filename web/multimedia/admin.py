@@ -1,5 +1,5 @@
 from django.contrib import admin
-import .models as model
+import multimedia.models as model
 
 # Register your models here.
 admin.site.register(model.Video)
