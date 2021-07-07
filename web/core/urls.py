@@ -13,4 +13,5 @@ urlpatterns = [
     path('election/', include('election.urls')),
     path('docs/', include('docs.urls')),
     path('sso/', include('sso.urls')),
+    path('aboutus/', include('aboutus.urls')),
 ]
