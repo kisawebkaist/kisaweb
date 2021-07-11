@@ -1,18 +1,46 @@
+<!--check the context in views.py for the content accessible-->
+
+<!--This includes the base code for the html from core -->
+{% extends 'core/base/base.html' %}
+
+{% load static %}
+{% block main %}
 <div class = "container">
-    <div class = "video-container">
-        {% for vid in video %}
-        <div class = "video">
-            <video controls>
-                <source src = "{{vid.src}}">
-            </video>
-        </div>
+    <div class = "multimedia-title">
+        <!--The thing here represents string in jinja template, anything string can be enclosed 
+        within that -->
+        <h3>{{title}}</h3>
+    </div>
+    <div class = "multimedia-date">
+        <p>{{date}}</p>
+    </div>
+    <div class = "multimedia-tags">
+        <!-- this is a for loop and tag is like a variable-->
+        {% for tag in tags%}
+            <div class = "multimedia-tag">
+                <p>{{tag}}</p>
+            </div>
         {% endfor %}
     </div>
-    <div class = "image-container">
-        {% for img in image %}
-        <div class = "image">
-            <img src = {{img.src}} alt = {{img.alt}}>
-        </div>
+    <div class = "multimedia-videos">
+        {% for video in videos %}
+            <div class = "multimedia-video">
+                <h4>{{video.title}}</h4>
+                <video>
+                    <source src = "{{video.src}}">
+                </video>
+                <p>{{video.date}}</p>
+            </div>
+        {% endfor %}
+    </div>
+    <div class = "multimedia-images">
+        {% for image in images %}
+            <div class = "multimedia-image">
+                <h4>{{image.title}}</h4>
+                <img src = "{{image.src}}" alt = "{{image.date}}">
+                <p>{{image.date}}</p>
+            </div>
         {% endfor %}
     </div>
 </div>
+{% endblock %}

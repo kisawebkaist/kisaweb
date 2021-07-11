@@ -22,34 +22,79 @@ class Image(View):
         else:
             return Http404
 
-class Multimedia(View):
+class MultimediaView(View):
     def get(self, request, slug):
         multimedia  = model.Multimedia.objects.filter(slug = slug)
-        if multimedia.exists():
-            multimedia = list(multimedia)[0]
-            image   = multimedia.images.all()
-            video   = multimedia.videos.all()
-            imgDict = [{'title' : img.title, 'alt' : img.alt, 'slug' : img.slug, 'src' : img.file.url} for img in image]
-            vidDict = [{'title' : vid.title, 'slug': vid.slug, 'src' : vid.file.url} for vid in video]
-            respDic = {
-                'image' : imgDict,
-                'video' : vidDict
-            }
-            return render(request, 'html/multimedia.html', context = respDic)
-        else:
+        if not multimedia.exists():
             return Http404
-
-class HomePage(View):
-    #this is to render the home page
-    def get(self, request):
-        #get top 5 most recent
-        multimedia  = model.Multimedia.objects.all()
-        tag         = model.MultimediaTags.objects.all()
+        else:
+            multimedia = list(multimedia)[0]
+        title       = str(multimedia.title)
+        tags        = list(multimedia.tag.all())
+        images      = list(multimedia.images.all())
+        videos      = list(multimedia.videos.all())
+        date_created= str(multimedia.date)
+        images      = [{
+            "title" : str(img.title),
+            "src"   : str(img.file.url),
+            "date"  : str(img.date),
+            "alt"   : str(img.alt)    
+        } for img in images]
+        videos      = [{
+            "title" : str(vid.title),
+            "src"   : str(vid.file.url),
+            "date"  : str(vid.date),
+        } for vid in videos]
+        tags        = [str(tag) for tag in tags]
         context     = {
-            "multimedia" : multimedia, 
-            "tagData"     : tag
+            "title" : title,
+            "tags"  : tags,
+            "images": images,
+            "videos": videos,
+            "date"  : date_created
         }
-        return render(request, 'html/home.html', context = context)
+        return render(request, 'html/multimedia.html', context = context)
+class HomePageView(View):
+    def get(self, request):
+        count       = 5
+        multimedia  = model.Multimedia.objects.all().order_by('date', 'title')
+        if not multimedia.exists():
+            return Http404
+        else:
+            multimedia = list(multimedia)
+        if count > len(multimedia):
+            count = len(multimedia)
+        multimedia  = multimedia[0:count]
+        mediaList   = []
+        for media in multimedia:
+            title   = str(media.title)
+            tags    = list(media.tag.all())
+            images  = list(media.images.all())
+            videos  = list(media.images.all())
+            date    = str(media.date)
+            images  = [{
+                "title" : str(img.title),
+                "src"   : str(img.file.url),
+                "date"  : str(img.date),
+                "alt"   : str(img.alt)
+            } for img in images]
+            videos  = [{
+                "title" : str(vid.title),
+                "src"   : str(vid.file.url),
+                "date"  : str(vid.date)
+            } for vid in videos]
+            tags    = [str(tag) for tag in tags]
+            mediaList.append({
+                "title" : title,
+                "tags"  : tags, 
+                "images": images, 
+                "vidoes": videos,
+                "date"  : date
+            })
+        context = {
+            "multimedia" : mediaList
+        }
+        return render(request, "html/multimedia_home.html", context = context)
     
 class TagFilter(View):
     #this is to render the tag filtering thing

@@ -1,0 +1,54 @@
+<!--This includes the base code for the html from core -->
+{% extends 'core/base/base.html' %}
+
+{% load static %}
+{% block main %}
+<div class = "home-title">
+  <h1><!-- Write the page title here--></h1>
+</div>
+<div class = "multimedia-search">
+  <!-- Include the search bar code here-->
+</div>
+<div class = "multimedia-container">
+  {% for media in multimedia %}
+    <div class = "multimedia">
+      <div class = "multimedia-title">
+          <!--The thing here represents string in jinja template, anything string can be enclosed 
+          within that -->
+          <h3>{{media.title}}</h3>
+      </div>
+      <div class = "multimedia-date">
+          <p>{{media.date}}</p>
+      </div>
+      <div class = "multimedia-tags">
+          <!-- this is a for loop and tag is like a variable-->
+          {% for tag in media.tags%}
+              <div class = "multimedia-tag">
+                  <p>{{tag}}</p>
+              </div>
+          {% endfor %}
+      </div>
+      <div class = "multimedia-videos">
+          {% for video in media.videos %}
+              <div class = "multimedia-video">
+                  <h4>{{video.title}}</h4>
+                  <video>
+                      <source src = "{{video.src}}">
+                  </video>
+                  <p>{{video.date}}</p>
+              </div>
+          {% endfor %}
+      </div>
+      <div class = "multimedia-images">
+          {% for image in media.images %}
+              <div class = "multimedia-image">
+                  <h4>{{image.title}}</h4>
+                  <img src = "{{image.src}}" alt = "{{image.date}}">
+                  <p>{{image.date}}</p>
+              </div>
+          {% endfor %}
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}
