@@ -2,6 +2,10 @@
 	width: 395px;
 }
 
+.grid {
+	margin: 0 auto; /* Centering the blog-posts */
+}
+
 h4.strike {
 	width: 90%; 
 	text-align: center; 

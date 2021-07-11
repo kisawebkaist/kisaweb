@@ -8,40 +8,14 @@
 {% block main %}
 
 <div class="d-flex flex-row h-auto margin">  
-  <div class="container-fluid mx-0">
+  <div class="container-fluid">
     <!-- Page Title -->
-    {% if post_slug == None%}
-      <div class="row">
-        <div class="col page-title-box text-center py-1">
-          {% if category != None %}
-            {{ category }}
-          {% else %}
-            Blog
-          {% endif %}
-        </div>
-      </div>
-    {% endif %}
     <div class="row">
-      <!-- Category nav-bar -->
-      <div class="col navbar navbar-expand-sm navbar-light bg-light">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#blog-categories" aria-controls="navbar-contents" aria-expanded="false" aria-label="Toggle navbar">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse ml-2" id="blog-categories">
-          <div class="navbar-nav mr-auto">
-            {{ blog_navbar | safe}}
-          </div>
-        </div>
+      <div class="col page-title-box text-center py-1"> 
+          Blog
       </div>
     </div>
-  {% block content %} {% endblock %}   
   </div>
 </div>
-{% endblock %}
-
-{% block js %}
-  {% compress js file events %}
-    <!-- Dropdown menu script file -->
-    <script src="{% static 'js/post_dropdown.js' %}"></script>
-  {% endcompress %}
+{% block content %} {% endblock %}   
 {% endblock %}
