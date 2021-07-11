@@ -18,7 +18,7 @@
     {% for post in posts %}
       <div class="grid-item card shadow m-3 mr-3 p-2 bg-light">
         <!-- Post Image Preview -->
-        <div class="pre-image-container">
+        <div class="pre-image-container text-center">
           {% if post.image %}
             {{ post.get_image_tag }} 
           {% else %}
@@ -27,24 +27,27 @@
           {% endif %} 
         </div>
         <div class="card-body">
-		  
-          <!-- Title -->
-          <h3 class="card-title text-center" ><a class="text-dark" href="{% url 'post_view' post_slug=post.slug%}">{{ post.title }}</a></h3>
-		  {% for tag in post.tags.all %}
-			<small class="text-info">#{{ tag }}</small>
-			{% endfor %}
           <div class="row mt-3">
 			
             <!-- Edit Button -->
-            <div class="col text-left">
+            <!-- <div class="col text-left">
               <div class="card-text">
                 <i class="fas fa-edit text-primary"></i>
                 <a href="#">Edit</a>
               </div>
-            </div>
+            </div> -->
             <!-- Date -->
             <div class="col text-right">
               <a class="text-muted">{{ post.created|date:"d M Y" }}</a>
+            </div>
+          </div>
+          <!-- Title -->
+          <h3 class="card-title text-center" ><a class="text-dark" href="{% url 'post_view' post_slug=post.slug%}">{{ post.title }}</a></h3>
+          <div class="d-flex justify-content-center my-3"> 
+            <div class="d-flex justify-content-center w-50 flex-wrap">
+              {% for tag in post.tags.all %}
+                <small class="text-info mx-1"><b>#</b>{{ tag }}</small>
+              {% endfor %}
             </div>
           </div>
         </div>
@@ -54,28 +57,28 @@
     {% endfor %}
   </div>
 </div>
-  <div class="pagination justify-content-around mt-3">
+  <div class="pagination justify-content-around my-4">
     <span class="step-links">
         {% if posts.has_previous %}
-          <a href="?page=1" class="btn btn-primary btn-sm">&laquo;</a>
-          <a href="?page={{ posts.previous_page_number }}" class="btn btn-primary btn-sm">&lt;</a>
+          <a href="?page=1" class="btn btn-secondary btn-sm">&laquo;</a>
+          <a href="?page={{ posts.previous_page_number }}" class="btn btn-secondary btn-sm">&lt;</a>
         {% else %}
-          <a href="#" class="btn btn-primary btn-sm disabled">&laquo;</a>
-          <a href="#" class="btn btn-primary btn-sm disabled">&lt;</a>
+          <a href="#" class="btn btn-secondary btn-sm disabled">&laquo;</a>
+          <a href="#" class="btn btn-secondary btn-sm disabled">&lt;</a>
         {% endif %}
         {% for id in page_ids %}
-            {% if id == cur_page%}
-              <a href="?page={{ id }}" class="btn btn-danger btn-sm">{{ id }}</a>
+            {% if id == cur_page %}
+              <a href="?page={{ id }}" class="btn btn-dark btn-sm">{{ id }}</a>
             {% else %}
-              <a href="?page={{ id }}" class="btn btn-primary btn-sm">{{ id }}</a>
+              <a href="?page={{ id }}" class="btn btn-secondary btn-sm">{{ id }}</a>
             {% endif %}
         {% endfor %}
         {% if posts.has_next %}
-            <a href="?page={{ posts.next_page_number }}" class="btn btn-primary btn-sm">&gt;</a>
-            <a href="?page={{ posts.paginator.num_pages }}" class="btn btn-primary btn-sm">&raquo;</a>
+            <a href="?page={{ posts.next_page_number }}" class="btn btn-secondary btn-sm">&gt;</a>
+            <a href="?page={{ posts.paginator.num_pages }}" class="btn btn-secondary btn-sm">&raquo;</a>
         {% else %}
-            <a href="#" class="btn btn-primary btn-sm disabled">&gt;</a>
-            <a href="#" class="btn btn-primary btn-sm disabled">&raquo;</a>
+            <a href="#" class="btn btn-secondary btn-sm disabled">&gt;</a>
+            <a href="#" class="btn btn-secondary btn-sm disabled">&raquo;</a>
         {% endif %}
     </span>
   </div>

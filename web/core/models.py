@@ -4,14 +4,15 @@ from django.utils import timezone
 from django.utils.text import slugify
 from phone_field import PhoneField
 from tinymce.models import HTMLField
+from django.core.validators import RegexValidator
+
+# Validators
+tag_validator = RegexValidator(r'[^\w\-]', inverse_match=True, message='Spaces and punctuation (except "-" and "_") are not allowed.')
 
 # Abstract Classes
-
-
 class Tag(models.Model):
 
-    tag_name = models.CharField(max_length=50, blank=False, unique=True)
-
+    tag_name = models.CharField(max_length=50, blank=False, unique=True, validators=[tag_validator])
     def __str__(self):
         return self.tag_name
 
