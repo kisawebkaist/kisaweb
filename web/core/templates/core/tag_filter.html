@@ -7,7 +7,7 @@
           <div class="col-sm-9">
             <div class = "container button-container" id="tag-field">
                 {% for tag in tagObjects %}
-                <button class = "tag btn btn-outline-primary btn-sm rounded-pill mt-1" value="{{ tag.tag_name }}">
+                <button class = "tag btn btn-outline-dark btn-sm rounded-pill mt-1" value="{{ tag.tag_name }}">
                     {{ tag.tag_name }}
                 </button>
                 {% endfor %}
@@ -19,11 +19,11 @@
 
           <div class="col-sm">
             <!-- this is to reset the button list -->
-            <button class = "btn btn-danger" id="tag-reset">
+            <button class = "btn btn-secondary" id="tag-reset">
                 Reset
             </button>
             <!-- this is to press search, will make a GET reuest to the backend with selected tags as parameters-->
-            <button class = "btn btn-info" id="tag-search">
+            <button class = "btn btn-primary" id="tag-search">
                 Search
             </button>
           </div>
