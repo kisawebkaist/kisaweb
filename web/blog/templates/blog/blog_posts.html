@@ -60,22 +60,22 @@
   <div class="pagination justify-content-around my-4">
     <span class="step-links">
         {% if posts.has_previous %}
-          <a href="?page=1" class="btn btn-secondary btn-sm">&laquo;</a>
-          <a href="?page={{ posts.previous_page_number }}" class="btn btn-secondary btn-sm">&lt;</a>
+          <a href="?page=1{{ query_suffix_for_paginator }}" class="btn btn-secondary btn-sm">&laquo;</a>
+          <a href="?page={{ posts.previous_page_number }}{{ query_suffix_for_paginator }}" class="btn btn-secondary btn-sm">&lt;</a>
         {% else %}
           <a href="#" class="btn btn-secondary btn-sm disabled">&laquo;</a>
           <a href="#" class="btn btn-secondary btn-sm disabled">&lt;</a>
         {% endif %}
         {% for id in page_ids %}
             {% if id == cur_page %}
-              <a href="?page={{ id }}" class="btn btn-dark btn-sm">{{ id }}</a>
+              <a href="?page={{ id }}{{ query_suffix_for_paginator }}" class="btn btn-dark btn-sm">{{ id }}</a>
             {% else %}
-              <a href="?page={{ id }}" class="btn btn-secondary btn-sm">{{ id }}</a>
+              <a href="?page={{ id }}{{ query_suffix_for_paginator }}" class="btn btn-secondary btn-sm">{{ id }}</a>
             {% endif %}
         {% endfor %}
         {% if posts.has_next %}
-            <a href="?page={{ posts.next_page_number }}" class="btn btn-secondary btn-sm">&gt;</a>
-            <a href="?page={{ posts.paginator.num_pages }}" class="btn btn-secondary btn-sm">&raquo;</a>
+            <a href="?page={{ posts.next_page_number }}{{ query_suffix_for_paginator }}" class="btn btn-secondary btn-sm">&gt;</a>
+            <a href="?page={{ posts.paginator.num_pages }}{{ query_suffix_for_paginator }}" class="btn btn-secondary btn-sm">&raquo;</a>
         {% else %}
             <a href="#" class="btn btn-secondary btn-sm disabled">&gt;</a>
             <a href="#" class="btn btn-secondary btn-sm disabled">&raquo;</a>

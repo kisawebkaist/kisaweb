@@ -49,11 +49,19 @@ def blog_view(request):
       sub += sub
   page_ids = page_ids_l[::-1] + [page_number] + page_ids_r
 
+  get_request_params_without_page_info = request.GET.copy()
+  get_request_params_without_page_info.pop('page')
+  get_request_url_without_page_info = get_request_params_without_page_info.urlencode()
+  if get_request_url_without_page_info == '':
+    query_suffix_for_paginator = ''
+  else:
+    query_suffix_for_paginator = f'&{get_request_url_without_page_info}'
   context = {
     'tagObjects': PostTag.objects.order_by('tag_name').all(),
     'posts': page_obj,
     'num_results': len(posts),
     'page_ids': page_ids,
-    'cur_page': page_number
+    'cur_page': page_number,
+    'query_suffix_for_paginator': query_suffix_for_paginator,
   }
   return render(request, 'blog/blog_posts.html', context)
