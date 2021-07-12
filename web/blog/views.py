@@ -50,7 +50,8 @@ def blog_view(request):
   page_ids = page_ids_l[::-1] + [page_number] + page_ids_r
 
   get_request_params_without_page_info = request.GET.copy()
-  get_request_params_without_page_info.pop('page')
+  if get_request_params_without_page_info.__contains__('page'):
+    get_request_params_without_page_info.pop('page')
   get_request_url_without_page_info = get_request_params_without_page_info.urlencode()
   if get_request_url_without_page_info == '':
     query_suffix_for_paginator = ''
