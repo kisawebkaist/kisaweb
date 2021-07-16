@@ -53,11 +53,11 @@
         </div>
       </div>
 	  {% empty %}
-		  <h3>No results</h3>
+		  <h3 class="text-muted text-center mb-5">No results. Try reducing some tags.</h3>
     {% endfor %}
   </div>
 </div>
-  <div class="pagination justify-content-around my-4">
+  <div class="pagination justify-content-around my-5">
     <span class="step-links">
         {% if posts.has_previous %}
           <a href="?page=1{{ query_suffix_for_paginator }}" class="btn btn-secondary btn-sm">&laquo;</a>
