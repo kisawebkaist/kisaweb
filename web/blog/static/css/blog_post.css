@@ -1,0 +1,21 @@
+#blog-post {
+    width: 75%;
+}
+
+#blog-content {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    padding-top: 2rem;
+}
+
+@media only screen and (max-width: 450px) {
+    #blog-post {
+        width: 100%;
+    }
+
+    #blog-content {
+        padding-left: 0px;
+        padding-right: 0px;
+        padding-top: 0.5rem;
+    }
+}

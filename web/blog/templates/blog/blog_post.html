@@ -3,9 +3,13 @@
 {% load static %}
 {% load compress %}
 
+{% block css %}
+<link href="{% static 'css/blog_post.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
 {% block content %}
   <div class="d-flex justify-content-center align-items-center flex-wrap my-3">
-    <div class="card w-75">
+    <div class="card" id="blog-post">
       <div class="caption">
         <!-- Post Image -->
         {% if image %}
@@ -41,7 +45,7 @@
             </div>
           </div>
         </div> 
-        <div class="card-body">
+        <div id="blog-content">
           <!-- Post Content -->
           <div>{{ content|safe }}</div>
         </div> 
