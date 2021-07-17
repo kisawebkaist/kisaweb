@@ -1,34 +1,25 @@
-<div class="m-3 rounded border mx-auto w-75 p-3">
-        <div class="row">
-          <div class="col-sm-2">
-            <h4 class="text-muted m-2">Filter by Tags</h4>
-          </div>
-
-          <div class="col-sm-2">
-              <div class="m-2">
-                <!-- this is to reset the button list -->
-                <button class = "btn btn-secondary" id="tag-reset">
-                    Reset
-                </button>
-                <!-- this is to press search, will make a GET reuest to the backend with selected tags as parameters-->
-                <button class = "btn btn-primary" id="tag-search">
-                    Search
-                </button>
-              </div>
-          </div>
-
-          <div class="col-sm-8">
-            <div class = "container tag-container" id="tag-field">
-                {% for tag in tagObjects %}
-                <button class = "tag btn btn-outline-dark btn-sm rounded-pill mt-1" value="{{ tag.tag_name }}">
-                    {{ tag.tag_name }}
-                </button>
-                {% endfor %}
-            </div>
-          </div>
-
-        </div>
-  </div>
+<div class="rounded border mx-auto w-75">
+    <div class="m-3">
+        <h5 class="text-muted">Filter by Tags</h5>
+    </div>
+    <div class="m-3 d-flex flex-wrap tag-container" id="tag-field">
+        {% for tag in tagObjects %}
+            <button class = "tag btn btn-outline-dark btn-sm rounded-pill m-1" value="{{ tag.tag_name }}">
+                {{ tag.tag_name }}
+            </button>
+        {% endfor %}
+    </div>
+    <div class="d-flex justify-content-end m-2">
+        <!-- this is to press search, will make a GET reuest to the backend with selected tags as parameters-->
+        <button class="btn btn-dark btn-sm mx-1" id="tag-search">
+            Search
+        </button>
+        <!-- this is to reset the button list -->
+        <button class="btn btn-secondary btn-sm mx-1" id="tag-reset">
+            Clear
+        </button>
+    </div>          
+</div>
 
       <!-- <div class = "m-3 p-4 d-flex flex-column justify-content-start flex-wrap align-items-start button-list rounded border"> -->
         <!-- <h4 class="text-muted mb-3">Filter by Tags</h4> -->
