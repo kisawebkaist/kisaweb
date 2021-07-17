@@ -3,8 +3,6 @@
 {% load static %}
 {% load compress %}
 
-{% block title %} Blog {% endblock %}
-
 {% block content %}
   <div class="d-flex justify-content-center align-items-center flex-wrap my-3">
     <div class="card w-75">
@@ -37,7 +35,7 @@
             <div class="d-flex justify-content-center my-3"> 
               <div class="d-flex justify-content-center w-50 flex-wrap">
                 {% for tag in tags.all %}
-                  <small class="text-secondary mx-1"><b>#</b>{{ tag }}</small>
+                  <a href="../?tags={{ tag }}"><small class="text-secondary mx-1"><b>#</b>{{ tag }}</small></a>
                 {% endfor %}
               </div>
             </div>

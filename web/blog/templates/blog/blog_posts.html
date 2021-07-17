@@ -3,8 +3,6 @@
 {% load static %}
 {% load compress %}
 
-{% block title %} Blog {% endblock %}
-
 {% block css %}
 <link href="{% static 'css/blog_posts.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
@@ -46,7 +44,7 @@
           <div class="d-flex justify-content-center my-3"> 
             <div class="d-flex justify-content-center w-50 flex-wrap">
               {% for tag in post.tags.all %}
-                <small class="text-secondary mx-1"><b>#</b>{{ tag }}</small>
+                <a href="?tags={{ tag }}"><small class="text-secondary mx-1"><b>#</b>{{ tag }}</small></a>
               {% endfor %}
             </div>
           </div>
