@@ -1,7 +1,9 @@
-<div class="rounded border mx-auto w-75">
-    <div class="m-3">
-        <h5 class="text-muted">Filter by Tags</h5>
-    </div>
+<div class="ml-5">
+    <button type="button" id="tag-filter-button" class="btn btn-dark btn-lg mb-1">Filter by Tags </button>
+    <div id="active-tags" class=""></div>
+</div>
+
+<div class="rounded border ml-5 w-75" id="tag-filter-area" style="display: none">
     <div class="m-3 d-flex flex-wrap tag-container" id="tag-field">
         {% for tag in tagObjects %}
             <button class = "tag btn btn-outline-dark btn-sm rounded-pill m-1" value="{{ tag.tag_name }}">
