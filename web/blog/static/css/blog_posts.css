@@ -20,6 +20,11 @@ h4.strike {
 	 padding:0 10px; 
  }
 
+ #tag-filter {
+	 margin-left: 5%;
+	 margin-right: 5%;
+ }
+
 @media only screen and (max-width: 415px) {
 	.grid-item {
 	  width: 92%;

@@ -8,13 +8,14 @@
 {% endblock %}
 
 {% block content %}
-{% include 'core/tag_filter.html' %}
-
-<h4 class="text-muted mt-3 mb-4 strike"><span>Posts: {{ num_results }}</span></h4>
+<div id="tag-filter">
+  {% include 'core/tag_filter.html' %}
+</div>
+<h4 class="text-muted my-4 strike"><span>Posts: {{ num_results }}</span></h4>
 <div class="masonry-container">
   <div class="grid">
     {% for post in posts %}
-      <div class="grid-item card shadow m-3 mr-3 p-2 bg-light">
+      <div class="grid-item card shadow m-3 p-2 bg-light">
         <!-- Post Image Preview -->
         <div class="pre-image-container text-center">
           {% if post.image %}
@@ -26,15 +27,7 @@
         </div>
         <div class="card-body">
           <div class="row mt-3">
-			
-            <!-- Edit Button -->
-            <!-- <div class="col text-left">
-              <div class="card-text">
-                <i class="fas fa-edit text-primary"></i>
-                <a href="#">Edit</a>
-              </div>
-            </div> -->
-            <!-- Date -->
+			     <!-- Date -->
             <div class="col text-right">
               <a class="text-muted">{{ post.created|date:"d M Y" }}</a>
             </div>
@@ -55,6 +48,7 @@
     {% endfor %}
   </div>
 </div>
+{% if posts %}
   <div class="pagination justify-content-around my-5">
     <span class="step-links">
         {% if posts.has_previous %}
@@ -80,6 +74,7 @@
         {% endif %}
     </span>
   </div>
+{% endif %}
 </div>
 
 {% endblock %}

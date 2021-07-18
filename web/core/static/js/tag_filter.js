@@ -49,7 +49,7 @@ $(document).ready(() => {
         for (let i = 0; i < selectedTags.length; i++) {
             $(`.tag[value="${selectedTags[i]}"]`).addClass("active");
             $('#active-tags').append(`
-            <button class = "tag btn btn-outline-dark rounded-pill border-0 my-1 disabled">#${selectedTags[i]}</button>
+                <button class = "tag btn btn-outline-dark btn-sm rounded-pill border-0 my-1" disabled><b>#</b>${selectedTags[i]}</button>
             `);
         }
     }
