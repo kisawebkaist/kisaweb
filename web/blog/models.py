@@ -8,59 +8,6 @@ from django.utils.html import mark_safe
 from PIL import Image
 from core.models import Content, Tag
 
-#alphanumeric = RegexValidator(r'^[0-9a-zA-Z]*$', 'Only alphanumeric characters are allowed.')
-
-# Create your models here.
-
-# class PostCategory(models.Model):
-#   '''
-#     Attrs:
-#       Name -> name of the category
-#       Slug -> slug (Check: https://docs.djangoproject.com/en/3.1/glossary/)
-#       Parent Category -> It keeps the parent category information
-#   ''' 
-#   name = models.CharField(max_length=100, unique=True, blank=False, validators=[alphanumeric])
-#   slug = models.SlugField(max_length=100, null=True, unique=True, editable=False)
-#   parent_category = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
-
-#   def __str__(self):
-#     if self.parent_category != None:
-#       return str(self.parent_category) + ' / ' + self.name
-#     return self.name
-
-#   def get_absolute_url(self):
-#     return reverse('category', kwargs={'category_slug': self.slug})
-
-#   def save(self, *args, **kwargs):
-
-#     # Before saving, it needs to have a unique slug
-#     self.slug = self.get_unique_slug()
-
-#     return super(PostCategory, self).save(*args, **kwargs)
-
-#   def get_unique_slug(self):
-#     slug = slugify(self.name)
-
-#     # If it has a parent category, '-_sub_-' is added between their slung values
-#     if self.parent_category != None:
-#       slug = self.parent_category.slug + '-_sub_-' + slug
-    
-#     # Find a unique slung
-
-#     unique_slug = slug
-#     counter = 1
-
-#     while True:
-#       filter_set = PostCategory.objects.filter(slug=unique_slug)
-#       if not filter_set.exists():
-#         break
-#       if len(filter_set.all()) == 1 and filter_set.first() == self:
-#         break        
-#       unique_slug = f'{slug}-{counter}'
-#       counter += 1
-
-#     return unique_slug
-
 class PostTag(Tag):
   pass
 
