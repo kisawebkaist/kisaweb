@@ -25,6 +25,8 @@ $('button#tag-search').click(function() {
 
 // Toggle visiblity of tag selection area and active tags when Filter button is pressed
 $('#tag-filter-button').click(function() {
+    $(this).toggleClass('btn-outline-dark');
+    $(this).toggleClass('btn-dark');
     $('#tag-filter-area').toggle('fast');
     $('#active-tags').toggle( 'fast');
 });
