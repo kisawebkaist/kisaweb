@@ -1,3 +1,4 @@
+from django.http.response import HttpResponseNotFound
 from django.shortcuts import render, redirect
 from django.views import View
 from django.http import HttpResponse, JsonResponse, Http404
@@ -10,7 +11,7 @@ class Video(View):
             videoFile   = video.file.url
             return redirect(videoFile)
         else:
-            return Http404
+            return HttpResponseNotFound
     
 class Image(View):
     def get(self, request, slug):
@@ -20,13 +21,13 @@ class Image(View):
             imageFile   = image.file.url
             return redirect(imageFile)
         else:
-            return Http404
+            return HttpResponseNotFound
 
 class MultimediaView(View):
     def get(self, request, slug):
         multimedia  = model.Multimedia.objects.filter(slug = slug)
         if not multimedia.exists():
-            return Http404
+            return HttpResponseNotFound
         else:
             multimedia = list(multimedia)[0]
         title       = str(multimedia.title)
@@ -59,7 +60,7 @@ class HomePageView(View):
         count       = 5
         multimedia  = model.Multimedia.objects.all().order_by('date', 'title')
         if not multimedia.exists():
-            return Http404
+            return render(request, "html/multimedia_home.html")
         else:
             multimedia = list(multimedia)
         if count > len(multimedia):
@@ -101,7 +102,7 @@ class TagFilter(View):
     def get(self, request, slug):
         #searching
         tag_data    = slug.get('tags', '').split(',')
-        render_data = Multimedia.objects.filter(tag__tag_name___in = tag_data).distinct()
+        render_data = model.Multimedia.objects.filter(tag__tag_name___in = tag_data).distinct()
         context = {
             'tagObjects' : model.MultimediaTags.objects.all(),
             'render'     : render_data
