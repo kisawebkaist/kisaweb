@@ -26,17 +26,22 @@
         FAQ
       </div>
     </div>
-  <ul class="faq-list">
-    {% for faq in faq_list %}
+  <ul class="cat-list">
+    {% for cat in faq_list %}
       <li>
-      <h4 class="faq-heading"> {{ faq.text }} </h4>
-                            <p class="read faq-text">
-                                {{ faq.faq_answer }}:
-                            </p>
-                            <p class="read faq-text">
-                                {{ faq.category }}:
-                            </p>
-      </li>
+      <h4 class="cat-heading"> {{ faq.text }} </h4>
+      <ul class="faq-list">
+        {% for faq in faq_list %}
+            <li>
+            <h4 class="faq-heading"> {{ faq.text }} </h4>
+                                  <p class="read faq-text">
+                                      {{ faq.faq_answer }}:
+                                  </p>
+            </li>
+
+        {% endfor %}
+      </ul>
+      </li>>
     {% endfor %}
   </ul>
     <script type="text/javascript" src="./faq.js"></script>

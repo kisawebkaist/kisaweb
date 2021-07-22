@@ -10,3 +10,8 @@ def faq(request):
     }
     return render(request, 'faq/faq.html', context)
 
+def cat(request):
+    context = {
+        'cat_list': Category.objects.filter()
+    }
+    return render(request, 'faq/faq.html', context)

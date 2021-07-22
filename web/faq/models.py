@@ -49,7 +49,7 @@ class Category(models.Model):
        return reverse('home')
 '''
 class Category(models.Model):
-   title_category = models.CharField( max_length= 200 , blank=True, choices = CATEGORY )
+   tittle_category = models.CharField( max_length= 200 , blank=True, choices = CATEGORY )
 
 class Question(models.Model):
     text = models.TextField()
@@ -62,7 +62,7 @@ class Question(models.Model):
         default='nothing'
     )
     '''
-    category = models.ForeignKey('Category', blank=True, null=True, on_delete=models.CASCADE, choices=CATEGORY)
+    category = "Academics"#models.ForeignKey('Category', blank=True, null=True, on_delete=models.CASCADE, choices=CATEGORY)
     faq_answer = models.TextField(null=True, blank=True)
 
 
