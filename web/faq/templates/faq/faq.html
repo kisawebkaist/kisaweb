@@ -1,7 +1,14 @@
 {% extends 'core/base/base.html' %}
 
+
+
+
 {% load static %}
 {% load compress %}
+
+<head>
+  <link rel="stylesheet" type="text/x-scss" href="{% static 'scss/faq_main.scss' %}">
+</head>
 
 {% block title %} FAQ {% endblock %}
 
@@ -19,12 +26,21 @@
         FAQ
       </div>
     </div>
+  <ul class="faq-list">
     {% for faq in faq_list %}
-      <div>
-        <p style="font-weight: bold;"> {{ faq.text }}: </p>
-        <p> {{ faq.faq_answer }}: </p>
-      </div>
+      <li>
+      <h4 class="faq-heading"> {{ faq.text }} </h4>
+                            <p class="read faq-text">
+                                {{ faq.faq_answer }}:
+                            </p>
+                            <p class="read faq-text">
+                                {{ faq.category }}:
+                            </p>
+      </li>
     {% endfor %}
+  </ul>
+    <script type="text/javascript" src="./faq.js"></script>
+
   </div>
 </div>
 {% endblock %}
