@@ -19,6 +19,15 @@
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
   }
+#tag-list {
+    width: 50%;
+}
+
+@media only screen and (max-width: 525px) {
+    #tag-list {
+        width: 60%;
+    }
+}
 
 @media only screen and (max-width: 450px) {
     #blog-post {
@@ -29,5 +38,11 @@
         padding-left: 0px;
         padding-right: 0px;
         padding-top: 0.5rem;
+    }
+}
+
+@media only screen and (max-width: 425px) {
+    #tag-list {
+        width: 75%;
     }
 }

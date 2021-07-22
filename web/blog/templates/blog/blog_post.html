@@ -37,7 +37,7 @@
           <div class="w-75">
             <h1 class="text-center">{{title}}</h1>
             <div class="d-flex justify-content-center my-3"> 
-              <div class="d-flex justify-content-center w-50 flex-wrap">
+              <div class="d-flex justify-content-center flex-wrap" id="tag-list">
                 {% for tag in tags.all %}
                   <a href="../?tags={{ tag }}"><small class="text-secondary mx-1"><b>#</b>{{ tag }}</small></a>
                 {% endfor %}
