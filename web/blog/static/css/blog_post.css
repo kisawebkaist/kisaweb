@@ -6,7 +6,19 @@
     padding-left: 0.5rem;
     padding-right: 0.5rem;
     padding-top: 2rem;
+    overflow-x: scroll;
 }
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+#blog-content::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+#blog-content {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
 
 @media only screen and (max-width: 450px) {
     #blog-post {
