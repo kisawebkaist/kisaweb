@@ -9,16 +9,7 @@
     overflow-x: scroll;
 }
 
-/* Hide scrollbar for Chrome, Safari and Opera */
-#blog-content::-webkit-scrollbar {
-  display: none;
-}
 
-/* Hide scrollbar for IE, Edge and Firefox */
-#blog-content {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-  }
 #tag-list {
     width: 50%;
 }
