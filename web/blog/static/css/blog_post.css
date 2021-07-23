@@ -6,9 +6,8 @@
     padding-left: 0.5rem;
     padding-right: 0.5rem;
     padding-top: 2rem;
-    overflow-x: scroll;
+    overflow-x: auto;
 }
-
 
 #tag-list {
     width: 50%;
