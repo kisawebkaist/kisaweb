@@ -9,6 +9,11 @@
     overflow-x: auto;
 }
 
+#blog-content img {
+    width: 100%;
+    height: auto;
+}
+
 #tag-list {
     width: 50%;
 }
