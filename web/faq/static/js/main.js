@@ -5,5 +5,5 @@ $('.faq-heading').click(function () {
 });
 $('.cat-heading').click(function () {
 
-    $(this).parent('li').toggleClass('the-active').find('.faq-text').slideToggle();
+    $(this).parent('li').toggleClass('the-active').find('.cat-text').slideToggle();
 });
