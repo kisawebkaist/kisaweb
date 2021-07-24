@@ -1,8 +1,6 @@
 {% extends 'core/base/base.html' %}
 
 
-
-
 {% load static %}
 {% load compress %}
 
@@ -26,16 +24,24 @@
         FAQ
       </div>
     </div>
-  <ul class="faq-list">
-    {% for faq in faq_list %}
+  <ul class="cat-list">
+    {% for cat in faq_list %}
       <li>
-      <h4 class="faq-heading"> {{ faq.text }} </h4>
-                            <p class="read faq-text">
-                                {{ faq.faq_answer }}:
-                            </p>
-                            <p class="read faq-text">
-                                {{ faq.category }}:
-                            </p>
+      <h4 class="cat-heading"> {{ cat.category }} </h4>
+        <div class="read cat-text">
+      <ul class="faq-list">
+        {% for faq in faq_list %}
+          {% if faq.category == cat.category %}
+            <li>
+            <h4 class="faq-heading"> {{ faq.text }} </h4>
+                                  <p class="read faq-text">
+                                      {{ faq.faq_answer }}:
+                                  </p>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+        </div>
       </li>
     {% endfor %}
   </ul>
