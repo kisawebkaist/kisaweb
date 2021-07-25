@@ -20,7 +20,7 @@ CATEGORY = (
 )
 '''
 class Category(models.Model):
-   tittle_category = models.CharField( max_length= 200, blank=True)
+   tittle_category = models.CharField(max_length= 200, blank=True)
 
 class Question(models.Model):
     text = models.TextField()
