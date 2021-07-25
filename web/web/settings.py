@@ -72,7 +72,6 @@ INSTALLED_APPS = [
     'events',
     'election',
     'sso',  # contains the User model
-    'faq'
 ]
 
 MIDDLEWARE = [
