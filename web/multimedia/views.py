@@ -54,13 +54,13 @@ class MultimediaView(View):
             "videos": videos,
             "date"  : date_created
         }
-        return render(request, 'html/multimedia.html', context = context)
+        return render(request, 'multimedia/multimedia.html', context = context)
 class HomePageView(View):
     def get(self, request):
         count       = 5
         multimedia  = model.Multimedia.objects.all().order_by('date', 'title')
         if not multimedia.exists():
-            return render(request, "html/multimedia_home.html")
+            return render(request, "multimedia/multimedia_home.html")
         else:
             multimedia = list(multimedia)
         if count > len(multimedia):
@@ -70,32 +70,19 @@ class HomePageView(View):
         for media in multimedia:
             title   = str(media.title)
             tags    = list(media.tag.all())
-            images  = list(media.images.all())
-            videos  = list(media.images.all())
             date    = str(media.date)
-            images  = [{
-                "title" : str(img.title),
-                "src"   : str(img.file.url),
-                "date"  : str(img.date),
-                "alt"   : str(img.alt)
-            } for img in images]
-            videos  = [{
-                "title" : str(vid.title),
-                "src"   : str(vid.file.url),
-                "date"  : str(vid.date)
-            } for vid in videos]
+            preview = str(media.previews.file.url)
             tags    = [str(tag) for tag in tags]
             mediaList.append({
-                "title" : title,
-                "tags"  : tags, 
-                "images": images, 
-                "vidoes": videos,
-                "date"  : date
+                "title"     : title,
+                "tags"      : tags, 
+                "preview"   : preview, 
+                "date"      : date
             })
         context = {
             "multimedia" : mediaList
         }
-        return render(request, "html/multimedia_home.html", context = context)
+        return render(request, "multimedia/multimedia_home.html", context = context)
     
 class TagFilter(View):
     #this is to render the tag filtering thing
@@ -107,7 +94,7 @@ class TagFilter(View):
             'tagObjects' : model.MultimediaTags.objects.all(),
             'render'     : render_data
         }
-        return render(request, 'html/search.html', context = context)
+        return render(request, 'multimedia/search.html', context = context)
 
 #02-02-2002_videoTitle.mp4
 #videoTitle -> 02-02-2002_videoTitle.mp4

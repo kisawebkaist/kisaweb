@@ -10,7 +10,7 @@ class Video(models.Model):
         ADDITIONAL FEATURES :
     """
     title   = models.CharField(max_length = 100)
-    slug    = models.SlugField()
+    slug    = models.SlugField(unique   = True)
     file    = models.FileField(upload_to = 'videos')
     date    = models.DateField()
 
@@ -23,8 +23,8 @@ class Image(models.Model):
         ADDITIONAL FEATURES : 
     """
     title   = models.CharField(max_length = 100)
-    alt     = models.TextField()
-    slug    = models.SlugField()
+    alt     = models.CharField(max_length = 100)
+    slug    = models.SlugField(unique = True)
     file    = models.ImageField(upload_to = 'images')
     date    = models.DateField()
 
@@ -37,11 +37,12 @@ class Multimedia(models.Model):
         ANY OTHER MODEL CAN USE THIS MODEL TO ACCESS PICTURES STORED IN THE DATABASE.
     """
     title   = models.CharField(max_length = 100)
-    slug    = models.SlugField()
-    tag     = models.ManyToManyField(MultimediaTags)
-    images  = models.ManyToManyField(Image)
-    videos  = models.ManyToManyField(Video)
+    slug    = models.SlugField(unique = True)
+    tag     = models.ManyToManyField(MultimediaTags, blank = True)
+    images  = models.ManyToManyField(Image, blank = True)
+    videos  = models.ManyToManyField(Video, blank = True)
     date    = models.DateField()
+    previews= models.ForeignKey(Image, related_name = "cover_media" ,on_delete = models.CASCADE, blank = True, null = True)
 
     def __str__(self):
         return self.title
