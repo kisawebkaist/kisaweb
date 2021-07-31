@@ -1,0 +1,43 @@
+#blog-post {
+    width: 75%;
+}
+
+#blog-content {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    padding-top: 2rem;
+    overflow-x: auto;
+}
+
+#blog-content img {
+    max-width: 100%;
+    height: auto;
+}
+
+#tag-list {
+    width: 50%;
+}
+
+@media only screen and (max-width: 525px) {
+    #tag-list {
+        width: 60%;
+    }
+}
+
+@media only screen and (max-width: 450px) {
+    #blog-post {
+        width: 100%;
+    }
+
+    #blog-content {
+        padding-left: 0px;
+        padding-right: 0px;
+        padding-top: 0.5rem;
+    }
+}
+
+@media only screen and (max-width: 425px) {
+    #tag-list {
+        width: 75%;
+    }
+}
