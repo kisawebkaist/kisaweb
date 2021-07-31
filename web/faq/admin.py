@@ -1,12 +1,13 @@
 from django.contrib import admin
-from django.utils.html import mark_safe
-from django import forms
 
-from .models import Question
-# from .forms import EventForm
+from .models import FAQ
 from .models import Category
 
 # Register your models here.
 
-admin.site.register(Question)
+
+class FAQAdmin(admin.ModelAdmin): 
+    list_display = ['short_question']
+
+admin.site.register(FAQ, FAQAdmin)
 admin.site.register(Category)

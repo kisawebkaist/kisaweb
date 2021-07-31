@@ -25,27 +25,24 @@
       </div>
     </div>
   <ul class="cat-list">
-    {% for cat in faq_list %}
+    {% for cat_and_faqs in faqs_of_cat %}
       <li>
-      <h4 class="cat-heading"> {{ cat.category }} <span class="circle"></span> </h4>
+      <h4 class="cat-heading"> {{ cat_and_faqs.category }} <span class="circle"></span> </h4>
         <div class="read cat-text">
       <ul class="faq-list">
-        {% for faq in faq_list %}
-          {% if faq.category == cat.category %}
+        {% for faq in cat_and_faqs.faqs %}
             <li>
-            <h4 class="faq-heading"> {{ faq.text }} </h4>
+            <h4 class="faq-heading"> {{ faq.question }} </h4>
                                   <p class="read faq-text">
-                                      {{ faq.faq_answer }}:
+                                      {{ faq.answer }}:
                                   </p>
             </li>
-          {% endif %}
         {% endfor %}
       </ul>
         </div>
       </li>
     {% endfor %}
   </ul>
-    <script type="text/javascript" src="./faq.js"></script>
 
   </div>
 </div>
