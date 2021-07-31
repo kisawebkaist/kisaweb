@@ -83,8 +83,9 @@
 <!-- Masonry JS CDN -->
 <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
 {% compress js file blog %}
+<!-- Tag Filtering -->
 <script src="{% static 'js/tag_filter.js' %}"></script>
 <!-- Initializer for Masonry JS -->
-<script src="{% static 'js/masonry.js' %}"></script>
+<script src="{% static 'js/masonryInit.js' %}"></script>
 {% endcompress %}
 {% endblock %}

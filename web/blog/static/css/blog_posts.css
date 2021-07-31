@@ -27,7 +27,7 @@ h4.strike {
 
 @media only screen and (max-width: 415px) {
 	.grid-item {
-	  width: 92%;
+		width: 92%;
 	}
 	.pre-image-container {
 		width: 100%;
@@ -35,4 +35,24 @@ h4.strike {
 	.pre-image {
 		width: inherit;
 	}
-  }
+}
+
+
+@media only screen and (max-width: 375px) {
+	.grid-item {
+		width: 91%;
+	}
+}
+
+@media only screen and (max-width: 325px) {
+	.grid-item {
+		width: 90%;
+	}
+}
+
+
+@media only screen and (max-width: 300px) {
+	.grid-item {
+	  width: 89%;
+	}
+}
