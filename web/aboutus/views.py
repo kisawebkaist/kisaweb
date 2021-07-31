@@ -1,8 +1,8 @@
 from django.shortcuts import render, HttpResponse, redirect
 
-from .models import Text, Title
+from .models import Main, Members, Division
 
 def aboutus(request):
-    title = Title
+    title = Main.title
     context = {'Title: ': title}
     return render(request, 'aboutus/aboutus.html', context)
