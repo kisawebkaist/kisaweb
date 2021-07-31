@@ -26,7 +26,6 @@ def blog_view(request):
   if searched_tags != ['']:
     posts = Post.objects.filter(tags__tag_name__in=searched_tags).annotate(num_tags=Count('tags')).filter(num_tags=len(searched_tags)).order_by('-created')
 
-  # Pagination from previous implementation
   paginator = Paginator(posts, RESULTS_PER_PAGE)
   page_number = request.GET.get('page')
 
