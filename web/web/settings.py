@@ -127,7 +127,7 @@ WSGI_APPLICATION = 'web.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'db.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     },
 }
 
@@ -221,7 +221,7 @@ LOGOUT_REDIRECT_URL = 'homepage'
 LOGIN_DEV = DEV_SETTINGS
 LOGIN_PROD = PROD_SETTINGS
 
-KISA_AUTH_METHOD = LOGIN_DEV
+KISA_AUTH_METHOD = CURRENT_SETTINGS
 ## --------- ##
 
 

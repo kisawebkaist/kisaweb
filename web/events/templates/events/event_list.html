@@ -76,28 +76,8 @@
             {% endif %}
             <!-- Description -->
             <div class="event-description mt-2">
-              {{ event.description|truncatewords_html:event.descr_truncate_num|safe }}
+              {{ event.description|safe }}
             </div>
-            <!-- 'striptags' is used before 'wordcount' to not include HTML tags in wordcount -->
-            <!-- Read More -->
-            <div class="mt-n3 read-more" style="display: {% if event.description|striptags|wordcount > event.descr_truncate_num %}block{% else %}none{% endif %};">
-              <button type="button" class="btn btn-link pl-0 readmore">Read More &rarr;</button>
-            </div>
-            <div class="mt-n3 read-less" style="display: none">
-              <button type="button" class="btn btn-link pl-0 readless">&larr; Read Less</button>
-            </div>
-            {% if perms.events %}
-            <div class="mb-3 descr_truncate_num">
-              <!-- 'get_min_descr_truncate_num' and 'edit_truncate_num_display' are custom template tags -->
-              <input type="number" name="truncate_num" value="{{ event.descr_truncate_num }}" min="{{ event.min_descr_truncate_num }}" max="{% if event.description|striptags|wordcount > event.descr_truncate_num %}{{ event.description|striptags|wordcount }}{% else %}{{ event.descr_truncate_num }}{% endif %}" data-modify-truncated-descr-url="{% url 'modify_event_truncated_descr' event.id %}" disabled>
-              <button class="btn btn-link edit" style="display: {% edit_truncate_num_display event %};">Edit</button>
-              <span class="edit_mode" style="display: none;">
-                <button class="btn btn-link max">Max</button>
-                <button class="btn btn-link save" data-modify-truncate-num-url="{% url 'modify_event_descr_truncate_num' event.id %}">Save</button>
-                <button class="btn btn-link cancel">Cancel</button>
-              </span>
-            </div>
-            {% endif %}
             <p class="card-text">
               <!-- Register Buttons -->
               <!--{% if event.registration_start_datetime %}
