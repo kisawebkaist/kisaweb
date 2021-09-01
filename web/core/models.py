@@ -79,25 +79,9 @@ class EmptyQueryset(models.Model):
         return super().save(*args, **kwargs)
 
 
-class CourseUrl(models.Model):
-    url = models.URLField(unique=True)
-    class_id = models.CharField(max_length=255, unique=True)
-
-    def __str__(self):
-        return self.class_id
-
-
-class CourseResources(models.Model):
-    class_id = models.CharField(max_length=255, unique=True)
-    class_name = models.CharField(max_length=255)
-    url = models.ManyToManyField('CourseUrl')
-
-    def __str__(self):
-        return self.class_id
-
-
 class Navbar(models.Model):
     kisa_voice_link = models.URLField(blank=True)
     kisa_books_link = models.URLField(blank=True)
     internships_link = models.URLField(blank=True)
     kaist_ara_link = models.URLField(blank=True)
+    course_resources_link = models.URLField(blank=True)
