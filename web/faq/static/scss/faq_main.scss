@@ -12,18 +12,20 @@ body {
     margin: 0px
 }
 
-.faq-list li {
-  //margin: auto;
-  //margin-right: 0px;
-  border-radius: 25px;
-  padding-left: 0px;
+.cat-list li .faq-list li {
+  margin: auto;
+  padding: auto;
+  //padding-right: 10px;
+  //padding-left: 20px;
+  border-radius: 15px;
+  //padding: auto;
   border: 1px solid rgb(71, 90, 90);
     //padding: 27px 30px;
-    padding: 0px;
+    padding: auto;
     //margin: 0px auto 30px;
-    margin: 0px;
+    margin: auto;
     text-align: left;
-    width: 600px;
+  width: 98%;
 }
 
 
@@ -56,13 +58,13 @@ body {
     top: -20px;
 }
 
-.faq-heading {
+.cat-list li .faq-heading {
     position: relative;
     left: 10px;
     cursor: pointer;
     font-size: 18px;
   font-weight: 400;
-  padding-right: 35px;
+  padding-right: 55px;
   margin:0;
 }
 
@@ -70,11 +72,14 @@ body {
     color: var(--theme-color);
 }
 
-.faq-text {
+.cat-list li .faq-text {
     display: none;
+    font-size: 16px;
     position: relative;
-    //left: 10px;
-    padding: 10px
+    font-family: "Times New Roman", Times, serif;
+    color: grey;
+    padding: 17px;
+    padding-right: 55px;
 }
 
 
@@ -84,11 +89,8 @@ body {
 }
 
 .cat-list li {
-    margin: auto;
     padding: 16px;
-    padding-right: 0px;
-    padding-left: 0px;
-    border-radius: 25px;
+    border-radius: 20px;
       border: 1px solid rgb(71, 90, 90);
     text-align: left;
         width: 70%;//750px;
@@ -96,7 +98,7 @@ body {
     margin-left: auto;
     margin-right: auto;
     padding-right: 10px;
-    padding-left: 20px;
+    padding-left: 25px;
 }
 // Here is my trial to do a circle which is not succeeded
  /*
@@ -175,9 +177,9 @@ body {
     position: relative;
     cursor: pointer;
     font-size: 18px;
-  font-weight: 400;
+  font-weight: 590;
   margin:0;
-  padding-right: 35px;
+  padding-right: 55px;
 }
 
 .cat-heading:hover {
