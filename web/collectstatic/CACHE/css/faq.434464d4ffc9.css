@@ -1,0 +1,221 @@
+@charset "UTF-8";
+/* line 1, faq/static/scss/faq_main.scss */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'arial', sans-serif; }
+
+/* line 9, faq/static/scss/faq_main.scss */
+.cat-list li .faq-list {
+  list-style: none;
+  padding: 10px;
+  margin: 0px;
+  border-top: 1px solid #475a5a; }
+
+/* line 16, faq/static/scss/faq_main.scss */
+.cat-list li .faq-list li {
+  margin: auto;
+  padding: auto;
+  border: 0;
+  border-radius: 0px;
+  padding: auto;
+  margin: auto;
+  margin-left: 0px;
+  text-align: left;
+  width: 98%; }
+
+/* line 31, faq/static/scss/faq_main.scss */
+.faq-list .faq-heading::before {
+  content: '+';
+  font-size: 40px;
+  display: block;
+  position: absolute;
+  padding: 10px;
+  right: 20px;
+  top: -13px;
+  color: #475a5a; }
+
+/* line 42, faq/static/scss/faq_main.scss */
+.faq-list .the-active .faq-heading::before {
+  content: '‒';
+  padding: 7px; }
+
+/* line 48, faq/static/scss/faq_main.scss */
+.faq-list .faq-heading:hover::before {
+  font-size: 50px;
+  position: absolute;
+  right: 16px;
+  top: -17px;
+  padding: 10px; }
+
+/* line 55, faq/static/scss/faq_main.scss */
+.faq-list .the-active .faq-heading:hover::before {
+  padding: 7px; }
+
+/* line 59, faq/static/scss/faq_main.scss */
+.faq-list .the-active .faq-heading:hover::before {
+  font-size: 50px;
+  position: absolute;
+  right: 16px;
+  top: -20px; }
+
+/* line 66, faq/static/scss/faq_main.scss */
+.cat-list li .faq-heading {
+  position: relative;
+  left: 10px;
+  cursor: pointer;
+  font-size: 18px;
+  border-radius: 10px;
+  border: 1px solid #475a5a;
+  border-spacing: 10px;
+  font-weight: 400;
+  padding: 10px;
+  padding-right: 52px;
+  padding-left: 20px;
+  margin-left: 50px; }
+
+/* line 81, faq/static/scss/faq_main.scss */
+.faq-heading:hover {
+  color: var(--theme-color); }
+
+/* line 85, faq/static/scss/faq_main.scss */
+.cat-list li .faq-text {
+  display: none;
+  font-size: 16px;
+  position: relative;
+  color: grey;
+  padding: 17px;
+  padding-right: 52px;
+  padding-left: 30px; }
+
+/* line 96, faq/static/scss/faq_main.scss */
+.cat-list {
+  list-style: none;
+  padding: 0px; }
+
+/* line 101, faq/static/scss/faq_main.scss */
+.cat-list li {
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid #475a5a;
+  border-bottom: 1px solid #475a5a;
+  text-align: left;
+  width: 70%;
+  margin: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-right: 10px;
+  padding-left: 25px; }
+
+/*
+.cat-list .cat-heading:hover::before {
+    border-radius: 50%;
+    //content: '+';
+    margin-top: -5px;
+    //border: 1px  solid white;
+    height: 35px;
+    width: 35px;
+   background-color: #475a5a;
+   //opacity: 0.1;
+       text-align: center;
+       //margin-top: auto;
+       //font-size: 40px;
+        //display: block;
+        position: absolute;
+       right: 3px;
+        top: 0px;
+      color: white;
+}
+
+.cat-list .the-active .cat-heading:hover::before {
+    border-radius: 50%;
+    content: '‒';
+    content-color: #475a5a;
+    //margin-right: 10px;
+    border: 1px  solid white;
+    height: 40px;
+    width: 40px;
+   background-color: #475a5a;
+   //opacity: 0.1;
+       text-align: center;
+       margin-top: auto;
+       font-size: 40px;
+        display: block;
+        position: absolute;
+       right: 3px;
+        top: -8px;
+      color: white;
+}
+*/
+/* line 156, faq/static/scss/faq_main.scss */
+.cat-list .cat-heading::before {
+  content: '+';
+  display: block;
+  margin-top: auto;
+  font-size: 40px;
+  position: absolute;
+  right: 10px;
+  top: -11px;
+  color: #475a5a; }
+
+/* line 169, faq/static/scss/faq_main.scss */
+.cat-list .cat-heading:hover::before {
+  font-size: 50px;
+  position: absolute;
+  right: 7px;
+  top: -18px; }
+
+/* line 175, faq/static/scss/faq_main.scss */
+.cat-list .the-active .cat-heading::before {
+  content: '‒';
+  position: absolute;
+  right: 10px;
+  top: -14px; }
+
+/* line 183, faq/static/scss/faq_main.scss */
+.cat-list .the-active .cat-heading:hover::before {
+  font-size: 50px;
+  position: absolute;
+  right: 7px;
+  top: -20px; }
+
+/* line 190, faq/static/scss/faq_main.scss */
+.cat-heading {
+  position: relative;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 590;
+  margin: 0;
+  padding-right: 55px; }
+
+/* line 203, faq/static/scss/faq_main.scss */
+.cat-heading:hover {
+  color: var(--theme-color); }
+
+/* line 207, faq/static/scss/faq_main.scss */
+.cat-text {
+  display: none; }
+
+/* line 212, faq/static/scss/faq_main.scss */
+.container {
+  width: 1200px;
+  margin: auto; }
+
+/* line 216, faq/static/scss/faq_main.scss */
+.art-box svg {
+  width: 100%; }
+
+/* line 219, faq/static/scss/faq_main.scss */
+.row {
+  display: flex; }
+
+/* line 222, faq/static/scss/faq_main.scss */
+.row .col {
+  flex-basis: 50%; }
+
+/* line 225, faq/static/scss/faq_main.scss */
+.read {
+  color: #646464;
+  font-size: 16px;
+  line-height: 1.5;
+  margin-top: 25px; }
