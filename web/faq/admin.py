@@ -5,8 +5,7 @@ from .models import Category
 
 # Register your models here.
 
-
-class FAQAdmin(admin.ModelAdmin): 
+class FAQAdmin(admin.ModelAdmin):
     list_display = ['short_question']
 
 admin.site.register(FAQ, FAQAdmin)
