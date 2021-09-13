@@ -22,10 +22,11 @@ body {
     //padding: 27px 30px;
     padding: auto;
     //margin: 0px auto 30px;
-    margin: auto;
-    margin-left: 0px;
+    margin: -8px;
+    margin-right: auto;
+    margin-left: -20px;
     text-align: left;
-  width: 100%;
+  width: 105%;
 }
 
 
@@ -35,14 +36,17 @@ body {
     display: block;
     position: absolute;
    padding: 10px;
+   //padding-top: auto;
    right: 0px;
     top: -13px;
   color: #475a5a;
+  padding: center;
+  //padding-top: 80px;
 }
 
 .faq-list .the-active .faq-heading::before {
     content: '‒';
-    padding: 7px;
+    padding-top: 7px;
 }
 
 
@@ -81,14 +85,14 @@ body {
 }
 
 .faq-heading:hover {
-    background-color: var(--theme-color);
+    background-color: rgb(238,238,238);
 }
 
 .cat-list li .faq-text {
     display: none;
     font-size: 16px;
     position: relative;
-    color: grey;
+    color: rgb(120,120,120);
     padding: 8px;
     padding-right: 52px;
     padding-left: 30px;
@@ -107,7 +111,7 @@ body {
       // border-bottom: 1px solid rgb(71, 90, 90);
     text-align: left;
         width: 70%;//750px;
-    margin: 20px;
+    margin: 16px;
     margin-left: auto;
     margin-right: auto;
     padding-right: 10px;
@@ -157,16 +161,16 @@ body {
 */
 .cat-list .cat-heading::before {
    content: '+';
-
       display: block;
    margin-top: auto;
    font-size: 40px;
-
     //display: block;
     position: absolute;
    right: 10px;
-    top: 0px;
+    top: 3px;
   color: #475a5a;
+  padding: center;
+  margin: center;
 }
 // .cat-list .cat-heading:hover::before {
 //     font-size: 50px;
@@ -179,6 +183,8 @@ body {
     position: absolute;
    right: 10px;
     top: 0px;
+    padding: center;
+    margin: center;
 
 }
 
@@ -207,7 +213,7 @@ body {
 }
 
 .cat-heading:hover {
-    background-color: var(--theme-color);
+    background-color: rgb(238,238,238); //rgb(203, 206, 207);
 }
 
 .cat-text {
