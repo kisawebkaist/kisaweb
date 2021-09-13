@@ -24,25 +24,25 @@
         FAQ
       </div>
     </div>
-  <ul class="cat-list">
-    {% for cat_and_faqs in faqs_of_cat %}
+    <ul class="cat-list">
+      {% for cat_and_faqs in faqs_of_cat %}
       <li>
-      <h4 class="cat-heading"> {{ cat_and_faqs.category }} <span class="circle"></span> </h4>
+        <h4 class="cat-heading"> {{ cat_and_faqs.category }} <span class="circle"></span> </h4>
         <div class="read cat-text">
-      <ul class="faq-list">
-        {% for faq in cat_and_faqs.faqs %}
+          <ul class="faq-list">
+            {% for faq in cat_and_faqs.faqs %}
             <li>
-            <h4 class="faq-heading"> {{ faq.question }} </h4>
-                                  <p class="read faq-text">
-                                      {{ faq.answer }}:
-                                  </p>
+              <h4 class="faq-heading"> {{ faq.question }} </h4>
+              <p class="read faq-text">
+                {{ faq.answer }}:
+              </p>
             </li>
-        {% endfor %}
-      </ul>
+            {% endfor %}
+          </ul>
         </div>
       </li>
-    {% endfor %}
-  </ul>
+      {% endfor %}
+    </ul>
 
   </div>
 </div>
