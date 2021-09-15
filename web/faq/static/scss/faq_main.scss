@@ -14,6 +14,8 @@ body {
     list-style: none;
     padding: 10px;
     margin: 0px;
+    margin-top: -4px;
+    margin-bottom: -36px;
 }
 
 .cat-list li .faq-list li {
@@ -30,23 +32,29 @@ body {
 }
 
 
-.faq-list .faq-heading::before {
-    content: '+';
+.cat-list li .faq-list .faq-heading::before {
+    content: '˅';
    font-size: 40px;
     display: block;
     position: absolute;
    padding: 10px;
    //padding-top: auto;
    right: 0px;
-    top: -13px;
+    //top: -13px;
   color: #475a5a;
   padding: center;
-  //padding-top: 80px;
+  // comment below and it will be in the center
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
 }
 
-.faq-list .the-active .faq-heading::before {
-    content: '‒';
-    padding-top: 7px;
+.cat-list li .faq-list .the-active .faq-heading::before {
+    content: '˄';//˄^
+    padding-top: 11px;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
 }
 
 
@@ -160,7 +168,7 @@ body {
 }
 */
 .cat-list .cat-heading::before {
-   content: '+';
+   content: '˅';
       display: block;
    margin-top: auto;
    font-size: 40px;
@@ -179,7 +187,8 @@ body {
 //     top: 0px;
 // }
 .cat-list .the-active .cat-heading::before {
-    content: '‒';
+    content: '˄';//˄^˄
+    padding-top: 3px;
     position: absolute;
    right: 10px;
     top: 0px;
@@ -200,16 +209,13 @@ body {
     cursor: pointer;
     font-size: 18px;
   font-weight: 590;
-  margin:0;
+  //margin-bottom:-15px;
+  //margin-top:-15px;
   // padding-right: 55px;
   padding: 16px;
   border-radius: 8px;
   border: 1px solid rgb(71, 90, 90);
   text-align: left;
-  //border-radius: 10px;
-  //border-bottom: 1px solid rgb(71, 90, 90);
-  //border-spacing: 20px;
-  //padding-bottom: 10px;
 }
 
 .cat-heading:hover {
@@ -218,6 +224,7 @@ body {
 
 .cat-text {
     display: none;
+    //padding-bottom: 60px;
     //background-color: white;
 }
 
