@@ -20,13 +20,14 @@ class Category(models.Model):
 class FAQ(models.Model):
     question = models.TextField()
     timestamp = models.DateTimeField(auto_now=True)
-    category = models.ForeignKey(Category, blank=True, null=True, on_delete=models.CASCADE, related_name='faqs')
-    answer = models.TextField(null=True, blank=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='faqs')
+    answer = models.TextField()
 
     def __str__(self):
-        return self.question
+        return f'{self.question} [{self.category}]'
+
     @property
     def short_question(self):
-        return truncatechars(self.question, 200)
+        return truncatechars(f'{self.question} [{self.category}]', 200)
 
 
