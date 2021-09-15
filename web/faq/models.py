@@ -23,11 +23,8 @@ class FAQ(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='faqs')
     answer = models.TextField()
 
-    def __str__(self):
-        return f'{self.question} [{self.category}]'
-
     @property
     def short_question(self):
-        return truncatechars(f'{self.question} [{self.category}]', 200)
+        return truncatechars(f'{self.question}', 150) + f' [{self.category}]'
 
 
