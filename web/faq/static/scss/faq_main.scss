@@ -33,30 +33,30 @@ body {
 
 
 .cat-list li .faq-list .faq-heading::before {
-    content: '˅';
-   font-size: 40px;
+    content: url(down-med.svg);//'˅';
     display: block;
     position: absolute;
-   padding: 10px;
-   //padding-top: auto;
-   right: 0px;
-    //top: -13px;
-  color: #475a5a;
+   padding: 5px;
   padding: center;
+  padding-top: 11px;
   // comment below and it will be in the center
-  top: 50%;
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
+  top: calc(50% + 9px);
+  -ms-transform: translateY(calc(-50% - 9px));
+  transform: translateY(calc(-50% - 9px));
+
+  right: 5px;
 }
 
 .cat-list li .faq-list .the-active .faq-heading::before {
-    content: '˄';//˄^
+    //background-color: red;
+    content: url(up-med.svg);//˄^
+    //mask-image: url(up-med.svg);
     padding-top: 11px;
-    top: 50%;
-    -ms-transform: translateY(-50%);
-    transform: translateY(-50%);
-}
+  top: calc(50% + 9px);
+  -ms-transform: translateY(calc(-50% - 9px));
+  transform: translateY(calc(-50% - 9px));
 
+}
 
 // .faq-list .faq-heading:hover::before {
 //     font-size: 50px;
@@ -98,7 +98,7 @@ body {
 
 .cat-list li .faq-text {
     display: none;
-    font-size: 16px;
+    font-size: 14px;
     position: relative;
     color: rgb(120,120,120);
     padding: 8px;
@@ -168,17 +168,18 @@ body {
 }
 */
 .cat-list .cat-heading::before {
-   content: '˅';
+   content: url(down-big.svg);
       display: block;
    margin-top: auto;
    font-size: 40px;
     //display: block;
     position: absolute;
-   right: 10px;
+   right: 1px;
     top: 3px;
   color: #475a5a;
   padding: center;
   margin: center;
+  right: 3px;
 }
 // .cat-list .cat-heading:hover::before {
 //     font-size: 50px;
@@ -187,13 +188,14 @@ body {
 //     top: 0px;
 // }
 .cat-list .the-active .cat-heading::before {
-    content: '˄';//˄^˄
+    content: url(up-big.svg);
     padding-top: 3px;
     position: absolute;
-   right: 10px;
+   right: 5px;
     top: 0px;
     padding: center;
     margin: center;
+    right: 3px;
 
 }
 

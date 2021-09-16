@@ -2,6 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1818492b-5cab-4ee4-b506-1afc3692aaee" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/web/faq/static/scss/down-big.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/faq/static/scss/down-med.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/faq/static/scss/up-big.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/faq/static/scss/up-med.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/faq/static/scss/faq_main.scss" beforeDir="false" afterPath="$PROJECT_DIR$/web/faq/static/scss/faq_main.scss" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -13,11 +18,15 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1xrQxti9nDg1CaCbTNK4BDfabfB" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
@@ -32,5 +41,19 @@
       <updated>1631110978489</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
 </project>
