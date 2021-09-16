@@ -1,0 +1,203 @@
+@charset "UTF-8";
+/* line 1, faq/static/scss/faq_main.scss */
+:root {
+  --theme-color: #CBCECF; }
+
+/* line 5, faq/static/scss/faq_main.scss */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'arial', sans-serif; }
+
+/* line 13, faq/static/scss/faq_main.scss */
+.cat-list li .faq-list {
+  list-style: none;
+  padding: 10px;
+  margin: 0px;
+  margin-top: -4px;
+  margin-bottom: -36px; }
+
+/* line 21, faq/static/scss/faq_main.scss */
+.cat-list li .faq-list li {
+  border: 0;
+  border-radius: 0px;
+  padding: auto;
+  margin: -8px;
+  margin-right: auto;
+  margin-left: -20px;
+  text-align: left;
+  width: 105%; }
+
+/* line 35, faq/static/scss/faq_main.scss */
+.cat-list li .faq-list .faq-heading::before {
+  content: url(/static/scss/down.svg);
+  font-size: 40px;
+  display: block;
+  position: absolute;
+  padding: 10px;
+  right: 0px;
+  color: #475a5a;
+  padding: center;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%); }
+
+/* line 52, faq/static/scss/faq_main.scss */
+.cat-list li .faq-list .the-active .faq-heading::before {
+  content: url(/static/scss/up.svg);
+  padding-top: 11px;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%); }
+
+/* line 79, faq/static/scss/faq_main.scss */
+.cat-list li .faq-heading {
+  position: relative;
+  left: 10px;
+  cursor: pointer;
+  font-size: 18px;
+  border-radius: 10px;
+  border: 1px solid #475a5a;
+  border-spacing: 10px;
+  font-weight: 400;
+  padding: 10px;
+  padding-right: 52px;
+  padding-left: 20px;
+  margin-right: 30px; }
+
+/* line 95, faq/static/scss/faq_main.scss */
+.faq-heading:hover {
+  background-color: #eeeeee; }
+
+/* line 99, faq/static/scss/faq_main.scss */
+.cat-list li .faq-text {
+  display: none;
+  font-size: 16px;
+  position: relative;
+  color: #787878;
+  padding: 8px;
+  padding-right: 52px;
+  padding-left: 30px; }
+
+/* line 110, faq/static/scss/faq_main.scss */
+.cat-list {
+  list-style: none;
+  padding: 0px; }
+
+/* line 115, faq/static/scss/faq_main.scss */
+.cat-list li {
+  padding: 16px;
+  border-radius: 8px;
+  text-align: left;
+  width: 70%;
+  margin: 16px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-right: 10px;
+  padding-left: 25px; }
+
+/*
+.cat-list .cat-heading:hover::before {
+    border-radius: 50%;
+    //content: '+';
+    margin-top: -5px;
+    //border: 1px  solid white;
+    height: 35px;
+    width: 35px;
+   background-color: #475a5a;
+   //opacity: 0.1;
+       text-align: center;
+       //margin-top: auto;
+       //font-size: 40px;
+        //display: block;
+        position: absolute;
+       right: 3px;
+        top: 0px;
+      color: white;
+}
+
+.cat-list .the-active .cat-heading:hover::before {
+    border-radius: 50%;
+    content: '‒';
+    content-color: #475a5a;
+    //margin-right: 10px;
+    border: 1px  solid white;
+    height: 40px;
+    width: 40px;
+   background-color: #475a5a;
+   //opacity: 0.1;
+       text-align: center;
+       margin-top: auto;
+       font-size: 40px;
+        display: block;
+        position: absolute;
+       right: 3px;
+        top: -8px;
+      color: white;
+}
+*/
+/* line 170, faq/static/scss/faq_main.scss */
+.cat-list .cat-heading::before {
+  content: '˅';
+  display: block;
+  margin-top: auto;
+  font-size: 40px;
+  position: absolute;
+  right: 10px;
+  top: 3px;
+  color: #475a5a;
+  padding: center;
+  margin: center; }
+
+/* line 189, faq/static/scss/faq_main.scss */
+.cat-list .the-active .cat-heading::before {
+  content: '˄';
+  padding-top: 3px;
+  position: absolute;
+  right: 10px;
+  top: 0px;
+  padding: center;
+  margin: center; }
+
+/* line 207, faq/static/scss/faq_main.scss */
+.cat-heading {
+  position: relative;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 590;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #475a5a;
+  text-align: left; }
+
+/* line 221, faq/static/scss/faq_main.scss */
+.cat-heading:hover {
+  background-color: #eeeeee; }
+
+/* line 225, faq/static/scss/faq_main.scss */
+.cat-text {
+  display: none; }
+
+/* line 231, faq/static/scss/faq_main.scss */
+.container {
+  width: 1200px;
+  margin: auto; }
+
+/* line 235, faq/static/scss/faq_main.scss */
+.art-box svg {
+  width: 100%; }
+
+/* line 238, faq/static/scss/faq_main.scss */
+.row {
+  display: flex; }
+
+/* line 241, faq/static/scss/faq_main.scss */
+.row .col {
+  flex-basis: 50%; }
+
+/* line 244, faq/static/scss/faq_main.scss */
+.read {
+  color: #646464;
+  font-size: 16px;
+  line-height: 1.5;
+  margin-top: 25px; }
