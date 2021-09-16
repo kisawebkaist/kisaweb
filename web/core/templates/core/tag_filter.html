@@ -1,24 +1,26 @@
-<div class = "d-flex flex-column justify-content-start flex-wrap align-items-start button-list bg-light rounded">
-    <div class = "mt-4 mb-2 ml-3">
-        <div class = "control-buttons-container pl-1">
-            <!-- this is to reset the button list-->
-            <button class = "btn btn-danger" id="tag-reset">
-                Reset
-            </button>
-            <!-- this is to press search, will make a GET reuest to the backend with selected tags as parameters-->
-            <button class = "btn btn-info" id="tag-search">
-                Search
-            </button>
-        </div>
+<div>
+    <div class="my-1">
+        <button type="button" id="tag-filter-button" class="btn btn-outline-dark">Filter by Tags </button>
+        <div id="active-tags" class="my-1"></div>
     </div>
-    <!--This is for the full button list-->
-    <div class = "button-list-container d-flex flex-row flex-wrap justify-content-start align-items-center">
-            <div class = "container button-container" id="tag-field">
-                {% for tag in tagObjects %}
-                <button class = "tag btn btn-outline-primary btn-sm m-1 rounded-pill" value="{{ tag.tag_name }}">
+
+    <div class="rounded border w-75" id="tag-filter-area" style="display: none">
+        <div class="m-3 d-flex flex-wrap tag-container" id="tag-field">
+            {% for tag in tagObjects %}
+                <button class = "tag btn btn-outline-dark btn-sm rounded-pill m-1" value="{{ tag.tag_name }}">
                     {{ tag.tag_name }}
                 </button>
-                {% endfor %}
-            </div>
+            {% endfor %}
+        </div>
+        <div class="d-flex justify-content-end m-2">
+            <!-- this is to reset the button list -->
+            <button class="btn btn-secondary btn-sm mx-1" id="tag-reset">
+                Clear
+            </button>
+            <!-- this is to press search, will make a GET reuest to the backend with selected tags as parameters-->
+            <button class="btn btn-dark btn-sm mx-1" id="tag-search">
+                Search
+            </button>
+        </div>          
     </div>
 </div>
