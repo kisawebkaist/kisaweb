@@ -1,54 +1,34 @@
 <!--This includes the base code for the html from core -->
-{% extends 'core/base/base.html' %}
+{% extends 'multimedia/templates/multimedia/multimedia_base.html' %}
 
 {% load static %}
-{% block main %}
-<div class = "home-title">
-  <h1><!-- Write the page title here--></h1>
-</div>
-<div class = "multimedia-search">
-  <!-- Include the search bar code here-->
-</div>
-<div class = "multimedia-container">
-  {% for media in multimedia %}
-    <div class = "multimedia">
-      <div class = "multimedia-title">
-          <!--The thing here represents string in jinja template, anything string can be enclosed 
-          within that -->
-          <h3>{{media.title}}</h3>
-      </div>
-      <div class = "multimedia-date">
-          <p>{{media.date}}</p>
-      </div>
-      <div class = "multimedia-tags">
-          <!-- this is a for loop and tag is like a variable-->
-          {% for tag in media.tags%}
-              <div class = "multimedia-tag">
-                  <p>{{tag}}</p>
-              </div>
-          {% endfor %}
-      </div>
-      <div class = "multimedia-videos">
-          {% for video in media.videos %}
-              <div class = "multimedia-video">
-                  <h4>{{video.title}}</h4>
-                  <video>
-                      <source src = "{{video.src}}">
-                  </video>
-                  <p>{{video.date}}</p>
-              </div>
-          {% endfor %}
-      </div>
-      <div class = "multimedia-images">
-          {% for image in media.images %}
-              <div class = "multimedia-image">
-                  <h4>{{image.title}}</h4>
-                  <img src = "{{image.src}}" alt = "{{image.date}}">
-                  <p>{{image.date}}</p>
-              </div>
-          {% endfor %}
-      </div>
+{% block content %}
+
+<div class = "container m-4 mx-auto multimedia-container">
+    <div id="tag-filter">
+        {% include 'core/tag_filter.html' %}
     </div>
-  {% endfor %}
+    <hr>
+    {% for media in multimedia %}
+    <div class="card mb-3">
+        <img class="card-img-top" src="{{media.preview}}" alt="Card image cap">
+        <div class="card-body">
+        <h5 class="card-title">{{media.title}}
+            {% for tag in media.tags %}
+                <small class="text-info">#{{tag}} </small>
+            {% endfor %}
+        </h5>
+        <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus, consectetur distinctio. Enim architecto, officia tempore nihil iste voluptates provident neque!</p>
+        <p class="card-text"><small class="text-muted">{{media.date}}</small></p>
+        </div>
+    </div>
+    {% endfor %}
+
 </div>
+
+{% endblock %}
+
+{% block js %}
+<!-- Tag Filtering -->
+<script src="{% static 'js/tag_filter.js' %}"></script>
 {% endblock %}
