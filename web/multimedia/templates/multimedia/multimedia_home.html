@@ -13,7 +13,8 @@
     <div class="card mb-3">
         <img class="card-img-top" src="{{media.preview}}" alt="Card image cap">
         <div class="card-body">
-        <h5 class="card-title">{{media.title}}
+        <h5 class="card-title">
+            <a href="{{media.id}}" class="text-muted">{{media.title}}</a>
             {% for tag in media.tags %}
                 <small class="text-info">#{{tag}} </small>
             {% endfor %}

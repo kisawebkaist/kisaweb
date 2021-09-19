@@ -32,35 +32,35 @@ class Image(View):
 
 
 class MultimediaView(View):
-    def get(self, request, slug):
-        multimedia  = model.Multimedia.objects.filter(slug = slug)
-        if not multimedia.exists():
+    def get(self, request, pk):
+        multimedia  = model.Multimedia.objects.filter(pk=pk)[0]
+        if not multimedia:
             return HttpResponseNotFound
-        else:
-            multimedia = list(multimedia)[0]
-        title       = str(multimedia.title)
-        tags        = list(multimedia.tag.all())
-        images      = list(multimedia.images.all())
-        videos      = list(multimedia.videos.all())
-        date_created= str(multimedia.date)
-        images      = [{
-            "title" : str(img.title),
-            "src"   : str(img.file.url),
-            "date"  : str(img.date),
-            "alt"   : str(img.alt)    
+        pk           = multimedia.id
+        title        = multimedia.title
+        tags         = multimedia.tags.all()
+        images       = multimedia.images.all()
+        videos       = multimedia.videos.all()
+        date_created = multimedia.date
+        images       = [{
+            "title" : img.title,
+            "src"   : img.file.url,
+            "date"  : img.date,
+            "alt"   : img.alt    
         } for img in images]
         videos      = [{
-            "title" : str(vid.title),
-            "src"   : str(vid.file.url),
-            "date"  : str(vid.date),
+            "title" : vid.title,
+            "src"   : vid.file.url,
+            "date"  : vid.date,
         } for vid in videos]
-        tags        = [str(tag) for tag in tags]
         context     = {
+            "id"    : pk,
             "title" : title,
             "tags"  : tags,
             "images": images,
             "videos": videos,
             "date"  : date_created
+
         }
         return render(request, 'multimedia/multimedia.html', context = context)
 
@@ -79,11 +79,13 @@ class HomePageView(View):
 
         mediaList   = []
         for media in multimedia:
+            pk      = media.id
             title   = media.title
             tags    = media.tags.all()
             date    = media.date
             preview = media.previews.file.url
             mediaList.append({
+                "id"     : pk,
                 "title"  : title,
                 "tags"   : tags,
                 "preview": preview,

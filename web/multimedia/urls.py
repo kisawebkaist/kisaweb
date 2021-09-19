@@ -6,5 +6,5 @@ urlpatterns = [
     path('videos/<slug>', views.Video.as_view()), 
     path('images/<slug>', views.Image.as_view()), 
     # path('search', views.TagFilter.as_view()),
-    path('<slug>', views.MultimediaView.as_view()),
+    path('<int:pk>', views.MultimediaView.as_view()), # Use pk instead of slug until slug field is implemented properly
 ]
