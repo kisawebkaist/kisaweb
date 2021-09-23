@@ -4,16 +4,11 @@
 {% load static %}
 {% load compress %}
 
-<head>
-  <link rel="stylesheet" type="text/x-scss" href="{% static 'scss/faq_main.scss' %}">
-</head>
-
 {% block title %} FAQ {% endblock %}
 
 {% block css %}
 {% compress css file faq %}
 <link rel="stylesheet" type="text/x-scss" href="{% static 'scss/faq_main.scss' %}">
-
 {% endcompress %}
 {% endblock %}
 
@@ -28,7 +23,7 @@
     <ul class="cat-list">
       {% for cat_and_faqs in faqs_of_cat %}
       <li>
-        <h4 class="cat-heading"> {{ cat_and_faqs.category }} <span class="circle"></span> </h4>
+        <h4 class="cat-heading"> {{ cat_and_faqs.category }}</h4>
         <div class="read cat-text">
           <ul class="faq-list">
             {% for faq in cat_and_faqs.faqs %}
