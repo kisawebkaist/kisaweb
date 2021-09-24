@@ -1,41 +1,17 @@
 from django.http.response import HttpResponseNotFound
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.views import View
 from django.db.models import Count
-from django.http import HttpResponse, JsonResponse, Http404
 import multimedia.models as model
 
 
 RESULTS_PER_PAGE = 5
-
-
-class Video(View):
-    def get(self, request, slug):
-        video   = model.Video.objects.filter(slug = slug)
-        if video.exists():
-            video       = list(video)[0]
-            videoFile   = video.file.url
-            return redirect(videoFile)
-        else:
-            return HttpResponseNotFound
-
-
-class Image(View):
-    def get(self, request, slug):
-        image   = model.Image.objects.filter(slug = slug)
-        if image.exists():
-            image       = list(image)[0]
-            imageFile   = image.file.url
-            return redirect(imageFile)
-        else:
-            return HttpResponseNotFound
-
-
 class MultimediaView(View):
-    def get(self, request, pk):
-        multimedia  = model.Multimedia.objects.filter(pk=pk)[0]
-        if not multimedia:
+    def get(self, request, slug):
+        multimedia  = model.Multimedia.objects.filter(slug = slug)
+        if multimedia.exists():
             return HttpResponseNotFound
+        multimedia  = multimedia[0]
         pk           = multimedia.id
         title        = multimedia.title
         tags         = multimedia.tags.all()

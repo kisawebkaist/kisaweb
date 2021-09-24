@@ -14,7 +14,7 @@ class Video(models.Model):
         ADDITIONAL FEATURES :
     """
     title   = models.CharField(max_length = 100)
-    slug    = models.SlugField(unique   = True)
+    #slug    = models.SlugField(unique   = True)
     file    = models.FileField(upload_to = 'videos')
     date    = models.DateField()
 
@@ -29,7 +29,7 @@ class Image(models.Model):
     """
     title   = models.CharField(max_length = 100)
     alt     = models.CharField(max_length = 100)
-    slug    = models.SlugField(unique = True)
+    #slug    = models.SlugField(unique = True)
     file    = models.ImageField(upload_to = 'images')
     date    = models.DateField()
 
