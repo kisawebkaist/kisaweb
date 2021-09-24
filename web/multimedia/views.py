@@ -9,7 +9,7 @@ RESULTS_PER_PAGE = 5
 class MultimediaView(View):
     def get(self, request, slug):
         multimedia  = model.Multimedia.objects.filter(slug = slug)
-        if multimedia.exists():
+        if not multimedia.exists():
             return HttpResponseNotFound
         multimedia  = multimedia[0]
         pk           = multimedia.id
