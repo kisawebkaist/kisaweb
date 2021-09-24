@@ -76,6 +76,7 @@ INSTALLED_APPS = [
     'election',
     'sso',
     'aboutus',  # contains the User model
+    'blog',
 ]
 
 MIDDLEWARE = [
@@ -127,7 +128,7 @@ WSGI_APPLICATION = 'web.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'db.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     },
 }
 
@@ -221,7 +222,7 @@ LOGOUT_REDIRECT_URL = 'homepage'
 LOGIN_DEV = DEV_SETTINGS
 LOGIN_PROD = PROD_SETTINGS
 
-KISA_AUTH_METHOD = LOGIN_DEV
+KISA_AUTH_METHOD = CURRENT_SETTINGS
 ## --------- ##
 
 
@@ -243,3 +244,16 @@ MAINTENANCE_MODE_IGNORE_TESTS = True
 MAINTENANCE_MODE_TEMPLATE = 'core/503.html'
 
 ## -------------------------------------- ##
+
+TINYMCE_DEFAULT_CONFIG = {
+    "height": "600px",
+    "menubar": "file edit view insert format tools table help",
+    "plugins": "advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code emoticons"
+    "fullscreen insertdatetime media table paste code help wordcount spellchecker",
+    "toolbar": "undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft "
+    "aligncenter alignright alignjustify | outdent indent |  numlist bullist checklist | forecolor "
+    "backcolor casechange permanentpen formatpainter removeformat | pagebreak | charmap emoticons | "
+    "fullscreen  preview save print | insertfile image media pageembed template link anchor codesample | "
+    "a11ycheck ltr rtl | showcomments addcomment code",
+    "custom_undo_redo_levels": 10,
+}

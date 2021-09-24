@@ -1,0 +1,26 @@
+<div>
+    <div class="my-1">
+        <button type="button" id="tag-filter-button" class="btn btn-outline-dark">Filter by Tags </button>
+        <div id="active-tags" class="my-1"></div>
+    </div>
+
+    <div class="rounded border w-75" id="tag-filter-area" style="display: none">
+        <div class="m-3 d-flex flex-wrap tag-container" id="tag-field">
+            {% for tag in tagObjects %}
+                <button class = "tag btn btn-outline-dark btn-sm rounded-pill m-1" value="{{ tag.tag_name }}">
+                    {{ tag.tag_name }}
+                </button>
+            {% endfor %}
+        </div>
+        <div class="d-flex justify-content-end m-2">
+            <!-- this is to reset the button list -->
+            <button class="btn btn-secondary btn-sm mx-1" id="tag-reset">
+                Clear
+            </button>
+            <!-- this is to press search, will make a GET reuest to the backend with selected tags as parameters-->
+            <button class="btn btn-dark btn-sm mx-1" id="tag-search">
+                Search
+            </button>
+        </div>          
+    </div>
+</div>

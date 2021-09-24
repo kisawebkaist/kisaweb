@@ -134,3 +134,9 @@ dmypy.json
 
 # Git
 .DS_Store
+
+# collectstatic files
+collectstatic/
+
+# media files
+media/

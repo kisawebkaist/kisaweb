@@ -1,16 +1,12 @@
-from django.shortcuts import render, HttpResponse, redirect
+from django.shortcuts import render
 
 from .models import Main, Members, Division, Board
 
 def aboutus(request):
-    main    = list(Main.objects.all())
-    member  = list(Members.objects.all())
-    division= list(Division.objects.all())
-    board   = list(Board.objects.all())
     context = {
-        "main"      : main, 
-        "member"    : member, 
-        "division"  : division,
-        "board"     : board
+        "main"      : Main.objects.all(), 
+        "member"    : Members.objects.all(), 
+        "division"  : Division.objects.all(),
+        "board"     : Board.objects.all()
     }
     return render(request, 'aboutus/aboutus.html', context)

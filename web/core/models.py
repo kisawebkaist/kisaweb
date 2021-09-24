@@ -1,9 +1,52 @@
-from django.db import models
 from django.core.exceptions import ValidationError
-
+from django.db import models
+from django.utils import timezone
+from django.utils.text import slugify
 from phone_field import PhoneField
+from tinymce.models import HTMLField
+from django.core.validators import RegexValidator
 
-# Create your models here.
+# Validators
+tag_validator = RegexValidator(r'[^\w\-]', inverse_match=True, message='Spaces and punctuation (except "-" and "_") are not allowed.')
+
+# Abstract Classes
+class Tag(models.Model):
+
+    tag_name = models.CharField(max_length=50, blank=False, unique=True, validators=[tag_validator])
+    def __str__(self):
+        return self.tag_name
+
+    class Meta:
+        abstract = True
+
+
+class Content(models.Model):
+    title = models.CharField(max_length=200, blank=False)
+    content = HTMLField()
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+    slug = models.SlugField(max_length=100, null=True, unique=True, editable=False)
+
+    def save(self, *args, **kwargs):
+
+        # Saving must occur for the datetime fields to be set automatically, so set it manually if it doesn't exist
+        if self.created is None:
+            self.created = timezone.now()
+
+        datetime_stamp = self.created.strftime('%Y-%m-%d')
+        self.slug = f'{slugify(self.title)}-{datetime_stamp}'
+
+        return super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.slug
+
+    class Meta:
+        abstract = True
+
+
+# End of Abstract Classes
+
 
 class Footer(models.Model):
     kisa_text = models.CharField(max_length=500, blank=True)
@@ -36,25 +79,9 @@ class EmptyQueryset(models.Model):
         return super().save(*args, **kwargs)
 
 
-class CourseUrl(models.Model):
-    url = models.URLField(unique=True)
-    class_id = models.CharField(max_length=255, unique=True)
-
-    def __str__(self):
-        return self.class_id
-
-
-class CourseResources(models.Model):
-    class_id = models.CharField(max_length=255, unique=True)
-    class_name = models.CharField(max_length=255)
-    url = models.ManyToManyField('CourseUrl')
-
-    def __str__(self):
-        return self.class_id
-
-
 class Navbar(models.Model):
     kisa_voice_link = models.URLField(blank=True)
     kisa_books_link = models.URLField(blank=True)
     internships_link = models.URLField(blank=True)
     kaist_ara_link = models.URLField(blank=True)
+    course_resources_link = models.URLField(blank=True)
