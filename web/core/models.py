@@ -9,6 +9,45 @@ from django.core.validators import RegexValidator
 # Validators
 tag_validator = RegexValidator(r'[^\w\-]', inverse_match=True, message='Spaces and punctuation (except "-" and "_") are not allowed.')
 
+# Custom Managers
+class TagFilterManager(models.Manager):
+    """
+    Addon Manager for easy tag based querying on content
+
+    Usage:
+    / models.py
+        class Example(models.Model):
+            objects = TagFilterManager()
+            
+    
+    / Querying
+        > tag_list = ['tag1', 'tag2', 'tag3']
+        > Example.objects.filter_and(tag_list)
+        > Example.objects.filter_or(tag_list)
+    """
+    def filter_and(self, tag_list):
+        """
+        AND Operation
+        Query for content containing ALL the tags in tag_list.
+        If tag_list is equal to [''], all content (without filtering) will be returned
+        """
+        if tag_list == ['']:
+            return self.all()
+        return self.filter(tags__tag_name__in=tag_list).annotate(num_tags=models.Count('tags')).filter(num_tags=len(tag_list))
+    
+    def filter_or(self, tag_list):
+        """
+        OR Operation
+        Query for content containing ANY of the tags in tag_list.
+        If tag_list is equal to [''], all content (without filtering) will be returned
+        """
+        if tag_list == ['']:
+            return self.all()
+        return self.filter(tags__tag_name__in=tag_list)
+    
+
+# End of Custom Managers
+
 # Abstract Classes
 class Tag(models.Model):
 
