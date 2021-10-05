@@ -14,12 +14,12 @@
         <img class="card-img-top" src="{{media.preview}}" alt="Card image cap">
         <div class="card-body">
         <h5 class="card-title">
-            <a href="{{media.id}}" class="text-muted">{{media.title}}</a>
+            <a href="pages/{{media.slug}}" class="text-muted">{{media.title}}</a>
             {% for tag in media.tags %}
                 <small class="text-info">#{{tag}} </small>
             {% endfor %}
         </h5>
-        <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus, consectetur distinctio. Enim architecto, officia tempore nihil iste voluptates provident neque!</p>
+        <!-- <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus, consectetur distinctio. Enim architecto, officia tempore nihil iste voluptates provident neque!</p> -->
         <p class="card-text"><small class="text-muted">{{media.date}}</small></p>
         </div>
     </div>

@@ -1,5 +1,5 @@
 from django.db import models
-from core.models import Tag
+from core.models import Tag, TagFilterManager
 
 # Create your models here
 
@@ -49,6 +49,8 @@ class Multimedia(models.Model):
     videos   = models.ManyToManyField(Video, blank = True)
     date     = models.DateField()
     previews = models.ForeignKey(Image, related_name = "cover_media" ,on_delete = models.CASCADE, blank = True, null = True)
+
+    objects = TagFilterManager()
 
     def __str__(self):
         return self.title
