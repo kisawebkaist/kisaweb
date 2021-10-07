@@ -10,6 +10,6 @@ urlpatterns = [
     path('election/', include('election.urls')),
     path('docs/', include('docs.urls')),
     path('sso/', include('sso.urls')),
-    path('aboutus/', include('aboutus.urls')),
+    path('about-us/', include('aboutus.urls')),
     path('blog/', include('blog.urls')),
 ]
