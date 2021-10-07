@@ -1,5 +1,5 @@
 .aboutus-background{
-  background      : url("../test.jpg") fixed;
+  background      : #7EC0CC;
   height          : 300px;
   
   display         : flex;
