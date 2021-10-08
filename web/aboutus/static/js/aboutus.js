@@ -1,4 +1,4 @@
-var headerName  = ["main", "member", "division"]
+var headerName  = ["main", "division", "member"]
 var curHeader   = 0;
 
 for(let i = 1; i < headerName.length; i++) {

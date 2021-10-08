@@ -24,10 +24,10 @@
         <a class = "nav-link active" id = "btn-main" type = "button" onclick = "switchHeader(0)">Main</a>
       </li>
       <li class="nav-item">
-        <a class = "nav-link" id = "btn-member" type = "button" onclick = "switchHeader(1)">Members</a>
+        <a class = "nav-link" id = "btn-division" type = "button" onclick = "switchHeader(1)">Divisions</a>
       </li>
       <li class="nav-item">
-        <a class = "nav-link" id = "btn-division" type = "button" onclick = "switchHeader(2)">Divisions</a>
+        <a class = "nav-link" id = "btn-member" type = "button" onclick = "switchHeader(2)">Members</a>
       </li>
     </ul>
   </div>
@@ -53,9 +53,7 @@
   <div class = "aboutus-main" id = "main">
     {% for content in main %}
     <div class = "main-content">
-      <div class = "main-content-title">
-        <h2>{{content.title}}</h2>
-      </div>
+      <h1 class="content-title">{{content.title}}</h1>
       <div class = "main-content-desc">
         {{content.desc | safe}}
       </div>
@@ -65,7 +63,7 @@
   <div class = "aboutus-member" id = "member">
     <div class = "executive-member">
       <div class = "executive-member-title">
-        <h1>Executive Board</h1>
+        <h1 class="content-title">Executive Board</h1>
       </div>
       <div class = "executive-member-container">
         {% for people in board %}
@@ -90,7 +88,7 @@
     </div>
     <div class = "normal-member">
       <div class = "normal-member-title">
-        <h1>Members</h1>
+        <h1 class="content-title">Members</h1>
       </div>
       <div class = "normal-member-container">
         {% for people in member %}
@@ -113,13 +111,12 @@
   </div>
   <div class = "aboutus-division" id = "division">
     {% for content in division %}
-    <div class = "division-content">
-      <div class = "content-title">
-        {{content.title}}
-      </div>
+    <div class = "division-content my-2">
+      <h1 class="content-title"> {{content.title}}</h1>
       <div class = "content-desc">
         {{content.desc | safe}}
       </div>
+    </div>
     {% endfor %}
   </div>
   <!-- <div class = "aboutus-gallery" id = "gallery"> 
