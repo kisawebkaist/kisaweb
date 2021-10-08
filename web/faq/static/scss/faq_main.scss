@@ -1,0 +1,149 @@
+:root {
+  --theme-color: #cbcecf;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "arial", sans-serif;
+}
+
+.cat-list li .faq-list {
+  list-style: none;
+  padding: 0px;
+}
+
+.cat-list li .faq-list li {
+  border: 0;
+  border-radius: 0px;
+  text-align: left;
+  padding: 12px 0px;
+  width: 95%;
+}
+
+.cat-list li .faq-list .faq-heading::before {
+  content: url(down-med.svg); //'˅';
+  height: 36px;
+  position: absolute;
+  top: calc(50%);
+  -ms-transform: translateY(calc(-50%));
+  transform: translateY(calc(-50%));
+  right: 0px;
+}
+
+.cat-list li .faq-list .the-active .faq-heading::before {
+  content: url(up-med.svg); //˄^
+  height: 36px;
+  top: calc(50%);
+  -ms-transform: translateY(calc(-50%));
+  transform: translateY(calc(-50%));
+}
+
+.cat-list li .faq-heading {
+  position: relative;
+  cursor: pointer;
+  font-size: 18px;
+  border-radius: 8px;
+  border: 1px solid rgb(71, 90, 90);
+  font-weight: 300;
+  padding: 12px;
+  padding-right: 40px;
+  padding-left: 12px;
+  margin-bottom: 0px;
+}
+
+.faq-heading:hover {
+  background-color: rgb(238, 238, 238);
+}
+
+.cat-list li .faq-text {
+  display: none;
+  font-size: 16px;
+  position: relative;
+  color: #606060;
+  margin-left: auto;
+  margin-right: auto;
+  width: 95%;
+}
+
+.cat-list {
+  list-style: none;
+  padding: 0px;
+  margin: 0px;
+}
+
+.cat-list li {
+  border-radius: 8px;
+  width: 800px;
+  margin: 0px auto;
+  padding: 20px 0px;
+}
+
+@media screen and (max-width: 900px) {
+  .cat-list li {
+    width: 95%;
+  }
+}
+
+.cat-list .cat-heading::before {
+  content: url(down-big.svg);
+  height: 48px;
+  position: absolute;
+  color: #475a5a;
+  top: calc(50%);
+  -ms-transform: translateY(calc(-50%));
+  transform: translateY(calc(-50%));
+  right: 0px;
+}
+
+.cat-list .the-active .cat-heading::before {
+  content: url(up-big.svg);
+  height: 48px;
+  position: absolute;
+  top: calc(50%);
+  -ms-transform: translateY(calc(-50%));
+  transform: translateY(calc(-50%));
+  right: 0px;
+}
+
+.cat-heading {
+  position: relative;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 0px;
+  padding: 16px;
+  padding-right: px;
+  padding-left: 16px;
+  border-radius: 8px;
+  border: 1px solid rgb(71, 90, 90);
+  text-align: left;
+}
+
+.cat-heading:hover {
+  background-color: rgb(238, 238, 238);
+}
+
+.cat-text {
+  display: none;
+}
+
+.container {
+  width: 1200px;
+  margin: auto;
+}
+.art-box svg {
+  width: 100%;
+}
+.row {
+  display: flex;
+}
+.row .col {
+  flex-basis: 50%;
+}
+.read {
+  color: rgb(32, 32, 32);
+  font-size: 16px;
+  line-height: 1.5;
+  margin-top: 20px;
+}
