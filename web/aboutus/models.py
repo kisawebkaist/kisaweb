@@ -1,30 +1,38 @@
 from django.db import models
 from tinymce.models import HTMLField
+from datetime import date
+from django.utils import timezone
 
-class Main(models.Model):
+class MainContent(models.Model):
     title   = models.CharField(max_length = 100, null = True)
     desc    = HTMLField()
     
     def __str__(self):
-        return self.desc
+        return self.title
 
-class Members(models.Model):
+class BaseMember(models.Model):
     name    = models.CharField(max_length = 100, null = True)
+    image   = models.ImageField()
+    year    = models.PositiveIntegerField(null=True)
+    semester= models.CharField(max_length=10, null=True)
     position= models.CharField(max_length = 100, null = True)
 
+    def save(self, *args, **kwargs):
+        cur_date = date.today()
+        self.year = cur_date.year
+        self.semester = 'Fall' if cur_date.month > 6 else 'Spring'
+        super().save(*args, **kwargs)
+        
     def __str__(self):
-        return self.name
+        return f'[{self.semester}-{self.year} {self.position}] - {self.name}'
 
-class Board(models.Model):
-    name    = models.CharField(max_length = 100, null = True)
-    position= models.CharField(max_length = 100, null = True)
-    quote   = models.TextField()
+class Member(BaseMember):
+    pass
 
-    def __str__(self):
-        return self.name
-
-
-class Division(models.Model):
+class InternalBoardMember(BaseMember):
+    pass
+    
+class DivisionDescription(models.Model): 
     title   = models.CharField(max_length = 100, null = True)
     desc    = HTMLField()
     

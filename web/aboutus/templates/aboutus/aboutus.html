@@ -51,7 +51,7 @@
   </div> -->
 <div class = "aboutus-content">
   <div class = "aboutus-main" id = "main">
-    {% for content in main %}
+    {% for content in main_contents %}
     <div class = "main-content">
       <h1 class="content-title">{{content.title}}</h1>
       <div class = "main-content-desc">
@@ -66,21 +66,21 @@
         <h1 class="content-title">Executive Board</h1>
       </div>
       <div class = "executive-member-container">
-        {% for people in board %}
+        {% for member in internal_board_members %}
         <div class = "executive-member-card member-card">
           <div class = "executive-member-card-left member-card-left">
             <img src = "{% static '/img/anonymous.png' %}">
           </div>
           <div class = "executive-member-card-right member-card-right">
             <div class = "executive-name member-name">
-              <h2>{{people.name}}</h2>
+              <h2>{{member.name}}</h2>
             </div>
             <div class = "executive-position member-position">
-              <p>{{people.position}}</p>
+              <p>{{member.position}}</p>
             </div>
-            <div class = "executive-quote member-quote">
+            <!-- <div class = "executive-quote member-quote">
               <p>{{peope.quote}}</p>
-            </div>
+            </div> -->
           </div>
         </div>
         {% endfor %}
@@ -91,17 +91,17 @@
         <h1 class="content-title">Members</h1>
       </div>
       <div class = "normal-member-container">
-        {% for people in member %}
+        {% for member in members %}
         <div class = "normal-member-card member-card">
           <div class = "normal-member-card-left member-card-left">
             <img src = "{% static '/img/anonymous.png' %}">
           </div>
           <div class = "normal-member-card-right member-card-right">
             <div class = "normal-name member-name">
-              <h2>{{people.name}}</h2>
+              <h2>{{member.name}}</h2>
             </div>
             <div class = "normal-position member-position">
-              <p>{{people.position}}</p>
+              <p>{{member.position}}</p>
             </div>
           </div>
         </div>
@@ -110,7 +110,7 @@
     </div>
   </div>
   <div class = "aboutus-division" id = "division">
-    {% for content in division %}
+    {% for content in division_descriptions %}
     <div class = "division-content my-2">
       <h1 class="content-title"> {{content.title}}</h1>
       <div class = "content-desc">

@@ -1,10 +1,15 @@
 from django.contrib import admin
 
-from .models import Main, Members, Division, Board
+from .models import MainContent, Member, DivisionDescription, InternalBoardMember
 
-admin.site.register(Main)
-admin.site.register(Members)
-admin.site.register(Division)
-admin.site.register(Board)
+class BaseMemberAdmin(admin.ModelAdmin):
+  exclude = ['year', 'semester']
+  ordering = ['-year', 'semester', 'position', 'name']
+
+admin.site.register(MainContent)
+admin.site.register(DivisionDescription)
+admin.site.register(Member, BaseMemberAdmin)
+admin.site.register(InternalBoardMember, BaseMemberAdmin)
+
 
 # Register your models here.
