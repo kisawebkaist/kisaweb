@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     'crispy_forms',  # PyPi django-crispy-forms
     'docs',  # PyPi django-docs
     'phone_field',  # PyPi django-phone-field
+    'adminsortable',
 
     ## ---- Created by KISA webteam ---- ##
     'core',  # core pages (eg. homepage, about page, etc)
