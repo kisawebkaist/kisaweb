@@ -51,40 +51,9 @@ nav.aboutus-nav{
 .aboutus-member > div > div{
   padding-bottom  : 1rem;
 }
-.executive-member{
-  width           : 80vw;
-}
-.executive-member-card{
-  display         : flex;
-  flex-flow       : row wrap;
-  align-items     : center;
-}
-.executive-member-card > div{
-  display         : flex;
-  flex-flow       : column wrap;
-}
 
 .member-card-left > img{
   max-width       : 300px;
-}
-
-.normal-member-container{
-  display         : flex;
-  flex-flow       : row wrap;
-  align-items     : center;
-  justify-content : flex-start;
-}
-.normal-member-container > div{
-  width           : 300px;
-}
-.normal-member-card > div{
-  display         : flex;
-  flex-flow       : column wrap;
-  align-items     : center;
-}
-
-/* .main-content {
-  width: 100%;
 } */
 
 .division-content {

@@ -5,11 +5,11 @@
 {% block title %}About Us{% endblock %}
 
 {% block css %}
-<link rel = "stylesheet" type = "text/css" href = "{% static 'css/aboutus.css'%}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/aboutus.css'%}">
 {% endblock %}
 
 {% block js %}
-<script src = "{% static 'js/aboutus.js' %}"></script>
+<script src="{% static 'js/aboutus.js' %}"></script>
 {% endblock %}
 
 {% block main %}
@@ -21,105 +21,90 @@
   <div class="collapse navbar-collapse">
     <ul class="w-100 navbar-nav d-flex justify-content-around">
       <li class="nav-item">
-        <a class = "nav-link active" id = "btn-main" type = "button" onclick = "switchHeader(0)">Main</a>
+        <a class="nav-link active" id="btn-main" type="button" onclick="switchHeader(0)">Main</a>
       </li>
       <li class="nav-item">
-        <a class = "nav-link" id = "btn-division" type = "button" onclick = "switchHeader(1)">Divisions</a>
+        <a class="nav-link" id="btn-division" type="button" onclick="switchHeader(1)">Divisions</a>
       </li>
       <li class="nav-item">
-        <a class = "nav-link" id = "btn-member" type = "button" onclick = "switchHeader(2)">Members</a>
+        <a class="nav-link" id="btn-member" type="button" onclick="switchHeader(2)">Members</a>
       </li>
     </ul>
   </div>
 </nav>
-<div class = "aboutus-background">
-  <div class = "aboutus-title">
-    <h1 class = "text-white">About us</h1> 
+<div class="aboutus-background">
+  <div class="aboutus-title">
+    <h1 class="text-white">About us</h1> 
   </div>
 </div>
-<!-- <div class = "aboutus-button">
-    <button class = "btn btn-secondary text-white rounded" id = "btn-main" type = "button" onclick = "switchHeader(0)">Main</button>
+<!-- <div class="aboutus-button">
+    <button class="btn btn-secondary text-white rounded" id="btn-main" type="button" onclick="switchHeader(0)">Main</button>
   </div>
-  <div class = "aboutus-button">
-    <button class = "btn btn-secondary text-white rounded" id = "btn-member" type = "button" onclick = "switchHeader(1)">Members</button>
+  <div class="aboutus-button">
+    <button class="btn btn-secondary text-white rounded" id="btn-member" type="button" onclick="switchHeader(1)">Members</button>
   </div>
-  <div class = "aboutus-button">
-    <button class = "btn btn-secondary text-white rounded" id = "btn-division" type = "button" onclick = "switchHeader(2)">Divisions</button>
+  <div class="aboutus-button">
+    <button class="btn btn-secondary text-white rounded" id="btn-division" type="button" onclick="switchHeader(2)">Divisions</button>
   </div> -->
-  <!-- <div class = "aboutus-button">
-    <button disabled class = "btn btn-secondary text-white rounded" id = "btn-gallery" type = "button" onclick = "switchHeader(3)">Gallery</button>
+  <!-- <div class="aboutus-button">
+    <button disabled class="btn btn-secondary text-white rounded" id="btn-gallery" type="button" onclick="switchHeader(3)">Gallery</button>
   </div> -->
-<div class = "aboutus-content">
-  <div class = "aboutus-main" id = "main">
+<div class="aboutus-content">
+  
+  <div class="aboutus-main" id="main">
     {% for content in main_contents %}
-    <div class = "main-content">
+    <div class="main-content">
       <h1 class="content-title">{{content.title}}</h1>
-      <div class = "main-content-desc">
+      <div class="main-content-desc">
         {{content.desc | safe}}
       </div>
     </div>
     {% endfor %}
   </div>
-  <div class = "aboutus-member" id = "member">
-    <div class = "executive-member">
-      <div class = "executive-member-title">
-        <h1 class="content-title">Executive Board</h1>
-      </div>
-      <div class = "executive-member-container">
-        {% for member in internal_board_members %}
-        <div class = "executive-member-card member-card">
-          <div class = "executive-member-card-left member-card-left">
-            <img src = "{% static '/img/anonymous.png' %}">
-          </div>
-          <div class = "executive-member-card-right member-card-right">
-            <div class = "executive-name member-name">
-              <h2>{{member.name}}</h2>
-            </div>
-            <div class = "executive-position member-position">
-              <p>{{member.position}}</p>
-            </div>
-            <!-- <div class = "executive-quote member-quote">
-              <p>{{peope.quote}}</p>
-            </div> -->
-          </div>
-        </div>
-        {% endfor %}
-      </div>
-    </div>
-    <div class = "normal-member">
-      <div class = "normal-member-title">
-        <h1 class="content-title">Members</h1>
-      </div>
-      <div class = "normal-member-container">
-        {% for member in members %}
-        <div class = "normal-member-card member-card">
-          <div class = "normal-member-card-left member-card-left">
-            <img src = "{% static '/img/anonymous.png' %}">
-          </div>
-          <div class = "normal-member-card-right member-card-right">
-            <div class = "normal-name member-name">
-              <h2>{{member.name}}</h2>
-            </div>
-            <div class = "normal-position member-position">
-              <p>{{member.position}}</p>
-            </div>
-          </div>
-        </div>
-        {% endfor %}
-      </div>
-    </div>
-  </div>
-  <div class = "aboutus-division" id = "division">
+
+  <div class="aboutus-division" id="division">
     {% for content in division_descriptions %}
-    <div class = "division-content my-2">
+    <div class="division-content my-2">
       <h1 class="content-title"> {{content.title}}</h1>
-      <div class = "content-desc">
+      <div class="content-desc">
         {{content.desc | safe}}
       </div>
     </div>
     {% endfor %}
   </div>
-  <!-- <div class = "aboutus-gallery" id = "gallery"> 
+
+  <div class="aboutus-member" id="member">
+    <div>
+      <h1 class="content-title">Executive Board</h1>
+      <div class="d-flex flex-row flex-wrap justify-content-start">
+        {% for executive_member in internal_board_members %}
+        <div class="card m-4" style="width: 200px;">
+          <img class="card-img-top" style="height: 200px; object-fit: cover;" src="{{ executive_member.image.url }}" alt="">
+          <div class="card-body">
+            <h5 class="card-title text-center">{{ executive_member.name }}</h5>
+            <p class="card-text text-center">{{ executive_member.position }}</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div>
+      <h1 class="content-title">Members</h1>
+      <div class="d-flex flex-row flex-wrap justify-content-start">
+        {% for member in members %}
+        <div class="card m-4" style="width: 200px;">
+          <img class="card-img-top" style="height: 200px; object-fit: cover;" src="{{ member.image.url }}" alt="">
+          <div class="card-body">
+            <h5 class="card-title text-center">{{ member.name }}</h5>
+            <p class="card-text text-center">{{ member.position }}</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- <div class="aboutus-gallery" id="gallery"> 
   </div> -->
 </div>
 
