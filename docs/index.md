@@ -37,9 +37,10 @@ These are the things that should be focused on while writing documentation.
     - Any functions or classes written by developers for utility or abstraction.
     - Any libraries used (include setup and usage details).
 
-Any documentation page which is not complete should include the following line after the page title
-    
-    !!! todo "Incomplete"
+!!! note
+    Any documentation page which is not complete should include the following line after the page title
+        
+        !!! todo "Incomplete"
 
 
 ### Making a contribution
