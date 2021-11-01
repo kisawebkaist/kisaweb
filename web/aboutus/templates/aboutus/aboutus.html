@@ -1,4 +1,4 @@
-{% extends 'core/base/base.html' %}\
+{% extends 'aboutus/templates/aboutus/aboutus_base.html' %} 
 {% load static %}
 {% load compress %}
 
@@ -12,7 +12,7 @@
 <script src="{% static 'js/aboutus.js' %}"></script>
 {% endblock %}
 
-{% block main %}
+{% block content %}
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,11 +32,11 @@
     </ul>
   </div>
 </nav>
-<div class="aboutus-background">
+<!-- <div class="aboutus-background">
   <div class="aboutus-title">
     <h1 class="text-white">About us</h1> 
   </div>
-</div>
+</div> -->
 <!-- <div class="aboutus-button">
     <button class="btn btn-secondary text-white rounded" id="btn-main" type="button" onclick="switchHeader(0)">Main</button>
   </div>
@@ -51,30 +51,30 @@
   </div> -->
 <div class="aboutus-content">
   
-  <div class="aboutus-main" id="main">
+  <div class="p-4" id="main">
     {% for content in main_contents %}
-    <div class="main-content">
-      <h1 class="content-title">{{content.title}}</h1>
-      <div class="main-content-desc">
+    <div class="m-2">
+      <h1>{{content.title}}</h1>
+      <div class="my-4">
         {{content.desc | safe}}
       </div>
     </div>
     {% endfor %}
   </div>
 
-  <div class="aboutus-division" id="division">
+  <div class="p-4" id="division">
     {% for content in division_descriptions %}
-    <div class="division-content my-2">
-      <h1 class="content-title"> {{content.title}}</h1>
-      <div class="content-desc">
+    <div class="m-2">
+      <h1> {{content.title}}</h1>
+      <div class="my-4">
         {{content.desc | safe}}
       </div>
     </div>
     {% endfor %}
   </div>
 
-  <div class="aboutus-member" id="member">
-    <div>
+  <div class="p-2" id="member">
+    <div class="my-2">
       <h1 class="content-title">Executive Board</h1>
       <div class="d-flex flex-row flex-wrap justify-content-start">
         {% for executive_member in internal_board_members %}
@@ -88,7 +88,7 @@
         {% endfor %}
       </div>
     </div>
-    <div>
+    <div class="my-2">
       <h1 class="content-title">Members</h1>
       <div class="d-flex flex-row flex-wrap justify-content-start">
         {% for member in members %}

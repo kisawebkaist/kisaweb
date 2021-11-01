@@ -43,19 +43,3 @@ nav.aboutus-nav{
   display         : flex;
   flex-flow       : column wrap;
 }
-
-/*This is for the members card part*/
-.aboutus-member > div{
-  padding-bottom  : 3rem;
-}
-.aboutus-member > div > div{
-  padding-bottom  : 1rem;
-}
-
-.member-card-left > img{
-  max-width       : 300px;
-} */
-
-.division-content {
-  margin-bottom: 4rem;
-}
