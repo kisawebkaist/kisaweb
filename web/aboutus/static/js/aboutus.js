@@ -1,24 +1,27 @@
-var headerName  = ["main", "division", "member"]
-var curHeader   = 0;
+var curSection     = 0;
+const sectionNames  = ["aboutus-main", "aboutus-divisions", "aboutus-members"]
 
-for(let i = 1; i < headerName.length; i++) {
-  document.getElementById(headerName[i]).style.display = "none"
-}
+switchSection = (id) => {
+  $(`#btn-${sectionNames[curSection]}`).toggleClass("active");
+  $(`#btn-${sectionNames[id]}`).toggleClass("active");
 
-function switchHeader(id){
-  
-  document.getElementById(`btn-${headerName[curHeader]}`).classList.toggle("active")
-  document.getElementById(`btn-${headerName[id]}`).classList.toggle("active")
-
-  var curElem = document.getElementById(headerName[curHeader])
-  var newElem = document.getElementById(headerName[id])
-
-  $(".aboutus-content").animate({ opacity: 0 }, "slow");
-  $(".aboutus-content").promise().then(() => {
-    curElem.style.display = "none";
-    newElem.style.display = "flex";
-    curHeader   = id; 
-    $(".aboutus-content").animate({ opacity: 1}, "slow");
+  $("#aboutus-content").animate({ opacity: 0 }, "slow");
+  $("#aboutus-content").promise().then(() => {
+    $(`#${sectionNames[curSection]}`).toggleClass("d-none")
+    $(`#${sectionNames[id]}`).toggleClass("d-none")
+    curSection   = id; 
+    $("#aboutus-content").animate({ opacity: 1}, "slow");
   })
+};
 
-}
+$(document).ready(() => {
+  url = new URL(window.location.href);
+  if (url.searchParams.get("section") != null) {
+    query_section = url.searchParams.get("section")
+    if(sectionNames.includes(query_section)) {
+      curSection = sectionNames.indexOf(query_section)
+    }
+  }
+  $(`#btn-${sectionNames[curSection]}`).toggleClass("active");
+  $(`#${sectionNames[curSection]}`).toggleClass("d-none")
+});
