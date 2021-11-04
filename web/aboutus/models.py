@@ -10,6 +10,7 @@ class BaseContent(SortableMixin):
 
     title   = models.CharField(max_length = 100, null = True)
     desc    = HTMLField(null=True)
+    image   = models.ImageField(null=True)
     the_order = models.PositiveIntegerField(default=0, editable=False, db_index=True)
 
     def __str__(self):
@@ -18,14 +19,16 @@ class BaseContent(SortableMixin):
 class BaseMember(models.Model):
     name    = models.CharField(max_length = 100, null = True)
     image   = models.ImageField()
-    year    = models.PositiveIntegerField(null=True)
-    semester= models.CharField(max_length=10, null=True)
     position= models.CharField(max_length = 100, null = True)
+    year    = models.PositiveIntegerField(null=True, blank=True)
+    semester= models.CharField(max_length=10, null=True, blank=True)
 
     def save(self, *args, **kwargs):
         cur_date = date.today()
-        self.year = cur_date.year
-        self.semester = 'Fall' if cur_date.month > 6 else 'Spring'
+        if self.year == None:
+            self.year = cur_date.year
+        if self.semester == None:
+            self.semester = 'Fall' if cur_date.month > 6 else 'Spring'
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -34,11 +37,16 @@ class BaseMember(models.Model):
 class Member(BaseMember):
     pass
 
-class InternalBoardMember(BaseMember):
-    pass
-    
+class InternalBoardMember(BaseMember, SortableMixin):
+    class Meta:
+        ordering = ['the_order']
+    the_order = models.PositiveIntegerField(default=0, editable=False, db_index=True)
+
 class MainContent(BaseContent):
     pass
 
 class DivisionDescription(BaseContent): 
-    pass
+    
+    def title_lowercase_unspaced(self):
+        return '-'.join(self.title.split(' ')).lower()
+    

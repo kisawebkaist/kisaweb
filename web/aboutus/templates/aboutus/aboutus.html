@@ -36,7 +36,8 @@
   <div id="aboutus-content" class="d-flex flex-column flex-wrap my-4 mx-4">
     <div id="aboutus-main" class="d-none flex-column flex-wrap">
       {% for content in main_contents %}
-      <div class="my-2">
+      <div class="mb-5">
+        <img src="{{ content.image.url }}" alt="">
         <h1>{{content.title}}</h1>
         <div class="my-4">
           {{content.desc | safe}}
@@ -46,7 +47,8 @@
     </div>
     <div id="aboutus-divisions" class="d-none flex-column flex-wrap">
       {% for content in division_descriptions %}
-      <div class="my-2">
+      <div id="{{ content.title_lowercase_unspaced }}">
+        <img class="mr-4" src="{{ content.image.url }}" alt="" height="300px" max-width="100%" style="object-fit: cover;">
         <h1> {{content.title}}</h1>
         <div class="my-4">
           {{content.desc | safe}}
