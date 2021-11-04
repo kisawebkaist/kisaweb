@@ -67,7 +67,7 @@ $mobile-breakpoint: 768px;
     max-width: 420px;
 }
 
-.divisions img:hover{
+.divisions :hover{
     opacity: 0.75;
 }
 
@@ -84,6 +84,7 @@ $mobile-breakpoint: 768px;
 }
 
 .division{
-    max-width: 90%;
-    height: auto;
+    width: 90%;
+    height: 110%;
+    object-fit: cover;
 }
