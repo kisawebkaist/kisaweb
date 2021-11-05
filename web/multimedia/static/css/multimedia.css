@@ -1,0 +1,118 @@
+/* Banner Font*/
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,700;1,900&family=Yanone+Kaffeesatz:wght@300;500&display=swap');
+
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding:0;
+}
+
+.container-fluid{
+    padding:0 !important;
+}
+.multimedia-head-container{
+    position:relative;
+    display:flex;
+}
+
+.multimedia_title_image{
+    width:100vw;
+    background-position: center;
+    background-size: cover;
+    position: relative;
+    filter: brightness(70%);
+    z-index: -1;
+    height:100%;
+}
+
+.multimedia_title{
+    position: absolute;
+    color:white;
+    z-index: 0;
+    font-family: 'Lato', sans-serif;
+    text-transform: uppercase;
+    font-size: 4vw;
+    font-weight: 400;
+    display: flex;
+    align-self: center;
+    left:50%;
+    transform: translate(-50%,0);
+}
+
+.multimedia_title_quote{
+    position: absolute;
+    color: #FEFEFA;
+    z-index: 0;
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    text-transform: uppercase;
+    font-size: 1.5vw;
+    font-weight: 500;
+    display: flex;
+    align-self:flex-end;
+    left:50%;
+    transform: translate(-50%,0);
+}
+
+.multimedia_filter_btn{
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    font-weight: 300;
+    margin: .5vw;
+    padding: .5vw;
+    border: 2px solid #343a40;
+    border-radius:.3vw;
+    text-align: center;
+    text-transform: uppercase;
+    position: relative;
+    overflow:hidden;
+    transition: .3s;
+    background-color: transparent;
+}
+.multimedia_filter_btn:after {
+    position: absolute;
+    transition: .3s;
+    content: '';
+    width: 0;
+    bottom: 0;
+    background: #343a40;
+    height: 120%;
+    left: -10%;
+    transform: skewX(15deg);
+    z-index: -1;
+}
+.multimedia_filter_btn:hover{
+    cursor: pointer;
+    color:white;
+}
+
+.multimedia_filter_btn:hover:after{
+    left: -10%;
+    width: 120%;
+}
+
+.multimedia-image-card{
+    background-color: #f3f4f6;
+    padding: 2vw;
+    margin-bottom:1vw ;
+    border-radius:10px;
+}
+.multimedia-card-title{
+    font-family: Inter,sans-serif;
+    text-transform: uppercase;
+    color:#111827;
+    font-size: 2rem;
+    font-weight: 700;
+}
+.multimedia-card-tag{
+    font-family: Inter,sans-serif;
+    text-transform: uppercase;
+    font-weight: 400;
+    font-size: 1rem;
+    color:#ea580c;
+}
+.multimedia-card-date{
+    font-family: Inter,sans-serif;
+    color:#111827;
+    font-size: .9rem;
+}
+
+

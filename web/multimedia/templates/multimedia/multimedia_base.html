@@ -1,21 +1,26 @@
-{% extends 'core/base/base.html' %} 
+{% extends 'core/base/base.html' %}
 
 {% load static %}
+
+{% block css %}
+<link href="{% static 'css/multimedia.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
 {% load compress %}
 
 {% block title %}Multimedia{% endblock %}
 
 {% block main %}
 
-<div class="d-flex flex-row h-auto margin">  
+<div class="d-flex flex-row h-auto">
   <div class="container-fluid">
     <!-- Page Title -->
-    <div class="row">
-      <div class="col page-title-box text-center py-1"> 
-          Multimedia
-      </div>
+    <div class="multimedia-head-container">
+      <div class='multimedia_title'>KISA MULTIMEDIA</div>
+      <div class='multimedia_title_quote'> "A picture is worth a thousand words, but a memory is priceless!"</div>
+      <img class='multimedia_title_image'src="../../static/img/lib.jpg" alt="">
     </div>
   </div>
 </div>
-{% block content %} {% endblock %}   
+{% block content %} {% endblock %}
 {% endblock %}
