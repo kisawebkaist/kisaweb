@@ -21,6 +21,7 @@ steps:
 - name: pull
   commands:
   - cd /home/kisa/kisaweb
+  - git status
   - git checkout feat/60/ci
   - git pull https://github.com/kisawebkaist/kisaweb
   - ls
