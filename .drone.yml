@@ -18,17 +18,14 @@ steps:
   commands:
   - systemctl status drone
 
-- name: pull
+- name: deploy
   commands:
   - cd /home/kisa/kisaweb
   - git status
-  - git checkout feat/60/ci
-  - git pull https://github.com/kisawebkaist/kisaweb
-  - ls
-  - cat scripts/reactivatescript.sh
-  - sh scripts/reactivatescript.sh
   - git checkout master
-  - ls
+  - sh deactivatescript.sh
+  - git pull https://github.com/kisawebkaist/kisaweb
+  - sh activatescript.sh
 
 # - name: check-scripts
 #   commands:
