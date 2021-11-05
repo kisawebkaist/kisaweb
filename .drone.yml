@@ -9,10 +9,13 @@ platform:
 steps:
 - name: deploy
   commands:
-  - echo "Test Build Received"
+  - systemctl status apache2
+  - systemctl status drone
+  - cat scripts/reactivatescript.sh
 
 trigger:
   branch:
   - feat/60/ci
   event:
   - push
+  - pull_request
