@@ -21,10 +21,11 @@ steps:
 - name: pull
   commands:
   - cd /home/kisa/kisaweb
-  - git checkout /feat/60/ci
+  - git checkout feat/60/ci
   - git pull https://github.com/kisawebkaist/kisaweb
   - ls
   - cat scripts/reactivatescript.sh
+  - sh scripts/reactivatescript.sh
   - git checkout master
   - ls
 
