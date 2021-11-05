@@ -10,8 +10,6 @@ platform:
 #   disable: true
 
 steps:
-
-
 - name: apache2-status
   commands:
   - systemctl status apache2
@@ -20,11 +18,14 @@ steps:
   commands:
   - systemctl status drone
 
-- name: test-pull
+- name: pull
   commands:
   - cd /home/kisa/kisaweb
-  - ls
+  - git checkout /feat/60/ci
   - git pull https://github.com/kisawebkaist/kisaweb
+  - ls
+  - cat scripts/reactivatescript.sh
+  - git checkout master
   - ls
 
 # - name: check-scripts
