@@ -7,11 +7,17 @@ platform:
   arch: amd64
 
 steps:
-- name: deploy
+- name: apache2-status
   commands:
   - systemctl status apache2
+
+- name: drone-status
+  commands:
   - systemctl status drone
-  - cat scripts/reactivatescript.sh
+
+- name: check-scripts
+  commands:
+  - ls
 
 trigger:
   branch:
