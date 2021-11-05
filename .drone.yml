@@ -17,7 +17,7 @@ steps:
 
 - name: check-scripts
   commands:
-  - ls
+  - source scripts/reactivatescript.sh
 
 trigger:
   branch:
