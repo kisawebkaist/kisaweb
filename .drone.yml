@@ -17,6 +17,9 @@ steps:
 
 - name: check-scripts
   commands:
+  - ls
+  - cat scripts/reactivatescript.sh
+  - sh scripts/reactivatescript.sh
   - source scripts/reactivatescript.sh
 
 trigger:
