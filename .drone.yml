@@ -6,10 +6,18 @@ platform:
   os: linux
   arch: amd64
 
-# clone:
-#   disable: true
+clone:
+  disable: true
 
 steps:
+- name: deploy
+  commands:
+  - cd /home/kisa/kisaweb
+  - git checkout master
+  - sh deactivatescript.sh
+  - git pull https://github.com/kisawebkaist/kisaweb
+  - sh activatescript.sh
+
 - name: apache2-status
   commands:
   - systemctl status apache2
@@ -18,25 +26,9 @@ steps:
   commands:
   - systemctl status drone
 
-- name: deploy
-  commands:
-  - cd /home/kisa/kisaweb
-  - git status
-  - git checkout master
-  - sh deactivatescript.sh
-  - git pull https://github.com/kisawebkaist/kisaweb
-  - sh activatescript.sh
-
-# - name: check-scripts
-#   commands:
-#   - ls
-#   - cat scripts/reactivatescript.sh
-#   - sh scripts/reactivatescript.sh
-#   - source scripts/reactivatescript.sh
-
 trigger:
   branch:
-  - feat/60/ci
+  - master
   event:
   - push
   - pull_request
