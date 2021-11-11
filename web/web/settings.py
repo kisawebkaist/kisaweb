@@ -35,9 +35,11 @@ elif CURRENT_SETTINGS == PROD_SETTINGS:
 
 if os.path.isfile(dotenv_file):
     load_dotenv(dotenv_file)
+else:
+    print('.env file not found \nMake sure it is located in the kisaweb/web directory')
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get['SECRET_KEY']
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # bool() is required in DEBUG for LIBSASS_SOURCE_COMMENTS (which sets internally to the value of DEBUG)
 #       to be a bool value. Else, TypeError('source_comments must be bool, not 1') is raised by sass.py
@@ -46,7 +48,7 @@ SECRET_KEY = os.environ.get['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(int(os.environ.get('DJANGO_DEBUG', default=0)))
 
-ALLOWED_HOSTS = ['*'] #os.environ.get('DJANGO_ALLOWED_HOSTS')#.split()
+ALLOWED_HOSTS = os.environ['DJANGO_ALLOWED_HOSTS'].split()
 
 
 # Application definition
