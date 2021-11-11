@@ -37,14 +37,14 @@ if os.path.isfile(dotenv_file):
     load_dotenv(dotenv_file)
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '135*fe%orzw5m%za=6opxe2j3+xkf-rx@)4l0)q9v2+w8=%ryd' #os.environ.get('SECRET_KEY')
+SECRET_KEY = os.environ.get['SECRET_KEY']
 
 # bool() is required in DEBUG for LIBSASS_SOURCE_COMMENTS (which sets internally to the value of DEBUG)
 #       to be a bool value. Else, TypeError('source_comments must be bool, not 1') is raised by sass.py
 #       which is called by django_compress/django_libsass.
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True#bool(int(os.environ.get('1', default=0)))#bool(int(os.environ.get('DJANGO_DEBUG', default=0)))
+DEBUG = bool(int(os.environ.get('DJANGO_DEBUG', default=0)))
 
 ALLOWED_HOSTS = ['*'] #os.environ.get('DJANGO_ALLOWED_HOSTS')#.split()
 
