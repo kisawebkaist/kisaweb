@@ -2,7 +2,7 @@ default_language_version:
   python: python3.8
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.4.0
+    rev: v4.0.1
     hooks:
       - id: trailing-whitespace
       - id: check-executables-have-shebangs
@@ -16,7 +16,7 @@ repos:
       - id: bandit
         args: ['-iii', '-ll']
   - repo: https://gitlab.com/pycqa/flake8
-    rev: 3.8.4
+    rev: 3.9.2
     hooks:
       - id: flake8
   - repo: local
@@ -28,10 +28,10 @@ repos:
         types: [python]
         exclude: "[a-zA-Z]*/(migrations|tests)/(.)*"
   - repo: https://github.com/psf/black
-    rev: 20.8b1
+    rev: 21.9b0
     hooks:
       - id: black
   - repo: https://github.com/pycqa/isort
-    rev: 5.7.0
+    rev: 5.9.3
     hooks:
       - id: isort
