@@ -16,6 +16,8 @@ steps:
   - git checkout master
   - sh deactivatescript.sh
   - git pull https://github.com/kisawebkaist/kisaweb
+  - python manage.py migrate
+  - python manage.py collectstatic
   - sh activatescript.sh
 
 - name: apache2-status
