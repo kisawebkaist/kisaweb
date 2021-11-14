@@ -21,7 +21,8 @@
 .intro-banner img {
     z-index: 0;
     width: 100%;
-    height: 100%;
+    height: 73.5vh;
+    object-fit: cover;
 }
 
 .intro-banner .banner-text {
@@ -38,9 +39,10 @@
 $mobile-breakpoint: 768px;
 @media (max-width: $mobile-breakpoint) {
     .intro-banner img {
-        width: 150%;
-        margin-left: 50%;   
-        transform: translateX(-50%); 
+        width: 100%;
+        height:auto;
+        // margin-left: 50%;   
+        // transform: translateX(-50%); 
     }
     
     .intro-banner .banner-text {

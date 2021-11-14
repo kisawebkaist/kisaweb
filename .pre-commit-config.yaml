@@ -28,10 +28,10 @@ repos:
         types: [python]
         exclude: "[a-zA-Z]*/(migrations|tests)/(.)*"
   - repo: https://github.com/psf/black
-    rev: 21.5b1
+    rev: 21.9b0
     hooks:
       - id: black
   - repo: https://github.com/pycqa/isort
-    rev: 5.8.0
+    rev: 5.9.3
     hooks:
       - id: isort
