@@ -59,61 +59,75 @@
             <p class="card-text mb-0">
               {% if event.is_link %}
               <!-- Link -->
-                <i class="fas fa-link"></i>
+                <i class="fas fa-link pt-3"></i>
                 <a href="{{ event.link }}" target="_blank">{{ event.link }}</a>
               {% else %}
               <!-- Location -->
-                <i class="fas fa-map-marker-alt"></i>
+                <i class="fas fa-map-marker-alt pt-3"></i>
                 {{ event.location }}
               {% endif %}
             </p>
             <!-- Important Message -->
             {% if event.important_message %}
             <p class="card-text mb-0">
-              <i class="fas fa-exclamation ml-1 mr-2"></i>
+              <i class="fas fa-exclamation ml-1 mr-2 pt-3"></i>
               {{ event.important_message }}
             </p>
             {% endif %}
             <!-- Description -->
-            <div class="event-description mt-2">
-              {{ event.description|safe }}
+            <button class="btn btn-primary mt-4 mb-4" type="button" data-toggle="collapse" data-target="#discription{{event.id}}" aria-expanded="false" aria-controls="discription{{event.id}}">
+              Read more
+            </button>
+            <div class="collapse" id="discription{{event.id}}">
+              <div class="card card-body">
+                <p class="text-justify font-italic">{{ event.description|safe }}</p>
+                <!-- Prizes-->
+                {% if not event.no_prize%}
+                <p class="card-text mb-4">
+                  <i class="fas fa-award ml-1 mr-2"> {{event.prize1}}</i><br>
+                  <i class="fas fa-award ml-1 mr-2"> {{event.prize2}}</i><br>
+                  <i class="fas fa-award ml-1 mr-2"> {{event.prize3}}</i><br>
+                </p>
+                {% endif %}
+
+                <p class="card-text">
+                  <!-- Register Buttons -->
+                  <!--{% if event.registration_start_datetime %}
+                  {% if not user.is_authenticated %}-->
+                  <!-- "concatenate_eventid" is a custom templatefilter -->
+                  <!-- Login Button for registration -->
+                  <!--<a href="{% url 'login' %}" class="btn btn-success mr-2" role="button">Login</a>-->
+                  <!--{% elif user in event.participants.all %}-->
+                  <!-- Deregister Button -->
+                  <!--<button type="button" class="btn btn-secondary mr-2 deregister" data-event-registration-url="{% url 'modify_event_registration' id=event.id %}">Deregister</button>
+                  {% else %}-->
+                  <!-- Register Button -->
+                  <!--<button type="button" class="btn btn-success mr-2 register" data-event-registration-url="{% url 'modify_event_registration' pk=event.id %}">Register</button>-->
+                  <!--{% endif %}-->
+                  <!-- Cancel Button -->
+                  <!--<button type="button" class="btn btn-secondary mr-2 register-cancel" style="display: none;">Cancel</button>-->
+                  <a class="btn btn-success mr-2" href="{{ event.registration_form_src }}" target="_blank">Register</a>
+                  <!-- Occupancy -->
+                  <i class="fas fa-user"></i>
+                  <!-- "seats_left" is a custom templatefilter -->
+                  <span class="occupancy mr-min1080-30">
+                  {{ event.max_occupancy|seats_left:event.current_occupancy }}
+                  </span>
+                  {% endif %}
+                  <!-- Registration Datetime -->
+                  <br class="d-min1080-none">
+                  <i class="fas fa-clock"></i>
+                  Registration: {% if event.registration_start_datetime %}
+                  {{ event.registration_start_datetime|date:"D, M j, H:i" }} - {{ event.registration_end_datetime|date:"D, M j, H:i" }}
+                  {% else %}No registration required
+                  {% endif %}
+                  <!-- TODO: Embedded registratrion form -->
+                  {% comment %} <div class="register-form embed-responsive embed-responsive-21by9" style="display: none;">
+                    <iframe class="register-form-iframe embed-responsive-item" src="{{ event.registration_form_src }}" marginheight="0" marginwidth="0">Loading…</iframe>
+                  </div> {% endcomment %}
+                </p>    
+              </div>
             </div>
-            <p class="card-text">
-              <!-- Register Buttons -->
-              <!--{% if event.registration_start_datetime %}
-              {% if not user.is_authenticated %}-->
-              <!-- "concatenate_eventid" is a custom templatefilter -->
-              <!-- Login Button for registration -->
-              <!--<a href="{% url 'login' %}" class="btn btn-success mr-2" role="button">Login</a>-->
-              <!--{% elif user in event.participants.all %}-->
-              <!-- Deregister Button -->
-              <!--<button type="button" class="btn btn-secondary mr-2 deregister" data-event-registration-url="{% url 'modify_event_registration' id=event.id %}">Deregister</button>
-              {% else %}-->
-              <!-- Register Button -->
-              <!--<button type="button" class="btn btn-success mr-2 register" data-event-registration-url="{% url 'modify_event_registration' pk=event.id %}">Register</button>-->
-              <!--{% endif %}-->
-              <!-- Cancel Button -->
-              <!--<button type="button" class="btn btn-secondary mr-2 register-cancel" style="display: none;">Cancel</button>-->
-              <a class="btn btn-success mr-2" href="{{ event.registration_form_src }}" target="_blank">Register</a>
-              <!-- Occupancy -->
-              <i class="fas fa-user"></i>
-              <!-- "seats_left" is a custom templatefilter -->
-              <span class="occupancy mr-min1080-30">
-              {{ event.max_occupancy|seats_left:event.current_occupancy }}
-              </span>
-              {% endif %}
-              <!-- Registration Datetime -->
-              <br class="d-min1080-none">
-              <i class="fas fa-clock"></i>
-              Registration: {% if event.registration_start_datetime %}
-              {{ event.registration_start_datetime|date:"D, M j, H:i" }} - {{ event.registration_end_datetime|date:"D, M j, H:i" }}
-              {% else %}No registration required
-              {% endif %}
-              <!-- TODO: Embedded registratrion form -->
-              {% comment %} <div class="register-form embed-responsive embed-responsive-21by9" style="display: none;">
-                <iframe class="register-form-iframe embed-responsive-item" src="{{ event.registration_form_src }}" marginheight="0" marginwidth="0">Loading…</iframe>
-              </div> {% endcomment %}
-            </p>
           </div>
         </div>
       </div>

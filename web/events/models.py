@@ -79,6 +79,13 @@ class Event(models.Model):
     is_link = models.BooleanField(default=False, verbose_name='Event is online (i.e. has link)')
     link = models.URLField(default='TBA', blank=True)
 
+    no_prize = models.BooleanField(default=False, verbose_name='Event has no prize')
+    
+    prize1 = models.CharField(max_length=200, blank=True)
+    prize2 = models.CharField(max_length=200, blank=True)
+    prize3 = models.CharField(max_length=200, blank=True)
+    
+    
     event_start_datetime = models.DateTimeField()
     event_end_datetime = models.DateTimeField()
     registration_start_datetime = models.DateTimeField(blank=True, null=True)

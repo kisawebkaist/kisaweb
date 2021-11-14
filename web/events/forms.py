@@ -46,6 +46,12 @@ class EventForm(forms.ModelForm):
         required=False,
         label='Registration not required',
     )
+    
+    no_prize = forms.BooleanField(
+        required=False,
+        label='Event offers prizes',
+    )
+    
     location = forms.CharField(initial=Event.default_location)
     custom_image_dimensions = forms.BooleanField(required=False)
 
@@ -90,6 +96,15 @@ class EventForm(forms.ModelForm):
             Row(
                 Column(css_class='col-lg-6'),
                 Column('no_registration', css_class='col-lg-6 col-md'),
+            ),
+            Row(
+                Column('prize1', css_class='col-lg-3 col-md-6'),
+                Column('prize2', css_class='col-lg-3 col-md-6'),
+                Column('prize3', css_class='col-lg-3 col-md-6'),
+            ),
+            Row(
+                Column(css_class='col-lg-6'),
+                Column('no_prize', css_class='col-lg-6 col-md'),
             ),
             Row(
                 Column(

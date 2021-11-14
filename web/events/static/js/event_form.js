@@ -48,3 +48,24 @@ $('#event_delete').on('click', function() {
         });
     }
 });
+
+$('#id_no_prize').on('click', function() {
+    $prize1 = $('#id_prize1');
+    $prize2 = $('#id_prize2');
+    $prize3 = $('#id_prize3');
+    if ($(this).prop('checked')) {
+        $prize1.val('');
+        $prize1.prop('disabled', true);
+        
+        $prize2.val('');
+        $prize2.prop('disabled', true);
+        
+        $prize3.val('');
+        $prize3.prop('disabled', true);
+    }
+    else {
+        $prize1.prop('disabled', false);
+        $prize2.prop('disabled', false);
+        $prize3.prop('disabled', false);
+    }
+});
