@@ -1,0 +1,34 @@
+kind: pipeline
+type: exec
+name: default
+
+platform:
+  os: linux
+  arch: amd64
+
+clone:
+  disable: true
+
+steps:
+- name: deploy
+  commands:
+  - cd /home/kisa/kisaweb
+  - git checkout master
+  - sh deactivatescript.sh
+  - git pull https://github.com/kisawebkaist/kisaweb
+  - sh activatescript.sh
+
+- name: apache2-status
+  commands:
+  - systemctl status apache2
+
+- name: drone-status
+  commands:
+  - systemctl status drone
+
+trigger:
+  branch:
+  - master
+  event:
+  - push
+  - pull_request
