@@ -7,6 +7,9 @@
     padding:0;
 }
 
+html{
+    font-size:100%;
+}
 .container-fluid{
     padding:0 !important;
 }
@@ -92,9 +95,11 @@
 .multimedia-image-card{
     background-color: #f3f4f6;
     padding: 2vw;
-    margin-bottom:1vw ;
+    margin:0 auto;
     border-radius:10px;
+    width:55vw;
 }
+
 .multimedia-card-title{
     font-family: Inter,sans-serif;
     text-transform: uppercase;
@@ -116,3 +121,11 @@
 }
 
 
+@media only screen and (max-width: 40em){
+    html{
+        font-size:62.5%;
+    }
+    .multimedia-image-card{
+        width:70vw;
+    }
+}

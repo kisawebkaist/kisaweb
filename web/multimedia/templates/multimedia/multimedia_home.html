@@ -43,6 +43,7 @@
     <hr>
     {% for media in multimedia %}
     <div class="multimedia-image-card">
+        <p class="card-text"><small class="multimedia-card-date">{{media.date}}</small></p>
         <img class="card-img-top" src="{{media.preview}}" alt="Card image cap">
         <div class="card-body">
         <h5 class="card-title">
@@ -52,7 +53,7 @@
             {% endfor %}
         </h5>
         <!-- <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus, consectetur distinctio. Enim architecto, officia tempore nihil iste voluptates provident neque!</p> -->
-        <p class="card-text"><small class="multimedia-card-date">{{media.date}}</small></p>
+
         </div>
     </div>
     {% endfor %}
