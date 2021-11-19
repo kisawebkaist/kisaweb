@@ -129,3 +129,7 @@ html{
         width:70vw;
     }
 }
+
+.multimedia-rounded-img {
+    border-radius: 20px;
+}
