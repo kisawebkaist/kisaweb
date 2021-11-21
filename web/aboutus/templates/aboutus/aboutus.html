@@ -14,75 +14,81 @@
 
 {% block content %}
 
-<div class="flex-row h-auto margin">
-  <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #EEEEEE;">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#about-us-navbar-dropdown" aria-controls="about-us-navbar-dropdown" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="about-us-navbar-dropdown">
-      <ul class="navbar-nav d-flex justify-content-around">
-        <li class="nav-item">
-          <a class="nav-link" id="btn-aboutus-main" type="button" onclick="switchSection(0)">Main</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" id="btn-aboutus-divisions" type="button" onclick="switchSection(1)">Divisions</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" id="btn-aboutus-members" type="button" onclick="switchSection(2)">Members</a>
-        </li>
-      </ul>
-    </div>
-  </nav>
-  <div id="aboutus-content" class="d-flex flex-column flex-wrap my-4 mx-4">
-    <div id="aboutus-main" class="d-none flex-column flex-wrap">
-      {% for content in main_contents %}
-      <div class="mb-5">
-        <img src="{{ content.image.url }}" alt="">
-        <h1>{{content.title}}</h1>
-        <div class="my-4">
-          {{content.desc | safe}}
-        </div>
+<div class="d-flex flex-row h-auto margin justify-content-center">
+  <div style="width: 80%;">
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #EEEEEE;">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#about-us-navbar-dropdown" aria-controls="about-us-navbar-dropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="about-us-navbar-dropdown">
+        <ul class="navbar-nav d-flex justify-content-around">
+          <li class="nav-item">
+            <a class="nav-link" id="btn-aboutus-main" type="button" onclick="switchSection(0)">Main</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="btn-aboutus-divisions" type="button" onclick="switchSection(1)">Divisions</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="btn-aboutus-members" type="button" onclick="switchSection(2)">Members</a>
+          </li>
+        </ul>
       </div>
-      {% endfor %}
-    </div>
-    <div id="aboutus-divisions" class="d-none flex-column flex-wrap">
-      {% for content in division_descriptions %}
-      <div id="{{ content.title_lowercase_unspaced }}">
-        <img class="mr-4" src="{{ content.image.url }}" alt="" height="300px" max-width="100%" style="object-fit: cover;">
-        <h1> {{content.title}}</h1>
-        <div class="my-4">
-          {{content.desc | safe}}
-        </div>
-      </div>
-      {% endfor %}
-    </div>
-    <div id="aboutus-members" class="d-none flex-column flex-wrap">
-      <div class="my-2">
-        <h1 class="content-title">Executive Board</h1>
-        <div class="d-flex flex-row flex-wrap justify-content-start">
-          {% for executive_member in internal_board_members %}
-          <div class="card m-4" style="width: 200px;">
-            <img class="card-img-top" style="height: 200px; object-fit: cover;" src="{{ executive_member.image.url }}" alt="">
-            <div class="card-body">
-              <h5 class="card-title text-center">{{ executive_member.name }}</h5>
-              <p class="card-text text-center">{{ executive_member.position }}</p>
-            </div>
+    </nav>
+    <div id="aboutus-content" class="d-flex flex-column flex-wrap my-4 mx-4">
+      <div id="aboutus-main" class="d-none flex-column flex-wrap">
+        {% for content in main_contents %}
+        <div class="mb-5">
+          {% if content.image %}
+          <img src="{{ content.image.url }}" alt="" width="100%">
+          {% endif %}
+          <h1>{{content.title}}</h1>
+          <div class="my-4">
+            {{content.desc | safe}}
           </div>
-          {% endfor %}
         </div>
+        {% endfor %}
       </div>
-      <div class="my-2">
-        <h1 class="content-title">Members</h1>
-        <div class="d-flex flex-row flex-wrap justify-content-start">
-          {% for member in members %}
-          <div class="card m-4" style="width: 200px;">
-            <img class="card-img-top" style="height: 200px; object-fit: cover;" src="{{ member.image.url }}" alt="">
-            <div class="card-body">
-              <h5 class="card-title text-center">{{ member.name }}</h5>
-              <p class="card-text text-center">{{ member.position }}</p>
-            </div>
+      <div id="aboutus-divisions" class="d-none flex-column flex-wrap">
+        {% for content in division_descriptions %}
+        <div id="{{ content.title_lowercase_unspaced }}">
+          {% if content.image %}
+          <img class="mb-4 mt-2" src="{{ content.image.url }}" alt="" width="100%" style="object-fit: cover;">
+          {% endif %}
+          <h1> {{content.title}}</h1>
+          <div class="my-4">
+            {{content.desc | safe}}
           </div>
-          {% endfor %}
+        </div>
+        {% endfor %}
+      </div>
+      <div id="aboutus-members" class="d-none flex-column flex-wrap">
+        <div class="my-2">
+          <h1 class="content-title">Executive Board</h1>
+          <div class="d-flex flex-row flex-wrap justify-content-start">
+            {% for executive_member in internal_board_members %}
+            <div class="card m-4" style="width: 200px;">
+              <img class="card-img-top" style="height: 200px; object-fit: cover;" src="{{ executive_member.image.url }}" alt="">
+              <div class="card-body">
+                <h5 class="card-title text-center">{{ executive_member.name }}</h5>
+                <p class="card-text text-center">{{ executive_member.position }}</p>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="my-2">
+          <h1 class="content-title">Members</h1>
+          <div class="d-flex flex-row flex-wrap justify-content-start">
+            {% for member in members %}
+            <div class="card m-4" style="width: 200px;">
+              <img class="card-img-top" style="height: 200px; object-fit: cover;" src="{{ member.image.url }}" alt="">
+              <div class="card-body">
+                <h5 class="card-title text-center">{{ member.name }}</h5>
+                <p class="card-text text-center">{{ member.position }}</p>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
         </div>
       </div>
     </div>

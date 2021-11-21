@@ -10,7 +10,7 @@ class BaseContent(SortableMixin):
 
     title   = models.CharField(max_length = 100, null = True)
     desc    = HTMLField(null=True)
-    image   = models.ImageField(null=True)
+    image   = models.ImageField(null=True, blank=True)
     the_order = models.PositiveIntegerField(default=0, editable=False, db_index=True)
 
     def __str__(self):
@@ -18,7 +18,7 @@ class BaseContent(SortableMixin):
 
 class BaseMember(models.Model):
     name    = models.CharField(max_length = 100, null = True)
-    image   = models.ImageField()
+    image   = models.ImageField(null=True)
     position= models.CharField(max_length = 100, null = True)
     year    = models.PositiveIntegerField(null=True, blank=True)
     semester= models.CharField(max_length=10, null=True, blank=True)
