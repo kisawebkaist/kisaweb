@@ -3,7 +3,8 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('login/', views.SSOLoginRedirect.as_view(), name='login'),
-    path('logout/', views.sso_logout_redirect, name='logout'),
-    path('logout-response/', views.sso_logout_response, name='sso_logout_response')
+    path('login/', views.login_view, name='login'),
+    path('login-response/', views.login_response_view, name='login-response'),
+    path('logout/', views.logout_view, name='logout'),
+    path('logout-response/', views.logout_response_view, name='logout-response')
 ]

@@ -142,6 +142,7 @@
 
 import os
 from time import time
+from django.http.response import HttpResponseRedirect
 import requests
 import json
 import datetime
@@ -153,11 +154,14 @@ from django.shortcuts import redirect
 from sso.models import User
 from django.views import View
 from django.http import HttpResponse
+from django.views.decorators.http import require_http_methods
 
-# KSSO_LOGIN_URL = 'https://iam2dev.kaist.ac.kr/api/sso/commonLogin'
-KSSO_LOGIN_URL = 'https://iam2dev.kaist.ac.kr/api/sso/commonLogin'
-KSSO_LOGOUT_URL = 'https://iam2.kaist.ac.kr/api/api/sso/logout'
+KSSO_LOGIN_URL = os.environ.get('KSSO_LOGIN_URL')
+KSSO_LOGOUT_URL = os.environ.get('KSSO_LOGOUT_URL')
+
 KSSO_CLIENT_ID = os.environ.get('KSSO_CLIENT_ID')
+CAIS_AES_ID_SECRET = os.environ.get('KSSO_SECRET_KEY')
+SA_AES_ID_SECRET = os.environ.get('KSSO_SECRET_KEY')
 
 
 from django.utils.decorators import method_decorator
@@ -169,8 +173,6 @@ from Crypto.Cipher import AES
 
 def decrypt(data, state, host) :
     BS = AES.block_size 
-    #pad=lambda s:s+(BS-len(s)%BS)*chr(BS-len(s)%BS) 
-    # unpad = lambda s : s[0:-ord(s[-1])] 
     unpad = lambda s : s[0:-s[-1]] 
     if host in ('ka', 'co','ca') :
         key = (CAIS_AES_ID_SECRET+str(state))[80:96] # 32bit
@@ -179,100 +181,108 @@ def decrypt(data, state, host) :
     iv=key[:16] # 16bit
     cipher = AES.new(key, AES.MODE_CBC, IV=iv) 
     deciphed = cipher.decrypt(base64.b64decode(data))   
-    # print(deciphed[-1])
     deciphed = unpad(deciphed)
     return deciphed
 
+keys_and_fields = [
+    ('kaist_uid', 'kaist_uid'), 
+    ('ku_kname', 'korean_name'), 
+    ('displayname', 'full_name'), 
+    ('sn', 'first_name'), 
+    ('givenname', 'last_name'),
+    ('ku_born_date', 'dob'), 
+    ('c', 'nationality'), 
+    ('ku_sex', 'sex'),
+    ('mail', 'kaist_email'), 
+    ('ku_ch_mail', 'external_email'),
+    ('ku_employee_number', 'employee_number'), 
+    ('ku_std_no', 'student_number'), 
+    ('ku_acad_org', 'bachelors_department_code'), 
+    ('ku_acad_name', 'bachelors_department_name'), 
+    ('ku_campus', 'campus'),
+    ('title', 'title_english'), 
+    ('ku_psft_user_status', 'student_status_english'), 
+    ('ku_psft_user_status_kor', 'student_status_korean'),
+    ('ku_acad_prog_code', 'degree_code'), 
+    ('ku_acad_prog', 'degree_name_korean'), 
+    ('ku_acad_prog_eng', 'degree_name_english'),
+    ('employeeType', 'user_group'), 
+    ('ku_prog_effdt', 'student_admission_datetime'), 
+    ('ku_stdnt_type_id', 'student_type_id'), 
+    ('ku_stdnt_type_class', 'student_type_class'), 
+    ('ku_category_id', 'student_category_id'),
+    ('ku_prog_start_date', 'student_enrollment_date'), 
+    ('ku_prog_end_date', 'student_graduation_date'),
+    ('acad_ebs_org_id', 'student_department_id'), 
+    ('uid', 'sso_id'),
+    ('acad_ebs_org_name_eng', 'student_department_name_english'), 
+    ('acad_ebs_org_name_kor', 'student_department_name_korean'),
+]
 
-@method_decorator(csrf_exempt, name='dispatch')
-class SSOLoginRedirect(View):
-    def get(self, request):
-        state = str(int(time()))
-        request.session['state'] = state
+# TODO: Make agreement views
 
-        data = {
-            'client_id': "client_022",
-            # 'redirect_url': reverse('login'),
-            'redirect_url': 'http://localhost:8000/sso/login/',
-            'state': state,
-        }
-        # response = requests.post(url=KSSO_LOGIN_URL, data=data)
+def login_view(request):
+    state = str(int(time()))
 
-        # django_response = HttpResponse(
-        #     content         = response.content,
-        #     status          = response.status_code,
-        #     content_type    = response.headers['Content-Type']
-        # )
-        # print(django_response.content)
-        redirect_url    = f'{KSSO_LOGIN_URL}?client_id={data["client_id"]}&state={data["state"]}&redirect_url={data["redirect_url"]}'
-        print(redirect_url)
-        return redirect(redirect_url)
+    # TODO: Decide what to valide in state. Namely, what should state keep
 
-    def post(self, request):
-        if bool(request.POST.get('success')):
-            # state validation
-            state = request.POST.get('state')
-            if request.session.get('state'):
-                saved_state = request.session.get('state')
-                if not saved_state == state:
-                    # state validation failure handling
-                    pass
-                del request.session['state']
-
-            # k_uid
-            k_uid = request.POST.get('k_uid')
-            # result object JSON string
-            # result_str = request.POST.get('result')
-            # result = json.loads(result_str, encoding='utf-8')
-            print(request.META.get('HTTP_HOST'))
-            decrypted_data = decrypt(k_uid, state, request.META.get('HTTP_HOST') [:2])
-            request.session['kaist_uid'] = decrypted_data
-            result = request.POST.get('result')
-            print(result)
-            print(base64.b64decode(result))
-            result = decrypt(result, state, request.META.get('HTTP_HOST') [:2]).decode('utf-8')
-            print(result)
-            # User information
-            user_info = result['dataMap']['USER_INFO']
-
-            if not User.objects.filter(pk=user_info['kaist_uid']).exists():
-                keys = [
-                    'kaist_uid', 'ku_kname', 'displayname', 'sn', 'givenname',
-                    'ku_born_date', 'c', 'ku_sex',
-                    'mail', 'ku_ch_mail',
-                    'ku_employee_number', 'ku_std_no', 'ku_acad_org', 'ku_acad_name', 'ku_campus',
-                    'title', 'ku_psft_user_status', 'ku_psft_user_status_kor',
-                    'ku_acad_prog_code', 'ku_acad_prog', 'ku_acad_prog_eng',
-                    'employeeType', 'ku_prog_effdt', 'ku_stdnt_type_id', 'ku_stdnt_type_class', 'ku_category_id',
-                    'ku_prog_start_date', 'ku_prog_end_date',
-                    'acad_ebs_org_id', 'uid',
-                    'acad_ebs_org_name_eng', 'acad_ebs_org_name_kor',
-                ]
-                user_params = {}
-                for key in keys:
-                    user_params[key] = user_info[key]
-                user = User(**user_params)
-                user.save()
-            else:
-                user = User.objects.get(pk=user_info['kaist_uid'])
-
-            login(request, user)
-            return redirect('/')
-        else:
-            # TODO: Make login failed message/page
-            return redirect('/')
-
-def sso_logout_redirect(request):
     data = {
         'client_id': KSSO_CLIENT_ID,
-        'redirect_url': reverse_lazy('sso_logout_response'),
+        'redirect_url': request.build_absolute_uri(reverse('login-response')),
+        'state': state,
     }
 
-    response = requests.post(url=KSSO_LOGOUT_URL, data=data)
+    redirect_url = f"{KSSO_LOGIN_URL}?{'&'.join([f'{key}={value}' for key, value in data.items()])}"
+    return redirect(redirect_url)
+
+@require_http_methods(['POST'])
+@csrf_exempt
+def login_response_view(request):
+    if bool(request.POST.get('success')):
+        # state validation
+        state = request.POST.get('state')
+        if request.session.get('state'):
+            saved_state = request.session.get('state')
+            if not saved_state == state:
+                # state validation failure handling
+                # TODO: Decide what to valide in state
+                pass
+            del request.session['state']
+
+        result = request.POST.get('result')
+        result = decrypt(result, state, request.META.get('HTTP_HOST') [:2]).decode('utf-8')
+        result = json.loads(result, encoding='utf-8')
+        
+        # User information
+        user_info = result['dataMap']['USER_INFO']
+
+        if not User.objects.filter(pk=user_info['kaist_uid']).exists():
+            
+            user_params = {}
+            for key, field in keys_and_fields:
+                if key in user_info:
+                    user_params[field] = user_info[key]
+            user = User(**user_params)
+            user.save()
+        else:
+            user = User.objects.get(pk=user_info['kaist_uid'])
+
+        login(request, user)
+        return redirect('/')
+    else:
+        # TODO: Make login failed message/page
+        return redirect('/')
+
+def logout_view(request):
+    data = {
+        'client_id': KSSO_CLIENT_ID,
+        'redirect_url': request.build_absolute_uri(reverse('logout-response')),
+    }
+    location = f"{KSSO_LOGOUT_URL}?{'&'.join([f'{key}={value}' for key, value in data.items()])}"
+    response = HttpResponseRedirect(location)
     return response
 
 
-def sso_logout_response(request):
-    # django logout
+def logout_response_view(request):
     logout(request)
     return redirect('/')
