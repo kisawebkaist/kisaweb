@@ -79,6 +79,7 @@ INSTALLED_APPS = [
     'sso',  # contains the User model
     'blog',
     'faq',
+    'clubs',
 ]
 
 MIDDLEWARE = [
