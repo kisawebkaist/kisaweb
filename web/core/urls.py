@@ -12,4 +12,5 @@ urlpatterns = [
     path('docs/', include('docs.urls')),
     path('sso/', include('sso.urls')),
     path('blog/', include('blog.urls')),
+    path('clubs/', include('clubs.urls')),
 ]
