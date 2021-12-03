@@ -37,12 +37,18 @@
                 {% for img in images|slice:":5" %}
                     {% if forloop.counter > 1 %}
                         <div class="carousel-item">
-                            <img src={{img.src}} class="w-100 multimedia-rounded-img" alt="Los Angeles">
+                            <a href={{img.src}}>
+                                <img src={{img.src}} class="w-100 multimedia-rounded-img" alt="img">
+                                <!-- {{img.title}} -->
+                            </a>
                         </div>
                         <!-- {{img.title}} -->
                     {% else %}
                         <div class="carousel-item active">
-                            <img src={{img.src}} class="w-100 multimedia-rounded-img" alt="Los Angeles">
+                            <a href={{img.src}}>
+                                <img src={{img.src}} class="w-100 multimedia-rounded-img" alt="img">
+                                <!-- {{img.title}} -->
+                            </a>
                         </div>
                         <!-- {{img.title}} -->
                     {% endif %}
@@ -68,8 +74,10 @@
         {% for img in images|slice:"5:" %}
             {% if forloop.counter0|divisibleby:"3" %}
                 <div class="pt-2">
-                    <img src={{img.src}} class="w-100 multimedia-rounded-img" alt="img">
-                    <!-- {{img.title}} -->
+                    <a href={{img.src}}>
+                        <img src={{img.src}} class="w-100 multimedia-rounded-img" alt="img">
+                        <!-- {{img.title}} -->
+                    </a>
                 </div>
             {% endif %}
         {% endfor %}
@@ -78,8 +86,10 @@
         {% for img in images|slice:"6:" %}
             {% if forloop.counter0|divisibleby:"3" %}
                 <div class="pt-2">
-                    <img src={{img.src}} class="w-100 multimedia-rounded-img" alt="img">
-                    <!-- {{img.title}} -->
+                    <a href={{img.src}}>
+                        <img src={{img.src}} class="w-100 multimedia-rounded-img" alt="img">
+                        <!-- {{img.title}} -->
+                    </a>
                 </div>
             {% endif %}
         {% endfor %}
@@ -88,8 +98,10 @@
         {% for img in images|slice:"7:" %}
             {% if forloop.counter0|divisibleby:"3" %}
                 <div class="pt-2">
-                    <img src={{img.src}} class="w-100 multimedia-rounded-img" alt="img">
-                    <!-- {{img.title}} -->
+                    <a href={{img.src}}>
+                        <img src={{img.src}} class="w-100 multimedia-rounded-img" alt="img">
+                        <!-- {{img.title}} -->
+                    </a>
                 </div>
             {% endif %}
         {% endfor %}

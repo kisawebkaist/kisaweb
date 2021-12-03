@@ -133,3 +133,7 @@ html{
 .multimedia-rounded-img {
     border-radius: 20px;
 }
+
+.multimedia-rounded-img:hover {
+    opacity: 0.7;
+}

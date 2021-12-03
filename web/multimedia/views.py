@@ -25,6 +25,7 @@ class MultimediaView(View):
             "alt"   : img.alt    
         } for img in images]
         images.sort(key=lambda x: x["title"].lower())
+        # print(images[0]["src"])
         videos      = [{
             "title" : vid.title,
             "src"   : vid.file.url,
