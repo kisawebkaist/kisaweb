@@ -219,8 +219,6 @@ keys_and_fields = [
     ('acad_ebs_org_name_kor', 'student_department_name_korean'),
 ]
 
-# TODO: Make agreement views
-
 def login_view(request):
     state = str(int(time()))
 
