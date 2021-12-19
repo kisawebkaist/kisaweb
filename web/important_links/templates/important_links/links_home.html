@@ -1,0 +1,21 @@
+{% extends 'important_links/templates/important_links/links_base.html' %} 
+
+{% load static %}
+{% load compress %}
+
+{% block css %} <!-- CUSTOM CSS -->  {% endblock %}
+
+{% block content %}
+<!-- LINKS (check views.py for details if needed)-->
+<div class="container">
+	{% for category in categories %}
+	<p>{{category.title_category}}</p>
+	<ul>
+		{% for link in category.links.all %}
+		<li>Title: {{link.title}}, Description: {{link.description}}, URL: {{link.url}}</li>
+		{% endfor %}
+	</ul>
+	{% endfor %}
+</div>
+<!-- END OF LINKS -->
+{% endblock %}
