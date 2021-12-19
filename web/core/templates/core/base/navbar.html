@@ -61,6 +61,10 @@
       <a class="nav-item nav-link" href="{{ navbar.course_resources_link }}">Course Resources</a>
       <!--<a class="nav-item nav-link" href="#">About Us</a>-->
       <a class="nav-item nav-link" href="{% url 'faq' %}"> FAQ </a>
+
+      <!-- TEMPORARY!!! REMOVE THE NEXT LINE AND COMBINE WITH COURSE RESOURCES UNDER A RESOURCES TAB -->
+      <a class="nav-item nav-link" href="{% url 'important-links' %}"> Important Links </a>
+
       <!-- Election -->
       <!-- {% if election_link_visible %}
       <a class="nav-item nav-link text-warning" href="{% url 'election' semyear=election_semyear %}">Election</a>
