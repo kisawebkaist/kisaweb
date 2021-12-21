@@ -1,3 +1,157 @@
+import os
+from time import time
+from django.http.response import HttpResponseRedirect
+import requests
+import json
+import datetime
+from web.settings import SECRET_KEY
+
+from django.urls import reverse_lazy, reverse
+from django.contrib.auth import login, logout
+from django.shortcuts import render
+from django.shortcuts import redirect
+
+from sso.models import User, LoginError
+from django.views import View
+from django.http import HttpResponse
+from django.views.decorators.http import require_http_methods
+
+
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+
+import base64
+from Crypto.Cipher import AES
+
+import hashlib
+
+KSSO_LOGIN_URL = os.environ.get('KSSO_LOGIN_URL')
+KSSO_LOGOUT_URL = os.environ.get('KSSO_LOGOUT_URL')
+
+KSSO_CLIENT_ID = os.environ.get('KSSO_CLIENT_ID')
+CAIS_AES_ID_SECRET = os.environ.get('KSSO_SECRET_KEY')
+SA_AES_ID_SECRET = os.environ.get('KSSO_SECRET_KEY')
+
+keys_and_fields = [
+    ('kaist_uid', 'kaist_uid'), 
+    ('ku_kname', 'korean_name'), 
+    ('displayname', 'full_name'), 
+    ('sn', 'first_name'), 
+    ('givenname', 'last_name'),
+    ('ku_born_date', 'dob'), 
+    ('c', 'nationality'), 
+    ('ku_sex', 'sex'),
+    ('mail', 'kaist_email'), 
+    ('ku_ch_mail', 'external_email'),
+    ('ku_employee_number', 'employee_number'), 
+    ('ku_std_no', 'student_number'), 
+    ('ku_acad_org', 'bachelors_department_code'), 
+    ('ku_acad_name', 'bachelors_department_name'), 
+    ('ku_campus', 'campus'),
+    ('title', 'title_english'), 
+    ('ku_psft_user_status', 'student_status_english'), 
+    ('ku_psft_user_status_kor', 'student_status_korean'),
+    ('ku_acad_prog_code', 'degree_code'), 
+    ('ku_acad_prog', 'degree_name_korean'), 
+    ('ku_acad_prog_eng', 'degree_name_english'),
+    ('employeeType', 'user_group'), 
+    ('ku_prog_effdt', 'student_admission_datetime'), 
+    ('ku_stdnt_type_id', 'student_type_id'), 
+    ('ku_stdnt_type_class', 'student_type_class'), 
+    ('ku_category_id', 'student_category_id'),
+    ('ku_prog_start_date', 'student_enrollment_date'), 
+    ('ku_prog_end_date', 'student_graduation_date'),
+    ('acad_ebs_org_id', 'student_department_id'), 
+    ('uid', 'sso_id'),
+    ('acad_ebs_org_name_eng', 'student_department_name_english'), 
+    ('acad_ebs_org_name_kor', 'student_department_name_korean'),
+]
+
+def decrypt(data, state, host) :
+    BS = AES.block_size 
+    unpad = lambda s : s[0:-s[-1]] 
+    if host in ('ka', 'co','ca') :
+        key = (CAIS_AES_ID_SECRET+str(state))[80:96] # 32bit
+    else :
+        key = (SA_AES_ID_SECRET+str(state))[80:96] # 32bit
+    iv=key[:16] # 16bit
+    cipher = AES.new(key, AES.MODE_CBC, IV=iv) 
+    deciphed = cipher.decrypt(base64.b64decode(data))   
+    deciphed = unpad(deciphed)
+    return deciphed
+
+def login_view(request):
+    # TODO: Check why the session does not work!
+    state = str(int(time()))
+    request.session['kssostate'] = state
+
+    data = {
+        'client_id': KSSO_CLIENT_ID,
+        'redirect_url': request.build_absolute_uri(reverse('login-response')),
+        'state': state,
+    }
+
+    redirect_url = f"{KSSO_LOGIN_URL}?{'&'.join([f'{key}={value}' for key, value in data.items()])}"
+    return redirect(redirect_url)
+
+
+
+@require_http_methods(['POST'])
+@csrf_exempt # TODO, Handle csrf thing
+def login_response_view(request):
+    if bool(request.POST.get('success')):
+        # state validation
+        state = request.POST.get('state')
+        print(dict(request.session))
+        if request.session.get('kssostate'):
+            saved_state = request.session.get('kssostate')
+            print(f"saved_state: {saved_state}")
+            print(f"state: {state}")
+            if not saved_state == state:
+                return redirect('login-error')
+            del request.session['state']
+
+        result = request.POST.get('result')
+        result = decrypt(result, state, request.META.get('HTTP_HOST') [:2]).decode('utf-8')
+        result = json.loads(result, encoding='utf-8')
+        
+        # User information
+        user_info = result['dataMap']['USER_INFO']
+
+        if not User.objects.filter(pk=user_info['kaist_uid']).exists():
+            
+            user_params = {}
+            for key, field in keys_and_fields:
+                if key in user_info:
+                    user_params[field] = user_info[key]
+            user = User(**user_params)
+            user.save()
+        else:
+            user = User.objects.get(pk=user_info['kaist_uid'])
+
+        login(request, user)
+        return redirect('/')
+    else:
+        return redirect('login-error')
+
+def login_error_view(request):
+    return render(request, 'sso/login_error.html', {})
+
+def logout_view(request):
+    data = {
+        'client_id': KSSO_CLIENT_ID,
+        'redirect_url': request.build_absolute_uri(reverse('logout-response')),
+    }
+    location = f"{KSSO_LOGOUT_URL}?{'&'.join([f'{key}={value}' for key, value in data.items()])}"
+    response = HttpResponseRedirect(location)
+    return response
+
+
+def logout_response_view(request):
+    logout(request)
+    return redirect('/')
+
+
 # import os
 # import requests
 # import contextlib
@@ -139,148 +293,3 @@
 
 # def ksso_php(request):
 #     return redirect('validate-sso')
-
-import os
-from time import time
-from django.http.response import HttpResponseRedirect
-import requests
-import json
-import datetime
-
-from django.urls import reverse_lazy, reverse
-from django.contrib.auth import login, logout
-from django.shortcuts import redirect
-
-from sso.models import User
-from django.views import View
-from django.http import HttpResponse
-from django.views.decorators.http import require_http_methods
-
-KSSO_LOGIN_URL = os.environ.get('KSSO_LOGIN_URL')
-KSSO_LOGOUT_URL = os.environ.get('KSSO_LOGOUT_URL')
-
-KSSO_CLIENT_ID = os.environ.get('KSSO_CLIENT_ID')
-CAIS_AES_ID_SECRET = os.environ.get('KSSO_SECRET_KEY')
-SA_AES_ID_SECRET = os.environ.get('KSSO_SECRET_KEY')
-
-
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
-
-import base64
-import hashlib
-from Crypto.Cipher import AES
-
-def decrypt(data, state, host) :
-    BS = AES.block_size 
-    unpad = lambda s : s[0:-s[-1]] 
-    if host in ('ka', 'co','ca') :
-        key = (CAIS_AES_ID_SECRET+str(state))[80:96] # 32bit
-    else :
-        key = (SA_AES_ID_SECRET+str(state))[80:96] # 32bit
-    iv=key[:16] # 16bit
-    cipher = AES.new(key, AES.MODE_CBC, IV=iv) 
-    deciphed = cipher.decrypt(base64.b64decode(data))   
-    deciphed = unpad(deciphed)
-    return deciphed
-
-keys_and_fields = [
-    ('kaist_uid', 'kaist_uid'), 
-    ('ku_kname', 'korean_name'), 
-    ('displayname', 'full_name'), 
-    ('sn', 'first_name'), 
-    ('givenname', 'last_name'),
-    ('ku_born_date', 'dob'), 
-    ('c', 'nationality'), 
-    ('ku_sex', 'sex'),
-    ('mail', 'kaist_email'), 
-    ('ku_ch_mail', 'external_email'),
-    ('ku_employee_number', 'employee_number'), 
-    ('ku_std_no', 'student_number'), 
-    ('ku_acad_org', 'bachelors_department_code'), 
-    ('ku_acad_name', 'bachelors_department_name'), 
-    ('ku_campus', 'campus'),
-    ('title', 'title_english'), 
-    ('ku_psft_user_status', 'student_status_english'), 
-    ('ku_psft_user_status_kor', 'student_status_korean'),
-    ('ku_acad_prog_code', 'degree_code'), 
-    ('ku_acad_prog', 'degree_name_korean'), 
-    ('ku_acad_prog_eng', 'degree_name_english'),
-    ('employeeType', 'user_group'), 
-    ('ku_prog_effdt', 'student_admission_datetime'), 
-    ('ku_stdnt_type_id', 'student_type_id'), 
-    ('ku_stdnt_type_class', 'student_type_class'), 
-    ('ku_category_id', 'student_category_id'),
-    ('ku_prog_start_date', 'student_enrollment_date'), 
-    ('ku_prog_end_date', 'student_graduation_date'),
-    ('acad_ebs_org_id', 'student_department_id'), 
-    ('uid', 'sso_id'),
-    ('acad_ebs_org_name_eng', 'student_department_name_english'), 
-    ('acad_ebs_org_name_kor', 'student_department_name_korean'),
-]
-
-def login_view(request):
-    state = str(int(time()))
-
-    # TODO: Decide what to valide in state. Namely, what should state keep
-
-    data = {
-        'client_id': KSSO_CLIENT_ID,
-        'redirect_url': request.build_absolute_uri(reverse('login-response')),
-        'state': state,
-    }
-
-    redirect_url = f"{KSSO_LOGIN_URL}?{'&'.join([f'{key}={value}' for key, value in data.items()])}"
-    return redirect(redirect_url)
-
-@require_http_methods(['POST'])
-@csrf_exempt
-def login_response_view(request):
-    if bool(request.POST.get('success')):
-        # state validation
-        state = request.POST.get('state')
-        if request.session.get('state'):
-            saved_state = request.session.get('state')
-            if not saved_state == state:
-                # state validation failure handling
-                # TODO: Decide what to valide in state
-                pass
-            del request.session['state']
-
-        result = request.POST.get('result')
-        result = decrypt(result, state, request.META.get('HTTP_HOST') [:2]).decode('utf-8')
-        result = json.loads(result, encoding='utf-8')
-        
-        # User information
-        user_info = result['dataMap']['USER_INFO']
-
-        if not User.objects.filter(pk=user_info['kaist_uid']).exists():
-            
-            user_params = {}
-            for key, field in keys_and_fields:
-                if key in user_info:
-                    user_params[field] = user_info[key]
-            user = User(**user_params)
-            user.save()
-        else:
-            user = User.objects.get(pk=user_info['kaist_uid'])
-
-        login(request, user)
-        return redirect('/')
-    else:
-        # TODO: Make login failed message/page
-        return redirect('/')
-
-def logout_view(request):
-    data = {
-        'client_id': KSSO_CLIENT_ID,
-        'redirect_url': request.build_absolute_uri(reverse('logout-response')),
-    }
-    location = f"{KSSO_LOGOUT_URL}?{'&'.join([f'{key}={value}' for key, value in data.items()])}"
-    response = HttpResponseRedirect(location)
-    return response
-
-
-def logout_response_view(request):
-    logout(request)
-    return redirect('/')
