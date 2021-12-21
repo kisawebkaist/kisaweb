@@ -20,3 +20,8 @@
     kisa_voice_link: https://docs.google.com/forms/d/e/1FAIpQLSe-H7GFHY-3U5aKNsGvS_DySOH3qb93Yth_EV3lmz5NaPG28Q/viewform
     kisa_books_link: https://www.facebook.com/groups/817190881629523/
     internships_link: https://www.facebook.com/groups/354446485098522/
+
+- model: sso.models.LoginError
+  pk: 1
+  fields:
+    email: kisa@kaist.ac.kr

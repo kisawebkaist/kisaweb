@@ -63,7 +63,7 @@
       <a class="nav-item nav-link" href="{% url 'faq' %}"> FAQ </a>
       <!-- Election -->
       {% if election_link_visible %}
-      <a class="nav-item nav-link text-warning" href="{% url 'election' semyear=election_semyear %}">Election</a>
+      <a class="nav-item nav-link text-warning" href="{% url 'election' %}">Election</a>
       {% endif %}
       {% if user.is_staff %}
       <!-- Admin site -->

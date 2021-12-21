@@ -21,8 +21,7 @@
     <!-- Page Title -->
     <div class="row">
       <div class="col page-title-box text-center py-1">
-        {% if not election %}Election not yet set
-        {% elif not election.is_open %}Election not open yet
+        {% if not election or not election.is_open%}There is no active election
         {% else %}{{ election }} Election
         {% endif %}
       </div>
