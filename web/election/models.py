@@ -52,9 +52,16 @@ class Candidate(models.Model):
         self.votes += 1
         self.save(update_fields=['votes'])
 
-    def remove_vote(self):
-        self.votes -= 1
-        self.save(update_fields=['votes'])
+    def remove_vote(self, vote_type):
+        if vote_type == 'yes':
+            self.yes -= 1
+            self.save(update_fields=['yes'])
+        elif vote_type == 'no':
+            self.no -= 1
+            self.save(update_fields=['no'])
+        else:
+            self.votes -= 1
+            self.save(update_fields=['votes'])
 
     def vote_yes(self):
         self.yes += 1
@@ -139,5 +146,6 @@ class Voter(models.Model):
 
 @receiver(models.signals.post_delete, sender=Voter)
 def delete_voter(sender, instance, *args, **kwargs):
+    vote_type = instance.vote_type
     voted_candidate = instance.voted_candidate
-    voted_candidate.remove_vote()
+    voted_candidate.remove_vote(vote_type)
