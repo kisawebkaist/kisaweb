@@ -7,6 +7,10 @@ from tinymce.models import HTMLField
 
 
 class User(AbstractUser):
+    class Meta:
+        permissions = [
+            ('see_election_results', 'Can view election results anytime')
+        ]
     # make all fields except KAIST UID 'blank=true' because some fields might be empty
     # these are all the fields KISA registered for
 

@@ -19,6 +19,9 @@ def election(request):
         'election': latest_election,
         'has_voted': hasattr(request.user, 'voter'),
     }
+    if latest_election != None:
+        context['is_ended'] = latest_election.end_datetime < timezone.now()
+        context['user_has_perm_to_see'] = request.user.has_perm('sso.see_election_results') or request.user.is_staff
     return render(request, 'election/election.html', context)
 
 def candidate(request, name):

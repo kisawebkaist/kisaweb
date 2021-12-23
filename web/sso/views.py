@@ -91,7 +91,7 @@ def login_view(request):
     if user and user.is_authenticated:
         return redirect('/')
 
-    state = secrets.secrets.token_hex(16)
+    state = secrets.token_hex(16)
     request.session[KSSO_STATE_KEY] = state
 
     data = {
