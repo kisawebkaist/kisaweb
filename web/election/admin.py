@@ -58,10 +58,11 @@ class ElectionAdmin(admin.ModelAdmin):
 
 
 class VoterAdmin(admin.ModelAdmin):
-    list_display = ['user', 'user_email', 'voted_candidate', 'vote_type', 'is_kisa', 'user_status']
-    search_fields = ['user__email']
+    list_display = ['user', 'user_email', 'is_kisa', 'user_status']
+    search_fields = ['user__kaist_email', 'user__username']
     list_filter = ['is_kisa', 'user__is_staff', 'voted_candidate']
-    readonly_fields = ['voted_candidate', 'user', 'vote_type']
+    readonly_fields = ['user', 'user_email']
+    exclude = ['voted_candidate', 'vote_type']
 
     def get_actions(self, request):
         actions = super().get_actions(request)
@@ -78,7 +79,7 @@ class VoterAdmin(admin.ModelAdmin):
         return False
 
     def user_email(self, x):
-        return x.user.email
+        return x.user.kaist_email
 
     def user_status(self, x):
         return x.user.is_staff
