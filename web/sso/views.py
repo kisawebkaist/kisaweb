@@ -91,7 +91,7 @@ def login_view(request):
     if user and user.is_authenticated:
         return redirect('/')
 
-    state = secrets.token_hex(16)
+    state = secrets.secrets.token_hex(16)
     request.session[KSSO_STATE_KEY] = state
 
     data = {
@@ -143,6 +143,7 @@ def login_handler_view(request):
         for key, field in keys_and_fields:
             if key in user_info:
                 user_params[field] = user_info[key]
+        user_params['username'] = f"{user_params['full_name']}_{secrets.token_hex(4)}"
         user = User(**user_params)
         user.save()
     else:
