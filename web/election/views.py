@@ -48,7 +48,7 @@ def vote(request, name):
     voted_candidate = Candidate.objects.get(name=name.replace('-', ' '))
     user = request.user
     if not hasattr(user, 'voter'):
-        if len(Candidate.objects.all()) > 1:
+        if Election.objects.latest('start_datetime').candidates.count() > 1:
             latest_election = Election.objects.latest('start_datetime')
             if user.is_staff:
                 voter = Voter.objects.create(user=user, voted_candidate=voted_candidate)
@@ -68,6 +68,7 @@ def vote(request, name):
         else:
             latest_election = Election.objects.latest('start_datetime')
             if format(timezone.now()) < format(latest_election.start_datetime) or format(timezone.now()) > format(latest_election.end_datetime):
+                messages.error(request, f'Voting is not open. Please check the election timeline.', extra_tags='danger')
                 return HttpResponse('novote')
             vote_type = request.POST.get('type')
             voter = Voter.objects.create(user=user, voted_candidate=voted_candidate, vote_type=vote_type)
@@ -78,6 +79,7 @@ def vote(request, name):
                 voted_candidate.vote_no()
             else:
                 return redirect(reverse('election'))
+            messages.success(request, f'Successfully voted "{vote_type.capitalize()}" for {str(voted_candidate)}!', extra_tags='success')
             return HttpResponse('Success')
     return redirect(reverse('election'))
 
