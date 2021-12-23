@@ -23,6 +23,7 @@ from django.views.decorators.csrf import csrf_exempt
 import base64
 from Crypto.Cipher import AES
 
+import secrets
 import hashlib
 
 KSSO_LOGIN_URL = os.environ.get('KSSO_LOGIN_URL')
@@ -81,8 +82,8 @@ def decrypt(data, state, host) :
     return deciphed
 
 def login_view(request):
-    # TODO: Check why the session does not work!
-    state = str(int(time()))
+    # TODO: Test in the deployment version
+    state = secrets.token_hex(16)
     request.session['kssostate'] = state
 
     data = {
@@ -101,16 +102,13 @@ def login_view(request):
 def login_response_view(request):
     if bool(request.POST.get('success')):
         # state validation
+        saved_state = request.session.get('kssostate')
         state = request.POST.get('state')
-        print(dict(request.session))
-        if request.session.get('kssostate'):
-            saved_state = request.session.get('kssostate')
-            print(f"saved_state: {saved_state}")
-            print(f"state: {state}")
-            if not saved_state == state:
-                return redirect('login-error')
-            del request.session['state']
-
+        if saved_state is None or saved_state != state:
+            return redirect('login-error')
+        else:
+            del request.session['kssostate']
+            
         result = request.POST.get('result')
         result = decrypt(result, state, request.META.get('HTTP_HOST') [:2]).decode('utf-8')
         result = json.loads(result, encoding='utf-8')
