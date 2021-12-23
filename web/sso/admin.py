@@ -5,4 +5,8 @@ from .models import User
 
 # Register your models here.
 
-admin.site.register(User, UserAdmin)
+class CustomUserAdmin(UserAdmin):
+    list_display = ['username', 'kaist_email', 'is_staff']
+
+
+admin.site.register(User, CustomUserAdmin)
