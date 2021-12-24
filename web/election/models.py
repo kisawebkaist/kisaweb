@@ -44,7 +44,7 @@ class Candidate(models.Model):
             path = '/static/img/candidate-default-dist.png'
         else:
             path = self.image.url
-        return mark_safe(f'<img src="{path}" alt="Candidate Image" width="200" height="200" />')
+        return mark_safe(f'<img src="{path}" alt="Candidate Image"/>')
 
     def change_embed_ratio(self, ratio):
         lst = [i[0] for i in self.EMBED_VIDEO_RATIO_CHOICES]

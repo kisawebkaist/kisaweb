@@ -103,7 +103,9 @@
       {% for candidate in election.candidates.all %}
         <div class="card mx-3 mb-3 text-center">
           <!-- Candidate Image -->
-          {{ candidate.image_tag }}
+          <div class="overflow-hidden d-flex justify-content-center" style="height: 200px;">
+            {{ candidate.image_tag }}
+          </div>
           <div class="card-body">
             <!-- Name -->
             <h5 class="card-title">
