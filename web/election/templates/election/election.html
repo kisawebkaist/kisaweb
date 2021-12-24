@@ -32,7 +32,7 @@
     <div class="card mb-3 shadow">
       <div class="row align-items-center">
         <!-- Election Image -->
-        <div class="col-auto ml-3">
+        <div class="col-sm-auto ml-sm-3 my-1 col-12 d-flex justify-content-center">
           {{ election.image_tag }}
         </div>
         <div class="col">
@@ -48,7 +48,7 @@
     <div class="card mb-5 shadow">
       <div class="row align-items-center">
         <!-- Election Image -->
-        <div class="col-auto ml-3">
+        <div class="col-sm-auto ml-sm-3 my-1 col-12 d-flex justify-content-center">
           <img src="{% static 'img/important-dist.png' %}" width="150px" height="150px" alt="Important" />
         </div>
         <div class="col">
@@ -91,7 +91,7 @@
           <div class="text-center"><em>No debate video yet. Please check back later.</em></div>
           {% endif %}
         </div>
-      </div>
+    </div>
     <!-- "Candidates" Heading -->
     <div class="row justify-content-center pt-5">
       <div class="section-heading">Candidates</div>
@@ -101,7 +101,7 @@
     <!-- Candidates -->
     <div class="row justify-content-center" id="candidates">
       {% for candidate in election.candidates.all %}
-        <div class="card mr-3 mb-3 text-center">
+        <div class="card mx-3 mb-3 text-center">
           <!-- Candidate Image -->
           {{ candidate.image_tag }}
           <div class="card-body">
@@ -140,8 +140,8 @@
       {% endfor %}
     </div>
     <!-- Results -->
-    {% if is_ended or user_has_perm_to_see %}
-      
+    {% if result_visible %}
+      {% include 'election/election_results.html' %}
     {% endif %}
     {% else %}
     <!-- Login View Election -->
@@ -159,8 +159,14 @@
 {% endblock %}
 
 {% block js %}
+{% if result_visible %}
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+{% endif %}
 {% compress js file election %}
 <script src="{% static 'js/election_single_candidate_vote.js' %}"></script>
 <script src="{% static 'js/election_embed_video_ratio.js' %}"></script>
+{% if result_visible %}
+<script src="{% static 'js/election_results.js' %}"></script>
+{% endif %}
 {% endcompress %}
 {% endblock %}

@@ -1,0 +1,30 @@
+<div class="container mt-4">
+    <div class="row justify-content-center">    
+        <div class="section-heading">Results</div>  
+    </div>
+    <div class="row">
+        <div class="btn-group shadow rounded-sm">
+            <button class="btn dropdown-toggle" type="button" id="election-dropdown-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                All Votes
+            </button>
+            <div class="dropdown-menu btn-hover btn-invert">
+                <button class="dropdown-item text-dark election-dropdown-option">All Votes</button>
+                <button class="dropdown-item text-dark election-dropdown-option">Non-KISA Votes</button>
+                <button class="dropdown-item text-dark election-dropdown-option">KISA votes</button>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-end mt-4 mr-lg-4 mr-md-2 mr-sm-2">
+        <b class="mr-2">Total Votes:</b>
+        <span id="election-total-votes"></span> 
+    </div>
+    <div class="row justify-content-center mt-4">
+        <div id="myChart"></div>
+    </div>
+    <script>
+        const electionCategories = JSON.parse("{{ categories|safe }}".replaceAll('\'', '"'));
+        const electionAllVotes = JSON.parse('{{ all_votes|safe }}');
+        const electionNonKISAVotes = JSON.parse('{{ non_kisa_votes|safe }}');
+        const electionKISAVotes = JSON.parse('{{ kisa_votes|safe }}');
+    </script>
+</div>
