@@ -11,7 +11,7 @@ $(function() {
                 },
                 success: (response) => {
                     if (response == 'novote') {
-                        alert('It is not the voting period.');
+                        // alert('It is not the voting period.');
                         location.reload();
                     }
                     else if (response == 'Success') {
