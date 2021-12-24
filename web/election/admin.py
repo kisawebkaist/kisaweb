@@ -24,10 +24,20 @@ class CandidateAdmin(admin.ModelAdmin):
         'name',
         'image_tag',
         'kisa_history_template_string',
+        'date',
         'votes',
         'yes',
         'no',
     ]
+
+    def votes(self, x):
+        return x.voters.count()
+
+    def yes(self, x):
+        return x.voters.filter(vote_type='yes').count()
+    
+    def no(self, x):
+        return x.voters.filter(vote_type='no').count()
 
     def image_tag(self, obj):
         if not obj.image:
@@ -44,7 +54,7 @@ class CandidateAdmin(admin.ModelAdmin):
 
     kisa_history_template_string.short_description = 'Kisa History'
 
-    readonly_fields = ['image_tag', 'votes', 'yes', 'no']
+    readonly_fields = ['image_tag', 'date', 'votes', 'yes', 'no']
 
 
 class ElectionAdmin(admin.ModelAdmin):
@@ -58,10 +68,10 @@ class ElectionAdmin(admin.ModelAdmin):
 
 
 class VoterAdmin(admin.ModelAdmin):
-    list_display = ['user', 'user_email', 'is_kisa', 'user_status']
+    list_display = ['user', 'user_email', 'is_kisa', 'user_status', 'voted_election']
     search_fields = ['user__kaist_email', 'user__username']
     list_filter = ['is_kisa', 'user__is_staff', 'voted_candidate']
-    readonly_fields = ['user', 'user_email']
+    readonly_fields = ['user', 'user_email', 'voted_election']
     exclude = ['voted_candidate', 'vote_type']
 
     def get_actions(self, request):
