@@ -143,7 +143,12 @@ def login_handler_view(request):
         for key, field in keys_and_fields:
             if key in user_info:
                 user_params[field] = user_info[key]
-        user_params['username'] = f"{user_params['full_name']}_{secrets.token_hex(4)}"
+        username = user_params['full_name']
+        for c in "!#$%^&*(),./<>?\|":
+            username = username.replace(c, '')
+        username = username.strip()
+        username = username.replace(' ', '_')
+        user_params['username'] = f"{username}_{secrets.token_hex(4)}"
         user = User(**user_params)
         user.save()
     else:
