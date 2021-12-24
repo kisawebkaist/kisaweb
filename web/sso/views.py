@@ -96,7 +96,7 @@ def login_view(request):
 
     data = {
         'client_id': KSSO_CLIENT_ID,
-        'redirect_url': request.build_absolute_uri(reverse('login-response')),
+        'redirect_url': request.build_absolute_uri(reverse('login-response')) + '?next=' + request.GET.get('next', '/'),
         'state': state,
     }
 
@@ -112,7 +112,8 @@ def login_response_view(request):
         params = {
             'state': request.POST.get('state'),
             'raw_result': request.POST.get('result'),
-            'http_host': request.META.get('HTTP_HOST')
+            'http_host': request.META.get('HTTP_HOST'),
+            'next': request.GET.get('next', '/')
         }
         
         response = redirect('login-handler')
@@ -155,7 +156,7 @@ def login_handler_view(request):
         user = User.objects.get(pk=user_info['kaist_uid'])
 
     login(request, user)
-    return redirect('/')
+    return redirect(request.GET.get('next', '/'))
 
 def login_error_view(request):
     return render(request, 'sso/login_error.html', {})
