@@ -1,10 +1,10 @@
 const chartOptions = {
-    width: 600,
+    width: 550,
     type: 'pie',
 };
 
 const responsiveOptions = [{
-    breakpoint: 600,
+    breakpoint: 5500,
     options: {
         chart: {
             width: 450
@@ -36,6 +36,40 @@ const responsiveOptions = [{
             }
         }
     }
+},
+{
+    breakpoint: 350,
+    options: {
+        chart: {
+            width: 300
+        },
+        legend: {
+            position: 'bottom'
+        },
+        dataLabels: {
+            enabled: true,
+            style: {
+                fontSize: "11px",
+            }
+        }
+    }
+},
+{
+    breakpoint: 300,
+    options: {
+        chart: {
+            width: 275
+        },
+        legend: {
+            position: 'bottom'
+        },
+        dataLabels: {
+            enabled: true,
+            style: {
+                fontSize: "10px",
+            }
+        }
+    }
 }
 ];
 
@@ -43,12 +77,15 @@ var options = {
     series: [],
     chart: chartOptions,
     labels: electionCategories,
+    legend: {
+        position: 'bottom',
+        fontSize: '12px',
+    },
     responsive: responsiveOptions
 };
 var myChartDiv, electionTotalVotes;
 
 const getChartOptions = (chosenOption) => {
-    console.log(options);
     if (chosenOption == 'All Votes') {
         options.series = electionAllVotes;
     }
@@ -63,7 +100,6 @@ const getChartOptions = (chosenOption) => {
 }
 
 $('.election-dropdown-option').click((e) => {
-    console.log(e);
     const chosenOption = e.target.innerText;
     $('#election-dropdown-button').text(chosenOption);
     $(myChartDiv).empty()
