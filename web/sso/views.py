@@ -87,8 +87,9 @@ def decrypt(data, state, host) :
 
 def login_view(request):
 
+    next = request.GET.get('next', '/')
     if request.user and request.user.is_authenticated:
-        return redirect('/')
+        return redirect(next)
 
     if request.session.get(KSSO_STATE_KEY) is None:
         state = secrets.token_hex(16)
@@ -98,7 +99,7 @@ def login_view(request):
 
     data = {
         'client_id': KSSO_CLIENT_ID,
-        'redirect_url': request.build_absolute_uri(reverse('login-response')) + '?next=' + request.GET.get('next', '/'),
+        'redirect_url': request.build_absolute_uri(reverse('login-response')) + '?next=' + next,
         'state': state,
     }
 
@@ -128,8 +129,9 @@ def login_response_view(request):
 
 def login_handler_view(request):
 
+    next = request.GET.get('next', '/')
     if request.user and request.user.is_authenticated:
-        return redirect(request.GET.get('next', '/'))
+        return redirect(next)
 
     context = request.GET
     saved_state = request.session.get(KSSO_STATE_KEY)
@@ -160,7 +162,7 @@ def login_handler_view(request):
         user = User.objects.get(pk=user_info['kaist_uid'])
 
     login(request, user)
-    return redirect(request.GET.get('next', '/'))
+    return redirect(next)
 
 def login_error_view(request):
     return render(request, 'sso/login_error.html', {})
