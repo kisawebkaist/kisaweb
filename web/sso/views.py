@@ -87,12 +87,14 @@ def decrypt(data, state, host) :
 
 def login_view(request):
 
-    user = request.user
-    if user and user.is_authenticated:
+    if request.user and request.user.is_authenticated:
         return redirect('/')
 
-    state = secrets.token_hex(16)
-    request.session[KSSO_STATE_KEY] = state
+    if request.session.get(KSSO_STATE_KEY) is None:
+        state = secrets.token_hex(16)
+        request.session[KSSO_STATE_KEY] = state
+    else:
+        state = request.session[KSSO_STATE_KEY]
 
     data = {
         'client_id': KSSO_CLIENT_ID,
@@ -106,7 +108,7 @@ def login_view(request):
 @require_http_methods(['POST'])
 @csrf_exempt
 def login_response_view(request):
-    
+
     if bool(request.POST.get('success')):
 
         params = {
@@ -126,13 +128,15 @@ def login_response_view(request):
 
 def login_handler_view(request):
 
+    if request.user and request.user.is_authenticated:
+        return redirect(request.GET.get('next', '/'))
+
     context = request.GET
     saved_state = request.session.get(KSSO_STATE_KEY)
+    del request.session[KSSO_STATE_KEY]
     
     if saved_state is None or saved_state != context.get('state'):
         return redirect('login-error')
-    else:
-        del request.session[KSSO_STATE_KEY]
     
     result = decrypt(context.get('raw_result'), context.get('state'), context.get('http_host') [:2]).decode('utf-8')
     result = json.loads(result, encoding='utf-8')
