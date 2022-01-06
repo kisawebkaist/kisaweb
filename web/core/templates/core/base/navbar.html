@@ -62,9 +62,9 @@
       <!--<a class="nav-item nav-link" href="#">About Us</a>-->
       <a class="nav-item nav-link" href="{% url 'faq' %}"> FAQ </a>
       <!-- Election -->
-      <!-- {% if election_link_visible %}
-      <a class="nav-item nav-link text-warning" href="{% url 'election' semyear=election_semyear %}">Election</a>
-      {% endif %} -->
+      {% if election_link_visible %}
+      <a class="nav-item nav-link text-warning" href="{% url 'election' %}">Election</a>
+      {% endif %}
       {% if user.is_staff %}
       <!-- Admin site -->
       <a class="nav-item nav-link" href="{% url 'admin:index' %}">Admin</a>
@@ -73,7 +73,7 @@
       {% endif %}
     </div>
       <!-- Login -->
-      <!--
+      
       {% if not user.is_authenticated %}
         {% if authmethod == logindev %}
         <a class="btn btn-secondary" href="{% url 'admin:login' %}">Login</a>
@@ -86,6 +86,6 @@
         {% else %}
         <a class="btn btn-secondary" href="{% url 'logout' %}">Logout</a>
         {% endif %}
-      {% endif %} -->
+      {% endif %}
   </div>
 </nav>

@@ -16,9 +16,18 @@ steps:
   - git checkout master
   - sh deactivatescript.sh
   - git pull https://github.com/kisawebkaist/kisaweb
-  - python manage.py migrate
-  - python manage.py collectstatic
+  - source venv/bin/activate
+  - python web/manage.py migrate
+  - python web/manage.py collectstatic --noinput
   - sh activatescript.sh
+
+- name: fallback
+  commands:
+  - cd /home/kisa/kisaweb
+  - sh activatescript.sh
+  when:
+    status:
+    - failure
 
 - name: apache2-status
   commands:
@@ -33,4 +42,4 @@ trigger:
   - master
   event:
   - push
-  - pull_request
+  # - pull_request
