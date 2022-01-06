@@ -111,11 +111,12 @@ TEMPLATES = [
                 'maintenance_mode.context_processors.maintenance_mode',  # PyPi django-maintenance-mode
 
                 # -- Created by KISA Team -- #
-                # 'election.context_processors.navbar_election_link_visible',
+                'election.context_processors.navbar_election_link_visible',
                 'core.context_processors.footer',
                 'core.context_processors.navbar',
                 'core.context_processors.empty_queryset',
                 'core.context_processors.login_type',
+                'sso.context_processors.login_error'
             ],
         },
     },

@@ -21,8 +21,7 @@
     <!-- Page Title -->
     <div class="row">
       <div class="col page-title-box text-center py-1">
-        {% if not election %}Election not yet set
-        {% elif not election.is_open %}Election not open yet
+        {% if not election or not election.is_open%}There is no active election
         {% else %}{{ election }} Election
         {% endif %}
       </div>
@@ -33,7 +32,7 @@
     <div class="card mb-3 shadow">
       <div class="row align-items-center">
         <!-- Election Image -->
-        <div class="col-auto ml-3">
+        <div class="col-sm-auto ml-sm-3 my-1 col-12 d-flex justify-content-center">
           {{ election.image_tag }}
         </div>
         <div class="col">
@@ -49,7 +48,7 @@
     <div class="card mb-5 shadow">
       <div class="row align-items-center">
         <!-- Election Image -->
-        <div class="col-auto ml-3">
+        <div class="col-sm-auto ml-sm-3 my-1 col-12 d-flex justify-content-center">
           <img src="{% static 'img/important-dist.png' %}" width="150px" height="150px" alt="Important" />
         </div>
         <div class="col">
@@ -92,7 +91,7 @@
           <div class="text-center"><em>No debate video yet. Please check back later.</em></div>
           {% endif %}
         </div>
-      </div>
+    </div>
     <!-- "Candidates" Heading -->
     <div class="row justify-content-center pt-5">
       <div class="section-heading">Candidates</div>
@@ -102,9 +101,11 @@
     <!-- Candidates -->
     <div class="row justify-content-center" id="candidates">
       {% for candidate in election.candidates.all %}
-        <div class="card mr-3 mb-3 text-center">
+        <div class="card mx-3 mb-3 text-center">
           <!-- Candidate Image -->
-          {{ candidate.image_tag }}
+          <div class="overflow-hidden d-flex justify-content-center" style="height: 200px;">
+            {{ candidate.image_tag }}
+          </div>
           <div class="card-body">
             <!-- Name -->
             <h5 class="card-title">
@@ -140,6 +141,10 @@
         </div>
       {% endfor %}
     </div>
+    <!-- Results -->
+    {% if result_visible %}
+      {% include 'election/election_results.html' %}
+    {% endif %}
     {% else %}
     <!-- Login View Election -->
     <div class="text-center">
@@ -156,8 +161,14 @@
 {% endblock %}
 
 {% block js %}
+{% if result_visible %}
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+{% endif %}
 {% compress js file election %}
 <script src="{% static 'js/election_single_candidate_vote.js' %}"></script>
 <script src="{% static 'js/election_embed_video_ratio.js' %}"></script>
+{% if result_visible %}
+<script src="{% static 'js/election_results.js' %}"></script>
+{% endif %}
 {% endcompress %}
 {% endblock %}

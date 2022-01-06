@@ -7,6 +7,10 @@ from tinymce.models import HTMLField
 
 
 class User(AbstractUser):
+    class Meta:
+        permissions = [
+            ('see_election_results', 'Can view election results anytime')
+        ]
     # make all fields except KAIST UID 'blank=true' because some fields might be empty
     # these are all the fields KISA registered for
 
@@ -52,12 +56,6 @@ class User(AbstractUser):
     sso_id = models.CharField(max_length=100, blank=True, null=True)  # uid
     student_department_name_english = models.CharField(max_length=100, blank=True, null=True)  # acad_ebs_org_name_eng
     student_department_name_korean = models.CharField(max_length=100, blank=True, null=True)  # acad_ebs_org_name_kor
-
-
-class Agreement(models.Model):
-    english = HTMLField()
-    korean = HTMLField()
-
 
 class LoginError(models.Model):
     email = models.EmailField()

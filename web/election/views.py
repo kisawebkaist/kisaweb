@@ -15,10 +15,39 @@ def election(request):
         latest_election = Election.objects.latest('start_datetime')
     except Election.DoesNotExist:
         latest_election = None
+    if request.user.is_authenticated:
+        has_voted = request.user.votes.filter(voted_election=latest_election).exists()
+    else:
+        has_voted = False
     context = {
         'election': latest_election,
-        'has_voted': hasattr(request.user, 'voter'),
+        'has_voted': has_voted
     }
+    if latest_election is None:
+        return render(request, 'election/election.html', context)
+    
+    result_visible = latest_election.end_datetime < timezone.now()
+
+    context['is_ended'] = result_visible
+
+    result_visible = result_visible or request.user.has_perm('sso.see_election_results')
+    result_visible = result_visible or request.user.is_staff
+
+    context['result_visible'] = result_visible
+
+    if latest_election.candidates.count() > 1: # Normal election
+        candidate_list = latest_election.candidates.all()
+        context['categories'] = [str(candidate) for candidate in candidate_list]
+        context['all_votes'] = [candidate.voters.count() for candidate in candidate_list]
+        context['non_kisa_votes'] = [candidate.voters.filter(is_kisa=False).count() for candidate in candidate_list]
+        context['kisa_votes'] = [context['all_votes'][i] - context['non_kisa_votes'][i] for i, _ in enumerate(candidate_list)]
+    else: # Yes/No election
+        candidate = latest_election.candidates.all()[0]
+        context['categories'] = ["Yes", "No"]
+        context['all_votes'] = [candidate.voters.filter(vote_type=category).count() for category in ['yes', 'no']]
+        context['non_kisa_votes'] = [candidate.voters.filter(vote_type=category, is_kisa=False).count() for category in ['yes', 'no']]
+        context['kisa_votes'] = [context['all_votes'][i] - context['non_kisa_votes'][i] for i in [0, 1]] 
+
     return render(request, 'election/election.html', context)
 
 def candidate(request, name):
@@ -37,47 +66,54 @@ def candidate(request, name):
     the user.
 '''
 
-KISA_MEMBERS = []
-
 @login_required
 @require_http_methods(['POST'])
 def vote(request, name):
     def format(val):
         return int(dateformat.format(val, 'YmdHis'))
+    params = {
+        'user': request.user,
+        'voted_candidate': Candidate.objects.get(name=name.replace('-', ' ')),
+        'voted_election': Election.objects.latest('start_datetime'),
+    }
+    
+    if params['user'].kaist_email is None:
+        if not params['user'].is_staff: # If user is not staff, there is an error
+            messages.error(request, 'There is a problem with your Kaist email provided through sso login. Please login again. If the problem persists, please contact the administrator.')
+            return redirect(reverse('election'))
+        kaist_email = 'kisa@kaist.ac.kr'
+    else:
+        kaist_email = params['user'].kaist_email
 
-    voted_candidate = Candidate.objects.get(name=name.replace('-', ' '))
-    user = request.user
-    if not hasattr(user, 'voter'):
-        if len(Candidate.objects.all()) > 1:
-            latest_election = Election.objects.latest('start_datetime')
-            if user.is_staff:
-                voter = Voter.objects.create(user=user, voted_candidate=voted_candidate)
-                voter.save()
-                voted_candidate.vote()
-                messages.success(request, f'Successfully voted for {str(voted_candidate)}!', extra_tags='success')
-            elif format(timezone.now()) < format(latest_election.start_datetime) or format(timezone.now()) > format(latest_election.end_datetime):
+    time_now = format(timezone.now())
+    time_election_start = format(params['voted_election'].start_datetime)
+    time_election_end = format(params['voted_election'].end_datetime)
+
+    if not params['user'].votes.filter(voted_election=params['voted_election']).exists():
+        if params['voted_election'].candidates.count() > 1:
+            if time_now < time_election_start or time_now > time_election_end:
                 messages.error(request, f'Voting is not open. Please check the election timeline.', extra_tags='danger')
             else:
-                if user.email in KISA_MEMBERS:
-                    voter = Voter.objects.create(user=user, voted_candidate=voted_candidate, is_kisa=True)
+                if params['voted_election'].kisa_member_email_list.find(kaist_email) != -1:
+                    voter = Voter.objects.create(**params, is_kisa=True)
                 else:
-                    voter = Voter.objects.create(user=user, voted_candidate=voted_candidate)
+                    voter = Voter.objects.create(**params)
                 voter.save()
-                voted_candidate.vote()
-                messages.success(request, f'Successfully voted for {str(voted_candidate)}!', extra_tags='success')
+                messages.success(request, f'Successfully voted for {str(params["voted_candidate"])}!', extra_tags='success')
         else:
-            latest_election = Election.objects.latest('start_datetime')
-            if format(timezone.now()) < format(latest_election.start_datetime) or format(timezone.now()) > format(latest_election.end_datetime):
+            if time_now < time_election_start or time_now > time_election_end:
+                messages.error(request, f'Voting is not open. Please check the election timeline.', extra_tags='danger')
                 return HttpResponse('novote')
             vote_type = request.POST.get('type')
-            voter = Voter.objects.create(user=user, voted_candidate=voted_candidate, vote_type=vote_type)
-            voter.save()
-            if vote_type == 'yes':
-                voted_candidate.vote_yes()
-            elif vote_type == 'no':
-                voted_candidate.vote_no()
+            if not (vote_type in ['yes', 'no']):
+                messages.error(request, f'You cannot vote other than "Yes" or "No".', extra_tags='danger')
+                return HttpResponse('novote')
+            if params['voted_election'].kisa_member_email_list.find(kaist_email) != -1:
+                voter = Voter.objects.create(**params, vote_type=vote_type, is_kisa=True)
             else:
-                return redirect(reverse('election'))
+                voter = Voter.objects.create(**params, vote_type=vote_type)
+            voter.save()
+            messages.success(request, f'Successfully voted "{vote_type.capitalize()}" for {str(params["voted_candidate"])}!', extra_tags='success')
             return HttpResponse('Success')
     return redirect(reverse('election'))
 
