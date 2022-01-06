@@ -17,7 +17,7 @@ class Candidate(models.Model):
     speech_url = models.CharField(max_length=512, blank=True, null=True)
     kisa_history = HTMLField()
     image = models.ImageField(upload_to=ELECTION_MEDIA_UPLOAD_URL, blank=True, null=True)
-    date = models.DateField(auto_now_add=True)
+    date = models.DateField(auto_now_add=True, null=True)
 
     EMBED_VIDEO_RATIO_CHOICES = [
         ('21by9', '21by9'),
