@@ -22,18 +22,24 @@ steps:
   - python web/manage.py collectstatic --noinput
   - sh activatescript.sh
 
-- name: apache2-status
-  commands:
-  - systemctl status apache2
-
-- name: drone-status
-  commands:
-  - systemctl status drone
-
 - name: fallback
   commands:
   - cd /home/kisa/kisaweb
   - sh activatescript.sh
+  when:
+    status:
+    - failure
+
+- name: apache2-status
+  commands:
+  - systemctl status apache2
+  when:
+    status:
+    - failure
+
+- name: drone-status
+  commands:
+  - systemctl status drone
   when:
     status:
     - failure
@@ -43,4 +49,3 @@ trigger:
   - master
   event:
   - push
-  # - pull_request
