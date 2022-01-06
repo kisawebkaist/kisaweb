@@ -16,18 +16,11 @@ steps:
   - git checkout master
   - sh deactivatescript.sh
   - git pull https://github.com/kisawebkaist/kisaweb
-  - source venv/bin/activate
+  - . venv/bin/activate
+  - yes | pip install -r requirements.txt
   - python web/manage.py migrate
   - python web/manage.py collectstatic --noinput
   - sh activatescript.sh
-
-- name: fallback
-  commands:
-  - cd /home/kisa/kisaweb
-  - sh activatescript.sh
-  when:
-    status:
-    - failure
 
 - name: apache2-status
   commands:
@@ -36,6 +29,14 @@ steps:
 - name: drone-status
   commands:
   - systemctl status drone
+
+- name: fallback
+  commands:
+  - cd /home/kisa/kisaweb
+  - sh activatescript.sh
+  when:
+    status:
+    - failure
 
 trigger:
   branch:
