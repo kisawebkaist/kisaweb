@@ -1,7 +1,7 @@
 from django.shortcuts import render, HttpResponse
 from django.db.models import Count
 
-from .models import FAQ, Category
+from .models import FAQ, FAQCategory
 
 # Create your views here.
 
@@ -12,7 +12,7 @@ def faq(request):
                 'category': cat,
                 'faqs': FAQ.objects.filter(category=cat)
             }
-            for cat in Category.objects.annotate(num_faqs=Count('faqs')).filter(num_faqs__gt=0)
+            for cat in FAQCategory.objects.annotate(num_faqs=Count('faqs')).filter(num_faqs__gt=0)
         ]
     }
     return render(request, 'faq/faq.html', context)
