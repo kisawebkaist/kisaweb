@@ -1,24 +1,10 @@
 from django.db import models
 from django.template.defaultfilters import truncatechars
 from core.models import Category
+
 # Create your models here.
-'''
-CATEGORY = (
-    ("", "---"),
-    ("Student life", "Student"),
-    ("Academics", "Academics"),
-    ("Advices", "Advices"),
-    ("nothing", "nothing"),
-)
-'''
 class FAQCategory(Category):
     pass
-    '''
-    title_category = models.CharField(max_length= 200, blank=True, unique=True)
-
-    def __str__(self):
-        return self.title_category
-    '''
 
 class FAQ(models.Model):
     question = models.TextField()
