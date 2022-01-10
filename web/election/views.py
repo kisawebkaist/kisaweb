@@ -15,10 +15,12 @@ def election(request):
         latest_election = Election.objects.latest('start_datetime')
     except Election.DoesNotExist:
         latest_election = None
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and latest_election:
         has_voted = request.user.votes.filter(voted_election=latest_election).exists()
+        is_open = request.user.has_perm('election.preview_election')
     else:
         has_voted = False
+        is_open = False
     context = {
         'election': latest_election,
         'has_voted': has_voted
@@ -26,13 +28,17 @@ def election(request):
     if latest_election is None:
         return render(request, 'election/election.html', context)
     
+    is_open = is_open or latest_election.is_open_public
+
+    context['is_open'] = is_open
+
     result_visible = latest_election.end_datetime < timezone.now()
 
     context['is_ended'] = result_visible
 
     result_visible = result_visible and latest_election.results_out
     result_visible = result_visible or request.user.has_perm('sso.see_election_results')
-    result_visible = result_visible or request.user.is_staff
+    # result_visible = result_visible or request.user.is_staff
 
     context['result_visible'] = result_visible
 
