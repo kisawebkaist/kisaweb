@@ -30,6 +30,7 @@ def election(request):
 
     context['is_ended'] = result_visible
 
+    result_visible = result_visible and latest_election.results_out
     result_visible = result_visible or request.user.has_perm('sso.see_election_results')
     result_visible = result_visible or request.user.is_staff
 

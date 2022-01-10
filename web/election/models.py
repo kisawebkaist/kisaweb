@@ -65,6 +65,7 @@ class Election(models.Model):
     image = models.ImageField(upload_to=ELECTION_MEDIA_UPLOAD_URL, blank=True, null=True)
     debate_url = models.CharField(max_length=512, blank=True, null=True)
     is_open = models.BooleanField(default=False)
+    results_out = models.BooleanField(default=False, null=True)
     kisa_member_email_list = models.TextField(blank=True)
 
     EMBED_VIDEO_RATIO_CHOICES = [
