@@ -57,6 +57,12 @@ class Candidate(models.Model):
 
 
 class Election(models.Model):
+    class Meta:
+        permissions = [
+            ('see_election_results', 'Can view election results anytime'),
+            ('preview_election', 'Can preview the election before it is published'),
+        ]
+    
     start_datetime = models.DateTimeField()
     end_datetime = models.DateTimeField()
     candidates = models.ManyToManyField(Candidate, blank=False)
@@ -64,7 +70,8 @@ class Election(models.Model):
     instructions = HTMLField()
     image = models.ImageField(upload_to=ELECTION_MEDIA_UPLOAD_URL, blank=True, null=True)
     debate_url = models.CharField(max_length=512, blank=True, null=True)
-    is_open = models.BooleanField(default=False)
+    is_open_public = models.BooleanField(default=False, null=True)
+    results_out = models.BooleanField(default=False, null=True)
     kisa_member_email_list = models.TextField(blank=True)
 
     EMBED_VIDEO_RATIO_CHOICES = [
