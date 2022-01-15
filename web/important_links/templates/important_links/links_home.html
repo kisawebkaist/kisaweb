@@ -11,6 +11,17 @@
 
 
 {% block content %}
+<!--
+<div class="navigation">
+<ul>
+  <li><a >Home</a></li>
+  <li><a >News</a></li>
+  <li><a>Contact</a></li>
+  <li><a>About</a></li>
+</ul>
+</div>>
+-->
+
 <!-- LINKS (check views.py for details if needed)-->
 <div class="cat-list">
 	{% for category in categories %}
@@ -19,7 +30,7 @@
 		{% for link in category.links.all %}
 		<!-- <li>Title: {{link.title}}, Description: {{link.description}}, URL: {{link.url}}</li> -->
     <li>
-      <h4 class="link-heading"> 
+      <h4 class="link-heading">
         {{ link.title }}
         {% if link.is_english %}<span class="badge badge-pill badge-dark ml-2">English</span>{% endif %}
         {% if link.requires_sso %}<span class="badge badge-pill badge-primary">SSO Required</span>{% endif %}
