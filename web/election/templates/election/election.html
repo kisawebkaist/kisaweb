@@ -98,7 +98,7 @@
     </div>
     <!-- If not voting periord -->
     {% if is_live %}
-    <p class="d-flex justify-content-center align-items-center pb-3">
+    <p class="text-center pb-3">
       <em>
         <b>Voting period:</b> 
         {{ election.start_datetime|date:"P D, jS M, Y" }} ~ {{ election.end_datetime|date:"P D, jS M, Y" }}
