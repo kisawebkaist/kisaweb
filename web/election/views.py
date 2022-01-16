@@ -31,11 +31,9 @@ def election(request):
     is_open = is_open or latest_election.is_open_public
 
     context['is_open'] = is_open
+    context['is_live'] = latest_election.start_datetime < timezone.now() < latest_election.end_datetime
 
     result_visible = latest_election.end_datetime < timezone.now()
-
-    context['is_ended'] = result_visible
-
     result_visible = result_visible and latest_election.results_out
     result_visible = result_visible or request.user.has_perm('sso.see_election_results')
     # result_visible = result_visible or request.user.is_staff
@@ -83,10 +81,13 @@ def vote(request, name):
         'voted_candidate': Candidate.objects.get(name=name.replace('-', ' ')),
         'voted_election': Election.objects.latest('start_datetime'),
     }
-    
+    if params['user'].student_number is None:
+        messages.error(request, 'You should be a KAIST student to vote.')
+        return redirect(reverse('election'))
+
     if params['user'].kaist_email is None:
         if not params['user'].is_staff: # If user is not staff, there is an error
-            messages.error(request, 'There is a problem with your Kaist email provided through sso login. Please login again. If the problem persists, please contact the administrator.')
+            messages.error(request, 'There is a problem with your Kaist email provided through sso login. Please login again. If the problem persists, please contact the website administration.')
             return redirect(reverse('election'))
         kaist_email = 'kisa@kaist.ac.kr'
     else:
