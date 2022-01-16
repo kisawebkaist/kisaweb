@@ -11,16 +11,15 @@
 
 
 {% block content %}
-<!--
-<div class="navigation">
+
+<div class="navigation rounded border p-2 m-2">
 <ul>
-  <li><a >Home</a></li>
-  <li><a >News</a></li>
-  <li><a>Contact</a></li>
-  <li><a>About</a></li>
+  {% for category in categories %}
+  <li><a href="#{{category.title_category}}">{{category.title_category}}</a></li>
+  {% endfor %}
 </ul>
-</div>>
--->
+</div>
+
 
 <!-- LINKS (check views.py for details if needed)-->
 <div class="cat-list">

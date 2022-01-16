@@ -8,11 +8,20 @@ body {
   font-family: "arial", sans-serif;
 }
 
+.navigation {
+  position: fixed;
+  left: 0;
+  right: 80%;
+  background-color: #f1f1f1;
+  height: calc(100vh - 40%);
+  z-index: 100;
+}
+
 .navigation ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
-  width: 200px;
+  width: 100%;
   background-color: #f1f1f1;
 }
 
@@ -21,17 +30,22 @@ body {
   color: #000;
   padding: 8px 16px;
   text-decoration: none;
+  font-weight: bolder;
+  transition: all 200ms;
+  transition-timing-function: ease-in-out;
+  
 }
 
 /* Change the link color on hover */
 .navigation li a:hover {
-  background-color: #555;
+  background-color: #686868;
+  border-radius: 5px;
   color: white;
 }
 
 .cat-name {
   position: relative;
-  cursor: pointer;
+  // cursor: pointer;
   font-size: 20px;
   font-weight: 600;
   margin-bottom: 0px;
@@ -43,9 +57,12 @@ body {
 }
 
 .cat-list {
+  // width: 100%;
   list-style: none;
   padding: 0px;
-  margin: 0px;
+  margin: 0 0 0 20%;
+  // float: right;
+  // align-items: end;
 }
 
 .cat-list .link-list {
@@ -61,19 +78,24 @@ body {
   font-size: 18px;
   border-radius: 8px;
   border-block: solid;
-  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px;
   border: 1px solid rgb(145, 145, 145);
   font-weight: 300;
   padding-right: 0px;
   margin-bottom: 0px;
-  width: 50%;
+  width: 80%;
   margin-left: auto;
   margin-right: auto;
   margin-top: 10px
 }
 
+.link-list li {
+  transition: all 300ms;
+  transition-timing-function: ease-in-out;
+}
+
 .link-list li:hover {
-  box-shadow: rgba(0, 0, 0, 0.55) 0px 5px 15px;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 5px 15px;
   transform: scale(1.0005);
 }
 
@@ -107,12 +129,17 @@ body {
 }
 .cat-list .link {
   color: rgb(30,144,255);
-
 }
 
 @media screen and (max-width: 900px) {
+  .cat-list {
+    margin: 0px;
+  }
   .cat-list li {
     width: 95%;
+  }
+  .navigation {
+    position: relative;
   }
 }
 
