@@ -148,8 +148,8 @@
                       <button type="button" class="btn btn-success vote-single" value="yes" data-url="{% url 'vote' name=url_name %}">Yes</button>
                       <button type="button" class="btn btn-secondary vote-single" value="no" data-url="{% url 'vote' name=url_name %}">No</button>
                       {% else %}
-                      <button type="button" class="btn btn-success vote-single" value="yes" data-url="{% url 'vote' name=url_name %}" disabled>Yes</button>
-                      <button type="button" class="btn btn-secondary vote-single" value="no" data-url="{% url 'vote' name=url_name %}" disabled>No</button>
+                      <button type="button" class="btn btn-success vote-single" value="yes" disabled>Yes</button>
+                      <button type="button" class="btn btn-secondary vote-single" value="no" disabled>No</button>
                       {% endif %}
                     {% endif %}
                   {% endif %}
