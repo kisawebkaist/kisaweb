@@ -35,9 +35,8 @@ def election(request):
 
     result_visible = latest_election.end_datetime < timezone.now()
     result_visible = result_visible and latest_election.results_out
-    result_visible = result_visible or request.user.has_perm('sso.see_election_results')
-    # result_visible = result_visible or request.user.is_staff
-
+    result_visible = result_visible or request.user.has_perm('election.see_election_results')
+    
     context['result_visible'] = result_visible
 
     if latest_election.candidates.count() > 1: # Normal election
