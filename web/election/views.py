@@ -123,6 +123,8 @@ def vote(request, name):
             voter.save()
             messages.success(request, f'Successfully voted "{vote_type.capitalize()}" for {str(params["voted_candidate"])}!', extra_tags='success')
             return HttpResponse('Success')
+    else:
+        messages.error(request, 'You have already voted.')
     return redirect(reverse('election'))
 
 
