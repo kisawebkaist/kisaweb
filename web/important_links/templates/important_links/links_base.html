@@ -3,13 +3,18 @@
 {% load static %}
 {% load compress %}
 
+{% block css %}
+{% compress css file important_links %}
+<link rel="stylesheet" type="text/x-scss" href="{% static 'scss/links_main.scss' %}">
+{% endcompress %}
+{% endblock %}
+
 {% block title %}Important Links{% endblock %}
 
 {% block main %}
 <div class="d-flex flex-row h-auto margin">
 	<div class="container-fluid">
 	  <!-- Page Title -->
-	  <!-- This part can be removed if it doesn't look good with the page design we have currently -->
 	  <div class="row">
 		<div class="col page-title-box text-center py-1">
 			Important Links
@@ -18,4 +23,10 @@
 	</div>
   </div>
 {% block content %} {% endblock %}
+
+{% block js %}
+{% compress js file important_links %}
+<script src="{% static 'js/smoothScroll.js' %}"></script>
+{% endcompress %}
+{% endblock %}
 {% endblock %}
