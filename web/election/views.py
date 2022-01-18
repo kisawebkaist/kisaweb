@@ -75,18 +75,25 @@ def candidate(request, name):
 def vote(request, name):
     def format(val):
         return int(dateformat.format(val, 'YmdHis'))
+    
     params = {
         'user': request.user,
         'voted_candidate': Candidate.objects.get(name=name.replace('-', ' ')),
         'voted_election': Election.objects.latest('start_datetime'),
     }
-    if params['user'].student_number is None:
-        messages.error(request, 'You should be a KAIST student to vote.')
-        return redirect(reverse('election'))
+
+    if not params['user'].has_perm('election.voting_exception'):
+        if params['user'].nationality == 'KOR':
+            messages.error(request, 'Only international members of KAIST are eligible to vote.', extra_tags='danger')
+            return redirect(reverse('election'))
+
+        if not 'S' in params['user'].user_group:
+            messages.error(request, 'According to the rules, you are not eligible to vote. If you think this is a mistake, please contact the us at kisa@kaist.ac.kr.', extra_tags='danger')
+            return redirect(reverse('election'))
 
     if params['user'].kaist_email is None:
         if not params['user'].is_staff: # If user is not staff, there is an error
-            messages.error(request, 'There is a problem with your Kaist email provided through sso login. Please login again. If the problem persists, please contact the website administration.')
+            messages.error(request, 'There is a problem with your Kaist email provided through sso login. Please login again. If the problem persists, please contact the website administration.', extra_tags='danger')
             return redirect(reverse('election'))
         kaist_email = 'kisa@kaist.ac.kr'
     else:

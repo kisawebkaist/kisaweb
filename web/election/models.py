@@ -61,6 +61,7 @@ class Election(models.Model):
         permissions = [
             ('see_election_results', 'Can view election results anytime'),
             ('preview_election', 'Can preview the election before it is published'),
+            ('voting_exception', 'Can vote in election even if the user does not satisfy the voting conditions'),
         ]
     
     start_datetime = models.DateTimeField()
