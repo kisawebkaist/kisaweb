@@ -87,9 +87,10 @@ def vote(request, name):
             messages.error(request, 'Only international members of KAIST are eligible to vote.', extra_tags='danger')
             return redirect(reverse('election'))
 
-        if not 'S' in params['user'].user_group:
-            messages.error(request, 'According to the rules, you are not eligible to vote. If you think this is a mistake, please contact the us at kisa@kaist.ac.kr.', extra_tags='danger')
-            return redirect(reverse('election'))
+        if not 'S' in params['user'].user_group: # Check whether an active student
+            if not ('E' in params['user'].user_group and 'researcher' in params['user'].title_english.lower()): # Check whether the employee is a researcher
+                messages.error(request, 'According to the rules, you are not eligible to vote. If you think this is a mistake, please contact the us at kisa@kaist.ac.kr.', extra_tags='danger')
+                return redirect(reverse('election'))
 
     if params['user'].kaist_email is None:
         if not params['user'].is_staff: # If user is not staff, there is an error
