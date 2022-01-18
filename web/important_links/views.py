@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponse
-from .models import Link, LinkCategory
+from .models import LinkCategory
 
 # Create your views here.
 def links_view(request):
@@ -8,8 +8,6 @@ def links_view(request):
 
 	# LinkCategory.links.all() to access all links in a category
 	# Link fields: title, description, url
-	# The other link fields (the booleans) can be rendered as small badges perhaps?
-
 	context = {
 		'categories': categories
 	}
