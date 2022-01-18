@@ -1,48 +1,40 @@
 {% extends 'important_links/templates/important_links/links_base.html' %}
 
-{% load static %}
-{% load compress %}
-
-{% block css %}
-{% compress css file important_links %}
-<link rel="stylesheet" type="text/x-scss" href="{% static 'scss/links_main.scss' %}">
-{% endcompress %}
-{% endblock %}
-
-
 {% block content %}
 
+<!-- Category Navigation -->
 <div class="navigation rounded border p-2 m-2">
 <ul>
   {% for category in categories %}
-  <li><a href="#{{category.title_category}}">{{category.title_category}}</a></li>
+    {% if category.links.all %}
+      <li><a href="#{{category.title_category}}">{{category.title_category}}</a></li>
+    {% endif %}
   {% endfor %}
 </ul>
 </div>
 
-
 <!-- LINKS (check views.py for details if needed)-->
 <div class="cat-list">
 	{% for category in categories %}
-	<p class="cat-name" id="{{category.title_category}}">{{category.title_category}}</p>
-	<ul class="link-list">
-		{% for link in category.links.all %}
-		<!-- <li>Title: {{link.title}}, Description: {{link.description}}, URL: {{link.url}}</li> -->
-    <li>
-      <h4 class="link-heading">
-        {{ link.title }}
-        {% if link.is_english %}<span class="badge badge-pill badge-dark ml-2">English</span>{% endif %}
-        {% if link.requires_sso %}<span class="badge badge-pill badge-primary">SSO Required</span>{% endif %}
-        {% if link.external_access %}<span class="badge badge-pill badge-info">Accessible off-campus</span>{% endif %}
-      </h4>
-      <p class="link-description">
-        {{ link.description }}
-      </p>
-      <div class="link-url"> <a class="link" href="{{link.url}}" target="_blank"> {{link.url}} </a> </div>
-
-    </li>
-    {%endfor%}
-	</ul>
+    {% if category.links.all %}
+    <p class="cat-name" id="{{category.title_category}}">{{category.title_category}}</p>
+    <ul class="link-list">
+      {% for link in category.links.all %}
+      <li>
+        <h4 class="link-heading">
+          {{ link.title }}
+          {% if link.is_english %}<span class="badge badge-pill badge-dark ml-2">English</span>{% endif %}
+          {% if link.requires_sso %}<span class="badge badge-pill badge-primary">SSO Required</span>{% endif %}
+          {% if link.external_access %}<span class="badge badge-pill badge-info">Accessible off-campus</span>{% endif %}
+        </h4>
+        <p class="link-description">
+          {{ link.description }}
+        </p>
+        <div class="link-url"> <a class="link" href="{{link.url}}" target="_blank"> {{link.url}} </a> </div>
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
 	{% endfor %}
 </div>
 <!-- END OF LINKS -->

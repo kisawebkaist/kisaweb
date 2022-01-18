@@ -15,6 +15,7 @@ body {
   background-color: #f1f1f1;
   height: calc(100vh - 40%);
   z-index: 100;
+  overflow: auto;
 }
 
 .navigation ul {
@@ -74,7 +75,7 @@ body {
 .cat-list .link-list li {
   background-color: rgb(250, 250, 250);
   position: relative;
-  cursor: pointer;
+  // cursor: pointer;
   font-size: 18px;
   border-radius: 8px;
   border-block: solid;
@@ -139,7 +140,18 @@ body {
     width: 95%;
   }
   .navigation {
-    position: relative;
+    position: sticky;
+    top: 0;
+    max-height: 70px;
+    overflow-x: scroll;
+    overflow-y: hidden;
+  }
+  .navigation ul {
+    display: flex;
+  }
+  .navigation ul li a {
+    width: 100%;
+    white-space: nowrap;
   }
 }
 
