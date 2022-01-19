@@ -14,6 +14,7 @@ body {
   right: 80%;
   background-color: #f1f1f1;
   height: calc(100vh - 40%);
+  max-height: calc(90vh - 300px);
   z-index: 100;
   overflow: auto;
 }
@@ -47,12 +48,9 @@ body {
 .cat-name {
   position: relative;
   // cursor: pointer;
-  font-size: 20px;
+  font-size: 30px;
   font-weight: 600;
   margin-bottom: 0px;
-  padding: 16px;
-  padding-right: px;
-  padding-left: 16px;
   text-align: center;
   color: rgb(71, 90, 90);
 }
@@ -87,7 +85,7 @@ body {
   width: 80%;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 10px
+  overflow-wrap: break-word;
 }
 
 .link-list li {
@@ -103,10 +101,6 @@ body {
 .cat-list .link-heading {
   font-size: 16px;
   position: relative;
-  margin-left: 25px;
-  margin-right: 25px;
-  margin-top: 20px;
-  padding-bottom: 10px;
   width: 95%;
   /*color: rgb(71, 90, 90); */
   font-weight: bold;
@@ -115,8 +109,6 @@ body {
 .cat-list .link-description {
   font-size: 16px;
   position: relative;
-  margin-left: 25px;
-  margin-right: 25px;
   width: 95%;
 }
 
@@ -153,28 +145,4 @@ body {
     width: 100%;
     white-space: nowrap;
   }
-}
-
-.container {
-  width: 1200px;
-  margin: auto;
-}
-
-.art-box svg {
-  width: 100%;
-}
-
-.row {
-  display: flex;
-}
-
-.row .col {
-  flex-basis: 50%;
-}
-
-.read {
-  color: rgb(32, 32, 32);
-  font-size: 16px;
-  line-height: 1.5;
-  margin-top: 20px;
 }
