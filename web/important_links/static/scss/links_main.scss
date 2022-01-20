@@ -35,7 +35,7 @@ body {
   font-weight: bolder;
   transition: all 200ms;
   transition-timing-function: ease-in-out;
-  
+
 }
 
 /* Change the link color on hover */
@@ -124,7 +124,30 @@ body {
   color: rgb(30,144,255);
 }
 
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 991px){
+  .cat-list {
+    margin: 0px;
+  }
+  .cat-list li {
+    width: 95%;
+  }
+  .navigation {
+    position: sticky;
+    top: 0;
+    max-height: 70px;
+    overflow-x: scroll;
+    overflow-y: hidden;
+  }
+  .navigation ul {
+    display: flex;
+  }
+  .navigation ul li a {
+    width: 100%;
+    white-space: nowrap;
+  }
+}
+
+@media screen and (max-height: 500px) {
   .cat-list {
     margin: 0px;
   }
