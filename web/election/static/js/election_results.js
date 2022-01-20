@@ -95,7 +95,10 @@ const getChartOptions = (chosenOption) => {
                 }
             }
         }
-        $('#election-total-votes-region').hide();
+        all_votes = 0;
+        all_votes += electionFilters['KISA Votes'].reduce((a, b) => a + b, 0);
+        all_votes += electionFilters['Non-KISA Votes'].reduce((a, b) => a + b, 0);
+        $(electionTotalVotes).text(all_votes);
     }
     else {
         options['tooltip'] = {
@@ -105,10 +108,9 @@ const getChartOptions = (chosenOption) => {
                 }
             }
         }
-        $('#election-total-votes-region').show();
+        $(electionTotalVotes).text(options.series.reduce((a, b) => a + b, 0));
     }
     $('#election-question-mark').attr('data-original-title', electionExplanations[chosenOption]);
-    $(electionTotalVotes).text(options.series.reduce((a, b) => a + b, 0));
     return options;
 }
 
