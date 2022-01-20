@@ -6,7 +6,7 @@ $(document).ready(function(){
 	  if (this.hash !== "") {
 		let offset = 0;
 		// Offset scroll on small screens so that category names are not covered
-		if ($(document).width() < 900) {
+		if ($(document).width() < 991 || $(window).height() < 500) {
 			offset = 70;
 		}
 		// Prevent default anchor click behavior
