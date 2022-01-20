@@ -87,6 +87,27 @@ var myChartDiv, electionTotalVotes;
 
 const getChartOptions = (chosenOption) => {
     options.series = electionFilters[chosenOption];
+    if(chosenOption == 'Weighted Votes') {
+        options['tooltip'] = {
+            y: {
+                formatter: function(value, { series, seriesIndex, dataPointIndex, w }) {
+                    return undefined
+                }
+            }
+        }
+        $('#election-total-votes-region').hide();
+    }
+    else {
+        options['tooltip'] = {
+            y: {
+                formatter: function(value, { series, seriesIndex, dataPointIndex, w }) {
+                    return value
+                }
+            }
+        }
+        $('#election-total-votes-region').show();
+    }
+    $('#election-question-mark').attr('data-original-title', electionExplanations[chosenOption]);
     $(electionTotalVotes).text(options.series.reduce((a, b) => a + b, 0));
     return options;
 }
@@ -100,6 +121,7 @@ $('.election-dropdown-option').click((e) => {
 });
 
 $(document).ready(() => {
+    $('#election-question-mark').tooltip();
     dropdownOptions = $('.election-dropdown-option');
     dropdownOptions.each(function() {
         $(this).hover(function() {
@@ -110,7 +132,7 @@ $(document).ready(() => {
     });
     myChartDiv = $("#myChart")[0];
     electionTotalVotes = $('#election-total-votes')[0];
-    chart = new ApexCharts(myChartDiv, getChartOptions('All Votes'));
+    chart = new ApexCharts(myChartDiv, getChartOptions('Weighted Votes'));
     chart.render();
 });
 

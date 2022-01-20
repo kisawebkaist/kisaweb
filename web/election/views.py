@@ -8,6 +8,56 @@ from django.utils import timezone, dateformat
 
 from .models import Election, Candidate, Voter
 
+"""
+Miko's formula
+# of debate-attending kisa members = k
+# of kisa members who dont attend debate + general votersv= g (treat those who dont attend debate as general voters) 
+
+Formula = (#ofvoters from k/k + #of voters fromg/g )/2
+"""
+
+def get_weighted_result(candidate, election, **kwargs):
+    
+    all_voters = Voter.objects.filter(voted_election=election)
+
+    general_vote_count_all = all_voters.filter(is_kisa=False, **kwargs).count()
+    kisa_yes_debate_count_all = all_voters.filter(is_kisa=True, joined_debate=True, **kwargs).count()
+    kisa_no_debate_count_all = all_voters.filter(is_kisa=True, joined_debate=False, **kwargs).count()
+
+    general_vote_count = candidate.voters.filter(is_kisa=False, **kwargs).count()
+    kisa_yes_debate_count = candidate.voters.filter(is_kisa=True, joined_debate=True, **kwargs).count()
+    kisa_no_debate_count = candidate.voters.filter(is_kisa=True, joined_debate=False, **kwargs).count()
+
+    general_vote_weight = election.general_vote_weight
+    kisa_yes_debate_weight = election.kisa_yes_debate_weight
+    kisa_no_debate_weight = election.kisa_no_debate_weight
+
+    if not election.use_the_manual_weights: # Miko's formula
+        try:
+            general_vote_weight = 0.5 / (general_vote_count_all + kisa_no_debate_count_all)
+        except:
+            general_vote_weight = 0
+        kisa_no_debate_weight = general_vote_weight
+        try:
+            kisa_yes_debate_weight = 0.5 / kisa_yes_debate_count_all
+        except:
+            kisa_yes_debate_weight = 0
+
+    numerator = 0
+    numerator += general_vote_count * general_vote_weight
+    numerator += kisa_yes_debate_count * kisa_yes_debate_weight
+    numerator += kisa_no_debate_count * kisa_no_debate_weight
+
+    denominator = 0
+    denominator += general_vote_count_all * general_vote_weight
+    denominator += kisa_yes_debate_count_all * kisa_yes_debate_weight
+    denominator += kisa_no_debate_count_all * kisa_no_debate_weight
+
+    try:
+        return float(numerator / denominator)
+    except:
+        return 0
+
 # Create your views here.
 
 def election(request):
@@ -43,24 +93,31 @@ def election(request):
         candidate_list = latest_election.candidates.all()
         context['categories'] = [str(candidate) for candidate in candidate_list]
         context['filters'] = {
-            'All Votes': [candidate.voters.count() for candidate in candidate_list],
+            'Weighted Votes': [get_weighted_result(candidate, latest_election) for candidate in candidate_list],
             'Non-KISA Votes': [candidate.voters.filter(is_kisa=False).count() for candidate in candidate_list],
             'KISA Votes': [candidate.voters.filter(is_kisa=True).count() for candidate in candidate_list],
         }
-        if latest_election.consider_debate_participation:
+        if latest_election.show_debate_participation:
             context['filters']['KISA (in-debate) Votes'] = [candidate.voters.filter(is_kisa=True, joined_debate=True).count() for candidate in candidate_list]
-            # context['filters']['KISA (out-debate) Votes'] = [candidate.voters.filter(is_kisa=True, joined_debate=False).count() for candidate in candidate_list]
     else: # Yes/No election TODO:
         candidate = latest_election.candidates.all()[0]
         context['categories'] = ["Yes", "No"]
         context['filters'] = {
-            'All Votes': [candidate.voters.filter(vote_type=category).count() for category in ['yes', 'no']],
+            'Weighted Votes': [get_weighted_result(candidate, latest_election, vote_type=category) for category in ['yes', 'no']],
             'Non-KISA Votes': [candidate.voters.filter(vote_type=category, is_kisa=False).count() for category in ['yes', 'no']],
             'KISA Votes': [candidate.voters.filter(vote_type=category, is_kisa=True).count() for category in ['yes', 'no']],
         }
-        if latest_election.consider_debate_participation:
+        if latest_election.show_debate_participation:
             context['filters']['KISA (in-debate) Votes'] = [candidate.voters.filter(vote_type=category, is_kisa=True, joined_debate=True).count() for category in ['yes', 'no']]
-            # context['filters']['KISA (absent debate) Votes'] = [candidate.voters.filter(vote_type=category, is_kisa=True, joined_debate=False).count() for category in ['yes', 'no']]
+    
+    context['explanations'] = {
+        'Weighted Votes': latest_election.weighted_vote_explanation,
+        'Non-KISA Votes': latest_election.non_kisa_vote_explanation,
+        'KISA Votes': latest_election.kisa_vote_explanation
+    }
+    if latest_election.show_debate_participation:
+        context['explanations']['KISA (in-debate) Votes'] = latest_election.kisa_in_debate_vote_explanation
+
     return render(request, 'election/election.html', context)
 
 def candidate(request, name):
