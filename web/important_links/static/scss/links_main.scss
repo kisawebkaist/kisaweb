@@ -104,6 +104,11 @@ body {
   width: 95%;
   /*color: rgb(71, 90, 90); */
   font-weight: bold;
+  display: flex;
+  align-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+
 }
 
 .cat-list .link-description {

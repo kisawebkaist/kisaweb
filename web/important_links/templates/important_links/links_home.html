@@ -23,9 +23,9 @@
       <li class="my-4">
         <h4 class="link-heading p-2 m-2">
           {{ link.title }}
-          {% if link.is_english %}<span class="badge badge-pill badge-dark ml-2">English</span>{% endif %}
-          {% if link.requires_sso %}<span class="badge badge-pill badge-primary">SSO Required</span>{% endif %}
-          {% if link.external_access %}<span class="badge badge-pill badge-info">Accessible off-campus</span>{% endif %}
+          {% if link.is_english %}<span class="badge badge-pill badge-dark my-1 ml-1">English</span>{% endif %}
+          {% if link.requires_sso %}<span class="badge badge-pill badge-primary ml-1">SSO Required</span>{% endif %}
+          {% if link.external_access %}<span class="badge badge-pill badge-info ml-1">Accessible off-campus</span>{% endif %}
         </h4>
         {% if link.description %}
         <p class="link-description p-2 m-2">
