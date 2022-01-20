@@ -42,16 +42,25 @@ def election(request):
     if latest_election.candidates.count() > 1: # Normal election
         candidate_list = latest_election.candidates.all()
         context['categories'] = [str(candidate) for candidate in candidate_list]
-        context['all_votes'] = [candidate.voters.count() for candidate in candidate_list]
-        context['non_kisa_votes'] = [candidate.voters.filter(is_kisa=False).count() for candidate in candidate_list]
-        context['kisa_votes'] = [context['all_votes'][i] - context['non_kisa_votes'][i] for i, _ in enumerate(candidate_list)]
-    else: # Yes/No election
+        context['filters'] = {
+            'All Votes': [candidate.voters.count() for candidate in candidate_list],
+            'Non-KISA Votes': [candidate.voters.filter(is_kisa=False).count() for candidate in candidate_list],
+            'KISA Votes': [candidate.voters.filter(is_kisa=True).count() for candidate in candidate_list],
+        }
+        if latest_election.consider_debate_participation:
+            context['filters']['KISA (in-debate) Votes'] = [candidate.voters.filter(is_kisa=True, joined_debate=True).count() for candidate in candidate_list]
+            # context['filters']['KISA (out-debate) Votes'] = [candidate.voters.filter(is_kisa=True, joined_debate=False).count() for candidate in candidate_list]
+    else: # Yes/No election TODO:
         candidate = latest_election.candidates.all()[0]
         context['categories'] = ["Yes", "No"]
-        context['all_votes'] = [candidate.voters.filter(vote_type=category).count() for category in ['yes', 'no']]
-        context['non_kisa_votes'] = [candidate.voters.filter(vote_type=category, is_kisa=False).count() for category in ['yes', 'no']]
-        context['kisa_votes'] = [context['all_votes'][i] - context['non_kisa_votes'][i] for i in [0, 1]] 
-
+        context['filters'] = {
+            'All Votes': [candidate.voters.filter(vote_type=category).count() for category in ['yes', 'no']],
+            'Non-KISA Votes': [candidate.voters.filter(vote_type=category, is_kisa=False).count() for category in ['yes', 'no']],
+            'KISA Votes': [candidate.voters.filter(vote_type=category, is_kisa=True).count() for category in ['yes', 'no']],
+        }
+        if latest_election.consider_debate_participation:
+            context['filters']['KISA (in-debate) Votes'] = [candidate.voters.filter(vote_type=category, is_kisa=True, joined_debate=True).count() for category in ['yes', 'no']]
+            # context['filters']['KISA (absent debate) Votes'] = [candidate.voters.filter(vote_type=category, is_kisa=True, joined_debate=False).count() for category in ['yes', 'no']]
     return render(request, 'election/election.html', context)
 
 def candidate(request, name):

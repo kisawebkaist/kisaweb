@@ -73,6 +73,7 @@ class Election(models.Model):
     debate_url = models.CharField(max_length=512, blank=True, null=True)
     is_open_public = models.BooleanField(default=False, null=True)
     results_out = models.BooleanField(default=False, null=True)
+    consider_debate_participation = models.BooleanField(default=True, null=True)
     kisa_member_email_list = models.TextField(blank=True)
 
     EMBED_VIDEO_RATIO_CHOICES = [
@@ -127,6 +128,7 @@ class Voter(models.Model):
     voted_election = models.ForeignKey(Election, on_delete=models.CASCADE, related_name='voters')
     vote_type = models.CharField(max_length=10, blank=True)
     is_kisa = models.BooleanField(default=False)
+    joined_debate = models.BooleanField(default=False, null=True)
 
 
 @receiver(models.signals.post_save, sender=Voter)

@@ -8,10 +8,10 @@
                 aria-haspopup="true" aria-expanded="false">
                 All Votes
             </button>
-            <div class="dropdown-menu">
-                <button class="dropdown-item text-dark election-dropdown-option">All Votes</button>
-                <button class="dropdown-item text-dark election-dropdown-option">Non-KISA Votes</button>
-                <button class="dropdown-item text-dark election-dropdown-option">KISA votes</button>
+            <div class="dropdown-menu shadow-sm">
+                {% for filter_name in filters.keys %}
+                <button class="dropdown-item text-dark election-dropdown-option">{{ filter_name }}</button>
+                {% endfor %}                
             </div>
         </div>
     </div>
@@ -31,8 +31,6 @@
     {% endif %}
     <script>
         const electionCategories = JSON.parse("{{ categories|safe }}".replaceAll('\'', '"'));
-        const electionAllVotes = JSON.parse('{{ all_votes|safe }}');
-        const electionNonKISAVotes = JSON.parse('{{ non_kisa_votes|safe }}');
-        const electionKISAVotes = JSON.parse('{{ kisa_votes|safe }}');
+        const electionFilters = JSON.parse("{{ filters|safe }}".replaceAll('\'', '"'));
     </script>
 </div>

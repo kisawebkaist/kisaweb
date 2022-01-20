@@ -68,9 +68,9 @@ class ElectionAdmin(admin.ModelAdmin):
 
 
 class VoterAdmin(admin.ModelAdmin):
-    list_display = ['user', 'user_email', 'is_kisa', 'user_status', 'voted_election']
+    list_display = ['user', 'user_email', 'is_kisa', 'joined_debate', 'voted_election']
     search_fields = ['user__kaist_email', 'user__username']
-    list_filter = ['is_kisa', 'user__is_staff']
+    list_filter = ['is_kisa', 'joined_debate', 'user__is_staff']
     readonly_fields = ['user', 'user_email', 'voted_election']
     exclude = ['voted_candidate', 'vote_type']
 
