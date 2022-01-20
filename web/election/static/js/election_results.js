@@ -86,15 +86,7 @@ var options = {
 var myChartDiv, electionTotalVotes;
 
 const getChartOptions = (chosenOption) => {
-    if (chosenOption == 'All Votes') {
-        options.series = electionAllVotes;
-    }
-    else if (chosenOption == 'Non-KISA Votes') {
-        options.series = electionNonKISAVotes;
-    }
-    else {
-        options.series = electionKISAVotes;
-    }
+    options.series = electionFilters[chosenOption];
     $(electionTotalVotes).text(options.series.reduce((a, b) => a + b, 0));
     return options;
 }
@@ -108,6 +100,14 @@ $('.election-dropdown-option').click((e) => {
 });
 
 $(document).ready(() => {
+    dropdownOptions = $('.election-dropdown-option');
+    dropdownOptions.each(function() {
+        $(this).hover(function() {
+            $(this).css('background-color', '#FAFAFA');
+        }, function() {
+            $(this).css('background-color', 'white');
+        })
+    });
     myChartDiv = $("#myChart")[0];
     electionTotalVotes = $('#election-total-votes')[0];
     chart = new ApexCharts(myChartDiv, getChartOptions('All Votes'));
