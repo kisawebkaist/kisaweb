@@ -2,20 +2,23 @@
     <div class="row justify-content-center">
         <div class="section-heading">Results</div>
     </div>
-    <div class="row mx-lg-5 mx-md-3 mx-sm-2">
+    <div class="row mx-lg-5 mx-md-3 mx-sm-2 align-items-center">
         <div class="btn-group shadow rounded-sm">
             <button class="btn dropdown-toggle" type="button" id="election-dropdown-button" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
-                All Votes
+                Weighted Votes
             </button>
             <div class="dropdown-menu shadow-sm">
                 {% for filter_name in filters.keys %}
                 <button class="dropdown-item text-dark election-dropdown-option">{{ filter_name }}</button>
-                {% endfor %}                
+                {% endfor %}
             </div>
         </div>
+        <button id="election-question-mark" type="button" class="btn btn-sm btn-secondary ml-2 rounded-lg" data-toggle="tooltip" data-placement="bottom" title="">
+            ?
+        </button>
     </div>
-    <div class="row justify-content-end mt-4 mx-lg-5 mx-md-3 mx-sm-2">
+    <div class="row justify-content-end mt-4 mx-lg-5 mx-md-3 mx-sm-2" id="election-total-votes-region">
         <div class="d-flex">
             <b class="mr-2">Total Votes:</b>
             <span id="election-total-votes"></span>
@@ -32,5 +35,6 @@
     <script>
         const electionCategories = JSON.parse("{{ categories|safe }}".replaceAll('\'', '"'));
         const electionFilters = JSON.parse("{{ filters|safe }}".replaceAll('\'', '"'));
+        const electionExplanations = JSON.parse("{{ explanations|safe }}".replaceAll('\'', '"'));
     </script>
 </div>

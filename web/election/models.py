@@ -71,10 +71,18 @@ class Election(models.Model):
     instructions = HTMLField()
     image = models.ImageField(upload_to=ELECTION_MEDIA_UPLOAD_URL, blank=True, null=True)
     debate_url = models.CharField(max_length=512, blank=True, null=True)
+    kisa_member_email_list = models.TextField(blank=True)
     is_open_public = models.BooleanField(default=False, null=True)
     results_out = models.BooleanField(default=False, null=True)
-    consider_debate_participation = models.BooleanField(default=True, null=True)
-    kisa_member_email_list = models.TextField(blank=True)
+    show_debate_participation = models.BooleanField(default=True, null=True)
+    general_vote_weight = models.DecimalField(default=0, null=True, max_digits=12, decimal_places=3)
+    kisa_yes_debate_weight = models.DecimalField(default=0, null=True, max_digits=12, decimal_places=3)
+    kisa_no_debate_weight = models.DecimalField(default=0, null=True, max_digits=12, decimal_places=3)
+    use_the_manual_weights = models.BooleanField(default=True, null=True)
+    weighted_vote_explanation = models.TextField(default="", null=True)
+    non_kisa_vote_explanation = models.TextField(default="", null=True)
+    kisa_vote_explanation = models.TextField(default="", null=True)
+    kisa_in_debate_vote_explanation = models.TextField(default="", null=True)
 
     EMBED_VIDEO_RATIO_CHOICES = [
         ('21by9', '21by9'),
