@@ -1,6 +1,8 @@
 from django.db import models
 from core.models import Category
 
+from urllib.parse import urlparse
+
 # Create your models here.
 class LinkCategory(Category):
 	"""
@@ -33,7 +35,23 @@ class Link(models.Model):
 	def __str__(self):
 		return f"{self.title}"
 	
+	def get_parsed_url(self):
+		"""
+		str -> ParseResult
+		ParseResult(schema, netloc, path, params, query, fragment)
+
+		scheme://netloc/path;parameters?query#fragment
+
+		https://www.example.com/some/page?some_key=some_value
+		schema: 'https'
+		netloc: 'www.example.com'
+		path  : '/some/page'
+		query : 'some_key=some_value'
+		"""
+		return urlparse(self.url)
+
 	class Meta:
 		ordering = ('title',)
+	
 
 
