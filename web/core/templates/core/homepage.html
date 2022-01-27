@@ -4,6 +4,12 @@
 {% load compress %}
 {% load events_tags %}
 
+{% block meta %}
+<meta name="description" content="KAIST International Students Association (KISA) represents the international community of KAIST.
+                                      KISA is the largest club in KAIST for international students. Comprised of five divisions: Events, Promotions,
+                                      Finance, Web, Welfare.">
+{% endblock %}
+
 {% block css %}
 {% compress css file events %}
 <link rel="stylesheet" type="text/x-scss" href="{% static 'scss/homepage_main.scss' %}">
