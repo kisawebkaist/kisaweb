@@ -1,8 +1,7 @@
 # Models
 
-!!! todo "Incomplete"
-
 Both models have been designed with blog Post and PostTag creation from admin panel in mind.
+This means there is no front-end on the website to creat a blog post.
 
 ## PostTag
 
@@ -14,7 +13,9 @@ Each Post is related to one or more PostTag instances and are used as a way to q
 
 #### Inherited from Content
 
-* `tag_name`
+```
+ tag_name
+```
 
 ### Usage
 ```python	
@@ -34,17 +35,24 @@ post_tag.save()
 ### Fields
 
 #### Inherited from Content
-
-* `title`
-* `content`
-* `created`
-* `modified`
-* `slug`
-
+```python
+title, content, created, modified, slug
+```
 #### Native
 
-* `tags`: All the tags the Post is associated with.
-* `image`: The cover image for the blog Post
-	- Constraints:
-		- **Optional**
-		- Cover image will be resized to 375x375
+| Field | Type | Required | Description| Contraints |
+| :---: | :--: | :------: | :--------: | :--------: |
+|`tags`| Native | :material-check: | All tags the Post is associtated with ||
+|`image`| Native |  | The cover image for the Post | Will be resized to 375x375px |
+
+### Methods
+
+For a `Post` object passed to the front-end titled `blog_post`, use the following in your html file to get the image tag of the blog post's preview image. 
+
+```html
+{% if blog_post.image %}
+	{{ blog_post.get_image_tag }}
+{% endif %}
+
+```
+

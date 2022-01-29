@@ -4,7 +4,7 @@ For full documentation visit [mkdocs.org](https://www.mkdocs.org).
 
 ## Commands
 
-These are the  basic commands for your use.
+These are the  basic commands for your use. Run these in the same directory as the `mkdocs.yml` file.
 
 * `mkdocs serve` - Start the live-reloading docs server.
     - This is for previewing changes while working.
@@ -42,12 +42,19 @@ These are the things that should be focused on while writing documentation.
         
         !!! todo "Incomplete"
 
+Model fields data table template
+```
+| Field | Type | Required | Description| Contraints |
+| :---: | ---- | :------: | :--------: | :--------: |
+|       |      |          |            |            |
+```
+
 
 ### Making a contribution
 
 * `git checkout documentation`
 * Create a markdown file in the required app folder.
-* Follow [this](https://squidfunk.github.io/mkdocs-material/reference/abbreviations/) reference material for formatting options.
+* Follow [this](https://squidfunk.github.io/mkdocs-material/reference/) reference material for formatting options.
 * `git add <file-name>`
 * `git commit -m <addition-summary>`
 * `git push`
