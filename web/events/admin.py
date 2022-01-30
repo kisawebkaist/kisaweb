@@ -20,6 +20,7 @@ class EventAdmin(admin.ModelAdmin):
         'registration_end_datetime',
         'image_tag',
     ]
+    
 
     # fields = [
     #     'title',
