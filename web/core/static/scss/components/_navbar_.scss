@@ -10,9 +10,13 @@
     background-repeat: no-repeat;
 }
 
+.bg-darker {
+    background-color: $bg-darker-color_;
+}
+
 .brand-text {
-    font-family: 'Courgette';
-    font-size: 14px;
+    font-family: 'Acme', sans-serif;
+    font-size: 15px;
 }
 
 .navbar {
