@@ -24,6 +24,10 @@
     .nav-item:not(:last-child) { margin-right: 13px; }
 }
 
+.navbar-nav {
+    font-family: 'Open Sans', sans-serif;
+}
+
 .dropdown-item {
     color: $navbar-dark-color_;
 }
