@@ -13,7 +13,6 @@ tag_validator = RegexValidator(r'[^\w\-]', inverse_match=True, message='Spaces a
 
 # Abstract Classes
 class Tag(models.Model):
-
     tag_name = models.CharField(max_length=50, blank=False, unique=True, validators=[tag_validator])
     def __str__(self):
         return self.tag_name
@@ -42,6 +41,15 @@ class Content(models.Model):
 
     def __str__(self):
         return self.slug
+
+    class Meta:
+        abstract = True
+
+class Category(models.Model):
+    title_category = models.CharField(max_length= 200, blank=True, unique=True)
+    
+    def __str__(self):
+        return self.title_category
 
     class Meta:
         abstract = True

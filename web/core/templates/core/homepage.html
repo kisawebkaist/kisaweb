@@ -4,6 +4,12 @@
 {% load compress %}
 {% load events_tags %}
 
+{% block meta %}
+<meta name="description" content="KAIST International Students Association (KISA) represents the international community of KAIST.
+                                      KISA is the largest club in KAIST for international students. Comprised of five divisions: Events, Promotions,
+                                      Finance, Web, Welfare.">
+{% endblock %}
+
 {% block css %}
 {% compress css file events %}
 <link rel="stylesheet" type="text/x-scss" href="{% static 'scss/homepage_main.scss' %}">
@@ -12,14 +18,14 @@
 
 {% block main %}
 <div class="intro-banner">
-  <img src="{% static 'img/lib.jpg' %}" alt="Intro banner background">
+  <img src="{% static 'img/kaistbg_one.jpg' %}" alt="Intro banner background">
   <p class="banner-text">KAIST INTERNATIONAL STUDENTS ASSOCIATION</p>
 </div>
- 
+
 <div class="d-flex h-auto margin">
   <div class="container-fluid mx-0 my-3">
     <div class="d-flex flex-column">
-      <p class="text-center heading">Founded in 2004. KAIST Internation Student Association (KISA) represents international community of KAIST.</p>
+      <p class="text-center heading">Founded in 2004. KAIST International Students Association (KISA) represents international community of KAIST.</p>
       <div class="container d-flex justify-content-center">
         <a class="btn btn-dark py-2 px-4 my-2 button-text" href="https://docs.google.com/forms/d/e/1FAIpQLSfF9xFyQfvV1ZVmNgm9PaE-I-oq7rYb-t_4eQ4jNwEFAwTsNw/viewform" role="button">Share your voice</a>
       </div>
@@ -27,6 +33,14 @@
     <hr>
     <div class = "container my-4">
     <h2 class = "mb-3">Events</h2>
+    <!-- KISA Calendar Embed -->
+    <div class="kisa-calendar my-3">
+      <button class="calendar-button-load btn btn-outline-dark">Load KISA Events Calendar for {% now "Y" %}</button>
+      <!-- <button class="calendar-button-toggle btn btn-outline-dark" style="display: none;">Toggle calendar visiblity</button> -->
+      <div id="kisa-google-calendar-container" class="d-flex justify-content-center m-2 rounded bg-light">
+      </div>  
+    </div>
+    <!-- Calendar End -->
     <div style="overflow-x: auto;" class="row d-flex flex-row flex-nowrap">
       {% for event in event_list %}
       <div class="ml-3">
@@ -34,7 +48,7 @@
           <div class="container">
             <h5 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" class="mt-2 card-title text-center">{{event.title}}</h5>
           </div>
-          <div class="card-block-img text-center">
+          <div class="card-img-top text-center">
             {% image_tag event listview=True %}
           </div>
           <div class="mt-2 read-more text-center">
@@ -81,4 +95,10 @@
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block js %}
+{% compress js file core %}
+<script src="{% static 'js/kisa_calendar.js' %}"></script>
+{% endcompress %}
 {% endblock %}

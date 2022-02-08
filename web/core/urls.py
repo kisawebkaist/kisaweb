@@ -8,6 +8,7 @@ urlpatterns = [
 
     path('events/', include('events.urls')),
     path('election/', include('election.urls')),
+    path('faq/', include('faq.urls')),
     path('docs/', include('docs.urls')),
     path('sso/', include('sso.urls')),
     path('about-us/', include('aboutus.urls')),
