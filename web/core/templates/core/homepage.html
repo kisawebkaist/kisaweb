@@ -70,7 +70,9 @@
       <div class="row no-gutters divisions">
           {% for division, color in division_list %}
           <a style="height: 150px;" class="col-xs-6 col-md-2 mx-0 my-3 position-relative d-flex justify-content-center align-items-center " href="{% url 'aboutus'%}?section=aboutus-divisions#{{division.description.title_lowercase_unspaced}}">
+            {% if division.description.image %}
             <img src="{{ division.description.image.url }}" class="division" alt="division.description.title_lowercase_unspaced">
+            {% endif %}
             <div class="rounded-lg position-absolute d-flex justify-content-center align-items-center" style="background-color: {{color}}; filter: brightness(40%); opacity: 75%; width: 90%; height: 110%"></div>
             <div class="position-absolute text-white h5">
               {{division.division_name}}
