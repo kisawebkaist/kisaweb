@@ -2,6 +2,7 @@ from django.db import models
 from tinymce.models import HTMLField
 from datetime import date
 from adminsortable.models import SortableMixin
+from django.utils.html import mark_safe
 
 class BaseContent(SortableMixin):
 
@@ -18,7 +19,7 @@ class BaseContent(SortableMixin):
 
 class BaseMember(models.Model):
     name    = models.CharField(max_length = 100, null = True)
-    image   = models.ImageField(null=True)
+    image   = models.ImageField(null=True, blank=True)
     position= models.CharField(max_length = 100, null = True)
     year    = models.PositiveIntegerField(null=True, blank=True)
     semester= models.CharField(max_length=10, null=True, blank=True)
@@ -30,6 +31,13 @@ class BaseMember(models.Model):
         if self.semester == None:
             self.semester = 'Fall' if cur_date.month > 6 else 'Spring'
         super().save(*args, **kwargs)
+
+    def image_tag(self):
+        if not self.image:
+            path = '/static/img/candidate-default-dist.png'
+        else:
+            path = self.image.url
+        return mark_safe(f'<img src="{path}" alt="Member Image" class="card-img-top" style="height: 200px; object-fit: cover;" />')
 
     def __str__(self):
         return f'[{self.semester}-{self.year} {self.position}] - {self.name}'

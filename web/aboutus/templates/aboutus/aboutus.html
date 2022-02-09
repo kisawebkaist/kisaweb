@@ -81,7 +81,7 @@
           <div class="d-flex flex-row flex-wrap justify-content-start">
             {% for member in members %}
             <div class="card m-4" style="width: 200px;">
-              <img class="card-img-top" style="height: 200px; object-fit: cover;" src="{{ member.image.url }}" alt="">
+              {{ member.image_tag }}
               <div class="card-body">
                 <h5 class="card-title text-center">{{ member.name }}</h5>
                 <p class="card-text text-center">{{ member.position }}</p>
