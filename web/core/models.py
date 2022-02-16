@@ -5,7 +5,7 @@ from django.utils.text import slugify
 from phone_field import PhoneField
 from tinymce.models import HTMLField
 from django.core.validators import RegexValidator
-from aboutus.models import DivisionDescription
+from aboutus.models import Division
 from adminsortable.models import SortableMixin
 
 # Validators
@@ -62,7 +62,7 @@ class DivisionItem(SortableMixin):
         ordering = ['the_order']
 
     division_name = models.CharField(max_length=50, blank=False, null=True)
-    description = models.ForeignKey(DivisionDescription, on_delete=models.CASCADE)
+    description = models.ForeignKey(Division, on_delete=models.CASCADE)
     the_order = models.PositiveIntegerField(default=0, editable=False, db_index=True)
 
     def __str__(self):
