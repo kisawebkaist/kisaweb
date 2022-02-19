@@ -17,9 +17,7 @@ class Candidate(models.Model):
     speech_url = models.CharField(max_length=512, blank=True, null=True)
     kisa_history = HTMLField()
     image = models.ImageField(upload_to=ELECTION_MEDIA_UPLOAD_URL, blank=True, null=True)
-    votes = models.IntegerField(default=0)
-    yes = models.IntegerField(default=0)
-    no = models.IntegerField(default=0)
+    date = models.DateField(auto_now_add=True, null=True)
 
     EMBED_VIDEO_RATIO_CHOICES = [
         ('21by9', '21by9'),
@@ -46,23 +44,7 @@ class Candidate(models.Model):
             path = '/static/img/candidate-default-dist.png'
         else:
             path = self.image.url
-        return mark_safe(f'<img src="{path}" alt="Candidate Image" width="200" height="200" />')
-
-    def vote(self):
-        self.votes += 1
-        self.save(update_fields=['votes'])
-
-    def remove_vote(self):
-        self.votes -= 1
-        self.save(update_fields=['votes'])
-
-    def vote_yes(self):
-        self.yes += 1
-        self.save(update_fields=['yes'])
-
-    def vote_no(self):
-        self.no += 1
-        self.save(update_fields=['no'])
+        return mark_safe(f'<img src="{path}" alt="Candidate Image"/>')
 
     def change_embed_ratio(self, ratio):
         lst = [i[0] for i in self.EMBED_VIDEO_RATIO_CHOICES]
@@ -75,6 +57,13 @@ class Candidate(models.Model):
 
 
 class Election(models.Model):
+    class Meta:
+        permissions = [
+            ('see_election_results', 'Can view election results anytime'),
+            ('preview_election', 'Can preview the election before it is published'),
+            ('voting_exception', 'Can vote in election even if the user does not satisfy the voting conditions'),
+        ]
+    
     start_datetime = models.DateTimeField()
     end_datetime = models.DateTimeField()
     candidates = models.ManyToManyField(Candidate, blank=False)
@@ -82,7 +71,18 @@ class Election(models.Model):
     instructions = HTMLField()
     image = models.ImageField(upload_to=ELECTION_MEDIA_UPLOAD_URL, blank=True, null=True)
     debate_url = models.CharField(max_length=512, blank=True, null=True)
-    is_open = models.BooleanField(default=False)
+    kisa_member_email_list = models.TextField(blank=True)
+    is_open_public = models.BooleanField(default=False, null=True)
+    results_out = models.BooleanField(default=False, null=True)
+    show_debate_participation = models.BooleanField(default=True, null=True)
+    general_vote_weight = models.DecimalField(default=0, null=True, max_digits=12, decimal_places=3)
+    kisa_yes_debate_weight = models.DecimalField(default=0, null=True, max_digits=12, decimal_places=3)
+    kisa_no_debate_weight = models.DecimalField(default=0, null=True, max_digits=12, decimal_places=3)
+    use_the_manual_weights = models.BooleanField(default=True, null=True)
+    weighted_vote_explanation = models.TextField(default="", null=True)
+    non_kisa_vote_explanation = models.TextField(default="", null=True)
+    kisa_vote_explanation = models.TextField(default="", null=True)
+    kisa_in_debate_vote_explanation = models.TextField(default="", null=True)
 
     EMBED_VIDEO_RATIO_CHOICES = [
         ('21by9', '21by9'),
@@ -131,13 +131,28 @@ class Election(models.Model):
 '''
 
 class Voter(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='voter')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='votes')
     voted_candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE, related_name='voters')
+    voted_election = models.ForeignKey(Election, on_delete=models.CASCADE, related_name='voters')
     vote_type = models.CharField(max_length=10, blank=True)
     is_kisa = models.BooleanField(default=False)
+    joined_debate = models.BooleanField(default=False, null=True)
 
 
-@receiver(models.signals.post_delete, sender=Voter)
-def delete_voter(sender, instance, *args, **kwargs):
-    voted_candidate = instance.voted_candidate
-    voted_candidate.remove_vote()
+@receiver(models.signals.post_save, sender=Voter)
+def update_voter(sender, instance, *args, **kwargs):
+    voted_election = instance.voted_election
+    kaist_email = instance.user.kaist_email
+    if kaist_email is None: 
+        assert(instance.user.is_staff) # The opposite case should never happen
+        kaist_email = 'kisa@kaist.ac.kr'
+    if instance.is_kisa:
+        if voted_election.kisa_member_email_list.find(kaist_email) == -1:
+            voted_election.kisa_member_email_list = f'{voted_election.kisa_member_email_list.strip()}\n{kaist_email}'
+    else:
+        voted_election.kisa_member_email_list = voted_election.kisa_member_email_list.replace(f'{kaist_email}\n', '')
+        voted_election.kisa_member_email_list = voted_election.kisa_member_email_list.replace(f'\n{kaist_email}', '')
+        voted_election.kisa_member_email_list = voted_election.kisa_member_email_list.replace(f'{kaist_email}', '')
+
+    voted_election.save(update_fields=['kisa_member_email_list'])
+

@@ -6,6 +6,10 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <!-- Meta description for each page (for better SEO) -->
+    {% block meta %}{% endblock %}
+
     <title>{% block title %}Home{% endblock %} - KISA (KAIST International Student Association)</title>
     <!-- Favicon -->
     <link rel="icon" href="{% static 'img/favicon.png' %}">
@@ -19,7 +23,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css' %}">
 
     <!-- Fonts (Fallbacks not implemented) -->
-    <link href='https://fonts.googleapis.com/css?family=Courgette' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Acme' rel='stylesheet' type='text/css'>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap" rel="stylesheet">
 

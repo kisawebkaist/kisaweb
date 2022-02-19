@@ -4,6 +4,12 @@
 {% load compress %}
 {% load events_tags %}
 
+{% block meta %}
+<meta name="description" content="KAIST International Students Association (KISA) represents the international community of KAIST.
+                                      KISA is the largest club in KAIST for international students. Comprised of five divisions: Events, Promotions,
+                                      Finance, Web, Welfare.">
+{% endblock %}
+
 {% block css %}
 {% compress css file events %}
 <link rel="stylesheet" type="text/x-scss" href="{% static 'scss/homepage_main.scss' %}">
@@ -27,6 +33,14 @@
     <hr>
     <div class = "container my-4">
     <h2 class = "mb-3">Events</h2>
+    <!-- KISA Calendar Embed -->
+    <div class="kisa-calendar my-3">
+      <button class="calendar-button-load btn btn-outline-dark">Load KISA Events Calendar for {% now "Y" %}</button>
+      <!-- <button class="calendar-button-toggle btn btn-outline-dark" style="display: none;">Toggle calendar visiblity</button> -->
+      <div id="kisa-google-calendar-container" class="d-flex justify-content-center m-2 rounded bg-light">
+      </div>  
+    </div>
+    <!-- Calendar End -->
     <div style="overflow-x: auto;" class="row d-flex flex-row flex-nowrap">
       {% for event in event_list %}
       <div class="ml-3">
@@ -97,4 +111,10 @@
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block js %}
+{% compress js file core %}
+<script src="{% static 'js/kisa_calendar.js' %}"></script>
+{% endcompress %}
 {% endblock %}
