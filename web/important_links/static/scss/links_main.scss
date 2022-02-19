@@ -142,6 +142,7 @@ body {
   background-color: rgb(30, 144, 255);
   transform: scaleX(0);
   transition: transform 0.5s ease;
+  transform-origin: 0;
 }
 
 .link:hover::before {

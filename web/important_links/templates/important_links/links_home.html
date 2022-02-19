@@ -32,7 +32,7 @@
           {{ link.description }}
         </p>
         {% endif %}
-        <div class="link-url"> <a class="link" href="{{link.url}}" target="_blank"> {{link.url}} </a> </div>
+        <div class="link-url"> <a class="link" href="{{link.url}}" target="_blank"> {{link.url|truncatechars:60}} </a> </div>
       </li>
       {% endfor %}
     </ul>
