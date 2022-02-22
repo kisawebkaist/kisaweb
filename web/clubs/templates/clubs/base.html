@@ -1,0 +1,14 @@
+{% extends 'core/base/base.html' %} {% load static %} {% load compress %} {% block main %} 
+<img class="img-fluid" src="{% static 'img/clubs.jpg' %}" alt="Image not found">
+<div class="d-flex flex-row h-auto margin">
+    <div class="container-fluid">
+        <!-- Page Title -->
+        <div class="row">
+            <div class="col page-title-box text-center py-1">
+                KAIST Clubs and Student Organizations
+            </div>
+        </div>
+        {% block clubs %} {% endblock %}
+    </div>
+</div>
+{% block content %} {% endblock %} {% endblock %}

@@ -16,7 +16,7 @@ from django.db import models
 
 class Club(models.Model):
     name = models.CharField(max_length=200, default='Club name')
-    slug = models.SlugField(max_length=100, blank=True, unique=True)
+    slug = models.SlugField(max_length=100, blank=True, editable=False, auto_created=True)
     email = models.EmailField(max_length=50)
     slogan = models.CharField(max_length=500, default='Make KAIST a fun and interesting place to study')
     image = models.ImageField()
@@ -37,7 +37,9 @@ class Club(models.Model):
         (RELIGION_AND_CULTURE, 'Religion and Society')
     ]
     catagory = models.CharField(max_length=50, choices = choices, default= ACADEMIC)
-    Information = HTMLField()
+    information = HTMLField()
 
     def __str__(self) -> str:
-        return name
+        return self.name
+
+        

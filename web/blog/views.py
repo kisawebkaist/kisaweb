@@ -8,7 +8,7 @@ from .models import Post, PostTag
 RESULTS_PER_PAGE = 12
 
 def post_view(request, post_slug):
-  blog_post = Post.objects.filter(slug=post_slug).first()
+  blog_post = Post.objects.filter(slug=post_slug).first() 
   if blog_post == None:
     return HttpResponse('Blog Post Does Not Exist', status=404)
   context = {
