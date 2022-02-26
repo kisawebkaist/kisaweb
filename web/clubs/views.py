@@ -11,28 +11,13 @@ def showcat(request, cat):
     if query == None:
         return HttpResponse("Page not found", status=404)
 
-    names = []
-    emails = []
-    catagory = []
-    slogans = []
-    images = []
-    informations = []
-
-    for i in query:
-        names.append(i.name)
-        emails.append(i.email)
-        catagory.append(i.catagory)
-        slogans.append(i.slogan)
-        images.append(i.image.url)
-        informations.append(i.information)
-    
-    queries = zip(names, emails, catagory, slogans, images, informations)
+    # queries = zip(names, emails, catagory, slogans, images, informations)
 
     context = {
-        'queries': queries,
+        'queries': query,
         'catagory': cat
         } 
     print(context)
-    return render(request, "clubs/base2.html", context)
+    return render(request, "clubs/clublist.html", context)
     
     
