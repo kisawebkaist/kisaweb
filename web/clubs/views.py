@@ -1,23 +1,26 @@
 from multiprocessing import context
 from django.shortcuts import render, HttpResponse
-from .models import Club
+from .models import Club, Catagory
 
 # Create your views here.
 def clubs(request, cat=None):
-    return render(request, "clubs/homepage.html")
+    query = Catagory.objects.all()
+    if query == None:
+        return HttpResponse("Page not found", status=404)
+    context = {"catagories": query}
+
+    return render(request, "clubs/homepage.html", context)
 
 def showcat(request, cat):
-    query = Club.objects.filter(catagory=cat)
+    id = Catagory.objects.get(catagory_title=cat).id
+    query = Club.objects.filter(catagory=id)
     if query == None:
         return HttpResponse("Page not found", status=404)
 
-    # queries = zip(names, emails, catagory, slogans, images, informations)
-
     context = {
         'queries': query,
-        'catagory': cat
+        'catagory': cat,
         } 
-    print(context)
     return render(request, "clubs/clublist.html", context)
     
     
