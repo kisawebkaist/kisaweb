@@ -62,7 +62,7 @@ class Footer(models.Model):
     location = models.CharField(max_length=80, blank=False)
     phnum_eng = PhoneField(blank=False)
     phnum_kor = PhoneField(blank=False)
-    email = models.EmailField(max_length=20, blank=False)
+    email = models.EmailField(max_length=50, blank=False)
 
     fb_link = models.URLField(blank=True)
     insta_link = models.URLField(blank=True)
