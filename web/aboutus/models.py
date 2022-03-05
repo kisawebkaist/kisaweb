@@ -24,34 +24,18 @@ class BaseMember(models.Model):
         ('Spring',  'Spring'),
         ('Fall', 'Fall')
     )
-    # POSITIONS = (
-    #     ('President', 'President'),
-    #     ('Division Head', 'Division Head'),
-    #     ('Secretary', 'Secretary'),
-    #     ('Member', 'Member')
-    # )
+    POSITIONS = (
+        ('President', 'President'),
+        ('Division Head', 'Division Head'),
+        ('Secretary', 'Secretary'),
+        ('Member', 'Member')
+    )
     name     = models.CharField(max_length = 100, null = True)
     image    = models.ImageField(null=True, blank=True)
-    position = models.CharField(max_length = 100, null = True)
-    year     = models.PositiveIntegerField(null=True, blank=True)
-    semester = models.CharField(max_length=10, null=True, blank=True, choices=SEMESTERS)
+    position = models.CharField(max_length = 100, null = True, choices = POSITIONS)
+    year     = models.PositiveIntegerField(null=True)
+    semester = models.CharField(max_length=10, null=True, choices=SEMESTERS)
     sns_link = models.URLField(null=True, blank=True)
-
-    def save(self, *args, **kwargs):
-        cur_date = date.today()
-        if self.year == None:
-            self.year = cur_date.year
-        if self.semester == None:
-            self.semester = 'Fall' if cur_date.month > 6 else 'Spring'
-
-        super().save(*args, **kwargs)
-
-    def image_tag(self):
-        if not self.image:
-            path = '/static/img/candidate-default-dist.png'
-        else:
-            path = self.image.url
-        return mark_safe(f'<img src="{path}" alt="Member Image" class="card-img-top" style="height: 200px; object-fit: cover;" />')
 
     def __str__(self):
         return f'[{self.semester}-{self.year} {self.position}] - {self.name}'
