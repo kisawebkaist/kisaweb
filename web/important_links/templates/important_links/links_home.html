@@ -22,17 +22,19 @@
       {% for link in category.links.all %}
       <li class="my-4">
         <h4 class="link-heading p-2 m-2">
-          {{ link.title }}
-          {% if link.is_english %}<span class="badge badge-pill badge-dark my-1 ml-1">English</span>{% endif %}
-          {% if link.requires_sso %}<span class="badge badge-pill badge-primary ml-1">SSO Required</span>{% endif %}
-          {% if link.external_access %}<span class="badge badge-pill badge-info ml-1">Accessible off-campus</span>{% endif %}
+          <span class="link-title">{{ link.title }}</span>
+          <div>
+            {% if link.is_english %}<span class="badge badge-pill badge-dark my-1 ml-1">English</span>{% endif %}
+            {% if link.requires_sso %}<span class="badge badge-pill badge-primary ml-1">SSO Required</span>{% endif %}
+            {% if link.external_access %}<span class="badge badge-pill badge-info ml-1">Accessible off-campus</span>{% endif %}
+          </div>
         </h4>
         {% if link.description %}
         <p class="link-description p-2 m-2">
           {{ link.description }}
         </p>
         {% endif %}
-        <div class="link-url"> <a class="link" href="{{link.url}}" target="_blank"> {{link.url|truncatechars:60}} </a> </div>
+        <div class="link-url pl-3"> <a class="link" href="{{link.url}}" target="_blank"> {{link.url|truncatechars:60}} </a> </div>
       </li>
       {% endfor %}
     </ul>

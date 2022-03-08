@@ -10,7 +10,8 @@ class LinkCategory(Category):
 
 	title_category: title of the link category (inherited field)
 	"""
-	pass
+	class Meta:
+		ordering = ('title_category',)
 
 class Link(models.Model):
 	"""
