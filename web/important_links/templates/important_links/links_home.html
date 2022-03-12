@@ -7,7 +7,7 @@
 <ul>
   {% for category in categories %}
     {% if category.links.all %}
-      <li><a href="#{{category.title_category}}">{{category.title_category}}</a></li>
+      <li><a class="category-link" href="#{{category.slugified}}">{{category.title_category}}</a></li>
     {% endif %}
   {% endfor %}
 </ul>
@@ -17,7 +17,7 @@
 <div class="cat-list">
 	{% for category in categories %}
     {% if category.links.all %}
-    <p class="cat-name p-3" id="{{category.title_category}}">{{category.title_category}}</p>
+    <p class="cat-name p-3" id="{{category.slugified}}">{{category.title_category}}</p>
     <ul class="link-list">
       {% for link in category.links.all %}
       <li class="my-4">
