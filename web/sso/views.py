@@ -80,7 +80,7 @@ def decrypt(data, state, host) :
     else :
         key = (SA_AES_ID_SECRET+str(state))[80:96] # 32bit
     iv=key[:16] # 16bit
-    cipher = AES.new(key, AES.MODE_CBC, IV=iv) 
+    cipher = AES.new(key.encode("utf8"), AES.MODE_CBC, IV=iv.encode("utf8"))
     deciphed = cipher.decrypt(base64.b64decode(data))   
     deciphed = unpad(deciphed)
     return deciphed
