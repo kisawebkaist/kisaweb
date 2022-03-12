@@ -45,6 +45,12 @@ body {
   color: white;
 }
 
+.navigation .active {
+  background-color: #686868;
+  border-radius: 5px;
+  color: white;
+}
+
 .cat-name {
   position: relative;
   // cursor: pointer;
@@ -124,17 +130,18 @@ body {
 
 .cat-list .link-url{
   font-size: 16px;
+  font-family: "Open Sans";
   position: relative;
   font-weight: 700;
   /*margin-left: 15px;*/
   width: 100%;
   padding: 10px;
-  border-top: 2px solid rgb(145,145,145);
+  border-top: 2px solid #919191;
 }
 .cat-list .link {
   position: relative;
   text-decoration: none;
-  color: rgb(30, 144, 255);
+  color: #1e90ff;
 }
 
 .cat-list .link::before {
@@ -145,7 +152,7 @@ body {
   height: 2px;
   bottom: 0;
   left: 0;
-  background-color: rgb(30, 144, 255);
+  background-color: #1e90ff;
   transform: scaleX(0);
   transition: transform 0.5s ease;
   transform-origin: 0;
