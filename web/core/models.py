@@ -44,10 +44,16 @@ class Content(models.Model):
         abstract = True
 
 class Category(models.Model):
-    title_category = models.CharField(max_length= 200, blank=True, unique=True, validators=[separator_validator])
+    title_category = models.CharField(max_length= 200, blank=True, unique=True)
     
     def __str__(self):
         return self.title_category
+    
+    def slugified(self):
+        """
+        Slugify the title of the category for use in id and other cases where spaces and punctuation (except "-" and "_") are not allowed
+        """
+        return slugify(self.title_category)
 
     class Meta:
         abstract = True
