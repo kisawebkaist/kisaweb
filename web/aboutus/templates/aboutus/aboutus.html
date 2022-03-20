@@ -15,14 +15,11 @@
 
 {% block content %}
 
-<div class="d-flex flex-row h-auto margin justify-content-center">
-  <div style="width: 80%;">
-    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #EEEEEE;">
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#about-us-navbar-dropdown" aria-controls="about-us-navbar-dropdown" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="about-us-navbar-dropdown">
-        <ul class="navbar-nav d-flex justify-content-around">
+<div class="d-flex flex-row h-auto margin justify-content-center mt-0">
+  <div style="width: 100%;">
+    <nav class="navbar navbar-expand navbar-light" style="background-color: #EEEEEE;">
+      <div class="container justify-content-center">
+        <ul class="navbar-nav d-flex flex-row  justify-content-around">
           <li class="nav-item">
             <a class="nav-link" id="btn-aboutus-main" type="button" onclick="switchSection(0)">Main</a>
           </li>
@@ -32,6 +29,10 @@
           <li class="nav-item">
             <a class="nav-link" id="btn-aboutus-members" type="button" onclick="switchSection(2)">Members</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" id="btn-aboutus-constitution" type="button" onclick="switchSection(3)">Constitution</a>
+          </li>
+          
         </ul>
       </div>
     </nav>
@@ -49,15 +50,21 @@
         </div>
         {% endfor %}
       </div>
-      <div id="aboutus-divisions" class="d-none flex-column flex-wrap">
+      <div id="aboutus-divisions" class="d-none row flex-wrap ">
         {% for division in division_descriptions %}
-        <div id="{{ division.title_lowercase_unspaced }}" class="border rounded p-4 my-4">
+        <div id="{{ division.title_lowercase_unspaced }}" class="card rounded m-4" style="width: 20rem;">
           {% if division.image %}
-          <img class="mb-4 mt-2" src="{{ division.image.url }}" alt="" width="100%" style="object-fit: cover;">
+          <img class="mb-4 mt-2" src="{{ division.image.url }}" alt="division picture" width="100%" style="max-width:500px; object-fit: cover;">
           {% endif %}
-          <h1> {{division.title}} </h1>
-          <div class="my-4">
-            {{division.desc | safe}}
+          <div class="card-body">
+            <div class="card-header text-center">
+              <h1 class="text-capitalize"> {{division.title}} </h1>
+            </div>
+            <p class="card-text">
+              <div class="my-4">
+                {{division.desc | safe}}
+              </div>
+            </p>
           </div>
         </div>
         {% endfor %}
@@ -83,28 +90,49 @@
             {% endfor %}
           </div>
         </div>
-        <div class="my-2">
-          <h1 class="content-title">Members</h1>
-            {% for division in division_descriptions %}
-            <h4 class="division-title">{{ division.title }}</h1>
-            <div class="d-flex flex-col flex-wrap justify-content-start">
-              {% for member in division.members.all %}
-              <div class="card m-4" style="width: 200px;">
-                {% image_tag member css_class='card-img-top member_img' %}
-                <div class="card-body">
-                  <h5 class="card-title text-center">{{ member.name }} 
-                    {% if member.sns_link %}
-                      <a href="{{ member.sns_link }}" target="_blank"><i class="fas fa-paper-plane"></i></a>
-                    {% endif %}
-                  </h5>
-                  <p class="card-text text-center">{{ member.position }}</p>
+        <h1 class="content-title">Members</h1>
+        <div id="accordion">
+          {% for division in division_descriptions %}
+          <div class="card">
+            <div class="card-header">
+              <h5 class="mb-0">
+                <button class="btn btn-link collapsed text-capitalize" data-toggle="collapse" data-target=#{{ division.title }}>
+                  {{ division.title }}
+                </button>
+              </h5>
+            </div>
+            <div id={{ division.title }} class="collapse" data-parent="#accordion">
+              <div class="card-body">
+                <div class="d-flex flex-col flex-wrap justify-content-start">
+                  {% for member in division.members.all %}
+                  <div class="card m-4" style="width: 200px;">
+                    {% image_tag member css_class='card-img-top member_img' %}
+                    <div class="card-body">
+                      <h5 class="card-title text-center text-capitalize">{{ member.name }} 
+                        {% if member.sns_link %}
+                          <a href="{{ member.sns_link }}" target="_blank"><i class="fas fa-paper-plane"></i></a>
+                        {% endif %}
+                      </h5>
+                      <p class="card-text text-center text-capitalize">{{ member.position }}</p>
+                    </div>
+                  </div>
+                  {% empty %}
+                  <h4 class="text-muted">KISA {{ division.title }} members for this semester have not been finalized.</h4>
+                  {% endfor %}
                 </div>
               </div>
-              {% empty %}
-              <h4 class="text-muted">KISA {{ division.title }} members for this semester have not been finalized.</h4>
-              {% endfor %}
             </div>
-            {% endfor %}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div id="aboutus-constitution" class="flex-column flex-wrap d-none">
+        <div class="container">
+          <h1>KISA Constitution</h1>
+          <div class="my-5">
+            <iframe src="{% static 'constitution/KISA Constituition.pdf' %}" title="KISA Constitution" width="100%" height="500px" ></iframe>
+          </div>
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
 var curSection     = 0;
-const sectionNames  = ["aboutus-main", "aboutus-divisions", "aboutus-members"]
+const sectionNames  = ["aboutus-main", "aboutus-divisions", "aboutus-members", "aboutus-constitution"]
 
 switchSection = (id) => {
   $(`#btn-${sectionNames[curSection]}`).toggleClass("active");
