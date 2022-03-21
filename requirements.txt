@@ -5,7 +5,7 @@ python-dotenv
 PyYAML
 ipython
 requests
-pycrypto
+pycryptodome
 
 # Django
 django==3.0
