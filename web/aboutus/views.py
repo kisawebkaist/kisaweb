@@ -1,7 +1,8 @@
 from django.shortcuts import render
+from django.db.models import F
 from datetime import datetime
 
-from .models import MainContent, Member, InternalBoardMember, DivisionContent
+from .models import MainContent, Member, InternalBoardMember, DivisionContent, ConstitutionPDF
 
 def aboutus(request):
     current_date = datetime.today()
@@ -9,11 +10,16 @@ def aboutus(request):
     
     internal_board_members = InternalBoardMember.objects.filter(year=year, semester=semester)
     members = Member.objects.filter(year=year, semester=semester)
-
+    constitution     = ConstitutionPDF.objects.annotate(
+        pdf_url = F('constitution_file')
+    ).values(
+        'title', 'desc', 'pdf_url'
+    ).all()
     context = {
         'main_contents'             : MainContent.objects.all(),
         'division_descriptions'     : DivisionContent.objects.all(),
         'internal_board_members'    : internal_board_members,
         'members'                   : members,
+        'constitution'              : constitution
     }
     return render(request, 'aboutus/aboutus.html', context)
