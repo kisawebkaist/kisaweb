@@ -1,9 +1,6 @@
-from tkinter import CASCADE
 from django.db import models
-from django.forms import ValidationError
 from django.utils.html import mark_safe
 from tinymce.models import HTMLField
-from datetime import date
 from adminsortable.models import SortableMixin
 from django.utils.html import mark_safe
 
@@ -22,6 +19,11 @@ class BaseContent(SortableMixin):
 
 class MainContent(BaseContent):
     pass
+
+class ConstitutionPDF(BaseContent):
+    image               = None
+    desc                = None
+    constitution_file   = models.FileField(upload_to = 'constitution', null = True)
 
 class DivisionContent(BaseContent):
     
