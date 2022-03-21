@@ -100,12 +100,12 @@
           <div class="card">
             <div class="card-header">
               <h5 class="mb-0">
-                <button class="btn btn-link collapsed text-capitalize" data-toggle="collapse" data-target=#{{ division.title }}>
+                <button class="btn btn-link collapsed text-capitalize" data-toggle="collapse" data-target="#{{division.title}}{{division.id}}">
                   {{ division.title }}
                 </button>
               </h5>
             </div>
-            <div id={{ division.title }} class="collapse" data-parent="#accordion">
+            <div id="{{division.title}}{{division.id}}" class="collapse" data-parent="#accordion">
               <div class="card-body">
                 <div class="d-flex flex-col flex-wrap justify-content-start">
                   {% for member in division.members.all %}
