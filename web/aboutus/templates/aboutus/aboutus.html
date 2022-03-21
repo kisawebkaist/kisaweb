@@ -17,8 +17,8 @@
 
 <div class="d-flex flex-row h-auto margin justify-content-center mt-0">
   <div style="width: 100%;">
-    <nav class="navbar navbar-expand navbar-light" style="background-color: #EEEEEE;">
-      <div class="container justify-content-center">
+    <nav class="navbar navbar-expand navbar-light switch-panel" style="background-color: #EEEEEE;">
+      <div class="mx-auto">
         <ul class="navbar-nav d-flex flex-row  justify-content-around">
           <li class="nav-item">
             <a class="nav-link" id="btn-aboutus-main" type="button" onclick="switchSection(0)">Main</a>
@@ -100,8 +100,8 @@
           <div class="card">
             <div class="card-header">
               <h5 class="mb-0">
-                <button class="btn btn-link collapsed text-capitalize" data-toggle="collapse" data-target="#{{division.title_lowercase_unspaced}}{{division.id}}">
-                  {{ division.title }}
+                <button class="btn btn-link text-muted collapsed text-capitalize" data-toggle="collapse" data-target="#{{division.title_lowercase_unspaced}}{{division.id}}">
+                  <strong>{{ division.title }}</strong>
                 </button>
               </h5>
             </div>
