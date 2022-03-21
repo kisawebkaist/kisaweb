@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from datetime import datetime
 
-from .models import MainContent, Member, InternalBoardMember, Division
+from .models import MainContent, Member, InternalBoardMember, DivisionContent
 
 def aboutus(request):
     current_date = datetime.today()
@@ -12,7 +12,7 @@ def aboutus(request):
 
     context = {
         'main_contents'             : MainContent.objects.all(),
-        'division_descriptions'     : Division.objects.all(),
+        'division_descriptions'     : DivisionContent.objects.all(),
         'internal_board_members'    : internal_board_members,
         'members'                   : members,
     }

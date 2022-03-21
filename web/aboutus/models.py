@@ -1,5 +1,6 @@
 from tkinter import CASCADE
 from django.db import models
+from django.forms import ValidationError
 from django.utils.html import mark_safe
 from tinymce.models import HTMLField
 from datetime import date
@@ -19,26 +20,31 @@ class BaseContent(SortableMixin):
     def __str__(self):
         return self.title
 
+class MainContent(BaseContent):
+    pass
+
+class DivisionContent(BaseContent):
+    
+    division_name = models.CharField(max_length=50, blank=False, null=True)
+
+    def __str__(self):
+        return self.division_name
+
+    def title_lowercase_unspaced(self):
+        return '-'.join(self.title.split(' ')).lower()
+
+
 class BaseMember(models.Model):
+
     SEMESTERS = (
         ('Spring',  'Spring'),
         ('Fall', 'Fall')
     )
-    POSITIONS = (
-        ('President', 'President'),
-        ('Division Head', 'Division Head'),
-        ('Secretary', 'Secretary'),
-        ('Member', 'Member')
-    )
-    name     = models.CharField(max_length = 100, null = True)
+    name     = models.CharField(max_length=100, null=True)
     image    = models.ImageField(null=True, blank=True)
-    position = models.CharField(max_length = 100, null = True, choices = POSITIONS)
     year     = models.PositiveIntegerField(null=True)
     semester = models.CharField(max_length=10, null=True, choices=SEMESTERS)
     sns_link = models.URLField(null=True, blank=True)
-
-    def __str__(self):
-        return f'[{self.semester}-{self.year} {self.position}] - {self.name}'
     
     def image_tag(self, css_class='', tag_id=None):
         """
@@ -62,22 +68,28 @@ class BaseMember(models.Model):
         else:
             path = f'/media/{self.image}'
         return mark_safe(f'<img src="{path}" class="{css_class}" {tag_id_str} alt="Member Image"/>')
-    
-class MainContent(BaseContent):
-    pass
-
-class Division(BaseContent):
-    
-    def title_lowercase_unspaced(self):
-        return '-'.join(self.title.split(' ')).lower()
 
 class InternalBoardMember(BaseMember, SortableMixin):
+    
     class Meta:
         ordering = ['the_order']
+
+    POSITIONS = (
+        ('President', 'President'),
+        ('Division Head', 'Division Head'),
+        ('Secretary', 'Secretary'),
+    )
+
+    position = models.CharField(max_length=100, null=True, choices=POSITIONS)
     the_order = models.PositiveIntegerField(default=0, editable=False, db_index=True)
+    division = models.ForeignKey(DivisionContent, on_delete=models.deletion.PROTECT, null=True, blank=True)
+
+    def __str__(self):
+        return f'[{self.semester}-{self.year} {self.position}] - {self.name}'
 
 class Member(BaseMember):
-    division = models.ForeignKey(Division, on_delete=models.deletion.CASCADE, null=True, related_name='members', related_query_name='member')
-    pass
 
+    division = models.ForeignKey(DivisionContent, on_delete=models.deletion.PROTECT, null=True, related_name='members', related_query_name='member')
     
+    def __str__(self):
+        return f'[{self.semester}-{self.year} {self.division}] - {self.name}'

@@ -82,7 +82,11 @@
                     <a href="{{ executive_member.sns_link }}" target="_blank"><i class="fas fa-paper-plane"></i></a>
                   {% endif %}
                 </h5>
-                <p class="card-text text-center">{{ executive_member.position }}</p>
+                {% if executive_member.position == 'Division Head' %}
+                  <p class="card-text text-center">{{ executive_member.division.division_name }} Head</p>
+                {% else %}
+                  <p class="card-text text-center">{{ executive_member.position }}</p>
+                {% endif %}
               </div>
             </div>
             {% empty %}
