@@ -132,12 +132,14 @@
       </div>
 
       <div id="aboutus-constitution" class="flex-column flex-wrap d-none">
-        <div class="container">
-          <h1>KISA Constitution</h1>
-          <div class="my-5">
-            <iframe src="{% static 'constitution/KISA Constituition.pdf' %}" title="KISA Constitution" width="100%" height="500px" ></iframe>
+        {% for content in constitution %}  
+          <div class="container">
+            <h1>{{ content.title }}</h1>
+            <div class="my-5">
+              <iframe src="{{request.scheme}}://{{request.get_host}}/media/{{ content.pdf_url}}" title="KISA Constitution" width="100%" height = "1200px"></iframe>
+            </div>
           </div>
-        </div>
+        {% endfor %}
       </div>
     </div>
   </div>
