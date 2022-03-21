@@ -52,7 +52,7 @@
       </div>
       <div id="aboutus-divisions" class="d-none row flex-wrap ">
         {% for division in division_descriptions %}
-        <div id="{{ division.title_lowercase_unspaced }}" class="card rounded m-4" style="width: 20rem;">
+        <div id="{{ division.title_lowercase_unspaced }}" class="card rounded m-4 w-100">
           {% if division.image %}
           <img class="mb-4 mt-2" src="{{ division.image.url }}" alt="division picture" width="100%" style="max-width:500px; object-fit: cover;">
           {% endif %}
