@@ -81,7 +81,6 @@ INSTALLED_APPS = [
     'aboutus',  # contains the User model
     'blog',
     'faq',
-    'important_links',
 ]
 
 MIDDLEWARE = [
