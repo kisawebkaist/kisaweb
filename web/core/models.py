@@ -5,8 +5,6 @@ from django.utils.text import slugify
 from phone_field import PhoneField
 from tinymce.models import HTMLField
 from django.core.validators import RegexValidator
-from aboutus.models import Division
-from adminsortable.models import SortableMixin
 
 # Validators
 tag_validator = RegexValidator(r'[^\w\-]', inverse_match=True, message='Spaces and punctuation (except "-" and "_") are not allowed.')
@@ -56,17 +54,6 @@ class Category(models.Model):
 
 
 # End of Abstract Classes
-
-class DivisionItem(SortableMixin):
-    class Meta:
-        ordering = ['the_order']
-
-    division_name = models.CharField(max_length=50, blank=False, null=True)
-    description = models.ForeignKey(Division, on_delete=models.CASCADE)
-    the_order = models.PositiveIntegerField(default=0, editable=False, db_index=True)
-
-    def __str__(self):
-        return self.division_name
 
 class Footer(models.Model):
     kisa_text = models.CharField(max_length=500, blank=True)

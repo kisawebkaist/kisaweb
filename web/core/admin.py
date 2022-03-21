@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Footer, Navbar, DivisionItem
+from .models import Footer, Navbar
 from adminsortable.admin import SortableAdmin
 
 # Register your models here.
@@ -12,4 +12,3 @@ class DivisionItemAdmin(SortableAdmin):
 
 admin.site.register(Footer)
 admin.site.register(Navbar)
-admin.site.register(DivisionItem, DivisionItemAdmin)
