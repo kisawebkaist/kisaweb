@@ -140,6 +140,3 @@ collectstatic/
 
 # media files
 media/
-
-# CACHE
-CACHE/

@@ -2,9 +2,14 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-darker">
   <a class="navbar-brand mr-4" href="{% url 'homepage' %}">
-    <!-- Logo set as css background image (base.css) -->
-    <span class="text-light brand-text">KAIST International</span><br />
-    <span class="text-light brand-text">Students&apos; Association</span>
+    <div>
+      <!-- <img src="/static/img/kaist_logo_trans(white).png" alt="" class="kaist-logo"> -->
+      <!-- Logo set as css background image (base.css) -->
+      <div>
+        <span class="text-light brand-text">KAIST International</span><br>
+        <span class="text-light brand-text">Students&apos; Association</span>
+      </div>
+    </div>  
   </a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-contents" aria-controls="navbar-contents" aria-expanded="false" aria-label="Toggle navbar">
     <span class="navbar-toggler-icon"></span>
@@ -13,9 +18,7 @@
   <!-- Menu items -->
   <div class="collapse navbar-collapse ml-4" id="navbar-contents">
     <div class="navbar-nav mr-auto">
-      <!-- <a class="nav-item nav-link" href="{% url 'homepage' %}">Home</a> -->
-      <a class="nav-item nav-link" href="{% url 'aboutus' %}">About Us</a>
-
+      <a class="nav-item nav-link" href="{% url 'homepage' %}">Home</a>
       <!-- KAIST Life Dropdown -->
       <!--
       <div class="nav-item dropdown">
@@ -36,6 +39,7 @@
       <!-- Dropdown end -->
       <a class="nav-item nav-link" href="{% url 'events' %}">Events</a>
       <a class="nav-item nav-link" href="{% url 'blog' %}">Blog</a>
+      <a class="nav-item nav-link" href="{% url 'faq' %}"> FAQ </a>
       <!-- Welfare Dropdown -->
       {% if navbar %}
       <div class="nav-item dropdown">
@@ -59,10 +63,26 @@
       </div>
       {% endif %}
       <!-- Dropdown end -->
+      <!-- Resources Dropdown -->
+      <div class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" id="resources-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Resources
+        </a>
+        <div class="dropdown-menu bg-darker mt-0 border-0" aria-labelledby="resources-dropdown">
+          <a class="dropdown-item" href="{{ navbar.course_resources_link }}" target="_blank">Course Resources</a>
+          <a class="dropdown-item" href="{% url 'important-links' %}"> Important Links </a>
+        </div>
+      </div>
+      <!-- Dropdown end -->
+
       <!-- Course Resources -->
-      <a class="nav-item nav-link" href="{{ navbar.course_resources_link }}">Course Resources</a>
+      <!-- <a class="nav-item nav-link" href="{{ navbar.course_resources_link }}">Course Resources</a> -->
       <!--<a class="nav-item nav-link" href="#">About Us</a>-->
-      <a class="nav-item nav-link" href="{% url 'faq' %}"> FAQ </a>
+      <!-- <a class="nav-item nav-link" href="{% url 'faq' %}"> FAQ </a> -->
+
+      <!-- TEMPORARY!!! REMOVE THE NEXT LINE AND COMBINE WITH COURSE RESOURCES UNDER A RESOURCES TAB -->
+      <!-- <a class="nav-item nav-link" href="{% url 'important-links' %}"> Important Links </a> -->
+
       <!-- Election -->
       {% if election_link_visible %}
       <a class="nav-item nav-link text-warning" href="{% url 'election' %}">Election</a>
