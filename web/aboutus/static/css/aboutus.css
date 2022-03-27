@@ -6,3 +6,9 @@
 	overflow-y: hidden;
 	overflow-x: auto;
 }
+
+@media only screen and (max-width: 800px) {
+	.desktop-view {
+		display: none;
+	}
+}

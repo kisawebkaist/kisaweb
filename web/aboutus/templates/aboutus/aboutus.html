@@ -50,21 +50,27 @@
         </div>
         {% endfor %}
       </div>
-      <div id="aboutus-divisions" class="d-none row flex-wrap ">
+      <div id="aboutus-divisions" class="d-none row flex-wrap mx-auto justify-content-center">
         {% for division in division_descriptions %}
-        <div id="{{ division.title_lowercase_unspaced }}" class="card rounded m-4 w-100">
+        <div id="{{ division.title_lowercase_unspaced }}" class="card rounded m-4 w-75">
+          <div class="d-flex">
           {% if division.image %}
-          <img class="mb-4 mt-2" src="{{ division.image.url }}" alt="division picture" width="100%" style="max-width:500px; object-fit: cover;">
+          <div class="desktop-view">
+            <img class="m-2 rounded" src="{{ division.image.url }}" alt="division picture" style="max-width:200px; object-fit: cover;">
+          </div>
           {% endif %}
-          <div class="card-body">
-            <div class="card-header text-center">
-              <h1 class="text-capitalize"> {{division.title}} </h1>
-            </div>
-            <p class="card-text">
-              <div class="my-4">
-                {{division.desc | safe}}
+          <div class="w-100">
+            <div class="card-body">
+              <div class="card-header text-center">
+                <h1 class="text-capitalize"> {{division.title}} </h1>
               </div>
-            </p>
+              <p class="card-text">
+                <div class="my-4">
+                  {{division.desc | safe}}
+                </div>
+              </p>
+            </div>
+          </div>
           </div>
         </div>
         {% endfor %}
@@ -100,7 +106,7 @@
           <div class="card">
             <div class="card-header">
               <h5 class="mb-0">
-                <button class="btn btn-link text-muted collapsed text-capitalize" data-toggle="collapse" data-target="#{{division.title_lowercase_unspaced}}{{division.id}}">
+                <button class="btn btn-link text-dark collapsed text-capitalize" data-toggle="collapse" data-target="#{{division.title_lowercase_unspaced}}{{division.id}}">
                   <strong>{{ division.title }}</strong>
                 </button>
               </h5>
