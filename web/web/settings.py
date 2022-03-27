@@ -39,7 +39,7 @@ else:
     print('.env file not found \nMake sure it is located in the kisaweb/web directory')
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY = '135*fe%orzw5m%za=6opxe2j3+xkf-rx@)4l0)q9v2+w8=%ryd'
 
 # bool() is required in DEBUG for LIBSASS_SOURCE_COMMENTS (which sets internally to the value of DEBUG)
 #       to be a bool value. Else, TypeError('source_comments must be bool, not 1') is raised by sass.py
@@ -48,7 +48,7 @@ SECRET_KEY = os.environ['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(int(os.environ.get('DJANGO_DEBUG', default=0)))
 
-ALLOWED_HOSTS = os.environ['DJANGO_ALLOWED_HOSTS'].split()
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -71,15 +71,16 @@ INSTALLED_APPS = [
     'crispy_forms',  # PyPi django-crispy-forms
     'docs',  # PyPi django-docs
     'phone_field',  # PyPi django-phone-field
+    'adminsortable',
 
     ## ---- Created by KISA webteam ---- ##
     'core',  # core pages (eg. homepage, about page, etc)
     'events',
     'election',
-    'sso',  # contains the User model
+    'sso',
+    'aboutus',  # contains the User model
     'blog',
     'faq',
-    'important_links',
 ]
 
 MIDDLEWARE = [
@@ -108,6 +109,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',  # required by django-3-jet
                 'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.static',
                 'django.contrib.messages.context_processors.messages',
                 'maintenance_mode.context_processors.maintenance_mode',  # PyPi django-maintenance-mode
 
@@ -174,7 +176,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'collectstatic')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -261,3 +263,5 @@ TINYMCE_DEFAULT_CONFIG = {
     "a11ycheck ltr rtl | showcomments addcomment code",
     "custom_undo_redo_levels": 10,
 }
+
+X_FRAME_OPTIONS = 'SAMEORIGIN'

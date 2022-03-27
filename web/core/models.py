@@ -7,11 +7,11 @@ from tinymce.models import HTMLField
 from django.core.validators import RegexValidator
 
 # Validators
-separator_validator = RegexValidator(r'[^\w\-]', inverse_match=True, message='Spaces and punctuation (except "-" and "_") are not allowed.')
+tag_validator = RegexValidator(r'[^\w\-]', inverse_match=True, message='Spaces and punctuation (except "-" and "_") are not allowed.')
 
 # Abstract Classes
 class Tag(models.Model):
-    tag_name = models.CharField(max_length=50, blank=False, unique=True, validators=[separator_validator])
+    tag_name = models.CharField(max_length=50, blank=False, unique=True, validators=[tag_validator])
     def __str__(self):
         return self.tag_name
 
@@ -48,12 +48,6 @@ class Category(models.Model):
     
     def __str__(self):
         return self.title_category
-    
-    def slugified(self):
-        """
-        Slugify the title of the category for use in id and other cases where spaces and punctuation (except "-" and "_") are not allowed
-        """
-        return slugify(self.title_category)
 
     class Meta:
         abstract = True
@@ -61,14 +55,13 @@ class Category(models.Model):
 
 # End of Abstract Classes
 
-
 class Footer(models.Model):
     kisa_text = models.CharField(max_length=500, blank=True)
 
     location = models.CharField(max_length=80, blank=False)
     phnum_eng = PhoneField(blank=False)
     phnum_kor = PhoneField(blank=False)
-    email = models.EmailField(max_length=50, blank=False)
+    email = models.EmailField(max_length=20, blank=False)
 
     fb_link = models.URLField(blank=True)
     insta_link = models.URLField(blank=True)
