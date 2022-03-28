@@ -18,5 +18,3 @@ admin.site.register(Member, MemberAdmin)
 admin.site.register(InternalBoardMember, InternalBoardAdmin)
 admin.site.register(ConstitutionPDF)
 
-
-# Register your models here.
