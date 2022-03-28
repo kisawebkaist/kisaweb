@@ -87,7 +87,7 @@ class InternalBoardMember(BaseMember, SortableMixin):
     division = models.ForeignKey(DivisionContent, on_delete=models.deletion.PROTECT, null=True, blank=True)
 
     def __str__(self):
-        return f'[{self.semester}-{self.year} {self.division} {self.position}] - {self.name}'
+        return f'[{self.semester}-{self.year} {self.position}] - {self.name}'
 
 class Member(BaseMember):
 
