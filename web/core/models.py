@@ -61,7 +61,6 @@ class Category(models.Model):
 
 # End of Abstract Classes
 
-
 class Footer(models.Model):
     kisa_text = models.CharField(max_length=500, blank=True)
 

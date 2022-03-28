@@ -71,12 +71,14 @@ INSTALLED_APPS = [
     'crispy_forms',  # PyPi django-crispy-forms
     'docs',  # PyPi django-docs
     'phone_field',  # PyPi django-phone-field
+    'adminsortable',
 
     ## ---- Created by KISA webteam ---- ##
     'core',  # core pages (eg. homepage, about page, etc)
     'events',
     'election',
-    'sso',  # contains the User model
+    'sso',
+    'aboutus',  # contains the User model
     'blog',
     'faq',
     'important_links',
@@ -108,6 +110,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',  # required by django-3-jet
                 'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.static',
                 'django.contrib.messages.context_processors.messages',
                 'maintenance_mode.context_processors.maintenance_mode',  # PyPi django-maintenance-mode
 
@@ -261,3 +264,5 @@ TINYMCE_DEFAULT_CONFIG = {
     "a11ycheck ltr rtl | showcomments addcomment code",
     "custom_undo_redo_levels": 10,
 }
+
+X_FRAME_OPTIONS = 'SAMEORIGIN'

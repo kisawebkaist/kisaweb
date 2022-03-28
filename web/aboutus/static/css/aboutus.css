@@ -1,0 +1,14 @@
+.member_img {
+	height: 200px; 
+	object-fit: cover;
+}
+.switch-panel {
+	overflow-y: hidden;
+	overflow-x: auto;
+}
+
+@media only screen and (max-width: 800px) {
+	.desktop-view {
+		display: none;
+	}
+}
