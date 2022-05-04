@@ -26,7 +26,7 @@ DEV_SETTINGS = 1
 PROD_SETTINGS = 2
 
 # Single point setup for dev/prod changes
-CURRENT_SETTINGS = PROD_SETTINGS
+CURRENT_SETTINGS = DEV_SETTINGS
 
 if CURRENT_SETTINGS == DEV_SETTINGS:
     dotenv_file = os.path.join(BASE_DIR, '.env.dev')
@@ -35,8 +35,6 @@ elif CURRENT_SETTINGS == PROD_SETTINGS:
 
 if os.path.isfile(dotenv_file):
     load_dotenv(dotenv_file)
-else:
-    print('.env file not found \nMake sure it is located in the kisaweb/web directory')
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ['SECRET_KEY']
@@ -71,17 +69,13 @@ INSTALLED_APPS = [
     'crispy_forms',  # PyPi django-crispy-forms
     'docs',  # PyPi django-docs
     'phone_field',  # PyPi django-phone-field
-    'adminsortable',
 
     ## ---- Created by KISA webteam ---- ##
     'core',  # core pages (eg. homepage, about page, etc)
     'events',
     'election',
-    'sso',
-    'aboutus',  # contains the User model
+    'sso',  # contains the User model
     'blog',
-    'faq',
-    'important_links',
 ]
 
 MIDDLEWARE = [
@@ -110,17 +104,15 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',  # required by django-3-jet
                 'django.contrib.auth.context_processors.auth',
-                'django.template.context_processors.static',
                 'django.contrib.messages.context_processors.messages',
                 'maintenance_mode.context_processors.maintenance_mode',  # PyPi django-maintenance-mode
 
                 # -- Created by KISA Team -- #
-                'election.context_processors.navbar_election_link_visible',
+                # 'election.context_processors.navbar_election_link_visible',
                 'core.context_processors.footer',
                 'core.context_processors.navbar',
                 'core.context_processors.empty_queryset',
                 'core.context_processors.login_type',
-                'sso.context_processors.login_error'
             ],
         },
     },
@@ -264,5 +256,3 @@ TINYMCE_DEFAULT_CONFIG = {
     "a11ycheck ltr rtl | showcomments addcomment code",
     "custom_undo_redo_levels": 10,
 }
-
-X_FRAME_OPTIONS = 'SAMEORIGIN'
