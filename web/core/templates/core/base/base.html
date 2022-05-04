@@ -83,6 +83,12 @@
       const CSRF_TOKEN = '{{ csrf_token }}';
     </script>
 
+    <script type="text/javascript">
+      $(window).on('load', function() {
+          $('#myModal').modal('show');
+      });
+    </script>
+
     <!-- Custom JS -->
     {% block js %}{% endblock %}
   </body>
