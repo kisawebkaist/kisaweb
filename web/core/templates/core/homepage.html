@@ -44,6 +44,7 @@
     <div style="overflow-x: auto;" class="row d-flex flex-row flex-nowrap">
       
       <!-- Events promotion popup-->
+      {% if event_list %}
        <div class="modal" id="myModal" role="dialog" data-backdrop="static">
          <div class="modal-dialog modal-dialog-centered" role="document">
            <div class="modal-content">
@@ -67,6 +68,7 @@
           </div>
         </div>
       </div>
+      {% endif %}
       <!-- Modal End -->
       
       {% for event in event_list %}
