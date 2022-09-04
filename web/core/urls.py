@@ -14,5 +14,5 @@ urlpatterns = [
     path('about-us/', include('aboutus.urls')),
     path('blog/', include('blog.urls')),
     path('important-links/', include('important_links.urls')),
-    path('fast-link/', include('url_shortener.urls')),
+    path('short-link/', include('url_shortener.urls')),
 ]

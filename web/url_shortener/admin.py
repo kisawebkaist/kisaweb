@@ -14,7 +14,7 @@ def get_main_website_url(full_url : str):
     return main_url
 
 def build_url(host_url : str, name : str):
-    return f'https://{host_url}/fast-link/{name}'
+    return f'https://{host_url}/short-link/{name}'
 
 @admin.register(UrlShortener)
 class UrlShortenerAdmin(admin.ModelAdmin):
@@ -35,7 +35,7 @@ class UrlShortenerAdmin(admin.ModelAdmin):
         return obj.target
 
     def formfield_for_dbfield(self, db_field, **kwargs):
-        host_url    = f'https://{self.host_url}/fast-link/'
+        host_url    = f'https://{self.host_url}/short-link/'
         if db_field.name == 'name':
             # You could put following customized widget elsewhere
             class Widget(forms.TextInput):
