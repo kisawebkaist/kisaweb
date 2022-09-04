@@ -1,6 +1,8 @@
 from django.contrib import admin
 from .models import UrlShortener
 from .forms import UrlShortenerForm
+from django.utils.safestring import mark_safe
+from django import forms
 
 def get_main_website_url(full_url : str):
     urls    = full_url.split('/')
@@ -31,4 +33,16 @@ class UrlShortenerAdmin(admin.ModelAdmin):
 
     def target_link(self, obj : UrlShortener):
         return obj.target
+
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        host_url    = f'https://{self.host_url}/fast-link/'
+        if db_field.name == 'name':
+            # You could put following customized widget elsewhere
+            class Widget(forms.TextInput):
+                def render(self, *args, **kwargs):
+                    return mark_safe(host_url) +\
+                    super().render(*args, **kwargs)
+            kwargs['widget']= Widget()
+        return super().formfield_for_dbfield(db_field, **kwargs)
+
 
