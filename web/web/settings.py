@@ -267,3 +267,6 @@ TINYMCE_DEFAULT_CONFIG = {
 }
 
 X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+# Url Shortener Url Settings
+URL_SHORTENER_PREFIX    = 'short-link'
