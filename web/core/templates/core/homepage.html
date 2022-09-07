@@ -59,7 +59,7 @@
                 {% image_tag event_list|first listview=True %}
               </div>
               <div class="mt-2 read-more text-center">
-                <a class="" href="{% url 'events'%}#event-{{ event_list|first|id }}">Learn more &rarr;</a>
+                <a class="" href="{% url 'events'%}#event-{{ event.id }}">Learn more &rarr;</a>
               </div>
             </div>
             <div class="modal-footer">
