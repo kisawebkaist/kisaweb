@@ -11,7 +11,7 @@ Each Post is related to one or more PostTag instances and are used as a way to q
 
 ### Fields
 
-#### Inherited from Content
+#### Inherited from Tag
 
 ```
  tag_name
@@ -21,7 +21,7 @@ Each Post is related to one or more PostTag instances and are used as a way to q
 ```python	
 from blog.models import PostTag
 
-# Two ways to create new Tag
+# Two ways to create new PostTag
 PostTag.objects.create(tag_name="Example")
 # or
 post_tag = PostTag(tag_name="Example")
