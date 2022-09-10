@@ -1,5 +1,7 @@
 from django.urls import path, include
 
+from web.settings import URL_SHORTENER_PREFIX
+
 from . import views
 
 urlpatterns = [
@@ -14,4 +16,5 @@ urlpatterns = [
     path('about-us/', include('aboutus.urls')),
     path('blog/', include('blog.urls')),
     path('important-links/', include('important_links.urls')),
+    path(f'{URL_SHORTENER_PREFIX}/', include('url_shortener.urls')),
 ]
