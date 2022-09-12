@@ -98,4 +98,3 @@ class Navbar(models.Model):
     internships_link = models.URLField(blank=True)
     kaist_ara_link = models.URLField(blank=True)
     course_resources_link = models.URLField(blank=True)
-    kisa_room_reservation_link = models.URLField(null=True)
