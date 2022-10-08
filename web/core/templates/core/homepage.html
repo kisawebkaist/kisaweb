@@ -44,7 +44,7 @@
     <div style="overflow-x: auto;" class="row d-flex flex-row flex-nowrap">
       
       <!-- Events promotion popup-->
-      {% if event_list %}
+      {% if event_list and event_list.0.max_occupancy %}
        <div class="modal" id="myModal" role="dialog" data-backdrop="static">
          <div class="modal-dialog modal-dialog-centered" role="document">
            <div class="modal-content">
