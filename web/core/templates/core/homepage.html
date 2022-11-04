@@ -4,6 +4,12 @@
 {% load compress %}
 {% load events_tags %}
 
+{% block meta %}
+<meta name="description" content="KAIST International Students Association (KISA) represents the international community of KAIST.
+                                      KISA is the largest club in KAIST for international students. Comprised of five divisions: Events, Promotions,
+                                      Finance, Web, Welfare.">
+{% endblock %}
+
 {% block css %}
 {% compress css file events %}
 <link rel="stylesheet" type="text/x-scss" href="{% static 'scss/homepage_main.scss' %}">
@@ -12,14 +18,14 @@
 
 {% block main %}
 <div class="intro-banner">
-  <img src="{% static 'img/lib.jpg' %}" alt="Intro banner background">
+  <img src="{% static 'img/kaistbg_one.jpg' %}" alt="Intro banner background">
   <p class="banner-text">KAIST INTERNATIONAL STUDENTS ASSOCIATION</p>
 </div>
- 
+
 <div class="d-flex h-auto margin">
   <div class="container-fluid mx-0 my-3">
     <div class="d-flex flex-column">
-      <p class="text-center heading">Founded in 2004. KAIST Internation Student Association (KISA) represents international community of KAIST.</p>
+      <p class="text-center heading">Founded in 2004. KAIST International Students Association (KISA) represents international community of KAIST.</p>
       <div class="container d-flex justify-content-center">
         <a class="btn btn-dark py-2 px-4 my-2 button-text" href="https://docs.google.com/forms/d/e/1FAIpQLSfF9xFyQfvV1ZVmNgm9PaE-I-oq7rYb-t_4eQ4jNwEFAwTsNw/viewform" role="button">Share your voice</a>
       </div>
@@ -27,14 +33,51 @@
     <hr>
     <div class = "container my-4">
     <h2 class = "mb-3">Events</h2>
+    <!-- KISA Calendar Embed -->
+    <div class="kisa-calendar my-3">
+      <button class="calendar-button-load btn btn-outline-dark">Load KISA Events Calendar for {% now "Y" %}</button>
+      <!-- <button class="calendar-button-toggle btn btn-outline-dark" style="display: none;">Toggle calendar visiblity</button> -->
+      <div id="kisa-google-calendar-container" class="d-flex justify-content-center m-2 rounded bg-light">
+      </div>  
+    </div>
+    <!-- Calendar End -->
     <div style="overflow-x: auto;" class="row d-flex flex-row flex-nowrap">
+      
+      <!-- Events promotion popup-->
+      {% if event_list and event_list.0.max_occupancy %}
+       <div class="modal" id="myModal" role="dialog" data-backdrop="static">
+         <div class="modal-dialog modal-dialog-centered" role="document">
+           <div class="modal-content">
+             <div class="modal-header">
+               <h5 class="modal-title" id="exampleModalLongTitle">{{event_list|first|title}}</h5>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                 <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            <div class="modal-body">
+              <div class="card-block-img text-center">
+                {% image_tag event_list|first listview=True %}
+              </div>
+              <div class="mt-2 read-more text-center">
+                <a class="" href="{% url 'events'%}#event-{{ event_list.0.id }}">Learn more &rarr;</a>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+      <!-- Modal End -->
+      
       {% for event in event_list %}
       <div class="ml-3">
         <div class="card card-block event-card mb-3">
           <div class="container">
             <h5 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" class="mt-2 card-title text-center">{{event.title}}</h5>
           </div>
-          <div class="card-block-img text-center">
+          <div class="card-img-top text-center">
             {% image_tag event listview=True %}
           </div>
           <div class="mt-2 read-more text-center">
@@ -57,44 +100,42 @@
           <p class="text-center paragraph">Who’s in KISA, and what do we do? Learn more and contact our members.</p>
         </div>
         <div class="d-flex justify-content-center">
-          <a class="btn btn-dark py-2 px-5 button-text" href="#" role="button">About us</a>
+          <a class="btn btn-dark py-2 px-5 button-text" href="{% url 'aboutus'%}" role="button">About us</a>
         </div>
       </div>
     </div>
 
     <hr>
-
+    <!-- TODO, Implement height adjustment for this part!-->
     <div class = " container my-4">
     <h2>KISA Divisions</h2>
-    <p class="paragraph">KISA is comprised of four divisions. Learn more about each of them.</p>
+    <p class="paragraph">KISA is comprised of {{division_list|length}} divisions. Learn more about each of them.</p>
       <div class="row no-gutters divisions">
-          <div class="col-xs-6 col-md-2  mx-0 my-3 events">
-             <a>
-                <img src="{% static 'img/events.png' %}" class = "division" alt="Events">
-              </a>
-          </div>
-          <div class="col-xs-6 col-md-2 mx-0 my-3 finance">
-            <a>
-              <img src="{% static 'img/finance.png' %}" class = "division" alt="Finance">
-            </a>
-          </div>
-          <div class="col-xs-6 col-md-2  my-3 web">
-            <a>
-              <img src="{% static 'img/promotions.png' %}" class = "division"  alt="Promotions">
-            </a>
-          </div>
-          <div class="col-xs-6 col-md-2  my-3 welfare">
-            <a>
-              <img src="{% static 'img/welfare.png' %}" class = "division" alt="Welfare">
-            </a>
-          </div>
-          <div class="col-xs-6 col-md-2  my-3 web">
-            <a>
-              <img src="{% static 'img/web.png' %}" class = "division"  alt="Web">
-            </a>
-          </div>
+          {% for division, color in division_list %}
+          <a style="height: 150px;" class="col-xs-6 col-md-2 mx-0 my-3 position-relative d-flex justify-content-center align-items-center " href="{% url 'aboutus'%}?section=aboutus-divisions#{{division.title_lowercase_unspaced}}">
+            {% if division.image %}
+              <img src="{{ division.image.url }}" class="division rounded" alt="division.title_lowercase_unspaced"> 
+            {% endif %}
+            <div class="rounded-lg position-absolute d-flex justify-content-center align-items-center" style="background-color: {{color}}; filter: brightness(40%); opacity: 75%; width: 90%; height: 110%"></div>
+            <div class="position-absolute text-white h5">
+              {{division.division_name}}
+            </div>
+          </a>
+          {% endfor %}
       </div>
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block js %}
+{% compress js file core %}
+<script src="{% static 'js/kisa_calendar.js' %}"></script>
+{% endcompress %}
+<!-- Script for modal popup -->
+<script type="text/javascript">
+  $(window).on('load', function() {
+      $('#myModal').modal('show');      
+  });
+</script>
 {% endblock %}
