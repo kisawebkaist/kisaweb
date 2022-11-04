@@ -12,29 +12,28 @@
 {% block content %}
 <div class="container m-4 mx-auto">
 
-<h1 class="text-display text-center">{{title}}</h1>
-<p class="text-muted"><small>
+<h1 class="text-display text-center text-uppercase display-2">{{title}}</h1>
+<div class="row justify-content-center">
     {% for tag in tags %}
-        #{{tag}}
+        <span class="badge badge-info m-1 p-2 lead">{{tag | title}}</span>
     {% endfor %}
-</small></p>
+</div>
 
 <!-- Test images slides  -->
 <!-- <h1 class="row justify-content-center mt-12">Gallery</h1> -->
-<div id="slide-container" style="height:40rem;">
-    
+<section class="carousel-default">
     <div class="row justify-content-center mt-3" >
         <div id="myCarousel" class="col-9 carousel slide" data-ride="carousel">
             <!-- Indicators -->
-            <!-- <ol class="carousel-indicators">
-            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-            <li data-target="#myCarousel" data-slide-to="1"></li>
-            <li data-target="#myCarousel" data-slide-to="2"></li>
-            </ol> -->
+            <ol class="carousel-indicators">
+                <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                <li data-target="#myCarousel" data-slide-to="1"></li>
+                <li data-target="#myCarousel" data-slide-to="2"></li>
+            </ol>
         
             <!-- Wrapper for slides -->
-            <div class="carousel-inner">
-                {% for img in images|slice:":5" %}
+            <div class="carousel-inner" role="listbox">
+                {% for img in images|slice:":3" %}
                     {% if forloop.counter > 1 %}
                         <div class="carousel-item">
                             <a href={{img.src}}>
@@ -67,45 +66,17 @@
             </a>
         </div>
     </div>
-</div>
+</section>  
 
-<div class="row justify-content-center">
-    <div class="col-4 flex-col">
-        {% for img in images|slice:"5:" %}
-            {% if forloop.counter0|divisibleby:"3" %}
-                <div class="pt-2">
-                    <a href={{img.src}}>
-                        <img src={{img.src}} class="w-100 multimedia-rounded-img" alt="img">
-                        <!-- {{img.title}} -->
-                    </a>
-                </div>
-            {% endif %}
-        {% endfor %}
-    </div>
-    <div class="col-4 flex-col">
-        {% for img in images|slice:"6:" %}
-            {% if forloop.counter0|divisibleby:"3" %}
-                <div class="pt-2">
-                    <a href={{img.src}}>
-                        <img src={{img.src}} class="w-100 multimedia-rounded-img" alt="img">
-                        <!-- {{img.title}} -->
-                    </a>
-                </div>
-            {% endif %}
-        {% endfor %}
-    </div>
-    <div class="col-4 flex-col">
-        {% for img in images|slice:"7:" %}
-            {% if forloop.counter0|divisibleby:"3" %}
-                <div class="pt-2">
-                    <a href={{img.src}}>
-                        <img src={{img.src}} class="w-100 multimedia-rounded-img" alt="img">
-                        <!-- {{img.title}} -->
-                    </a>
-                </div>
-            {% endif %}
-        {% endfor %}
-    </div>
+<div class="multimedia-grid">
+    {% for img in images|slice:"3:" %}
+        <div class="pt-2 masonry-img">
+            <a href={{img.src}}>
+                <img loading="lazy" src={{img.src}} class="masonry-img" alt="img">
+                <!-- {{img.title}} -->
+            </a>
+        </div>
+    {% endfor %}
 </div>
 
 <!-- Opening Image Display End -->
@@ -116,7 +87,7 @@
 <!-- Image Carousel Display End -->
 <!-- Video Carousel Display Start -->
   
-  <!-- Video Carousel Display End -->
+<!-- Video Carousel Display End -->
 
 </div>
 {% endblock %}
