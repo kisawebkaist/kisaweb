@@ -47,7 +47,7 @@ class Image(models.Model):
         ADDITIONAL FEATURES : 
     """
     title   = models.CharField(max_length = 100)
-    alt     = models.CharField(max_length = 100)
+    alt     = models.CharField(max_length = 100,help_text="Enables screen readers to read the information about the image")
     file    = models.ImageField(upload_to = 'images')
     date    = models.DateField()
 
@@ -66,16 +66,14 @@ class Multimedia(models.Model):
     tags            = models.ManyToManyField(MultimediaTag, blank = True)
     videos          = models.ManyToManyField(Video, blank = True)
     # field for uploading a zip file consisting of multiple images
-    multiple_images = models.FileField(blank=True, null=True, help_text="Upload Multiple Images") 
+    multiple_images = models.FileField(blank=True, null=True, help_text="Upload Zip File of Multiple Images") 
     images          = models.ManyToManyField(Image, blank = True)
     # keeps the preview image
     preview         = models.ForeignKey(Image, related_name = "cover_media" ,on_delete = models.CASCADE, blank = True, null = True, help_text="Pick the Preview Image")
     # keeps the carousel images
     carousels       = models.ManyToManyField(Image, related_name="carousel_media", blank=True)
-    # whether it is visiblve over the multimedia page or not
+    # whether it is visible over the multimedia page or not
     visible         = models.BooleanField(default=False, null=True)
-
     objects = TagFilterManager()
-
     def __str__(self):
         return self.title

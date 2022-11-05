@@ -4,119 +4,147 @@
 {% extends 'multimedia/templates/multimedia/multimedia_base.html' %}
 
 {% load static %}
+{% load pagination_tags %}
 
 {% block css %}
 <link href="{% static 'css/multimedia.css' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block content %}
-<div class="container m-4 mx-auto">
-
-<h1 class="text-display text-center">{{title}}</h1>
-<p class="text-muted"><small>
+<div class="container">
+<h1 class="text-display text-center text-uppercase display-2">{{title}}</h1>
+<div class="d-flex flex-row justify-content-center flex-wrap">
     {% for tag in tags %}
-        #{{tag}}
+        <span class="badge badge-info m-1 p-2 lead">{{tag | title}}</span>
     {% endfor %}
-</small></p>
-
-<!-- Test images slides  -->
-<!-- <h1 class="row justify-content-center mt-12">Gallery</h1> -->
-<div id="slide-container" style="height:40rem;">
-    
-    <div class="row justify-content-center mt-3" >
-        <div id="myCarousel" class="col-9 carousel slide" data-ride="carousel">
-            <!-- Indicators -->
-            <!-- <ol class="carousel-indicators">
-            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-            <li data-target="#myCarousel" data-slide-to="1"></li>
-            <li data-target="#myCarousel" data-slide-to="2"></li>
-            </ol> -->
-        
-            <!-- Wrapper for slides -->
-            <div class="carousel-inner">
-                {% for img in images|slice:":5" %}
-                    {% if forloop.counter > 1 %}
-                        <div class="carousel-item">
-                            <a href={{img.src}}>
-                                <img src={{img.src}} class="w-100 multimedia-rounded-img" alt="img">
-                                <!-- {{img.title}} -->
-                            </a>
-                        </div>
-                        <!-- {{img.title}} -->
-                    {% else %}
-                        <div class="carousel-item active">
-                            <a href={{img.src}}>
-                                <img src={{img.src}} class="w-100 multimedia-rounded-img" alt="img">
-                                <!-- {{img.title}} -->
-                            </a>
-                        </div>
-                        <!-- {{img.title}} -->
-                    {% endif %}
-                {% endfor %}
-            
-            </div>
-        
-            <!-- Left and right controls -->
-            <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="sr-only">Previous</span>
-            </a>
-            <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="sr-only">Next</span>
-            </a>
-        </div>
-    </div>
 </div>
 
-<div class="row justify-content-center">
-    <div class="col-4 flex-col">
-        {% for img in images|slice:"5:" %}
-            {% if forloop.counter0|divisibleby:"3" %}
-                <div class="pt-2">
-                    <a href={{img.src}}>
-                        <img src={{img.src}} class="w-100 multimedia-rounded-img" alt="img">
-                        <!-- {{img.title}} -->
-                    </a>
-                </div>
-            {% endif %}
-        {% endfor %}
-    </div>
-    <div class="col-4 flex-col">
-        {% for img in images|slice:"6:" %}
-            {% if forloop.counter0|divisibleby:"3" %}
-                <div class="pt-2">
-                    <a href={{img.src}}>
-                        <img src={{img.src}} class="w-100 multimedia-rounded-img" alt="img">
-                        <!-- {{img.title}} -->
-                    </a>
-                </div>
-            {% endif %}
-        {% endfor %}
-    </div>
-    <div class="col-4 flex-col">
-        {% for img in images|slice:"7:" %}
-            {% if forloop.counter0|divisibleby:"3" %}
-                <div class="pt-2">
-                    <a href={{img.src}}>
-                        <img src={{img.src}} class="w-100 multimedia-rounded-img" alt="img">
-                        <!-- {{img.title}} -->
-                    </a>
-                </div>
-            {% endif %}
-        {% endfor %}
-    </div>
-</div>
-
-<!-- Opening Image Display End -->
-<!-- Gallery Images Display Start -->
+<div class="container pb-3 pt-3 d-flex flex-row flex-wrap">
 
 <!-- Image Carousel Display Start -->
 
+{% if carousels %}
+    <div class="container pb-3 pt-3">
+        <!-- Carousel row -->
+        <div class="row">
+            <div class="col col-md-10 offset-md-1 col-lg-8 offset-lg-2">
+                <!-- Carousel -->
+                <div id="carousel-picture" class="carousel slide">
+                    <ol class="carousel-indicators">
+                        {% for carousel in carousels %}
+                            {% if forloop.counter > 1 %}
+                            <li data-target="#carousel-picture" data-slide-to="{{forloop.counter0 }}"></li>
+                            {% else %}
+                            <li data-target="#carousel-picture" data-slide-to="0" class="active"></li>
+                            {% endif %}
+                        {% endfor %}
+                    </ol>
+                    <div class="carousel-inner">
+                        {% for carousel in carousels %}
+                        {% if forloop.counter > 1 %}
+                        <div class="carousel-item">
+                            <a href={{carousel.src}}>
+                                <img src={{carousel.src}} class="w-100 d-block multimedia-rounded-img" alt="{{carousel.title}}">
+                                <!-- {{img.title}} -->
+                            </a>
+                        </div>
+                        {% else %}
+                        <div class="carousel-item active">
+                            <a href={{carousel.src}}>
+                                <img src={{carousel.src}} class="w-100 d-block multimedia-rounded-img" alt="{{carousel.title}}">
+                                <!-- {{img.title}} -->
+                            </a>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                    <a class="carousel-control-prev" href="#carousel-picture" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#carousel-picture" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </div>
+                <!-- End carousel -->
+            </div>
+        </div>
+        <!-- End carousel row -->
+        </div>
+{% endif %}
 <!-- Image Carousel Display End -->
 <!-- Video Carousel Display Start -->
-  
-  <!-- Video Carousel Display End -->
+{% if videos %}
+    <div class="container">
+        <!-- Carousel row -->
+        <div class="row">
+            <div class="col col-md-10 offset-md-1 col-lg-8 offset-lg-2">
+                <!-- Carousel -->
+                <div id="carousel-video" class="carousel slide">
+                    <ol class="carousel-indicators">
+                        {% for video in videos %}
+                            {% if forloop.counter > 1 %}
+                            <li data-target="#carousel-video" data-slide-to="{{forloop.counter0 }}"></li>
+                            {% else %}
+                            <li data-target="#carousel-video" data-slide-to="0" class="active"></li>
+                            {% endif %}
+                        {% endfor %}
+                    </ol>
+                    <div class="carousel-inner">
+                        {% for video in videos %}
+                        {% if forloop.counter > 1 %}
+                        <div class="carousel-item">
+                            <div class="embed-responsive embed-responsive-{{video.ratio}}">
+                                <iframe class="embed-responsive-item" src="{{video.src}}" allowfullscreen></iframe>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="carousel-item active">
+                            <div class="embed-responsive embed-responsive-{{video.ratio}}">
+                                <iframe class="embed-responsive-item" src="{{video.src}}" allowfullscreen></iframe>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                    <a class="carousel-control-prev" href="#carousel-video" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#carousel-video" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </div>
+                <!-- End carousel -->
+            </div>
+        </div>
+        <!-- End carousel row -->
+    </div>
+{% endif %}
+<!-- Video Carousel Display End -->
+</div>
+
+
+<!-- Gallery Images Display Start -->
+
+<div class="multimedia-grid">
+    {% autopaginate images 10 %}
+    {% for img in images %}
+        <div class="pt-2 masonry-img">
+            <a href={{img.src}}>
+                <img loading="lazy" src={{img.src}} class="masonry-img" alt="img">
+                <!-- {{img.title}} -->
+            </a>
+        </div>
+    {% endfor %}
+</div>
+<div class="d-flex flex-row justify-content-center m-2">
+    {% paginate %}
+</div>
+
+<!-- Gallery Image Display End -->
 
 </div>
 {% endblock %}

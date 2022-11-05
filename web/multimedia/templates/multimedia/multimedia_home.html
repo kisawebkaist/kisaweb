@@ -2,6 +2,7 @@
 {% extends 'multimedia/templates/multimedia/multimedia_base.html' %}
 
 {% load static %}
+{% load pagination_tags %}
 
 {% block css %}
 <link href="{% static 'css/multimedia.css' %}" rel="stylesheet" type="text/css">
@@ -15,7 +16,7 @@
     <div id="tag-filter">
       <div>
         <div class="my-1">
-            <button type="button" id="tag-filter-button" class="multimedia_filter_btn">Filter by Tags </button>
+            <button type="button" id="tag-filter-button" class="btn btn-outline-dark">Filter by Tags </button>
             <div id="active-tags" class="my-1"></div>
         </div>
 
@@ -32,7 +33,7 @@
                 <button class="btn btn-secondary btn-sm mx-1" id="tag-reset">
                     Clear
                 </button>
-                <!-- this is to press search, will make a GET reuest to the backend with selected tags as parameters-->
+                <!-- this is to press search, will make a GET request to the backend with selected tags as parameters-->
                 <button class="btn btn-dark btn-sm mx-1" id="tag-search">
                     Search
                 </button>
@@ -41,23 +42,28 @@
     </div>
     </div>
     <hr>
-    {% for media in multimedia %}
-    <div class="multimedia-image-card">
-        <p class="card-text"><small class="multimedia-card-date">{{media.date}}</small></p>
-        <img class="card-img-top" src="{{media.preview}}" alt="Card image cap">
-        <div class="card-body">
-        <h5 class="card-title">
-            <a href="pages/{{media.slug}}" class="multimedia-card-title">{{media.title}}</a><br>
-            {% for tag in media.tags %}
-                <small class="multimedia-card-tag">#{{tag}} </small>
-            {% endfor %}
-        </h5>
-        <!-- <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus, consectetur distinctio. Enim architecto, officia tempore nihil iste voluptates provident neque!</p> -->
-
-        </div>
+    <div class="multimedia-grid">
+        {% autopaginate multimedia 10 %}
+        {% for media in multimedia %}
+            <div class="multimedia-image-card mb-3">
+                {% if media.preview %}
+                    <img loading="lazy" class="card-img-top" src="{{media.preview}}" alt="Card image cap">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a href="pages/{{media.slug}}" class="multimedia-card-title d-flex flex-row justify-content-center">{{ media.title }}</a>
+                        <p class="card-text mx-1 d-flex flex-row justify-content-end mt-1"><small class="multimedia-card-date text-muted">{{media.date}}</small></p>
+                        {% for tag in media.tags %}
+                            <span class="badge badge-info m-1">{{tag | title}}</span>
+                        {% endfor %}
+                    </h5>
+                </div>
+            </div>
+        {% endfor %}
     </div>
-    {% endfor %}
-
+    <div class="d-flex flex-row justify-content-center m-2">
+        {% paginate %}
+    </div>
 </div>
 
 {% endblock %}
