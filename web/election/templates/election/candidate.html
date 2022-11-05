@@ -23,15 +23,19 @@
     {% if user.is_authenticated %}
     <!-- Candidate Info -->
     <!-- Name -->
-    <div class="text-center py-1"><h1>{{ candidate.name }}</h1></div>
+    <div class="text-center py-2"><h1>{{ candidate.name }}</h1></div>
     <!-- Image -->
-    <div class="text-center">{{ candidate.image_tag }}</div>
+    <div class="d-flex justify-content-center my-1">
+      <div class="d-flex overflow-hidden justify-content-center" style="max-width: 500px; height: 250px;">
+        {{ candidate.image_tag }}
+      </div>
+    </div>
     <!-- KISA History -->
     <div class="text-center pt-4 pb-2"><h4>KISA History</h4></div>
-    <div class="text-center">{{ candidate.kisa_history|safe }}</div>
+    <div class="text-center">{{ candidate.kisa_history|safe|linebreaks }}</div>
     <!-- Manifesto -->
     <div class="text-center pt-4 pb-2"><h4>Manifesto</h4></div>
-    <div class="text-justify">{{ candidate.manifesto|safe }}</div>
+    <div class="text-justify px-sm-4 px-md-5">{{ candidate.manifesto|safe }}</div>
     <!-- Speech -->
     <div class="text-center pt-4 pb-2"><h4>Speech</h4></div>
     <div class="container">

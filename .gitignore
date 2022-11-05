@@ -140,3 +140,7 @@ collectstatic/
 
 # media files
 media/
+*.pdf
+
+# CACHE
+CACHE/
