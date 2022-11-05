@@ -8,16 +8,21 @@ import multimedia.models as model
 RESULTS_PER_PAGE = 5
 class MultimediaView(View):
     def get(self, request, slug):
-        multimedia  = model.Multimedia.objects.filter(slug = slug)
+        # retrieve the proper multimedia instance to be rendered over the webpage
+        multimedia  = model.Multimedia.objects.filter(slug = slug, visible=True)
         if not multimedia.exists():
-            return HttpResponseNotFound
+            return HttpResponseNotFound()
+
         multimedia  = multimedia[0]
+
         pk           = multimedia.id
         title        = multimedia.title
         tags         = multimedia.tags.all()
         images       = multimedia.images.all()
         videos       = multimedia.videos.all()
+        carousels    = multimedia.carousels.all()
         date_created = multimedia.date
+
         images       = [{
             "title" : img.title,
             "src"   : img.file.url,
@@ -25,30 +30,40 @@ class MultimediaView(View):
             "alt"   : img.alt    
         } for img in images]
         images.sort(key=lambda x: x["title"].lower())
-        # print(images[0]["src"])
+
         videos      = [{
             "title" : vid.title,
-            "src"   : vid.file.url,
+            "src"   : vid.url,
             "date"  : vid.date,
+            "ratio" : vid.embed_video_ratio
         } for vid in videos]
+
+        carousels   = [{
+            "title" : img.title,
+            "src"   : img.file.url,
+            "date"  : img.date,
+            "alt"   : img.alt    
+        } for img in carousels]
+
         context     = {
             "id"    : pk,
             "title" : title,
             "tags"  : tags,
             "images": images,
             "videos": videos,
+            "carousels": carousels,
             "date"  : date_created
-
         }
+
         return render(request, 'multimedia/multimedia.html', context = context)
 
 
 class HomePageView(View):
     def get(self, request):
         tag_data   = self.request.GET.get('tags', '').split(',')
-        multimedia = model.Multimedia.objects.filter_and(tag_data).order_by('date', 'title')
+        multimedia = model.Multimedia.objects.filter_and(tag_data).filter(visible=True).order_by('-date', 'title')
 
-        # TODO: PAGINATION
+        # TODO: PAGINATION (We should implement it somehow (it involves work from frontend too))
         multimedia  = multimedia[:RESULTS_PER_PAGE]
 
         mediaList   = []
@@ -57,7 +72,7 @@ class HomePageView(View):
             title   = media.title
             tags    = media.tags.all()
             date    = media.date
-            preview = media.previews.file.url
+            preview = media.preview.file.url
             mediaList.append({
                 "slug"   : slug,
                 "title"  : title,

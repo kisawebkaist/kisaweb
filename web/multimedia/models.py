@@ -14,12 +14,31 @@ class Video(models.Model):
         ADDITIONAL FEATURES :
     """
     title   = models.CharField(max_length = 100)
-    #slug    = models.SlugField(unique   = True)
-    file    = models.FileField(upload_to = 'videos')
+    url     = models.CharField(max_length=512, blank=True, null=True)
     date    = models.DateField()
+
+    # define the video embedding ratio options
+    EMBED_VIDEO_RATIO_CHOICES = [
+        ('21by9', '21by9'),
+        ('16by9', '16by9'),
+        ('4by3', '4by3'),
+        ('1by1', '1by1'),
+    ]
+    embed_video_ratio = models.CharField(max_length=10, default='16by9', choices=EMBED_VIDEO_RATIO_CHOICES)
 
     def __str__(self):
         return self.title
+
+    # post-process the url information during the saving procedure of the model instance
+    # changes 'watch?v=' to 'embed'
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.url and 'https://www.youtube.com/watch?v=' in self.url:
+            self.url = self.url.replace(
+                'https://www.youtube.com/watch?v=',
+                'https://www.youtube.com/embed/'
+            )
+        super().save(*args, **kwargs)
 
 
 class Image(models.Model):
@@ -29,7 +48,6 @@ class Image(models.Model):
     """
     title   = models.CharField(max_length = 100)
     alt     = models.CharField(max_length = 100)
-    #slug    = models.SlugField(unique = True)
     file    = models.ImageField(upload_to = 'images')
     date    = models.DateField()
 
@@ -42,13 +60,20 @@ class Multimedia(models.Model):
         THE MODEL IS USED TO COLLAGE MANY IMAGES INTO ONE BIG SET WITH A GIVEN TITLE.
         ANY OTHER MODEL CAN USE THIS MODEL TO ACCESS PICTURES STORED IN THE DATABASE.
     """
-    title    = models.CharField(max_length = 100)
-    slug     = models.SlugField(unique = True)
-    tags     = models.ManyToManyField(MultimediaTag, blank = True)
-    images   = models.ManyToManyField(Image, blank = True)
-    videos   = models.ManyToManyField(Video, blank = True)
-    date     = models.DateField()
-    previews = models.ForeignKey(Image, related_name = "cover_media" ,on_delete = models.CASCADE, blank = True, null = True)
+    title           = models.CharField(max_length = 100)
+    slug            = models.SlugField(unique = True)
+    date            = models.DateField()
+    tags            = models.ManyToManyField(MultimediaTag, blank = True)
+    videos          = models.ManyToManyField(Video, blank = True)
+    # field for uploading a zip file consisting of multiple images
+    multiple_images = models.FileField(blank=True, null=True, help_text="Upload Multiple Images") 
+    images          = models.ManyToManyField(Image, blank = True)
+    # keeps the preview image
+    preview         = models.ForeignKey(Image, related_name = "cover_media" ,on_delete = models.CASCADE, blank = True, null = True, help_text="Pick the Preview Image")
+    # keeps the carousel images
+    carousels       = models.ManyToManyField(Image, related_name="carousel_media", blank=True)
+    # whether it is visiblve over the multimedia page or not
+    visible         = models.BooleanField(default=False, null=True)
 
     objects = TagFilterManager()
 
