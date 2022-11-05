@@ -2,6 +2,7 @@
 {% extends 'multimedia/templates/multimedia/multimedia_base.html' %}
 
 {% load static %}
+{% load pagination_tags %}
 
 {% block css %}
 <link href="{% static 'css/multimedia.css' %}" rel="stylesheet" type="text/css">
@@ -42,13 +43,16 @@
     </div>
     <hr>
     <div class="multimedia-grid">
+        {% autopaginate multimedia 10 %}
         {% for media in multimedia %}
             <div class="multimedia-image-card mb-3">
-                <img loading="lazy" class="card-img-top" src="{{media.preview}}" alt="Card image cap">
+                {% if media.preview %}
+                    <img loading="lazy" class="card-img-top" src="{{media.preview}}" alt="Card image cap">
+                {% endif %}
                 <div class="card-body">
                     <h5 class="card-title">
                         <a href="pages/{{media.slug}}" class="multimedia-card-title d-flex flex-row justify-content-center">{{ media.title }}</a>
-                        <p class="card-text mx-1 d-flex flex-row justify-content-end mt-1"><small class="multimedia-card-date text-muted ">{{media.date}}</small></p>
+                        <p class="card-text mx-1 d-flex flex-row justify-content-end mt-1"><small class="multimedia-card-date text-muted">{{media.date}}</small></p>
                         {% for tag in media.tags %}
                             <span class="badge badge-info m-1">{{tag | title}}</span>
                         {% endfor %}
@@ -56,6 +60,9 @@
                 </div>
             </div>
         {% endfor %}
+    </div>
+    <div class="d-flex flex-row justify-content-center m-2">
+        {% paginate %}
     </div>
 </div>
 

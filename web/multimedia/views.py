@@ -72,14 +72,22 @@ class HomePageView(View):
             title   = media.title
             tags    = media.tags.all()
             date    = media.date
-            preview = media.preview.file.url
-            mediaList.append({
-                "slug"   : slug,
-                "title"  : title,
-                "tags"   : tags,
-                "preview": preview,
-                "date"   : date
-            })
+            try:
+                preview = media.preview.file.url
+                mediaList.append({
+                    "slug"   : slug,
+                    "title"  : title,
+                    "tags"   : tags,
+                    "preview": preview,
+                    "date"   : date
+                })
+            except:
+                mediaList.append({
+                    "slug"   : slug,
+                    "title"  : title,
+                    "tags"   : tags,
+                    "date"   : date
+                })
         context = {
             "multimedia": mediaList,
             'tagObjects': model.MultimediaTag.objects.all(),

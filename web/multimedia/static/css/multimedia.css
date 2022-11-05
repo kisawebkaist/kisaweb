@@ -13,35 +13,53 @@ html{
 
 .container-fluid{
     padding:0 !important;
+    overflow: hidden;
 }
 
 .multimedia-head-container{
+    margin:0;
+    padding:0;
     position:relative;
+    width:100vw;
     display:flex;
 }
 
-.multimedia_title_image{
-    width:100vw;
-    background-position: center;
-    background-size: cover;
-    position: relative;
-    filter: brightness(70%);
-    z-index: -1;
-    height:100%;
-}
-
 .multimedia_title{
+    font-size: 3vw;
+    font-weight: bold;
     position: absolute;
     color:white;
     z-index: 0;
     font-family: 'Lato', sans-serif;
     text-transform: uppercase;
-    font-size: 4vw;
-    font-weight: 400;
+    text-align: center;
     display: flex;
     align-self: center;
     left:50%;
     transform: translate(-50%,0);
+}
+
+.multimedia_title_image{
+    width: 100%;
+    height: auto;
+    max-height: calc(100vh - 230px);
+    position: relative;
+    filter: brightness(70%);
+    z-index: -1;
+    object-fit: cover;
+}
+
+.multimedia-grid{
+    max-width: 60rem;
+    margin: 0 auto;
+    display: column;
+    columns: 3;
+    gap: 1em;
+}
+
+.multimedia-grid > *{
+    break-inside: avoid;
+    margin-bottom: 1em;
 }
 
 .multimedia-image-card{
@@ -72,23 +90,22 @@ html{
     font-size: .9rem;
 }
 
+.display-2{
+    font-size: 2.5rem;
+    font-weight: 600;
+}
+
+.badge{
+    font-size: 1rem;
+}
+
 .multimedia-rounded-img {
-    border-radius: 20px;
-    height: 400px;
-    object-fit: cover;
-}
-
-.multimedia-grid{
-    max-width: 60rem;
-    margin: 0 auto;
-    display: column;
-    columns: 3;
-    gap: 1em;
-}
-
-.multimedia-grid > *{
-    break-inside: avoid;
-    margin-bottom: 1em;
+    object-fit:cover;
+    width: 300px;
+    height:100%;
+    max-height: 400px;
+    margin:0;
+    padding:0;
 }
 
 .masonry-img {
@@ -97,17 +114,18 @@ html{
     margin: auto;
 }
 
-.badge{
-    font-size: 16px;
-}
+
 
 @media only screen and (max-width: 1000px){
     .multimedia-grid{
-        max-width: 60rem;
+        max-width: 40rem;
         margin: auto;
         display: column;
         columns: 2;
         gap: 1em;
+    }
+    .multimedia_title{
+        font-size: 2.7rem;
     }
 }
 @media only screen and (max-width: 780px){
