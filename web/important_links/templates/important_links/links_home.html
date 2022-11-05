@@ -1,0 +1,45 @@
+{% extends 'important_links/templates/important_links/links_base.html' %}
+
+{% block content %}
+
+<!-- Category Navigation -->
+<div class="navigation rounded border p-2 m-2">
+<ul>
+  {% for category in categories %}
+    {% if category.links.all %}
+      <li><a class="category-link" href="#{{category.slugified}}">{{category.title_category}}</a></li>
+    {% endif %}
+  {% endfor %}
+</ul>
+</div>
+
+<!-- LINKS (check views.py for details if needed)-->
+<div class="cat-list">
+	{% for category in categories %}
+    {% if category.links.all %}
+    <p class="cat-name p-3" id="{{category.slugified}}">{{category.title_category}}</p>
+    <ul class="link-list">
+      {% for link in category.links.all %}
+      <li class="my-4">
+        <h4 class="link-heading p-2 m-2">
+          <span class="link-title">{{ link.title }}</span>
+          <div>
+            {% if link.is_english %}<span class="badge badge-pill badge-dark my-1 ml-1">English</span>{% endif %}
+            {% if link.requires_sso %}<span class="badge badge-pill badge-primary ml-1">SSO Required</span>{% endif %}
+            {% if link.external_access %}<span class="badge badge-pill badge-info ml-1">Accessible off-campus</span>{% endif %}
+          </div>
+        </h4>
+        {% if link.description %}
+        <p class="link-description p-2 m-2">
+          {{ link.description }}
+        </p>
+        {% endif %}
+        <div class="link-url pl-3"> <a class="link" href="{{link.url}}" target="_blank"> {{link.url|truncatechars:60}} </a> </div>
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+	{% endfor %}
+</div>
+<!-- END OF LINKS -->
+{% endblock %}

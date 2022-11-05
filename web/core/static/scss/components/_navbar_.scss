@@ -5,19 +5,31 @@
     width: 150px;
     padding-left: 60px;
     padding-right: 10px;
-    background-image: url("/static/img/navbar-icon.png");
+    background-image: url("/static/img/new-navbar-icon.png");
     background-size: 50px 50px;
     background-repeat: no-repeat;
 }
 
+.kaist-logo {
+    height: 15px;
+}
+
+.bg-darker {
+    background-color: $bg-darker-color_;
+}
+
 .brand-text {
-    font-family: 'Charm';
-    font-size: 14px;
+    font-family: 'Acme', sans-serif;
+    font-size: 15px;
 }
 
 .navbar {
     a { transition: 0.3s; }
     .nav-item:not(:last-child) { margin-right: 13px; }
+}
+
+.navbar-nav {
+    font-family: 'Open Sans', sans-serif;
 }
 
 .dropdown-item {

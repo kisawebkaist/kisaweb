@@ -1,0 +1,51 @@
+{% extends 'core/base/base.html' %}
+
+
+{% load static %}
+{% load compress %}
+
+{% block title %} FAQ {% endblock %}
+
+{% block css %}
+{% compress css file faq %}
+<link rel="stylesheet" type="text/x-scss" href="{% static 'scss/faq_main.scss' %}">
+{% endcompress %}
+{% endblock %}
+
+{% block main %}
+<div class="d-flex flex-row h-auto margin">
+  <div class="container-fluid mx-0">
+    <div class="row">
+      <div class="col page-title-box text-center py-1">
+        FAQ
+      </div>
+    </div>
+    <ul class="cat-list">
+      {% for cat_and_faqs in faqs_of_cat %}
+      <li>
+        <h4 class="cat-heading"> {{ cat_and_faqs.category }}</h4>
+        <div class="read cat-text">
+          <ul class="faq-list">
+            {% for faq in cat_and_faqs.faqs %}
+            <li>
+              <h4 class="faq-heading"> {{ faq.question }} </h4>
+              <p class="read faq-text">
+                {{ faq.answer }}
+              </p>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+{% compress js file faq %}
+<script src="{% static 'js/main.js' %}"></script>
+{% endcompress %}
+{% endblock %}
