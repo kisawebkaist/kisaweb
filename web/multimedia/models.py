@@ -48,7 +48,7 @@ class Multimedia(models.Model):
     images   = models.ManyToManyField(Image, blank = True)
     videos   = models.ManyToManyField(Video, blank = True)
     date     = models.DateField()
-    previews = models.ForeignKey(Image, related_name = "cover_media" ,on_delete = models.CASCADE, blank = True, null = True)
+    previews = models.ForeignKey(Image, related_name = "cover_media" ,on_delete = models.CASCADE, blank = False, null = False)
 
     objects = TagFilterManager()
 

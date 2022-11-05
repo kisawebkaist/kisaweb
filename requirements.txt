@@ -8,7 +8,9 @@ requests
 
 # Django
 django==3.0
-django-compressor==2.*
+rcssmin --install-option="--without-c-extensions"
+rjsmin --install-option="--without-c-extensions"
+django-compressor==4.1.*
 django-libsass==0.*
 django-tinymce==3.0.*
 django-crispy-forms==1.9.*
