@@ -58,6 +58,11 @@
                         {% endfor %}
                     </h5>
                 </div>
+                {% if not media.visible %}
+                <div class="card-footer">
+                    <small class="text-muted"> This is not visible publicly yet </small>
+                </div>
+                {% endif %}
             </div>
         {% endfor %}
     </div>

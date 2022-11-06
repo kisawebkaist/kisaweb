@@ -18,6 +18,12 @@
         <span class="badge badge-info m-1 p-2 lead">{{tag | title}}</span>
     {% endfor %}
 </div>
+{% if not visible %}
+    <div class="d-flex justify-content-center mb-3 align-baseline">
+        <i class="fas fa-info-circle"></i>
+        <small class="text-muted font-italic pb-1"> This is not visible publicly yet </small>
+    </div>
+{% endif %}
 
 <div class="container d-flex flex-column">
 

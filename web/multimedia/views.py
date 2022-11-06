@@ -5,11 +5,13 @@ from django.db.models import Count
 import multimedia.models as model
 
 
-RESULTS_PER_PAGE = 5
 class MultimediaView(View):
     def get(self, request, slug):
         # retrieve the proper multimedia instance to be rendered over the webpage
-        multimedia  = model.Multimedia.objects.filter(slug = slug, visible=True)
+        multimedia  = model.Multimedia.objects.filter(slug = slug)
+        if not request.user.is_staff:
+            multimedia = multimedia.filter(visible=True)
+
         if not multimedia.exists():
             return HttpResponseNotFound()
 
@@ -22,6 +24,7 @@ class MultimediaView(View):
         videos       = multimedia.videos.all()
         carousels    = multimedia.carousels.all()
         date_created = multimedia.date
+        visible      = multimedia.visible
 
         images       = [{
             "title" : img.title,
@@ -52,7 +55,8 @@ class MultimediaView(View):
             "images": images,
             "videos": videos,
             "carousels": carousels,
-            "date"  : date_created
+            "date"  : date_created,
+            "visible": visible,
         }
 
         return render(request, 'multimedia/multimedia.html', context = context)
@@ -61,10 +65,9 @@ class MultimediaView(View):
 class HomePageView(View):
     def get(self, request):
         tag_data   = self.request.GET.get('tags', '').split(',')
-        multimedia = model.Multimedia.objects.filter_and(tag_data).filter(visible=True).order_by('-date', 'title')
-
-        # TODO: PAGINATION (We should implement it somehow (it involves work from frontend too))
-        multimedia  = multimedia[:RESULTS_PER_PAGE]
+        multimedia = model.Multimedia.objects.filter_and(tag_data).order_by('-date', 'title')
+        if not request.user.is_staff:
+            multimedia = multimedia.filter(visible=True)
 
         mediaList   = []
         for media in multimedia:
@@ -72,6 +75,7 @@ class HomePageView(View):
             title   = media.title
             tags    = media.tags.all()
             date    = media.date
+            visible = media.visible
             try:
                 preview = media.preview.file.url
                 mediaList.append({
@@ -79,14 +83,16 @@ class HomePageView(View):
                     "title"  : title,
                     "tags"   : tags,
                     "preview": preview,
-                    "date"   : date
+                    "date"   : date,
+                    "visible": visible
                 })
             except:
                 mediaList.append({
                     "slug"   : slug,
                     "title"  : title,
                     "tags"   : tags,
-                    "date"   : date
+                    "date"   : date,
+                    "visible": visible
                 })
         context = {
             "multimedia": mediaList,
