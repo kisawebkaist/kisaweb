@@ -119,6 +119,15 @@ html{
 .carousel-indicators{
     bottom:-40px;
 }
+
+.video-indicators:hover li {
+    height: 16px;
+}
+
+.video-indicators:hover {
+    bottom: -48px;
+}
+
 .carousel-indicators li{
     background-color: #111827;
 }

@@ -12,8 +12,8 @@
 
 {% block content %}
 <div class="container">
-<h1 class="text-display text-center text-uppercase display-2">{{title}}</h1>
-<div class="d-flex flex-row justify-content-center flex-wrap">
+<h1 class="text-display text-center text-uppercase display-2 mt-4 pt-2">{{title}}</h1>
+<div class="d-flex flex-row justify-content-center flex-wrap mb-3">
     {% for tag in tags %}
         <span class="badge badge-info m-1 p-2 lead">{{tag | title}}</span>
     {% endfor %}
@@ -24,7 +24,7 @@
 <!-- Image Carousel Display Start -->
 
 {% if carousels %}
-    <div class="container mb-5">
+    <div class="container mb-5 mt-3">
         <!-- Carousel row -->
         <div class="row">
             <div class="col col-md-10 offset-md-1 col-lg-8 offset-lg-2">
@@ -43,22 +43,26 @@
                         {% for carousel in carousels %}
                         {% if forloop.counter > 1 %}
                         <div class="carousel-item">
-                            <a href={{carousel.src}}>
-                                <img src={{carousel.src}} class="w-100 d-block multimedia-rounded-img" alt="{{carousel.title}}">
-                                <!-- {{img.title}} -->
-                            </a>
+                            <img src={{carousel.src}} class="w-100 d-block multimedia-rounded-img" alt="{{carousel.title}}">
+                            <!-- {{img.title}} -->
                         </div>
                         {% else %}
                         <div class="carousel-item active">
-                            <a href={{carousel.src}}>
-                                <img src={{carousel.src}} class="w-100 d-block multimedia-rounded-img" alt="{{carousel.title}}">
-                                <!-- {{img.title}} -->
-                            </a>
+                            <img src={{carousel.src}} class="w-100 d-block multimedia-rounded-img" alt="{{carousel.title}}">
+                            <!-- {{img.title}} -->
                         </div>
                         {% endif %}
                         {% endfor %}
                     </div>
                 </div>
+                <a class="carousel-control-prev" href="#carousel-picture" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#carousel-picture" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
                 <!-- End carousel -->
             </div>
         </div>
@@ -68,13 +72,13 @@
 <!-- Image Carousel Display End -->
 <!-- Video Carousel Display Start -->
 {% if videos %}
-    <div class="container mb-5">
+    <div class="container mb-5 mt-3">
         <!-- Carousel row -->
         <div class="row">
             <div class="col col-md-10 offset-md-1 col-lg-8 offset-lg-2">
                 <!-- Carousel -->
-                <div id="carousel-video" class="carousel slide">
-                    <ol class="carousel-indicators">
+                <div id="carousel-video" class="carousel slide" data-interval="false">
+                    <ol class="carousel-indicators video-indicators">
                         {% for video in videos %}
                             {% if forloop.counter > 1 %}
                             <li data-target="#carousel-video" data-slide-to="{{forloop.counter0 }}"></li>
@@ -111,13 +115,15 @@
 </div>
 
 
+</div>
+
 <!-- Gallery Images Display Start -->
 
-<div class="multimedia-grid">
-    {% autopaginate images 10 %}
+<div class="multimedia-grid mt-3 mb-5">
+    {% autopaginate images 15 %}
     {% for img in images %}
         <div class="mt-2 mb-2 masonry-img">
-            <a href={{img.src}}>
+            <a href={{img.src}} target="_blank" rel="noopener noreferrer">
                 <img loading="lazy" src={{img.src}} class="masonry-img" alt="img">
                 <!-- {{img.title}} -->
             </a>
@@ -129,8 +135,6 @@
 </div>
 
 <!-- Gallery Image Display End -->
-
-</div>
 {% endblock %}
 
 {% block js %}
