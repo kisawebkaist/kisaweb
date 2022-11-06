@@ -14,7 +14,7 @@ class Video(models.Model):
         ADDITIONAL FEATURES :
     """
     title   = models.CharField(max_length = 100)
-    url     = models.CharField(max_length=512, blank=True, null=True)
+    url     = models.URLField(max_length=512, blank=False, null=False)
     date    = models.DateField()
 
     # define the video embedding ratio options
@@ -73,7 +73,7 @@ class Multimedia(models.Model):
     # keeps the carousel images
     carousels       = models.ManyToManyField(Image, related_name="carousel_media", blank=True)
     # whether it is visible over the multimedia page or not
-    visible         = models.BooleanField(default=False, null=True)
+    visible         = models.BooleanField(default=False, null=False)
     objects = TagFilterManager()
     def __str__(self):
         return self.title

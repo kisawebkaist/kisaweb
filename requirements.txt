@@ -20,6 +20,7 @@ django-stubs==1.5.*
 django-phone-field==1.8.*
 django-maintenance-mode==0.15.*
 django-admin-sortable==2.2.4
+django-pagination-bootstrap==2.4.5
 
 # Testing
 pytest

@@ -19,18 +19,18 @@
     {% endfor %}
 </div>
 
-<div class="container pb-3 pt-3 d-flex flex-row flex-wrap">
+<div class="container d-flex flex-column">
 
 <!-- Image Carousel Display Start -->
 
 {% if carousels %}
-    <div class="container pb-3 pt-3">
+    <div class="container mb-5">
         <!-- Carousel row -->
         <div class="row">
             <div class="col col-md-10 offset-md-1 col-lg-8 offset-lg-2">
                 <!-- Carousel -->
                 <div id="carousel-picture" class="carousel slide">
-                    <ol class="carousel-indicators">
+                    <ol class="mt-4 carousel-indicators">
                         {% for carousel in carousels %}
                             {% if forloop.counter > 1 %}
                             <li data-target="#carousel-picture" data-slide-to="{{forloop.counter0 }}"></li>
@@ -58,14 +58,6 @@
                         {% endif %}
                         {% endfor %}
                     </div>
-                    <a class="carousel-control-prev" href="#carousel-picture" role="button" data-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="sr-only">Previous</span>
-                    </a>
-                    <a class="carousel-control-next" href="#carousel-picture" role="button" data-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="sr-only">Next</span>
-                    </a>
                 </div>
                 <!-- End carousel -->
             </div>
@@ -76,7 +68,7 @@
 <!-- Image Carousel Display End -->
 <!-- Video Carousel Display Start -->
 {% if videos %}
-    <div class="container">
+    <div class="container mb-5">
         <!-- Carousel row -->
         <div class="row">
             <div class="col col-md-10 offset-md-1 col-lg-8 offset-lg-2">
@@ -96,26 +88,18 @@
                         {% if forloop.counter > 1 %}
                         <div class="carousel-item">
                             <div class="embed-responsive embed-responsive-{{video.ratio}}">
-                                <iframe class="embed-responsive-item" src="{{video.src}}" allowfullscreen></iframe>
+                                <iframe id="{{forloop.counter0}}" class="embed-responsive-item" src="{{video.src}}" frameborder="0" allowfullscreen></iframe>
                             </div>
                         </div>
                         {% else %}
                         <div class="carousel-item active">
                             <div class="embed-responsive embed-responsive-{{video.ratio}}">
-                                <iframe class="embed-responsive-item" src="{{video.src}}" allowfullscreen></iframe>
+                                <iframe id="{{forloop.counter0}}" class="embed-responsive-item" src="{{video.src}}" frameborder="0" allowfullscreen></iframe>
                             </div>
                         </div>
                         {% endif %}
                         {% endfor %}
                     </div>
-                    <a class="carousel-control-prev" href="#carousel-video" role="button" data-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="sr-only">Previous</span>
-                    </a>
-                    <a class="carousel-control-next" href="#carousel-video" role="button" data-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="sr-only">Next</span>
-                    </a>
                 </div>
                 <!-- End carousel -->
             </div>
@@ -132,7 +116,7 @@
 <div class="multimedia-grid">
     {% autopaginate images 10 %}
     {% for img in images %}
-        <div class="pt-2 masonry-img">
+        <div class="mt-2 mb-2 masonry-img">
             <a href={{img.src}}>
                 <img loading="lazy" src={{img.src}} class="masonry-img" alt="img">
                 <!-- {{img.title}} -->
@@ -147,4 +131,9 @@
 <!-- Gallery Image Display End -->
 
 </div>
+{% endblock %}
+
+{% block js %}
+<!-- stop video on scroll -->
+<script src="{% static 'js/multimedia_video.js' %}"></script>
 {% endblock %}
