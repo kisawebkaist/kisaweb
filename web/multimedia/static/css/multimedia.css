@@ -60,6 +60,7 @@ html{
 .multimedia-grid > *{
     break-inside: avoid;
     margin-bottom: 1em;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 }
 
 .multimedia-image-card{
@@ -109,12 +110,36 @@ html{
 }
 
 .masonry-img {
-    max-width: 300px;
-    border-radius: 20px;
-    margin: auto;
+    width: 300px;
+    height:100%;
+    border-radius: 10px;
+    margin:auto;
 }
 
+.carousel-indicators{
+    bottom:-40px;
+}
+.carousel-indicators li{
+    background-color: #111827;
+}
 
+.pagination .page-item .page-link{
+    text-decoration: none;
+    color: #fff;
+    background-color: #6c757d;
+    border-color: #6c757d;
+    font-size: .875rem;
+    margin-left: 2px;
+    margin-right: 2px;
+    padding: 0.25rem 0.5rem;
+    line-height: 1.5;
+    border-radius: 0.2rem;
+}
+
+.pagination .page-item.active .page-link{
+    background-color: #343a40;
+    color: #fff;
+}
 
 @media only screen and (max-width: 1000px){
     .multimedia-grid{
