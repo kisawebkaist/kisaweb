@@ -114,11 +114,7 @@
 <!-- Video Carousel Display End -->
 </div>
 
-
-</div>
-
 <!-- Gallery Images Display Start -->
-
 <div class="multimedia-grid mt-3 mb-5">
     {% autopaginate images 15 %}
     {% for img in images %}
@@ -133,8 +129,10 @@
 <div class="d-flex flex-row justify-content-center m-2">
     {% paginate %}
 </div>
-
 <!-- Gallery Image Display End -->
+
+</div>
+
 {% endblock %}
 
 {% block js %}
