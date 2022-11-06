@@ -79,7 +79,7 @@ class Multimedia(models.Model):
     # keeps the carousel images
     carousels       = models.ManyToManyField(Image, related_name="carousel_media", blank=True)
     # whether it is visible over the multimedia page or not
-    visible         = models.BooleanField(default=False, null=False)
+    visible         = models.BooleanField(default=False, null=True)
     objects = TagFilterManager()
     def __str__(self):
         return self.title
