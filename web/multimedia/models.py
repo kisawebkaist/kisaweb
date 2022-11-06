@@ -14,7 +14,7 @@ class Video(models.Model):
         ADDITIONAL FEATURES :
     """
     title   = models.CharField(max_length = 100)
-    url     = models.CharField(max_length=512, blank=True, null=True)
+    url     = models.CharField(max_length=512, blank=False, null=True)
     date    = models.DateField()
 
     # define the video embedding ratio options
@@ -33,11 +33,17 @@ class Video(models.Model):
     # changes 'watch?v=' to 'embed'
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        if self.url and 'https://www.youtube.com/watch?v=' in self.url:
-            self.url = self.url.replace(
-                'https://www.youtube.com/watch?v=',
-                'https://www.youtube.com/embed/'
-            )
+        if self.url: 
+            if 'https://www.youtube.com/watch?v=' in self.url:
+                self.url = self.url.replace(
+                    'https://www.youtube.com/watch?v=',
+                    'https://www.youtube.com/embed/'
+                )
+            if 'https://youtu.be/' in self.url:
+                self.url = self.url.replace(
+                    'https://youtu.be/',
+                    'https://www.youtube.com/embed/'
+                )
         super().save(*args, **kwargs)
 
 
