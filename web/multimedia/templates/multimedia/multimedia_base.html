@@ -1,0 +1,25 @@
+{% extends 'core/base/base.html' %}
+
+{% load static %}
+
+{% block css %}
+<link href="{% static 'css/multimedia.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% load compress %}
+
+{% block title %}Multimedia{% endblock %}
+
+{% block main %}
+
+<div class="d-flex flex-row h-auto">
+  <div class="container-fluid">
+    <!-- Page Title -->
+    <div class="multimedia-head-container">
+      <div class='multimedia_title'>KISA MULTIMEDIA</div>
+      <img class='multimedia_title_image'src="{% static 'img/kaistbg_one.jpg' %}" alt="multimedia page banner">
+    </div>
+  </div>
+</div>
+{% block content %} {% endblock %}
+{% endblock %}

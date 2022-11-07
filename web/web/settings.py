@@ -26,7 +26,7 @@ DEV_SETTINGS = 1
 PROD_SETTINGS = 2
 
 # Single point setup for dev/prod changes
-CURRENT_SETTINGS = PROD_SETTINGS
+CURRENT_SETTINGS = DEV_SETTINGS
 
 if CURRENT_SETTINGS == DEV_SETTINGS:
     dotenv_file = os.path.join(BASE_DIR, '.env.dev')
@@ -72,13 +72,15 @@ INSTALLED_APPS = [
     'docs',  # PyPi django-docs
     'phone_field',  # PyPi django-phone-field
     'adminsortable',
+    "django_pagination_bootstrap", #pagination for multimedia page
 
     ## ---- Created by KISA webteam ---- ##
     'core',  # core pages (eg. homepage, about page, etc)
     'events',
     'election',
-    'sso',
-    'aboutus',  # contains the User model
+    'sso',  # contains the User model
+    'aboutus',
+    'multimedia',
     'blog',
     'faq',
     'important_links',
@@ -93,6 +95,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django_pagination_bootstrap.middleware.PaginationMiddleware", #django_pagination_bootstrap middleware
     'maintenance_mode.middleware.MaintenanceModeMiddleware',  # PyPi django-maintenance-mode (This needs to be the last middleware)
 ]
 
@@ -114,6 +117,7 @@ TEMPLATES = [
                 'django.template.context_processors.static',
                 'django.contrib.messages.context_processors.messages',
                 'maintenance_mode.context_processors.maintenance_mode',  # PyPi django-maintenance-mode
+                "django.template.context_processors.request", # django_pagination_bootstrap context provider
 
                 # -- Created by KISA Team -- #
                 'election.context_processors.navbar_election_link_visible',
