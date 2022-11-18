@@ -5,76 +5,64 @@ from django.urls import reverse_lazy, reverse
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.utils import timezone, dateformat
+from election.expression_parser import evaluate
 
 from .models import Election, Candidate, Voter
 
-"""
-Miko's formula
-# of debate-attending kisa members = k
-# of kisa members who dont attend debate + general votersv= g (treat those who dont attend debate as general voters) 
+def get_explanations(election):
+    return {
+        'Adjusted Votes': election.adjusted_votes_explanation,
+        'Non-KISA Votes': 'These votes belong to the individuals of the international community who are not KISA members',
+        'KISA Votes': 'These votes belong to the KISA members',
+        'KISA (in-debate) Votes': 'These votes belong to the KISA members who were present in the presidential debate',
+    }
 
-Formula = (#ofvoters from k/k + #of voters fromg/g )/2
-"""
-
-def get_weighted_result(candidate, election, **kwargs):
+def get_adjusted_result(candidate, election, **kwargs):
     
-    all_voters = Voter.objects.filter(voted_election=election)
+    EPS = 1e-6
 
-    general_vote_count_all = all_voters.filter(is_kisa=False, **kwargs).count()
-    kisa_yes_debate_count_all = all_voters.filter(is_kisa=True, joined_debate=True, **kwargs).count()
-    kisa_no_debate_count_all = all_voters.filter(is_kisa=True, joined_debate=False, **kwargs).count()
+    all_votes = {
+        'nkva': election.voters.filter(is_kisa=False).count(), 
+        'nkvm': candidate.voters.filter(is_kisa=False, **kwargs).count(), # use kwargs to filter by vote_type (yes/no)
+        'kiva': election.voters.filter(is_kisa=True, joined_debate=True).count(),
+        'kivm': candidate.voters.filter(is_kisa=True, joined_debate=True, **kwargs).count(), # use kwargs to filter by vote_type (yes/no)
+        'kova': election.voters.filter(is_kisa=True, joined_debate=False).count(),
+        'kovm': candidate.voters.filter(is_kisa=True, joined_debate=False, **kwargs).count(), # use kwargs to filter by vote_type (yes/no)
+    }
 
-    general_vote_count = candidate.voters.filter(is_kisa=False, **kwargs).count()
-    kisa_yes_debate_count = candidate.voters.filter(is_kisa=True, joined_debate=True, **kwargs).count()
-    kisa_no_debate_count = candidate.voters.filter(is_kisa=True, joined_debate=False, **kwargs).count()
+    for vote_type_prefix in ['nkv', 'kiv', 'kov']:
+        if all_votes[vote_type_prefix + 'a'] == 0:
+            all_votes[vote_type_prefix + 'a'] = EPS # handle division by zero
+        
+    status, result = evaluate(election.adjusted_votes_formula, **all_votes)
 
-    general_vote_weight = election.general_vote_weight
-    kisa_yes_debate_weight = election.kisa_yes_debate_weight
-    kisa_no_debate_weight = election.kisa_no_debate_weight
+    if status:
+        return result
 
-    if not election.use_the_manual_weights: # Miko's formula
-        try:
-            general_vote_weight = 0.5 / (general_vote_count_all + kisa_no_debate_count_all)
-        except:
-            general_vote_weight = 0
-        kisa_no_debate_weight = general_vote_weight
-        try:
-            kisa_yes_debate_weight = 0.5 / kisa_yes_debate_count_all
-        except:
-            kisa_yes_debate_weight = 0
+    raise Exception(result)
 
-    numerator = 0
-    numerator += general_vote_count * general_vote_weight
-    numerator += kisa_yes_debate_count * kisa_yes_debate_weight
-    numerator += kisa_no_debate_count * kisa_no_debate_weight
-
-    denominator = 0
-    denominator += general_vote_count_all * general_vote_weight
-    denominator += kisa_yes_debate_count_all * kisa_yes_debate_weight
-    denominator += kisa_no_debate_count_all * kisa_no_debate_weight
-
-    try:
-        return float(numerator / denominator)
-    except:
-        return 0
 
 # Create your views here.
 
 def election(request):
+    
     try:
         latest_election = Election.objects.latest('start_datetime')
     except Election.DoesNotExist:
         latest_election = None
+    
     if request.user.is_authenticated and latest_election:
         has_voted = request.user.votes.filter(voted_election=latest_election).exists()
         is_open = request.user.has_perm('election.preview_election')
     else:
         has_voted = False
         is_open = False
+
     context = {
         'election': latest_election,
         'has_voted': has_voted
     }
+
     if latest_election is None:
         return render(request, 'election/election.html', context)
     
@@ -90,33 +78,50 @@ def election(request):
     context['result_visible'] = result_visible
 
     if latest_election.candidates.count() > 1: # Normal election
+    
         candidate_list = latest_election.candidates.all()
+        
         context['categories'] = [str(candidate) for candidate in candidate_list]
         context['filters'] = {
-            'Weighted Votes': [get_weighted_result(candidate, latest_election) for candidate in candidate_list],
-            'Non-KISA Votes': [candidate.voters.filter(is_kisa=False).count() for candidate in candidate_list],
-            'KISA Votes': [candidate.voters.filter(is_kisa=True).count() for candidate in candidate_list],
+            'Adjusted Votes': [
+                get_adjusted_result(candidate, latest_election) for candidate in candidate_list
+            ],
+            'Non-KISA Votes': [
+                candidate.voters.filter(is_kisa=False).count() for candidate in candidate_list
+            ],
+            'KISA Votes': [
+                candidate.voters.filter(is_kisa=True).count() for candidate in candidate_list
+            ],
         }
-        if latest_election.show_debate_participation:
-            context['filters']['KISA (in-debate) Votes'] = [candidate.voters.filter(is_kisa=True, joined_debate=True).count() for candidate in candidate_list]
-    else: # Yes/No election TODO:
+    
+        if len(latest_election.kisa_in_debate_member_email_list) > 0:
+            context['filters']['KISA (in-debate) Votes'] = [
+                candidate.voters.filter(is_kisa=True, joined_debate=True).count() for candidate in candidate_list
+            ]
+
+    else: # Yes/No election 
+     
         candidate = latest_election.candidates.all()[0]
+        
         context['categories'] = ["Yes", "No"]
         context['filters'] = {
-            'Weighted Votes': [get_weighted_result(candidate, latest_election, vote_type=category) for category in ['yes', 'no']],
-            'Non-KISA Votes': [candidate.voters.filter(vote_type=category, is_kisa=False).count() for category in ['yes', 'no']],
-            'KISA Votes': [candidate.voters.filter(vote_type=category, is_kisa=True).count() for category in ['yes', 'no']],
+            'Adjusted Votes': [
+                get_adjusted_result(candidate, latest_election, vote_type=category) for category in ['yes', 'no']
+            ],
+            'Non-KISA Votes': [
+                candidate.voters.filter(vote_type=category, is_kisa=False).count() for category in ['yes', 'no']
+            ],
+            'KISA Votes': [
+                candidate.voters.filter(vote_type=category, is_kisa=True).count() for category in ['yes', 'no']
+            ],
         }
-        if latest_election.show_debate_participation:
-            context['filters']['KISA (in-debate) Votes'] = [candidate.voters.filter(vote_type=category, is_kisa=True, joined_debate=True).count() for category in ['yes', 'no']]
+     
+        if len(latest_election.kisa_in_debate_member_email_list) > 0:
+            context['filters']['KISA (in-debate) Votes'] = [
+                candidate.voters.filter(vote_type=category, is_kisa=True, joined_debate=True).count() for category in ['yes', 'no']
+            ]
     
-    context['explanations'] = {
-        'Weighted Votes': latest_election.weighted_vote_explanation,
-        'Non-KISA Votes': latest_election.non_kisa_vote_explanation,
-        'KISA Votes': latest_election.kisa_vote_explanation
-    }
-    if latest_election.show_debate_participation:
-        context['explanations']['KISA (in-debate) Votes'] = latest_election.kisa_in_debate_vote_explanation
+    context['explanations'] = get_explanations(latest_election)
 
     return render(request, 'election/election.html', context)
 
@@ -139,6 +144,7 @@ def candidate(request, name):
 @login_required
 @require_http_methods(['POST'])
 def vote(request, name):
+    
     def format(val):
         return int(dateformat.format(val, 'YmdHis'))
     
@@ -149,6 +155,7 @@ def vote(request, name):
     }
 
     if not params['user'].has_perm('election.voting_exception'):
+        
         if params['user'].nationality == 'KOR':
             messages.error(request, 'Only international members of KAIST are eligible to vote.', extra_tags='danger')
             return redirect(reverse('election'))

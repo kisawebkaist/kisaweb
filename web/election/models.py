@@ -1,10 +1,9 @@
-from django import forms
 from django.db import models
 from django.conf import settings
 from django.utils.html import mark_safe
 from django.dispatch import receiver
-from django.db.models.signals import post_save
-
+from django.core.exceptions import ValidationError
+from election.tests import test_adjusted_votes_formula
 from tinymce.models import HTMLField
 
 # Create your models here.
@@ -71,19 +70,17 @@ class Election(models.Model):
     instructions = HTMLField()
     image = models.ImageField(upload_to=ELECTION_MEDIA_UPLOAD_URL, blank=True, null=True)
     debate_url = models.CharField(max_length=512, blank=True, null=True)
-    kisa_member_email_list = models.TextField(blank=True)
     is_open_public = models.BooleanField(default=False, null=True)
     results_out = models.BooleanField(default=False, null=True)
-    show_debate_participation = models.BooleanField(default=True, null=True)
-    general_vote_weight = models.DecimalField(default=0, null=True, max_digits=12, decimal_places=3)
-    kisa_yes_debate_weight = models.DecimalField(default=0, null=True, max_digits=12, decimal_places=3)
-    kisa_no_debate_weight = models.DecimalField(default=0, null=True, max_digits=12, decimal_places=3)
-    use_the_manual_weights = models.BooleanField(default=True, null=True)
-    weighted_vote_explanation = models.TextField(default="", null=True)
-    non_kisa_vote_explanation = models.TextField(default="", null=True)
-    kisa_vote_explanation = models.TextField(default="", null=True)
-    kisa_in_debate_vote_explanation = models.TextField(default="", null=True)
 
+    kisa_member_email_list = models.TextField(blank=True)
+    kisa_in_debate_member_email_list = models.TextField(blank=True)
+    adjusted_votes_formula = models.TextField(blank=False, null=True, 
+        default='((kivm) / (kiva) + (kovm + nkvm) / (kova + nkva)) * 0.5', 
+        help_text='The variables allowed to be used: kiva, kivm, kova, kovm, nkva and nkvm'
+    )
+    adjusted_votes_explanation = models.TextField(blank=True, null=True)
+    
     EMBED_VIDEO_RATIO_CHOICES = [
         ('21by9', '21by9'),
         ('16by9', '16by9'),
@@ -101,13 +98,29 @@ class Election(models.Model):
             semester = 'Fall'
         return f'{semester} {year}'
 
+    def clean(self):
+        adjusted_votes_formula = self.adjusted_votes_formula
+        
+        formula_test_result = test_adjusted_votes_formula(adjusted_votes_formula)
+        if formula_test_result != 'OK':
+            raise ValidationError(formula_test_result)
+    
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        if self.debate_url and 'https://www.youtube.com/watch?v=' in self.debate_url:
-            self.debate_url = self.debate_url.replace(
-                'https://www.youtube.com/watch?v=',
-                'https://www.youtube.com/embed/'
-            )
+        if self.debate_url:
+            if 'https://www.youtube.com/watch?v=' in self.debate_url:
+                self.debate_url = self.debate_url.replace(
+                    'https://www.youtube.com/watch?v=',
+                    'https://www.youtube.com/embed/'
+                )
+            if 'https://youtu.be/' in self.debate_url:
+                self.debate_url = self.debate_url.replace(
+                    'https://youtu.be/',
+                    'https://www.youtube.com/embed/'
+                )
+        self.kisa_member_email_list = self.kisa_member_email_list.strip()
+        self.kisa_in_debate_member_email_list = self.kisa_in_debate_member_email_list.strip()
         super().save(*args, **kwargs)
 
     def image_tag(self):
@@ -139,6 +152,34 @@ class Voter(models.Model):
     joined_debate = models.BooleanField(default=False, null=True)
 
 
+@receiver(models.signals.post_save, sender=Election)
+def update_election(sender, instance, *args, **kwargs):
+    kisa_in_debate_member_email_list = instance.kisa_in_debate_member_email_list.split('\n')
+    for in_debate_member_email in kisa_in_debate_member_email_list:
+        voters = instance.voters.filter(joined_debate=False, user__kaist_email=in_debate_member_email)
+        for voter in voters:
+            voter.joined_debate = True
+            voter.save(update_fields=['joined_debate'])
+    
+    kisa_member_email_list = instance.kisa_member_email_list.split('\n')
+    for kisa_member_email in kisa_member_email_list:
+        voters = instance.voters.filter(is_kisa=False, user__kaist_email=kisa_member_email)
+        for voter in voters:
+            voter.is_kisa = True
+            voter.save(update_fields=['is_kisa'])
+
+    voters_kisa_in_debate = instance.voters.filter(joined_debate=True)
+    for voter in voters_kisa_in_debate:
+        if voter.user.kaist_email not in kisa_in_debate_member_email_list:
+            voter.joined_debate = False
+            voter.save(update_fields=['joined_debate'])
+    
+    voters_kisa = instance.voters.filter(is_kisa=True)
+    for voter in voters_kisa:
+        if voter.user.kaist_email not in kisa_member_email_list:
+            voter.is_kisa = False
+            voter.save(update_fields=['is_kisa'])
+
 @receiver(models.signals.post_save, sender=Voter)
 def update_voter(sender, instance, *args, **kwargs):
     voted_election = instance.voted_election
@@ -146,13 +187,21 @@ def update_voter(sender, instance, *args, **kwargs):
     if kaist_email is None: 
         assert(instance.user.is_staff) # The opposite case should never happen
         kaist_email = 'kisa@kaist.ac.kr'
-    if instance.is_kisa:
-        if voted_election.kisa_member_email_list.find(kaist_email) == -1:
-            voted_election.kisa_member_email_list = f'{voted_election.kisa_member_email_list.strip()}\n{kaist_email}'
-    else:
-        voted_election.kisa_member_email_list = voted_election.kisa_member_email_list.replace(f'{kaist_email}\n', '')
-        voted_election.kisa_member_email_list = voted_election.kisa_member_email_list.replace(f'\n{kaist_email}', '')
-        voted_election.kisa_member_email_list = voted_election.kisa_member_email_list.replace(f'{kaist_email}', '')
 
-    voted_election.save(update_fields=['kisa_member_email_list'])
+    def update_email_list(email_list, email, should_exist):
+        if should_exist:
+            if email_list.find(email) == -1:
+                email_list = f'{email_list.strip()}\n{email}'
+        else:
+            email_list = email_list.replace(f'{email}\n', '')
+            email_list = email_list.replace(f'\n{email}', '')
+            email_list = email_list.replace(f'{email}', '')
+        return email_list
+
+    voted_election.kisa_member_email_list = \
+        update_email_list(voted_election.kisa_member_email_list, kaist_email, instance.is_kisa)
+    voted_election.kisa_in_debate_member_email_list = \
+        update_email_list(voted_election.kisa_in_debate_member_email_list, kaist_email, instance.joined_debate)
+
+    voted_election.save(update_fields=['kisa_member_email_list', 'kisa_in_debate_member_email_list'])
 

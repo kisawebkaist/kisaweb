@@ -87,7 +87,7 @@ var myChartDiv, electionTotalVotes;
 
 const getChartOptions = (chosenOption) => {
     options.series = electionFilters[chosenOption];
-    if(chosenOption == 'Weighted Votes') {
+    if(chosenOption == 'Adjusted Votes') {
         options['tooltip'] = {
             y: {
                 formatter: function(value, { series, seriesIndex, dataPointIndex, w }) {
@@ -134,7 +134,7 @@ $(document).ready(() => {
     });
     myChartDiv = $("#myChart")[0];
     electionTotalVotes = $('#election-total-votes')[0];
-    chart = new ApexCharts(myChartDiv, getChartOptions('Weighted Votes'));
+    chart = new ApexCharts(myChartDiv, getChartOptions('Adjusted Votes'));
     chart.render();
 });
 
