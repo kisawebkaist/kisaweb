@@ -83,8 +83,8 @@ class Election(models.Model):
     is_open_public = models.BooleanField(default=False, null=True) # is the election visible to the public
     results_out = models.BooleanField(default=False, null=True) # are the results visible to the public
 
-    kisa_member_email_list = models.TextField(blank=True) # emails of the kisa members (to distinguish voting)
-    kisa_in_debate_member_email_list = models.TextField(blank=True) # emails of kisa members who were in the debate (to distinguish voting)
+    kisa_member_email_list = models.TextField(blank=True, null=True) # emails of the kisa members (to distinguish voting)
+    kisa_in_debate_member_email_list = models.TextField(blank=True, null=True) # emails of kisa members who were in the debate (to distinguish voting)
     adjusted_votes_formula = models.TextField(blank=False, null=True, 
         default='((kivm) / (kiva) + (kovm + nkvm) / (kova + nkva)) * 0.5', 
         help_text='The variables allowed to be used: kiva, kivm, kova, kovm, nkva and nkvm'
