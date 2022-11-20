@@ -205,14 +205,13 @@ def vote(request, name):
     time_election_end = format(params['voted_election'].end_datetime)
 
     if not params['user'].votes.filter(voted_election=params['voted_election']).exists(): # if the user has not voted yet
+        is_kisa = (params['voted_election'].kisa_member_email_list.find(kaist_email) != -1)
+        joined_debate = (params['voted_election'].kisa_in_debate_member_email_list.find(kaist_email) != -1)        
         if params['voted_election'].candidates.count() > 1: # Normal election (with multiple candidates)
             if time_now < time_election_start or time_now > time_election_end: # if the election is not live
                 messages.error(request, f'Voting is not open. Please check the election timeline.', extra_tags='danger')
             else:
-                if params['voted_election'].kisa_member_email_list.find(kaist_email) != -1: # if the user is a kisa member
-                    voter = Voter.objects.create(**params, is_kisa=True)
-                else:
-                    voter = Voter.objects.create(**params)
+                voter = Voter.objects.create(**params, is_kisa=is_kisa, joined_debate=joined_debate)
                 voter.save()
                 messages.success(request, f'Successfully voted for {str(params["voted_candidate"])}!', extra_tags='success')
         else: # Yes/No election
@@ -223,10 +222,7 @@ def vote(request, name):
             if not (vote_type in ['yes', 'no']): # it has to be yes or no
                 messages.error(request, f'You cannot vote other than "Yes" or "No".', extra_tags='danger')
                 return HttpResponse('novote')
-            if params['voted_election'].kisa_member_email_list.find(kaist_email) != -1: # if the user is a kisa member
-                voter = Voter.objects.create(**params, vote_type=vote_type, is_kisa=True)
-            else:
-                voter = Voter.objects.create(**params, vote_type=vote_type)
+            voter = Voter.objects.create(**params, vote_type=vote_type, is_kisa=is_kisa, joined_debate=joined_debate)
             voter.save()
             messages.success(request, f'Successfully voted "{vote_type.capitalize()}" for {str(params["voted_candidate"])}!', extra_tags='success')
             return HttpResponse('Success')
