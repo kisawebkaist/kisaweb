@@ -181,7 +181,7 @@ def update_election(sender, instance, *args, **kwargs):
 
     # if there are voters marked as not joined the debate, but they are in the debate email list
     # then, update their "joined_debate" field to True
-    kisa_in_debate_member_email_list = instance.kisa_in_debate_member_email_list.split('\n')
+    kisa_in_debate_member_email_list = [s.strip() for s in instance.kisa_in_debate_member_email_list.splitlines()]
     for in_debate_member_email in kisa_in_debate_member_email_list:
         voters = instance.voters.filter(joined_debate=False, user__kaist_email=in_debate_member_email)
         for voter in voters:
@@ -190,7 +190,7 @@ def update_election(sender, instance, *args, **kwargs):
     
     # if there are voters marked as not kisa members, but they are in the kisa email list
     # then, update their "is_kisa" field to True
-    kisa_member_email_list = instance.kisa_member_email_list.split('\n')
+    kisa_member_email_list = [s.strip() for s in instance.kisa_member_email_list.splitlines()]
     for kisa_member_email in kisa_member_email_list:
         voters = instance.voters.filter(is_kisa=False, user__kaist_email=kisa_member_email)
         for voter in voters:
@@ -230,18 +230,18 @@ def update_voter(sender, instance, *args, **kwargs):
         kaist_email = 'kisa@kaist.ac.kr'
 
     # updates an email list (either kisa member or kisa in debate member email list)
-    def update_email_list(email_list, email, should_exist):
+    def update_email_list(email_list_str, email, should_exist):
+        email_list = [s.strip() for s in email_list_str.splitlines()]
         if should_exist: # if the voter email should exist in the email list
-            if email_list.find(email) == -1: # if the voter email is not in the email list
+            if not email in email_list: # if the voter email is not in the email list
                 # then add the voter email to the email list
-                email_list = f'{email_list.strip()}\n{email}'
+                email_list.append(email)
         else: # if the voter email should not exist in the email list
             # then remove the voter email from the email list
-            email_list = email_list.replace(f'{email}\n', '')
-            email_list = email_list.replace(f'\n{email}', '')
-            email_list = email_list.replace(f'{email}', '')
-        
-        return email_list
+            email_list = [e for e in email_list if e != email]
+        email_list_str_final = '\n'.join(email_list)
+
+        return email_list_str_final
 
     # update the email lists based on the update in the voter instance
     voted_election.kisa_member_email_list = \
