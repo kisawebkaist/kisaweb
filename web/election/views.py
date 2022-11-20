@@ -91,9 +91,8 @@ def election(request):
     context['is_live'] = latest_election.start_datetime < timezone.now() < latest_election.end_datetime
 
     # construct the variable considering whether the results are visible or not to the user
-    result_visible = latest_election.end_datetime < timezone.now()
-    result_visible = result_visible and latest_election.results_out
-    result_visible = result_visible or request.user.has_perm('election.see_election_results')
+    # result_visible = latest_election.end_datetime < timezone.now()
+    result_visible = latest_election.results_out or request.user.has_perm('election.see_election_results')
     
     context['result_visible'] = result_visible
 
@@ -117,7 +116,7 @@ def election(request):
         }
 
         # if we consider kisa members joined the debate too, then add it to the filters too
-        if len(latest_election.kisa_in_debate_member_email_list) > 0:
+        if len(latest_election.kisa_in_debate_member_email_list.strip()) > 0:
             context['filters']['KISA (in-debate) Votes'] = [
                 candidate.voters.filter(is_kisa=True, joined_debate=True).count() for candidate in candidate_list
             ]
@@ -142,7 +141,7 @@ def election(request):
         }
      
         # if we consider kisa members joined the debate too, then add it to the filters too
-        if len(latest_election.kisa_in_debate_member_email_list) > 0:
+        if len(latest_election.kisa_in_debate_member_email_list.strip()) > 0:
             context['filters']['KISA (in-debate) Votes'] = [
                 candidate.voters.filter(vote_type=category, is_kisa=True, joined_debate=True).count() for category in ['yes', 'no']
             ]
