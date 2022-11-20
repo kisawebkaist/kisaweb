@@ -1,37 +1,48 @@
+<!-- Results -->
 <div class="my-4 mx-lg-5">
+    <!-- Header -->
     <div class="row justify-content-center">
         <div class="section-heading">Results</div>
     </div>
+    <!-- Dropdown of filters -->
     <div class="row mx-lg-5 mx-md-3 mx-sm-2 align-items-center">
+        <!-- Dropdown -->
         <div class="btn-group shadow rounded-sm">
+            <!-- Active option -->
             <button class="btn dropdown-toggle" type="button" id="election-dropdown-button" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
-                Weighted Votes
+                Adjusted Votes
             </button>
+            <!-- All options -->
             <div class="dropdown-menu shadow-sm">
                 {% for filter_name in filters.keys %}
                 <button class="dropdown-item text-dark election-dropdown-option">{{ filter_name }}</button>
                 {% endfor %}
             </div>
         </div>
+        <!-- Question mark for explanations -->
         <button id="election-question-mark" type="button" class="d-flex justify-content-center align-items-center btn btn-sm btn-secondary ml-2 rounded-lg" data-toggle="tooltip" data-placement="bottom" title="">
             ?
         </button>
     </div>
+    <!-- Total votes text -->
     <div class="row justify-content-end mt-4 mx-lg-5 mx-md-3 mx-sm-2">
         <div class="d-flex">
             <b class="mr-2">Total Votes:</b>
             <span id="election-total-votes"></span>
         </div>
     </div>
+    <!-- Pie chart -->
     <div class="row justify-content-center mt-4">
         <div id="myChart"></div>
     </div>
+    <!-- If live -->
     {% if is_live %}
     <div class="row justify-content-end my-4 mx-lg-5 mx-md-3 mx-sm-2">
         <a class="btn btn-sm text-light" style="cursor: default; background-color: #FF5A5B;">LIVE</a>
     </div>
     {% endif %}
+    <!-- Script passing variables from backend to other scripts in the frontend (e.g. chart-making script) -->
     <script>
         const electionCategories = JSON.parse("{{ categories|safe }}".replaceAll('\'', '"'));
         const electionFilters = JSON.parse("{{ filters|safe }}".replaceAll('\'', '"'));
