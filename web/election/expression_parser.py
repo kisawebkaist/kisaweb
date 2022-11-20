@@ -23,7 +23,7 @@ def get_evaluation(expression, **kwargs):
     # Compile the expression
     code = compile(expression, "<string>", "eval")
     
-    allowed_names_all = ALLOWED_NAMES | kwargs
+    allowed_names_all = {**ALLOWED_NAMES, **kwargs}
 
     # Validate allowed names
     for name in code.co_names:
