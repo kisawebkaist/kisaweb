@@ -1,3 +1,5 @@
+// this script enables changing the video embedding ratio
+
 $(function() {
     var oldval;
 
