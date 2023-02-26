@@ -9,7 +9,9 @@ pycryptodome
 
 # Django
 django==3.0
-django-compressor==2.*
+rcssmin --install-option="--without-c-extensions"
+rjsmin --install-option="--without-c-extensions"
+django-compressor==4.1.*
 django-libsass==0.*
 django-tinymce==3.0.*
 django-crispy-forms==1.9.*
@@ -18,6 +20,7 @@ django-stubs==1.5.*
 django-phone-field==1.8.*
 django-maintenance-mode==0.15.*
 django-admin-sortable==2.2.4
+django-pagination-bootstrap==2.4.*
 
 # Testing
 pytest

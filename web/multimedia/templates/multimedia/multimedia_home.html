@@ -1,0 +1,79 @@
+<!--This includes the base code for the html from core -->
+{% extends 'multimedia/templates/multimedia/multimedia_base.html' %}
+
+{% load static %}
+{% load pagination_tags %}
+
+{% block css %}
+<link href="{% static 'css/multimedia.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block content %}
+
+
+
+<div class = "container m-4 mx-auto multimedia-container">
+    <div id="tag-filter">
+      <div>
+        <div class="my-1">
+            <button type="button" id="tag-filter-button" class="btn btn-outline-dark">Filter by Tags </button>
+            <div id="active-tags" class="my-1"></div>
+        </div>
+
+        <div class="rounded border w-75" id="tag-filter-area" style="display: none">
+            <div class="m-3 d-flex flex-wrap tag-container" id="tag-field">
+                {% for tag in tagObjects %}
+                    <button class = "tag btn btn-outline-dark btn-sm rounded-pill m-1" value="{{ tag.tag_name }}">
+                        {{ tag.tag_name }}
+                    </button>
+                {% endfor %}
+            </div>
+            <div class="d-flex justify-content-end m-2">
+                <!-- this is to reset the button list -->
+                <button class="btn btn-secondary btn-sm mx-1" id="tag-reset">
+                    Clear
+                </button>
+                <!-- this is to press search, will make a GET request to the backend with selected tags as parameters-->
+                <button class="btn btn-dark btn-sm mx-1" id="tag-search">
+                    Search
+                </button>
+            </div>
+        </div>
+    </div>
+    </div>
+    <hr>
+    <div class="multimedia-grid">
+        {% autopaginate multimedia 12 %}
+        {% for media in multimedia %}
+            <div class="multimedia-image-card mb-3">
+                {% if media.preview %}
+                    <img loading="lazy" class="card-img-top" src="{{media.preview}}" alt="Card image cap">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a href="pages/{{media.slug}}" class="multimedia-card-title d-flex flex-row justify-content-center">{{ media.title }}</a>
+                        <p class="card-text mx-1 d-flex flex-row justify-content-end mt-1"><small class="multimedia-card-date text-muted">{{media.date}}</small></p>
+                        {% for tag in media.tags %}
+                            <span class="badge badge-info m-1">{{tag | title}}</span>
+                        {% endfor %}
+                    </h5>
+                </div>
+                {% if not media.visible %}
+                <div class="card-footer">
+                    <small class="text-muted"> This is not visible publicly yet </small>
+                </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+    <div class="d-flex flex-row justify-content-center m-2">
+        {% paginate %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<!-- Tag Filtering -->
+<script src="{% static 'js/tag_filter.js' %}"></script>
+{% endblock %}

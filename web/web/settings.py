@@ -39,7 +39,7 @@ else:
     print('.env file not found \nMake sure it is located in the kisaweb/web directory')
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '135*fe%orzw5m%za=6opxe2j3+xkf-rx@)4l0)q9v2+w8=%ryd'
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # bool() is required in DEBUG for LIBSASS_SOURCE_COMMENTS (which sets internally to the value of DEBUG)
 #       to be a bool value. Else, TypeError('source_comments must be bool, not 1') is raised by sass.py
@@ -48,7 +48,7 @@ SECRET_KEY = '135*fe%orzw5m%za=6opxe2j3+xkf-rx@)4l0)q9v2+w8=%ryd'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(int(os.environ.get('DJANGO_DEBUG', default=0)))
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.environ['DJANGO_ALLOWED_HOSTS'].split()
 
 
 # Application definition
@@ -72,16 +72,19 @@ INSTALLED_APPS = [
     'docs',  # PyPi django-docs
     'phone_field',  # PyPi django-phone-field
     'adminsortable',
+    "django_pagination_bootstrap", #pagination for multimedia page
 
     ## ---- Created by KISA webteam ---- ##
     'core',  # core pages (eg. homepage, about page, etc)
     'events',
     'election',
-    'sso',
-    'aboutus',  # contains the User model
+    'sso',  # contains the User model
+    'aboutus',
+    'multimedia',
     'blog',
     'faq',
     'important_links',
+    'url_shortener',
 ]
 
 MIDDLEWARE = [
@@ -92,6 +95,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django_pagination_bootstrap.middleware.PaginationMiddleware", #django_pagination_bootstrap middleware
     'maintenance_mode.middleware.MaintenanceModeMiddleware',  # PyPi django-maintenance-mode (This needs to be the last middleware)
 ]
 
@@ -113,6 +117,7 @@ TEMPLATES = [
                 'django.template.context_processors.static',
                 'django.contrib.messages.context_processors.messages',
                 'maintenance_mode.context_processors.maintenance_mode',  # PyPi django-maintenance-mode
+                "django.template.context_processors.request", # django_pagination_bootstrap context provider
 
                 # -- Created by KISA Team -- #
                 'election.context_processors.navbar_election_link_visible',
@@ -177,7 +182,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'collectstatic')
 
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -266,3 +271,6 @@ TINYMCE_DEFAULT_CONFIG = {
 }
 
 X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+# Url Shortener Url Settings
+URL_SHORTENER_PREFIX    = 'short-link'

@@ -72,7 +72,7 @@ class VoterAdmin(admin.ModelAdmin):
     search_fields = ['user__kaist_email', 'user__username']
     list_filter = ['is_kisa', 'joined_debate', 'user__is_staff']
     readonly_fields = ['user', 'user_email', 'voted_election']
-    exclude = ['voted_candidate', 'vote_type']
+    exclude = ['voted_candidate', 'vote_type'] # do not show the vote details in the admin page
 
     def get_actions(self, request):
         actions = super().get_actions(request)
@@ -80,10 +80,10 @@ class VoterAdmin(admin.ModelAdmin):
             del actions['delete_selected']
         return actions
 
-    def has_add_permission(self, request, obj=None):
+    def has_add_permission(self, request, obj=None): # do not allow adding voters
         return False
 
-    def has_delete_permission(self, request, obj=None):
+    def has_delete_permission(self, request, obj=None): # only super user can delete voters
         if request.user.is_superuser:
             return True
         return False

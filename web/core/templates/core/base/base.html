@@ -10,7 +10,7 @@
     <!-- Meta description for each page (for better SEO) -->
     {% block meta %}{% endblock %}
 
-    <title>{% block title %}Home{% endblock %} - KISA (KAIST International Student Association)</title>
+    <title>{% block title %}Home{% endblock %} - KISA (KAIST International Students Association)</title>
     <!-- Favicon -->
     <link rel="icon" href="{% static 'img/favicon.png' %}">
 
@@ -82,7 +82,6 @@
     <script>
       const CSRF_TOKEN = '{{ csrf_token }}';
     </script>
-
     <!-- Custom JS -->
     {% block js %}{% endblock %}
   </body>
