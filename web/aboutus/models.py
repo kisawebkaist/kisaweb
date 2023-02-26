@@ -80,6 +80,7 @@ class InternalBoardMember(BaseMember, SortableMixin):
         ('President', 'President'),
         ('Division Head', 'Division Head'),
         ('Secretary', 'Secretary'),
+        ('Deputy Secretary', 'Deputy Secretary')
     )
 
     position = models.CharField(max_length=100, null=True, choices=POSITIONS)
