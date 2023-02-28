@@ -9,9 +9,10 @@
         <span class="text-light brand-text">KAIST International</span><br>
         <span class="text-light brand-text">Students Association</span>
       </div>
-    </div>  
+    </div>
   </a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-contents" aria-controls="navbar-contents" aria-expanded="false" aria-label="Toggle navbar">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-contents"
+    aria-controls="navbar-contents" aria-expanded="false" aria-label="Toggle navbar">
     <span class="navbar-toggler-icon"></span>
   </button>
 
@@ -46,7 +47,8 @@
       <!-- Welfare Dropdown -->
       {% if navbar %}
       <div class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" id="welfare-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <a class="nav-link dropdown-toggle" id="welfare-dropdown" data-toggle="dropdown" aria-haspopup="true"
+          aria-expanded="false">
           Welfare
         </a>
         <div class="dropdown-menu bg-darker mt-0 border-0" aria-labelledby="welfare-dropdown">
@@ -68,7 +70,8 @@
       <!-- Dropdown end -->
       <!-- Resources Dropdown -->
       <div class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" id="resources-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <a class="nav-link dropdown-toggle" id="resources-dropdown" data-toggle="dropdown" aria-haspopup="true"
+          aria-expanded="false">
           Resources
         </a>
         <div class="dropdown-menu bg-darker mt-0 border-0" aria-labelledby="resources-dropdown">
@@ -79,16 +82,18 @@
       <!-- Dropdown end -->
 
       <!-- KISA Internal Resources Dropdown-->
-      {% if user.is_staff %}   
-      <div class="nav-item dropdown"> 
-        <a class="nav-link dropdown-toggle" id="resources-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> 
-          Internal 
-        </a> 
-        <div class="dropdown-menu bg-darker mt-0 border-0" aria-labelledby="resources-dropdown"> 
-          <a class="dropdown-item" href="{{ navbar.kisa_room_reservation_link }}" target="_blank">KISA Room Reservation</a> 
-        </div> 
-      </div> 
-      {% endif %} 
+      {% if user.is_staff %}
+      <div class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" id="resources-dropdown" data-toggle="dropdown" aria-haspopup="true"
+          aria-expanded="false">
+          Internal
+        </a>
+        <div class="dropdown-menu bg-darker mt-0 border-0" aria-labelledby="resources-dropdown">
+          <a class="dropdown-item" href="{{ navbar.kisa_room_reservation_link }}" target="_blank">KISA Room
+            Reservation</a>
+        </div>
+      </div>
+      {% endif %}
       <!-- Dropdown end -->
 
       <!-- Course Resources -->
@@ -106,26 +111,27 @@
       {% if user.is_staff %}
       <!-- Admin site -->
       <a class="nav-item nav-link" href="{% url 'admin:index' %}">Admin</a>
+      <a class="nav-item nav-link" href="{% url 'alumni' %}">Alumni</a>
       <!-- Documentation -->
       <!--<a class="nav-item nav-link" href="{% url 'docs_root' %}" target="_blank">Docs</a>-->
       {% endif %}
 
       <!-- <a class="nav-item nav-link" href="{% url 'events'%}#event-{{ event.id }}"> Food Fest</a> -->
     </div>
-      <!-- Login -->
-      
-      {% if not user.is_authenticated %}
-        {% if authmethod == logindev %}
-        <a class="btn btn-outline-light" href="{% url 'admin:login' %}">Login</a>
-        {% else %}
-        <a class="btn btn-outline-light" href="{% url 'login' %}">Login</a>
-        {% endif %}
-      {% else %}
-        {% if user.is_staff %}
-        <a class="btn btn-outline-light" href="{% url 'admin:logout' %}">Logout</a>
-        {% else %}
-        <a class="btn btn-outline-light" href="{% url 'logout' %}">Logout</a>
-        {% endif %}
-      {% endif %}
+    <!-- Login -->
+
+    {% if not user.is_authenticated %}
+    {% if authmethod == logindev %}
+    <a class="btn btn-outline-light" href="{% url 'admin:login' %}">Login</a>
+    {% else %}
+    <a class="btn btn-outline-light" href="{% url 'login' %}">Login</a>
+    {% endif %}
+    {% else %}
+    {% if user.is_staff %}
+    <a class="btn btn-outline-light" href="{% url 'admin:logout' %}">Logout</a>
+    {% else %}
+    <a class="btn btn-outline-light" href="{% url 'logout' %}">Logout</a>
+    {% endif %}
+    {% endif %}
   </div>
 </nav>
