@@ -4,7 +4,7 @@ from .models import Alumni
 
 
 def alumni_view(request):
-    alumni_people = Alumni.objects.all()
+    alumni_people = Alumni.objects.order_by('-separated_year')
     context = {
         'people': alumni_people
     }
