@@ -19,17 +19,16 @@ ENV PIP_DEFAULT_TIMEOUT=1
 # Install Dependencies
 RUN apt update && apt install build-essential -y
 
-WORKDIR /web
+WORKDIR /app
 COPY ./requirements.txt ./requirements.txt
 RUN pip install -r ./requirements.txt
 
 # Development setup
 FROM base as dev
-WORKDIR /web
+WORKDIR /app
 
 # Production setup
 FROM base as prod
 RUN pip install gunicorn
-WORKDIR /web
-COPY . .
-ENV PRODUCTION=true
+WORKDIR /app
+COPY ./web /app

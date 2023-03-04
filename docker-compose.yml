@@ -1,0 +1,19 @@
+version: "3.3"
+services:
+  django:
+    build:
+      target: dev
+    environment:
+      - DJANGO_SECRET_KEY=135*fe%orzw5m%za=6opxe2j3+xkf-rx@)4l0)q9v2+w8=%ryd
+      - PRODUCTION=false
+      - DJANGO_DEBUG=1
+    volumes:
+      - ./web:/app
+    command: sh -c "python manage.py migrate &&
+        python manage.py collectstatic --noinput &&
+        python manage.py runserver 0.0.0.0:8000"
+  nginx:
+    build:
+      target: dev
+    environment:
+      - NGINX_HOST=localhost

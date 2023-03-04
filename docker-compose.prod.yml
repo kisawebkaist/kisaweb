@@ -1,0 +1,44 @@
+version: "3.3"
+services:
+  django:
+    secrets:
+      - secret_key
+      - ksso_client_id
+      - ksso_state_key
+      - ksso_secret_key
+    build:
+      target: prod
+    command: sh -c "
+      python manage.py migrate &&
+      python manage.py collectstatic --noinput &&
+      gunicorn --workers=10 --pythonpath=/app -b 0.0.0.0:8000 web.wsgi"
+    volumes:
+      - ./web/media:/app/media
+      - ./web/collectstatic:/app/collectstatic
+    environment:
+      - PRODUCTION=true
+      - DJANGO_DEBUG=0
+      - SECRET_DJANGO_SECRET_KEY=/run/secrets/secret_key
+      - KSSO_LOGIN_URL=kaist.ac.kr
+      - KSSO_LOGOUT_URL=kaist.ac.kr
+      - SECRET_KSSO_CLIENT_ID=/run/secrets/ksso_client_id
+      - SECRET_KSSO_STATE_KEY=/run/secrets/ksso_state_key
+      - SECRET_KSSO_SECRET_KEY/run/secrets/ksso_secret_key
+      - DJANGO_ALLOWED_HOSTS=localhost kisa.kaist.ac.kr
+  nginx:
+    build:
+      target: dev
+    volumes:
+      - ./certbot/www:/var/www/certbot/
+    environment:
+      - NGINX_HOST=kisa.kaist.ac.kr
+      - NGINX_SECURE_PORT=8081
+secrets:
+  secret_key:
+    file: ./secrets/secret-key.txt
+  ksso_client_id:
+    file: ./secrets/ksso-client-id.txt
+  ksso_state_key:
+    file: ./secrets/ksso-state-key.txt
+  ksso_secret_key:
+    file: ./secrets/ksso-secret-key.txt

@@ -1,0 +1,37 @@
+version: "3.3"
+services:
+  django:
+    build:
+      dockerfile: install/backend/dockerfile
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        window: 10s
+    environment:
+      - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1] 0.0.0.0
+      - TEMP_USERDATA_SESSION_KEY=kssotempuserdata
+      - KSSO_PUBLIC_KEY=MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAIgAWzsOOV7ZkV5o9f24+zjg/KhDVZevRHzMW8opdnL3Pok1QQ32WMk3Tyhnyh6C9/vlCEWeseU3wQFP6DUyJ4MC$$
+    volumes:
+      - ./web/db.sqlite3:/app/db.sqlite3
+  nginx:
+    build:
+      dockerfile: install/nginx/dockerfile
+    depends_on:
+      - django
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        window: 10s
+    ports:
+      - 80:8080
+    environment:
+      - DJANGO_BACKEND_ENDPOINT=django
+      - DJANGO_BACKEND_PORT=8000
+      - NGINX_LISTEN_PORT=8080
+    volumes:
+      - ./web/media:/app/media
+      - ./web/collectstatic:/app/static
+
+
