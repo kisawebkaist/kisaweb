@@ -1,0 +1,35 @@
+FROM python:3.9-slim as base
+# Timezone=Asia/Seoul
+RUN apt-get update
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y install tzdata
+RUN ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime
+
+# SETUP PYTHON ENVIRONMENT VARIABLES
+# Logging
+ENV PYTHONBUFFERED=1
+# Prevent creating.pyc
+ENV PYTHONDONTWRITEBYTECODE=1
+# Caching prevention
+ENV PIP_NO_CACHE_DIR=1
+# Timeout for pip
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1
+# Default timeout for pip
+ENV PIP_DEFAULT_TIMEOUT=1
+
+# Install Dependencies
+RUN apt update && apt install build-essential -y
+
+WORKDIR /web
+COPY ./requirements.txt ./requirements.txt
+RUN pip install -r ./requirements.txt
+
+# Development setup
+FROM base as dev
+WORKDIR /web
+
+# Production setup
+FROM base as prod
+RUN pip install gunicorn
+WORKDIR /web
+COPY . .
+ENV PRODUCTION=true
