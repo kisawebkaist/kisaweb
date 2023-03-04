@@ -3,6 +3,7 @@ services:
   django:
     build:
       dockerfile: install/backend/dockerfile
+      context: .
     deploy:
       restart_policy:
         condition: on-failure
@@ -17,6 +18,7 @@ services:
   nginx:
     build:
       dockerfile: install/nginx/dockerfile
+      context: .
     depends_on:
       - django
     deploy:
