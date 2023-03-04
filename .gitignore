@@ -144,3 +144,7 @@ media/
 
 # CACHE
 CACHE/
+
+# MEDIA FILES
+**/static
+**/media
