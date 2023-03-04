@@ -22,24 +22,34 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
+# Disable Switch in favor of using different docker files
 DEV_SETTINGS = 1
 PROD_SETTINGS = 2
 
-# Single point setup for dev/prod changes
-CURRENT_SETTINGS = PROD_SETTINGS
+# Depends on Docker file now
+CURRENT_SETTINGS = PROD_SETTINGS \
+    if os.environ.get('PRODUCTION', 'false') == 'true' else DEV_SETTINGS
 
-if CURRENT_SETTINGS == DEV_SETTINGS:
-    dotenv_file = os.path.join(BASE_DIR, '.env.dev')
-elif CURRENT_SETTINGS == PROD_SETTINGS:
-    dotenv_file = os.path.join(BASE_DIR, '.env.prod')
+if CURRENT_SETTINGS == PROD_SETTINGS:
+    # This parses secrets into environment variables usable throughout the application
+    for k, v in os.environ.items():
+        if k.startswith('SECRET_'):
+            new_key = k[7:]
+            with open(v, 'r') as f:
+                os.environ[new_key] = f.read()
+# if CURRENT_SETTINGS == DEV_SETTINGS:
+#     dotenv_file = os.path.join(BASE_DIR, '.env.dev')
+# elif CURRENT_SETTINGS == PROD_SETTINGS:
+#     dotenv_file = os.path.join(BASE_DIR, '.env.prod')
 
-if os.path.isfile(dotenv_file):
-    load_dotenv(dotenv_file)
-else:
-    print('.env file not found \nMake sure it is located in the kisaweb/web directory')
+# if os.path.isfile(dotenv_file):
+#     load_dotenv(dotenv_file)
+# else:
+#     print('.env file not found \nMake sure it is located in the kisaweb/web directory')
+################################################################################
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
 
 # bool() is required in DEBUG for LIBSASS_SOURCE_COMMENTS (which sets internally to the value of DEBUG)
 #       to be a bool value. Else, TypeError('source_comments must be bool, not 1') is raised by sass.py

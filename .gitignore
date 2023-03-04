@@ -136,7 +136,7 @@ dmypy.json
 .DS_Store
 
 # collectstatic files
-collectstatic/
+collectstatic
 
 # media files
 media/
@@ -146,5 +146,5 @@ media/
 CACHE/
 
 # MEDIA FILES
-**/static
 **/media
+secrets/
