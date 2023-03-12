@@ -6,7 +6,7 @@ services:
       context: .
     deploy:
       restart_policy:
-        condition: on-failure
+        condition: any
         delay: 5s
         window: 10s
     environment:
@@ -23,7 +23,7 @@ services:
       - django
     deploy:
       restart_policy:
-        condition: on-failure
+        condition: any
         delay: 5s
         window: 10s
     ports:
