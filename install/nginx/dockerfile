@@ -11,4 +11,4 @@ COPY ./install/nginx/default.conf.template /etc/nginx/templates/default.conf.tem
 
 # Production build
 FROM base as prod
-COPY .install/nginx/default.prod.template /etc/nginx/templates/default.conf.template
+COPY ./install/nginx/default.prod.template /etc/nginx/templates/default.conf.template
