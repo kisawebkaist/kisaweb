@@ -4,7 +4,7 @@ from django.http.response import HttpResponseRedirect
 import requests
 import json
 import datetime
-from web.settings import SECRET_KEY
+from web.settings import SECRET_KEY, CURRENT_SETTINGS, PROD_SETTINGS
 
 import urllib.parse
 
@@ -27,6 +27,7 @@ from Crypto.Cipher import AES
 
 import secrets
 import hashlib
+import logging
 
 KSSO_LOGIN_URL = os.environ.get('KSSO_LOGIN_URL')
 KSSO_LOGOUT_URL = os.environ.get('KSSO_LOGOUT_URL')
@@ -97,12 +98,21 @@ def login_view(request):
     else:
         state = request.session[KSSO_STATE_KEY]
 
-    data = {
-        'client_id': KSSO_CLIENT_ID,
-        'redirect_url': request.build_absolute_uri(reverse('login-response')) + '?next=' + next,
-        'state': state,
-    }
-
+    redirect_url    = request.build_absolute_uri(
+        reverse('login-response')
+    ) + "?next=" + next
+    if CURRENT_SETTINGS == PROD_SETTINGS:
+        data = {
+            'client_id': KSSO_CLIENT_ID,
+            'redirect_url': redirect_url.replace('http', 'https'),
+            'state': state,
+        }
+    else:
+        data = {
+            'client_id': KSSO_CLIENT_ID,
+            'redirect_url': redirect_url,
+            'state': state,
+        }
     redirect_url = f"{KSSO_LOGIN_URL}?{'&'.join([f'{key}={value}' for key, value in data.items()])}"
     return redirect(redirect_url)
 
@@ -139,9 +149,9 @@ def login_handler_view(request):
     
     if saved_state is None or saved_state != context.get('state'):
         return redirect('login-error')
-    
     result = decrypt(context.get('raw_result'), context.get('state'), context.get('http_host') [:2]).decode('utf-8')
-    result = json.loads(result, encoding='utf-8')
+    # result = json.loads(result, encoding='utf-8')
+    result = json.loads(result)
 
     user_info = result['dataMap']['USER_INFO']
         
