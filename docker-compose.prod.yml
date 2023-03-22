@@ -17,19 +17,23 @@ services:
       - ./web/collectstatic:/app/collectstatic
     environment:
       - PRODUCTION=true
-      - DJANGO_DEBUG=0
+      - DJANGO_DEBUG=1
       - SECRET_DJANGO_SECRET_KEY=/run/secrets/secret_key
-      - KSSO_LOGIN_URL=kaist.ac.kr
-      - KSSO_LOGOUT_URL=kaist.ac.kr
+      - KSSO_LOGIN_URL=https://iam2.kaist.ac.kr/api/sso/commonLogin
+      - KSSO_LOGOUT_URL=https://iam2.kaist.ac.kr/api/sso/logout
       - SECRET_KSSO_CLIENT_ID=/run/secrets/ksso_client_id
       - SECRET_KSSO_STATE_KEY=/run/secrets/ksso_state_key
-      - SECRET_KSSO_SECRET_KEY/run/secrets/ksso_secret_key
+      - SECRET_KSSO_SECRET_KEY=/run/secrets/ksso_secret_key
       - DJANGO_ALLOWED_HOSTS=localhost kisa.kaist.ac.kr
   nginx:
     build:
-      target: dev
+      target: prod
+    ports:
+      - 443:8081
+      - 80:8080
     volumes:
-      - ./certbot/www:/var/www/certbot/
+      - ./install/nginx/ssl_config/wwwroot:/wwwroot
+      - ./install/nginx/ssl_config/letsencrypt:/etc/letsencrypt
     environment:
       - NGINX_HOST=kisa.kaist.ac.kr
       - NGINX_SECURE_PORT=8081
