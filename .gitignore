@@ -148,3 +148,4 @@ CACHE/
 # MEDIA FILES
 **/media
 secrets/
+install/nginx/ssl_config/letsencrypt
