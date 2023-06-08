@@ -17,5 +17,6 @@ urlpatterns = [
     path('multimedia/', include('multimedia.urls')),
     path('blog/', include('blog.urls')),
     path('important-links/', include('important_links.urls')),
+    path('alumni/', include('alumni.urls')),
     path(f'{URL_SHORTENER_PREFIX}/', include('url_shortener.urls')),
 ]
