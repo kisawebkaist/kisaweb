@@ -1,0 +1,38 @@
+{% extends 'alumni/templates/alumni_base.html' %}
+
+{% load static %}
+{% load compress %}
+
+{% block css %}
+<link href="{% static 'css/alumni_people.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block content %}
+{% for person in people %}
+<div class="container">
+  <div class="row">
+    {% if person.current_contact %}
+    <a href="{{person.current_contact}}" target="_blank" class="font-weight-bold mr-2">{{person.name|title}}</a>
+    {% else %}
+    <div class="font-weight-bold mr-2">{{person.name|title}}</div>
+    {% endif %}
+    <div class="font-weight-light">(</div>
+    {% for position in person.worked_positions.all %}
+    {% if forloop.last %}
+    <div class="font-weight-light">{{position}}</div>
+    {% else %}
+    <div class="font-weight-light mr-2">{{position}},</div>
+    {% endif %}
+    {% endfor %}
+    <div class="font-weight-light mr-2">)</div>
+    <div class="font-weight-light mr-2">{{person.joined_season}}</div>
+    <div class="font-weight-light mr-2">{{person.joined_year}}</div>
+    {% if person.separated_season %}
+    <div class="font-weight-light mr-2">-</div>
+    <div class="font-weight-light mr-2">{{person.separated_season}}</div>
+    <div class="font-weight-light">{{person.separated_year}}</div>
+    {% endif %}
+  </div>
+</div>
+{% endfor %}
+{% endblock %}

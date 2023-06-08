@@ -95,6 +95,7 @@ INSTALLED_APPS = [
     'faq',
     'important_links',
     'url_shortener',
+    'alumni',
 ]
 
 MIDDLEWARE = [
