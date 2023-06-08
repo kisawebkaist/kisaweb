@@ -5,8 +5,12 @@ import datetime
 
 class KISA_Position(models.Model):
     name = models.CharField(max_length=255,blank=False,null=False)
+    
     def __str__(self):
         return self.name
+    
+    class Meta:
+        verbose_name_plural = "KISA_Positions"
 
 class Alumni(models.Model):
     SEASON_CHOICES = [
@@ -22,5 +26,9 @@ class Alumni(models.Model):
     separated_year = models.IntegerField(default=datetime.date.today().year,blank=False,null=False, validators=[MinValueValidator(2004), MaxValueValidator(datetime.date.today().year)], help_text='If the alumni only worked for one season please enter the same year as joined year.')
     worked_positions = models.ManyToManyField(KISA_Position, blank=False)
     current_contact = models.URLField(blank=True,null=True,help_text='Current contact of the Alumni. Be sure to ask the alumni for permission to post it.')
+
     def __str__(self):
         return self.name
+    
+    class Meta:
+        verbose_name_plural = "Alumnus"

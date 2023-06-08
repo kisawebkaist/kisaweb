@@ -80,7 +80,7 @@
         </div>
       </div>
       <!-- Dropdown end -->
-
+      <a class="nav-item nav-link" href="{% url 'alumni' %}">Alumni</a>
       <!-- KISA Internal Resources Dropdown-->
       {% if user.is_staff %}
       <div class="nav-item dropdown">
@@ -111,7 +111,6 @@
       {% if user.is_staff %}
       <!-- Admin site -->
       <a class="nav-item nav-link" href="{% url 'admin:index' %}">Admin</a>
-      <a class="nav-item nav-link" href="{% url 'alumni' %}">Alumni</a>
       <!-- Documentation -->
       <!--<a class="nav-item nav-link" href="{% url 'docs_root' %}" target="_blank">Docs</a>-->
       {% endif %}
