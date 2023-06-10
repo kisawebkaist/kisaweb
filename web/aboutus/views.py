@@ -10,12 +10,12 @@ def aboutus(request):
     
     internal_board_members = InternalBoardMember.objects.filter(year=year, semester=semester)
     members = Member.objects.filter(year=year, semester=semester)
-    if 'HTTP_X_FORWARDED_PROTO' in request.META and request.META['HTTP_X_FORWARDED_PROTO'] == 'https':
-        request_scheme = "https"
-    elif request.scheme == 'https':
-        request_scheme = "https"
+    if request.is_secure():
+        request_scheme = 'https'
+    elif 'X-Forwarded-Proto' in request.META:
+        request_scheme = request.META['X-Forwarded-Proto']
     else:
-        request_scheme = "http"
+        request_scheme = request.scheme
     constitution     = ConstitutionPDF.objects.annotate(
         pdf_url = F('constitution_file')
     ).values(
