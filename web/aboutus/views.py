@@ -10,17 +10,12 @@ def aboutus(request):
     
     internal_board_members = InternalBoardMember.objects.filter(year=year, semester=semester)
     members = Member.objects.filter(year=year, semester=semester)
-    if 'HTTP_X_FORWARDED_PROTO' in request.META and request.META['HTTP_X_FORWARDED_PROTO'] == 'https':
-        request_scheme = "https"
-    elif request.scheme == 'https':
-        request_scheme = "https"
-    else:
-        request_scheme = "http"
     constitution     = ConstitutionPDF.objects.annotate(
         pdf_url = F('constitution_file')
     ).values(
         'title', 'desc', 'pdf_url'
     ).all()
+    request_scheme = request.build_absolute_uri().split('://', 1)[0]
     context = {
         'main_contents'             : MainContent.objects.all(),
         'division_descriptions'     : DivisionContent.objects.all(),
