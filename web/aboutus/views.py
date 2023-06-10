@@ -18,6 +18,7 @@ def aboutus(request):
     ).values(
         'title', 'desc', 'pdf_url'
     ).all()
+    request_scheme = request.build_absolute_uri().split('://', 1)[0]
     context = {
         'main_contents'             : MainContent.objects.all(),
         'division_descriptions'     : DivisionContent.objects.all(),
