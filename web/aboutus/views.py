@@ -1,13 +1,16 @@
 from django.shortcuts import render
 from django.db.models import F
 from datetime import datetime
-
+from django.conf import settings
 from .models import MainContent, Member, InternalBoardMember, DivisionContent, ConstitutionPDF
 
 def aboutus(request):
     current_date = datetime.today()
     year, semester = current_date.year, ('Fall' if current_date.month > 6 else 'Spring')
-    
+    if settings.CURRENT_SETTINGS == 1:
+        request_scheme = request.build_absolute_uri().split('://', 1)[0]
+    else:
+        request_scheme = "https"
     internal_board_members = InternalBoardMember.objects.filter(year=year, semester=semester)
     members = Member.objects.filter(year=year, semester=semester)
     constitution     = ConstitutionPDF.objects.annotate(
