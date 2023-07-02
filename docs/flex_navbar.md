@@ -1,0 +1,53 @@
+# Flexible Navbar
+Flexible Navigation bar is meant to be a navigation bar where its content can be changed easily from the backend by modifying the entries. In the frontend, the following data should be rendered into the corresponding navigation bar. First, the invidual entries :
+```typescript
+type NavEntry<T, U> = {
+    type : T, data : U
+}
+type NavLink = NavEntry<"link", {
+    href : string,
+    text : string,
+    style? : {
+        hover? : HTMLStyle, normal? : HTMLStyle, active? : HTMLStyle
+    }
+}>
+type NavDropdown = NavEntry<"dropdown", Array<NavLink> >
+```
+The above details how the navigation bar should be rendered.
+## NavEntry
+NavEntry is a general type describing the data used to render the navigation bar. NavEntry contains two fields, one is type while the other is data. The former details the type of the navigation entry while the latter details the data used to render the contents.
+
+## NavLink
+NavLink is the mainly used entry, it deflates into the following :
+```typescript
+type NavLink = {
+    type : "link",
+    data : {
+        href : string,
+        text : string,
+        style? : {
+            hover? : HTMLStyle, normal? : HTMLStyle, active? : HTMLStyle
+        }
+    }
+}
+```
+The above should render to the following an `<a><a/>` tag with the correct configuration specified in the file.
+
+## NavDropdown
+NavDropdown specifies a dropdown from the navigation bar. The following shows the configuration of the dropdown when deflated.
+```typescript
+{
+    type : "dropdown"
+    data : Array<{
+        type : "link",
+        data : {
+            href : string,
+            text : string,
+            style? : {
+                hover? : HTMLStyle, normal? : HTMLStyle, active? : HTMLStyle
+            }
+        }
+    }>
+}
+```
+The above should render to a dropdown menu.
