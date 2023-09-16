@@ -18,8 +18,8 @@ class TagFilterManager(models.Manager):
     / models.py
         class Example(models.Model):
             objects = TagFilterManager()
-            
-    
+
+
     / Querying
         > tag_list = ['tag1', 'tag2', 'tag3']
         > Example.objects.filter_and(tag_list)
@@ -34,7 +34,7 @@ class TagFilterManager(models.Manager):
         if tag_list == ['']:
             return self.all()
         return self.filter(tags__tag_name__in=tag_list).annotate(num_tags=models.Count('tags')).filter(num_tags=len(tag_list))
-    
+
     def filter_or(self, tag_list):
         """
         OR Operation
@@ -44,7 +44,7 @@ class TagFilterManager(models.Manager):
         if tag_list == ['']:
             return self.all()
         return self.filter(tags__tag_name__in=tag_list)
-    
+
 
 # End of Custom Managers
 
@@ -84,10 +84,10 @@ class Content(models.Model):
 
 class Category(models.Model):
     title_category = models.CharField(max_length= 200, blank=True, unique=True)
-    
+
     def __str__(self):
         return self.title_category
-    
+
     def slugified(self):
         """
         Slugify the title of the category for use in id and other cases where spaces and punctuation (except "-" and "_") are not allowed

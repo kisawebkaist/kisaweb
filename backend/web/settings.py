@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from .env import ENV_VARS
 from dotenv import load_dotenv
 
 from django.conf.global_settings import DATETIME_INPUT_FORMATS
@@ -22,34 +23,33 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
-DEV_SETTINGS = 1
-PROD_SETTINGS = 2
+# DEV_SETTINGS = 1
+# PROD_SETTINGS = 2
 
-# Single point setup for dev/prod changes
-CURRENT_SETTINGS = PROD_SETTINGS
+# # Single point setup for dev/prod changes
+# CURRENT_SETTINGS = ENV_VARS.get('PRODUCTION')
 
-if CURRENT_SETTINGS == DEV_SETTINGS:
-    dotenv_file = os.path.join(BASE_DIR, '.env.dev')
-elif CURRENT_SETTINGS == PROD_SETTINGS:
-    dotenv_file = os.path.join(BASE_DIR, '.env.prod')
+# if CURRENT_SETTINGS == DEV_SETTINGS:
+#     dotenv_file = os.path.join(BASE_DIR, '.env.dev')
+# elif CURRENT_SETTINGS == PROD_SETTINGS:
+#     dotenv_file = os.path.join(BASE_DIR, '.env.prod')
 
-if os.path.isfile(dotenv_file):
-    load_dotenv(dotenv_file)
-else:
-    print('.env file not found \nMake sure it is located in the kisaweb/web directory')
+# if os.path.isfile(dotenv_file):
+#     load_dotenv(dotenv_file)
+# else:
+#     print('.env file not found \nMake sure it is located in the kisaweb/web directory')
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY = ENV_VARS.get('SECRET_KEY')
 
 # bool() is required in DEBUG for LIBSASS_SOURCE_COMMENTS (which sets internally to the value of DEBUG)
 #       to be a bool value. Else, TypeError('source_comments must be bool, not 1') is raised by sass.py
 #       which is called by django_compress/django_libsass.
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(int(os.environ.get('DJANGO_DEBUG', default=0)))
+DEBUG = not ENV_VARS.get('PRODUCTION')
 
-ALLOWED_HOSTS = os.environ['DJANGO_ALLOWED_HOSTS'].split()
-
+ALLOWED_HOSTS = ENV_VARS.get('DJANGO_ALLOWED_HOSTS')
 
 # Application definition
 
@@ -139,10 +139,18 @@ WSGI_APPLICATION = 'web.wsgi.application'
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    },
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    # },
+    'default' : {
+        'ENGINE'    : 'django.db.backends.postgresql',
+        'NAME'      : ENV_VARS.get('DB_NAME'),
+        'USER'      : ENV_VARS.get('DB_USER'),
+        'PASSWORD'  : ENV_VARS.get('DB_PASSWORD'),
+        'HOST'      : ENV_VARS.get('DB_HOST'),
+        'PORT'      : ENV_VARS.get('DB_PORT')
+    }
 }
 
 
@@ -232,10 +240,10 @@ LOGIN_REDIRECT_URL = 'homepage'
 LOGOUT_REDIRECT_URL = 'homepage'
 
 # TODO: Resolve dependencies on below two variables and delete them
-LOGIN_DEV = DEV_SETTINGS
-LOGIN_PROD = PROD_SETTINGS
+LOGIN_DEV = False
+LOGIN_PROD = True
 
-KISA_AUTH_METHOD = CURRENT_SETTINGS
+KISA_AUTH_METHOD = ENV_VARS.get('PRODUCTION')
 ## --------- ##
 
 

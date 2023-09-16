@@ -1,0 +1,14 @@
+FROM nginx:mainline as base
+
+# Timezone=Asia/Seoul
+RUN apt-get update
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y install tzdata
+RUN ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime
+
+# Development build
+FROM base as dev
+COPY ./default.conf.template /etc/nginx/templates/default.conf.template
+
+# Production build
+FROM base as prod
+COPY ./default.prod.template /etc/nginx/templates/default.conf.template
