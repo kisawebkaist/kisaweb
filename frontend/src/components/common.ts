@@ -1,4 +1,5 @@
 import React from "react"
-export type RenderElementTypeT<T> =
-  React.ComponentType<T> | React.LazyExoticComponent<React.ComponentType<T>>
+export type RenderElementTypeT<Props> =
+  React.ComponentType<Props> |
+  React.LazyExoticComponent<React.ComponentType<Props>>
 
