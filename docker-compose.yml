@@ -10,12 +10,12 @@ services:
       - POSTGRES_PASSWORD=ilovekisa
   backend:
     build:
-      dockerfile: dockerfile.backend
-      context: ./backend
+      dockerfile: dockerfile.backend-new
+      context: ./backend-new
       target: dev
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - ./backend:/app
+      - ./backend-new:/app
     depends_on:
       - db
     environment:
@@ -38,15 +38,14 @@ services:
       - /app/node_modules
     environment:
       - REACT_APP_PUBLIC_KEY=-----BEGIN PUBLIC KEY-----\nMIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgGAD0Xqs1D1mqbkTSPaEzSJCUiR4\nBt7LKsiC3OYh5Y8vCyC0cTSkcWwhW5oTZ5ZQ8ZYP4Ddz4Fnd8AG6s3Yjryr4ODS4\nLjPHVIGtw3tCaFTM832+YVAvc8ezPdcGth5at2n7MZrv9Kf/xcsPXOGZTxkhwKhN\njsmNtPywE8GlFMbrAgMBAAE=\n-----END PUBLIC KEY-----
-      - REACT_APP_API_ENDPOINT=http://localhost:8000/api/
+      - REACT_APP_API_ENDPOINT=http://localhost/api/
   nginx:
     build:
       dockerfile: dockerfile
       context: ./install/nginx
       target: dev
     ports:
-      - 80:8081
-      - 8000:8080
+      - 80:80
     depends_on:
       - frontend
       - backend
