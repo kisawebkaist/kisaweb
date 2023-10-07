@@ -47,10 +47,15 @@ $(document).ready(() => {
     if (tagParams != null) {
         let selectedTags = tagParams.split(",");
         for (let i = 0; i < selectedTags.length; i++) {
-            $(`.tag[value="${selectedTags[i]}"]`).addClass("active");
+            let sanitizedTag = DOMPurify.sanitize(selectedTags[i]);
+            $(`.tag[value="${sanitizedTag}"]`).addClass("active");
             $('#active-tags').append(`
-                <button class = "tag btn btn-outline-dark btn-sm rounded-pill border-0 my-1" disabled><b>#</b>${selectedTags[i]}</button>
+                <button class = "tag btn btn-outline-dark btn-sm rounded-pill border-0 my-1" disabled><b>#</b>${sanitizedTag}</button>
             `);
+            // $(`.tag[value="${selectedTags[i]}"]`).addClass("active");
+            // $('#active-tags').append(`
+            //     <button class = "tag btn btn-outline-dark btn-sm rounded-pill border-0 my-1" disabled><b>#</b>${selectedTags[i]}</button>
+            // `);
         }
     }
 });
