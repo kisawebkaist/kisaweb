@@ -1,0 +1,115 @@
+{
+  "$ref": "#/definitions/NavbarT",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "NavDropdownT": {
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "additionalProperties": false,
+          "properties": {
+            "display": {
+              "type": "string"
+            },
+            "entries": {
+              "items": {
+                "$ref": "#/definitions/NavLinkT"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "display",
+            "entries"
+          ],
+          "type": "object"
+        },
+        "type": {
+          "const": "dropdown",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "data"
+      ],
+      "type": "object"
+    },
+    "NavLinkT": {
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "additionalProperties": false,
+          "properties": {
+            "href": {
+              "type": "string"
+            },
+            "style": {
+              "additionalProperties": false,
+              "properties": {
+                "active": {
+                  "additionalProperties": {
+                    "type": [
+                      "string",
+                      "number"
+                    ]
+                  },
+                  "type": "object"
+                },
+                "hover": {
+                  "additionalProperties": {
+                    "type": [
+                      "string",
+                      "number"
+                    ]
+                  },
+                  "type": "object"
+                },
+                "normal": {
+                  "additionalProperties": {
+                    "type": [
+                      "string",
+                      "number"
+                    ]
+                  },
+                  "type": "object"
+                }
+              },
+              "type": "object"
+            },
+            "text": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "href",
+            "text"
+          ],
+          "type": "object"
+        },
+        "type": {
+          "const": "link",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "data"
+      ],
+      "type": "object"
+    },
+    "NavbarT": {
+      "items": {
+        "anyOf": [
+          {
+            "$ref": "#/definitions/NavLinkT"
+          },
+          {
+            "$ref": "#/definitions/NavDropdownT"
+          }
+        ]
+      },
+      "type": "array"
+    }
+  }
+}
