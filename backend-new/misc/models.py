@@ -28,11 +28,11 @@ class NavBarEntry(models.Model):
     """
     This table is the index table for navbar entries.
     Each type of data will be represented by an inner class whose table contains two properties;
-    - data 
+    - data
     - index
 
     Both fields are implemented as foreign keys to actual data.
-    Addition to those two, there will be 
+    Addition to those two, there will be
     - type
     which represents the type string
     """
@@ -63,8 +63,18 @@ class NavBarEntry(models.Model):
                 break
         if entry == None:
             raise Exception("Entry not found. Database might be corrupted.")
-        
+
         self.data = entry.data
         self.type = entry.type
 
-    
+# Added by JOWI
+# NOTE: ZWE You can uncomment this part of the code.
+# NOTE: This will create a database entry that store only json
+# class JSONStorage(models.Model):
+#     json = models.JSONField(default = dict) # Fix upload directory
+#     name = models.CharField(max_length = 50, default = '') # The name of the particular JSON Store.
+#     slug = models.CharField(max_length = 50, default = '')
+#     # validator = models.FileField(upload_to = '') or validator = models.JSONField(default = dict)
+#     def validate(self):
+#         # Do something to validate the JSON
+#         pass
