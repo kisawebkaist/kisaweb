@@ -14,7 +14,7 @@ type ListerP<T, U> = {
 
 const Lister = <T, U>({array, render : Component, props} : ListerP<T, U>) => {
   const elements = React.useMemo(() => {
-    array.map((data, id) => {
+    return array.map((data, id) => {
       const renderProps = {
         data, id, ...props
       } as ( React.PropsWithRef<ListerChildP<T, U>> & ListerChildP<T, U> )
