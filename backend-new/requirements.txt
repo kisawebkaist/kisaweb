@@ -1,0 +1,7 @@
+Django==4.2.5
+djangorestframework==3.14
+django-filter==23.3
+markdown==3.4.4
+psycopg2==2.9.7
+jsonschema==4.19.1
+referencing==0.30.2

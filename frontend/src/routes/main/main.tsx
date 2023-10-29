@@ -5,8 +5,14 @@ import Navbar from "../../core/navbar"
 import NavEntryT from "../../core/navbar-type"
 
 const Main = () => {
-  const [navbarConfig, setNavbarConfig] = React.useState<NavEntryT[]>([])
-  const [footerConfig, setFooterConfig] = React.useState<FooterP | null>(null)
+  const [navbarConfig, setNavbarConfig] = React.useState<NavEntryT[]>([{
+    'type' : 'link',
+    'data' : {
+      'href' : "google.com",
+      'text' : "Google"
+    }
+  }])
+  const [footerConfig, setFooterConfig] = React.useState<FooterP | null>()
   // useEffect to query
   return (
     <React.Fragment>

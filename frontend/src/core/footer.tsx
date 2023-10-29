@@ -6,9 +6,40 @@ const Footer = ({
 } : FooterP) => {
   return (
     <footer>
-      <h1> Hello Footer </h1>
+      <FooterComponent topicName="KISA" description = { [kisa_text] } />
+      <FooterComponent topicName="Contact Us" description = {[location, phnum_eng, phnum_kor ]} />
+      <FooterComponent topicName="Follow Us" description = {[fb_link, insta_link, yt_link] } />
     </footer>
   )
+}
+
+interface FooterProps {
+  topicName: string;
+  description: string[];
+}
+
+function FooterComponent({ topicName, description }: FooterProps) {
+  return (
+    <div className="footerContainer">
+      <span className="footerTopic">{topicName}</span>
+      <div>
+        {description.map((item, index) => (
+          <div key={index}>
+            {(
+              item.startsWith("http") || item.startsWith("https") ? (
+                //maybe we should have new properties like alias of the link
+                <a href={ item }>
+                  { item }
+                </a>
+              ) : (
+                <span>{ item }</span>
+              )
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 export default Footer
