@@ -1,14 +1,37 @@
 import NavEntryT from "../core/navbar-type";
 
-class NavbarAPI{
-  static query = () : Promise<NavEntryT[]> => {
-    // Perform the query for the navigation bar here
-    // Refer to docs for details
-    return new Promise<NavEntryT[]>((res, rej) => res([]))
-    /**
-     * @example
-     * return axios.get(someUrl).then()
-     */
+class NavbarAPI {
+  static query = (): Promise<NavEntryT[]> => {
+    // Generate fake data for NavEntryT objects
+    const fakeNavEntries: NavEntryT[] = [
+      {
+        type: "link",
+        data: {
+          href: "/home",
+          text: "Home",
+          style: {
+            hover: { color: "blue" },
+            normal: { color: "black" },
+            active: { color: "red" },
+          },
+        },
+      },
+      {
+        type: "link",
+        data: {
+          href: "/about",
+          text: "About Us",
+          style: {
+            hover: { color: "blue" },
+            normal: { color: "black" },
+            active: { color: "red" },
+          },
+        },
+      },
+      // Add more fake NavEntryT objects as needed
+    ];
+
+    return Promise.resolve(fakeNavEntries);
   }
 }
 
@@ -23,9 +46,21 @@ export type FooterT  = {
   yt_link : string
 }
 
-class FooterAPI{
-  static footer = () : Promise<FooterT> => {
+class FooterAPI {
+  static footer = (): Promise<FooterT> => {
+    // fake footer data for development
+    const fakeFooter: FooterT = {
+      kisa_text: "Kisa",
+      location: "KisaRoom",
+      phnum_eng: "123-456-7890",
+      phnum_kor: "987-654-3210",
+      email: "kisakisa@kisa.com",
+      fb_link: "https://facebook.com/kisa",
+      insta_link: "https://instagram.com/kisa",
+      yt_link: "https://youtube.com/kisa",
+    };
 
+    return Promise.resolve(fakeFooter);
   }
 }
 
