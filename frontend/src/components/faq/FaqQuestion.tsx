@@ -11,7 +11,6 @@ import {
   
   type QuestionEntry = {
     data: FaqT;
-    id: number;
   };
   
   const FaqQuestion = ({ data }: QuestionEntry) => {

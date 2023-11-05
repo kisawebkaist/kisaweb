@@ -4,11 +4,12 @@ import { Typography } from "@mui/material";
 type CategoryEntry = {
   data: CategoryT;
   id: number;
-  isActive: boolean;
-  onChoose: () => void;
+  isActiveCategory: (category: CategoryT) => boolean;
+  setActiveCategory: (id: number) => void;
 };
 
-const FaqCategory = ({ data, isActive, onChoose }: CategoryEntry) => {
+const FaqCategory = ({ data, isActiveCategory, setActiveCategory }: CategoryEntry) => {
+  const isActive = isActiveCategory(data);
   return (
     <Typography
       sx={{
@@ -20,7 +21,7 @@ const FaqCategory = ({ data, isActive, onChoose }: CategoryEntry) => {
           opacity: 0.8
         },
       }}
-      onClick={onChoose}
+      onClick={() => setActiveCategory(data.id)}
     >
       {data.title_category}
     </Typography>

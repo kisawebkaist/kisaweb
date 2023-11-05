@@ -8,6 +8,7 @@ import React from "react";
 import { Typography, Stack } from "@mui/material";
 import { Container, Box } from "@mui/system";
 import Lister from "../components/lister";
+import QueryFallback from "../components/QueryFallback";
 
 type FaqP = {
   faqs: FaqT[];
@@ -58,34 +59,36 @@ const Faq = ({ faqs, categories }: FaqP) => {
       <FaqHeader />
       {/* Search */}
       <FaqSearch onSearch={setSearchText} />
-      <Stack direction={{
-        "sm":"row",
-        "xs": "column"
-      }} gap={5}>
+      <Stack
+        direction={{
+          sm: "row",
+          xs: "column",
+        }}
+        gap={5}
+      >
         {/* Categories */}
         <Box component="nav">
           <SectionTitle title="Categories" />
-          <Stack direction="column" gap={1} alignItems={{ "sm": "flex-start", "xs": "center" }}>
-            {[generalCategory, ...categories].map((category, index) => (
-              <FaqCategory
-                key={index}
-                id={index}
-                isActive={isActiveCategory(category)}
-                data={category}
-                onChoose={() => setActiveCategory(category.id)}
-              />
-            ))}
+          <Stack
+            direction="column"
+            gap={1}
+            alignItems={{ sm: "flex-start", xs: "center" }}
+          >
+            <Lister
+              array={[generalCategory, ...categories]}
+              render={FaqCategory}
+              props={{
+                isActiveCategory,
+                setActiveCategory,
+              }}
+            />
           </Stack>
         </Box>
         {/* Questions */}
         <Box component="main" sx={{ width: "100%" }}>
           <SectionTitle title="Questions" />
           <Stack direction="column" gap={1}>
-            <Lister 
-              array = {filteredFaqs}
-              render = {FaqQuestion}
-              props = {{}}
-            />
+            <Lister array={filteredFaqs} render={FaqQuestion} props={{}} />
             {/* {filteredFaqs.map(
               (faq, index) => (
                 <FaqQuestion key={index} id={index} data={faq} />
@@ -117,12 +120,7 @@ const FaqWithGuard = () => {
       props={{}}
       query={query}
       args={undefined}
-      fallback={
-        <>
-          We're working on updating FAQ section for you, you can visit{" "}
-          <a href="/">main page</a> meanwhile!
-        </>
-      }
+      fallback={QueryFallback()}
     />
   );
 };
