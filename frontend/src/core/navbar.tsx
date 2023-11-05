@@ -1,5 +1,7 @@
 import NavEntryT, { NavDropdownT, NavLinkT } from "./navbar-type"
 import Lister from "../components/lister"
+import { Menu, MenuItem, Button } from "@mui/material";
+import { Link as RouterLink } from 'react-router-dom';
 
 type NavbarEntryP = {
   data : NavEntryT
@@ -9,25 +11,26 @@ export const NavbarEntry = ({ data } : NavbarEntryP) => {
     if(data.type === 'link') {
       const { href, text, style } = data.data
     return (
-      <a href={ href }>
-        { text }
-      </a>
+      <Button component={RouterLink} to={href} color="inherit">
+      {text}
+    </Button>
     );
     }
     else if (data.type === 'dropdown'){
       const { display, entries } = data.data
       return (
         <div>
-          <p> { display }</p>
-          <ul>
+        <Button aria-haspopup="true" color="inherit" aria-controls="dropdown-menu">
+          {display}
+        </Button>
+        <Menu id="dropdown-menu" anchorOrigin={{ vertical: "bottom", horizontal: "left" }} transformOrigin={{ vertical: "top", horizontal: "left" }}>
           {entries.map((entry, index) => (
-            <li key={ index }>
-              <NavbarEntry data={ entry } />
-            </li>
-          ))
-          }
-          </ul>
-        </div>
+            <MenuItem key={index}>
+              <NavbarEntry data={entry} />
+            </MenuItem>
+          ))}
+        </Menu>
+      </div>
       );
     }
     else{

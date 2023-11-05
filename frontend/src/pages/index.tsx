@@ -1,6 +1,10 @@
+import React from "react";
+import Navbar from "../core/navbar"; // Import the Navbar component
+import fakeNavbarData from "../core/fakeDataForNavbar"; // Import the fake data
+
 const Home = () => {
   return (
-    <p> Hello Home </p>
+    <Navbar config = {fakeNavbarData} />
   )
 }
 
