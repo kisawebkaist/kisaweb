@@ -23,7 +23,7 @@ export const NavbarEntry = ({ data } : NavbarEntryP) => {
         <Button aria-haspopup="true" color="inherit" aria-controls="dropdown-menu">
           {display}
         </Button>
-        <Menu id="dropdown-menu" anchorOrigin={{ vertical: "bottom", horizontal: "left" }} transformOrigin={{ vertical: "top", horizontal: "left" }}>
+        <Menu open = { false } id="dropdown-menu" anchorOrigin={{ vertical: "bottom", horizontal: "left" }} transformOrigin={{ vertical: "top", horizontal: "left" }}>
           {entries.map((entry, index) => (
             <MenuItem key={index}>
               <NavbarEntry data={entry} />

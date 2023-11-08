@@ -1,19 +1,20 @@
-import { CategoryT, FaqT } from "../API/faq"
-import FaqAPI from "../API/faq"
-import QueryGuard from "../components/query-guard"
-import React from "react"
+import { CategoryT, FaqT } from "../API/faq";
+import FaqAPI from "../API/faq";
+import QueryGuard from "../components/query-guard";
+import React from "react";
 
+// Define the expected types for faqs and categories
 type FaqP = {
-  faqs : FaqT,
-  categories : CategoryT
-}
+  faqs: FaqT[];
+  categories: CategoryT[];
+};
 
-const Faq = ({faqs, categories} : FaqP) => {
+const Faq = ({ faqs, categories }: FaqP) => {
   return (
     <React.Fragment>
-      <p>test<p/>
+      <p>Test</p>
     </React.Fragment>
-  )
+  );
 }
 
 const FaqWithGuard = () => {
@@ -22,12 +23,24 @@ const FaqWithGuard = () => {
       const faqs = await FaqAPI.allFaqs({});
       const categories = await FaqAPI.allCategories({});
       
+      // Return the data in the expected format
       return {
-        faqs,
-        categories,
+        faqs: faqs,
+        categories: categories,
       };
     },
     []
   );
 
-export default FaqWithGuard
+  return (
+    <QueryGuard
+      render={Faq}
+      props={{}}
+      query={query}
+      args={undefined}
+      fallback={<>404 LOL</>}
+    />
+  );
+}
+
+export default FaqWithGuard;
