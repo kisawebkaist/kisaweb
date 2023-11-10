@@ -92,7 +92,7 @@ class JSONModelSerializer(serializers.BaseSerializer, metaclass=JSONModelSeriali
     def update(self, instance, validated_data):
         instance.json = validated_data.json
         instance.save()
-        return instance()
+        return instance
 
 class ValidatorManager():
     """

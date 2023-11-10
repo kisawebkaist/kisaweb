@@ -12,7 +12,7 @@ class MiscAPIView(APIView):
 
     def get(self, request, format=None):
         for endpoint in MiscAPIView.klass_from_endpoint:
-            if request.path.strip() == '/api/misc/'+endpoint:
+            if request.path == '/api/misc/'+endpoint:
                 klass = MiscAPIView.klass_from_endpoint[endpoint]
                 serializer = klass.serializer_class(klass.get_deployed())
                 return Response(serializer.data)
