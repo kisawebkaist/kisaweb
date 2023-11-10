@@ -1,10 +1,15 @@
-from rest.utils import JSONModel
-from rest.serializers import *
+from rest.utils import JSONModel, JSONModelSerializer
 
 class NavBar(JSONModel):
     schema_title="NavBarT"
-    serializer_class=NavBarSerializer
+    deployed_pk = 1
 
 class Footer(JSONModel):
     schema_title = "Footer"
-    serializer_class=FooterSerializer
+    deployed_pk = 1
+
+class NavBarSerializer(JSONModelSerializer):
+    model_class = NavBar
+
+class FooterSerializer(JSONModelSerializer):
+    model_class = Footer
