@@ -2,54 +2,95 @@ import NavEntryT, { NavDropdownT, NavLinkT } from "./navbar-type"
 import Lister from "../components/lister"
 import { Menu, MenuItem, Button } from "@mui/material";
 import { Link as RouterLink } from 'react-router-dom';
+import '../components/Css.css'
+import React, { useState } from 'react';
 
 type NavbarEntryP = {
-  data : NavEntryT
+  data: NavEntryT
 }
 
-export const NavbarEntry = ({ data } : NavbarEntryP) => {
-    if(data.type === 'link') {
-      const { href, text, style } = data.data
-    return (
+const RenderLink = (data: NavLinkT) => {
+  const { href, text, style } = data.data
+  return (
+    <div className="buttonStyle">
       <Button component={RouterLink} to={href} color="inherit">
-      {text}
-    </Button>
-    );
+        {text}
+      </Button>
+    </div>
+  );
+}
+
+const RenderDropdown = (data: NavDropdownT) => {
+  const { display, entries } = data.data
+  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+  function handleClick(event: React.MouseEvent<HTMLButtonElement>) {
+    if (anchorEl !== event.currentTarget) {
+      setAnchorEl(event.currentTarget);
     }
-    else if (data.type === 'dropdown'){
-      const { display, entries } = data.data
-      return (
-        <div>
-        <Button aria-haspopup="true" color="inherit" aria-controls="dropdown-menu">
-          {display}
-        </Button>
-        <Menu open = { false } id="dropdown-menu" anchorOrigin={{ vertical: "bottom", horizontal: "left" }} transformOrigin={{ vertical: "top", horizontal: "left" }}>
-          {entries.map((entry, index) => (
-            <MenuItem key={index}>
-              <NavbarEntry data={entry} />
-            </MenuItem>
-          ))}
-        </Menu>
-      </div>
-      );
-    }
-    else{
-      //Handle case we want to add more type of navbar entry
-      return <span>Type Error: Please check the type of the navbar entry</span>;
-    }
+  }
+
+  function handleClose() {
+    setAnchorEl(null);
+  }
+
+  return (
+    <div className="buttonStyle">
+      <Button aria-haspopup="true" 
+      color="inherit" aria-controls="dropdown-menu" 
+      onClick={handleClick} onMouseOver={handleClick}>
+        {display}
+      </Button>
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+        MenuListProps={{ onMouseLeave: handleClose, sx: { py: 0 } }}
+      >
+      <Lister
+        array={entries}
+        render={NavbarEntry}
+        props={{}}
+      />
+      </Menu>
+    </div>
+  );
+}
+
+export const NavbarEntry = ({ data }: NavbarEntryP) => {
+  let renderedElement;
+
+  if (data.type === 'link') {
+    renderedElement = RenderLink(data);
+  } else if (data.type === 'dropdown') {
+    renderedElement = RenderDropdown(data);
+  } else {
+    renderedElement = <span>Type Error: Please check the type of the navbar entry</span>;
+  }
+
+  return (
+    <>
+      {renderedElement}
+    </>
+  );
 }
 
 type NavbarP = {
-  config : NavEntryT[]
+  config: NavEntryT[]
 }
 
-const Navbar = ({ config } : NavbarP) => {
+const Navbar = ({ config }: NavbarP) => {
   return (
-    <Lister
-      array = {config}
-      render = {NavbarEntry}
-      props = {{}}
-    />
+    <div className="navbarContainer">
+      <div className="logo">
+      <img src="/kisaLogo.png" alt="Kisa Logo" width="75" height="75"/>
+      <span>KAIST International <br />Student Association</span>
+      </div>
+      <Lister
+        array={config}
+        render={NavbarEntry}
+        props={{}}
+      />
+    </div>
   )
 }
 

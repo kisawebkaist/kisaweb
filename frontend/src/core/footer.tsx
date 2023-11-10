@@ -28,11 +28,11 @@ function FooterComponent({ topicName, description }: FooterProps) {
             {(
               item.startsWith("http") || item.startsWith("https") ? (
                 //maybe we should have new properties like alias of the link
-                <a href={ item }>
+                <a href={ item } className="footerText">
                   { item }
                 </a>
               ) : (
-                <span>{ item }</span>
+                <span className = "footerText">{ item }</span>
               )
             )}
           </div>

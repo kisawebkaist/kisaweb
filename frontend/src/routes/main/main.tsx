@@ -3,16 +3,13 @@ import { Outlet } from "react-router-dom"
 import Footer, { FooterP } from "../../core/footer"
 import Navbar from "../../core/navbar"
 import NavEntryT from "../../core/navbar-type"
+import "../../components/Css.css"
+import fakeFooterData from "../../core/fakeDataForFooter"
+import fakeNavbarData from "../../core/fakeDataForNavbar"
 
 const Main = () => {
-  const [navbarConfig, setNavbarConfig] = React.useState<NavEntryT[]>([{
-    'type' : 'link',
-    'data' : {
-      'href' : "google.com",
-      'text' : "Google"
-    }
-  }])
-  const [footerConfig, setFooterConfig] = React.useState<FooterP | null>()
+  const [navbarConfig, setNavbarConfig] = React.useState<NavEntryT[]>(fakeNavbarData)
+  const [footerConfig, setFooterConfig] = React.useState<FooterP>(fakeFooterData)
   // useEffect to query
   return (
     <React.Fragment>
@@ -20,6 +17,9 @@ const Main = () => {
         <Navbar config = {navbarConfig} />
       </header>
       <main>
+        <div className="mainContent">
+          <img src="https://media.tenor.com/CWgfFh7ozHkAAAAC/rick-astly-rick-rolled.gif" width="100%"/>
+        </div>
         <Outlet />
       </main>
       {footerConfig && <Footer {...footerConfig} />}

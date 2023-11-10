@@ -1,0 +1,58 @@
+html, body {
+    margin: 0;
+  }
+  
+/*For main component (Content) */
+.mainContent {
+    display: flex;
+}
+
+/*For Navbar decoration*/
+.navbarContainer {
+    display: flex;
+    align-items: center;
+    background-color: #21262B;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo span {
+    color: whitesmoke;
+}
+
+.logo img {
+    margin-right: 10px;
+}
+
+.buttonStyle,
+.dropdown {
+    color: #8E9193;
+    text-align: center;
+    padding: 14px 16px;
+    background-color: #21262B;
+    display: flex;
+    align-items: center;
+}
+
+.buttonStyle:hover {
+    color: whitesmoke;
+}
+
+/*For Footer Decoration*/
+.footerContainer {
+    display: block;
+    background-color: #21262B;
+}
+
+.footerTopic {
+    display: block;
+    color: azure;
+}
+
+.footerText {
+    color: #ffffff;
+    opacity: 0.5;
+}

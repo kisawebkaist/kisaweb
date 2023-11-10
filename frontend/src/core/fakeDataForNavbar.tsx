@@ -48,6 +48,28 @@ const fakeNavbarData: NavEntryT[] = [
       ],
     },
   },
+  {
+    type: "dropdown",
+    data: {
+      display: "Dropdown2",
+      entries: [
+        {
+          type: "link",
+          data: {
+            href: "/item1",
+            text: "Item 1",
+          },
+        },
+        {
+          type: "link",
+          data: {
+            href: "/item2",
+            text: "Item 2",
+          },
+        },
+      ],
+    },
+  },
 ];
 
 export default fakeNavbarData;
