@@ -1,4 +1,4 @@
-function QueryFallback(): React.ReactNode {
+const QueryFallback = () => {
   return (
     <>
       We're working on updating this section for you, you can visit{" "}
