@@ -1,21 +1,21 @@
 version: '3.3'
 services:
   db:
-    build:
-      dockerfile: dockerfile.postgres
-      context: ./install
+    image: postgres:14-bookworm
     environment:
       - POSTGRES_DB=kisaweb
       - POSTGRES_USER=kisaweb
       - POSTGRES_PASSWORD=ilovekisa
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
   backend:
     build:
-      dockerfile: dockerfile.backend-new
-      context: ./backend-new
+      dockerfile: dockerfile.backend
+      context: ./backend
       target: dev
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - ./backend-new:/app
+      - ./backend:/app
     depends_on:
       - db
     environment:
@@ -44,6 +44,8 @@ services:
       dockerfile: dockerfile
       context: ./install/nginx
       target: dev
+    volumes:
+      - ./backend/static:/app/static
     ports:
       - 80:8081
       - 8000:8080

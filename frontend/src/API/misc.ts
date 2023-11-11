@@ -35,16 +35,35 @@ class NavbarAPI {
   }
 }
 
-export type FooterT  = {
-  kisa_text : string
-  location : string
-  phnum_eng : string
-  phnum_kor : string
-  email : string
-  fb_link : string
-  insta_link : string
-  yt_link : string
-}
+export type FooterT = {
+  kisa_text: string;
+  location: string;
+  phnum_eng: string;
+  phnum_kor: string;
+  email: string;
+  fb_link: string;
+  insta_link: string;
+  yt_link: string;
+};
+
+const mockFooter = {
+  kisa_text: "Kisa",
+  location: "KAIST",
+  phnum_eng: "hello",
+  phnum_kor: "halo",
+  email: "kisa@kaist.ac.kr",
+  fb_link: "kisa.fb",
+  insta_link: "kisa.insta",
+  yt_link: "kista.yt",
+};
+
+// class FooterAPI {
+//   static footer = (): Promise<FooterT> => {
+//     return new Promise((resolve, reject) => {
+//       resolve(mockFooter);
+//     });
+//   };
+// }
 
 class FooterAPI {
   static footer = (): Promise<FooterT> => {
@@ -60,7 +79,7 @@ class FooterAPI {
         insta_link: "https://instagram.com/kisa",
         yt_link: "https://youtube.com/kisa",
       };
-      
+
     return Promise.resolve(fakeFooterEntries);
   }
 }
