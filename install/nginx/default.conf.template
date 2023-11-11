@@ -1,9 +1,8 @@
 # Default configuration for NGINX Server
 server {
-  listen 80;
+  listen ${BACKEND_LISTEN_PORT};
   server_name ${NGINX_HOST};
   client_max_body_size 100M;
-
   # Just for testing api calls
   location /static/rest_framework/{
     proxy_pass http://${BACKEND_ENDPOINT}:${BACKEND_PORT};
@@ -16,7 +15,6 @@ server {
     proxy_send_timeout  600;
     proxy_read_timeout  600;
   }
-  
   # For Media Files
   location /media/ {
     root /app;
@@ -26,7 +24,7 @@ server {
     root /app;
   }
   # For Other things
-  location /api/ {
+  location / {
     proxy_pass http://${BACKEND_ENDPOINT}:${BACKEND_PORT};
     proxy_set_header HOST $host;
     proxy_set_header X-Real-IP $remote_addr;
@@ -37,6 +35,12 @@ server {
     proxy_send_timeout  600;
     proxy_read_timeout  600;
   }
+}
+
+server {
+  listen ${FRONTEND_LISTEN_PORT};
+  server_name ${NGINX_HOST};
+  client_max_body_size 100M;
   location / {
     proxy_pass http://${FRONTEND_ENDPOINT}:${FRONTEND_PORT};
     proxy_set_header Host $host;

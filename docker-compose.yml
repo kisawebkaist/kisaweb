@@ -45,7 +45,9 @@ services:
       context: ./install/nginx
       target: dev
     ports:
-      - 80:80
+      - 80:8081
+      - 8000:8080
+      - 3000:8081
     depends_on:
       - frontend
       - backend
