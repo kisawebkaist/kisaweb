@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export type FaqT = {
   question: string;
   timestamp: string; // Datetime string
@@ -79,11 +81,19 @@ export default class FaqAPI {
   static allFaqs = <T extends Record<string, any>>(
     queryParams: T
   ): Promise<FaqT[]> => {
-    return new Promise((resolve, reject) => resolve(mockFaqs));
+    return axios.get(
+      `${process.env.REACT_APP_API_ENDPOINT}faq/`,
+      queryParams
+    )
+    .then((resp) => resp.data)
   };
   static allCategories = <T extends Record<string, any>>(
     queryParams: T
   ): Promise<CategoryT[]> => {
-    return new Promise((resolve, reject) => resolve(mockCategories));
+    return axios.get(
+      `${process.env.REACT_APP_API_ENDPOINT}faq/category/`,
+      queryParams
+    )
+    .then((resp) => resp.data)
   };
 }

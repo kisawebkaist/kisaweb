@@ -2,6 +2,8 @@ from django.shortcuts import render, HttpResponse
 from django.db.models import Count
 
 from .models import FAQ, Category
+from rest_framework.viewsets import ReadOnlyModelViewSet
+from .serializers import FaqCategorySerializer, FaqSerializer
 
 # Create your views here.
 
@@ -17,3 +19,10 @@ def faq(request):
     }
     return render(request, 'faq/faq.html', context)
 
+class FaqViewset(ReadOnlyModelViewSet):
+    serializer_class = FaqSerializer
+    queryset = FAQ.objects.all()
+
+class FaqCategoryViewset(ReadOnlyModelViewSet):
+    serializer_class = FaqCategorySerializer
+    queryset = Category.objects.all()

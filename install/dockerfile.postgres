@@ -1,6 +1,0 @@
-FROM postgres:14-bookworm
-
-# Set Timezone
-RUN apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y install tzdata
-RUN ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime
