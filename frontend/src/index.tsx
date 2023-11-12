@@ -1,5 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import App from './App';
+import "./index.css"
 
 // Global styles for material UI typography
 import '@fontsource/roboto/300.css';

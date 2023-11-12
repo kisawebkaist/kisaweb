@@ -3,7 +3,8 @@ import Lister from "../components/lister"
 import { Menu, MenuItem, Button } from "@mui/material";
 import { Link as RouterLink } from 'react-router-dom';
 import '../components/Css.css'
-import React, { useState } from 'react';
+import React from 'react';
+import "./navbar.css"
 
 type NavbarEntryP = {
   data: NavEntryT
@@ -22,35 +23,49 @@ const RenderLink = (data: NavLinkT) => {
 
 const RenderDropdown = (data: NavDropdownT) => {
   const { display, entries } = data.data
-  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
-  function handleClick(event: React.MouseEvent<HTMLButtonElement>) {
-    if (anchorEl !== event.currentTarget) {
-      setAnchorEl(event.currentTarget);
-    }
+  const [isOpen, setIsOpen] = React.useState(false)
+  // const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+  const anchorElement = React.useRef(null)
+  function handleClick(/*event: React.MouseEvent<HTMLDivElement>*/) {
+    // if (anchorEl !== event.currentTarget) {
+    //   setAnchorEl(event.currentTarget);
+    // }
+    setIsOpen(true)
   }
 
   function handleClose() {
-    setAnchorEl(null);
+    // setAnchorEl(null);
+    setIsOpen(false)
   }
-
   return (
-    <div className="buttonStyle">
-      <Button aria-haspopup="true" 
-      color="inherit" aria-controls="dropdown-menu" 
-      onClick={handleClick} onMouseOver={handleClick}>
+    <div
+      className="buttonStyle"
+      onMouseEnter = {handleClick}
+    >
+      <Button
+        aria-haspopup="true"
+        color="inherit"
+        aria-controls="dropdown-menu"
+        ref = {anchorElement}
+        // onClick={handleClick}
+        // onMouseOver={handleClick}
+      >
         {display}
       </Button>
       <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-        MenuListProps={{ onMouseLeave: handleClose, sx: { py: 0 } }}
+        anchorEl={anchorElement.current}
+        open={isOpen}
+        // onClose={handleClose}
+        MenuListProps={{
+          onMouseOut: handleClose,
+          sx: { py: 0 }
+        }}
       >
-      <Lister
-        array={entries}
-        render={NavbarEntry}
-        props={{}}
-      />
+        <Lister
+          array={entries}
+          render={NavbarEntry}
+          props={{}}
+        />
       </Menu>
     </div>
   );
