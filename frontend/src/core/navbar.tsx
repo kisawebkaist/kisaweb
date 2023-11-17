@@ -1,8 +1,7 @@
 import NavEntryT, { NavDropdownT, NavLinkT } from "./navbar-type"
 import Lister from "../components/lister"
-import { Menu, MenuItem, Button } from "@mui/material";
+import { Menu, Button } from "@mui/material";
 import { Link as RouterLink } from 'react-router-dom';
-import '../components/Css.css'
 import React from 'react';
 import "./navbar.css"
 
@@ -24,40 +23,86 @@ const RenderLink = (data: NavLinkT) => {
 const RenderDropdown = (data: NavDropdownT) => {
   const { display, entries } = data.data
   const [isOpen, setIsOpen] = React.useState(false)
+  const [menuIsHover, setMenuIsHover] = React.useState(false)
+  const [buttonIsHover, setButtonIsHover] = React.useState(false)
   // const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const anchorElement = React.useRef(null)
-  function handleClick(/*event: React.MouseEvent<HTMLDivElement>*/) {
-    // if (anchorEl !== event.currentTarget) {
-    //   setAnchorEl(event.currentTarget);
-    // }
-    setIsOpen(true)
+  function handleOpen() {
+      setIsOpen(true);
   }
 
   function handleClose() {
-    // setAnchorEl(null);
-    setIsOpen(false)
+    setIsOpen(false);
+  }
+
+  function hoverButton(){
+    console.log("HoverButton")
+    setButtonIsHover(true);
+    if(buttonIsHover || menuIsHover){
+      setIsOpen(true);
+    }
+    else{
+      setIsOpen(false);
+    }
+  }
+
+  function leaveButton(){
+    setButtonIsHover(false)
+    console.log("LeaveButton")
+    if(buttonIsHover || menuIsHover){
+      handleOpen()
+    }
+    else{
+      handleClose()
+    }
+  }
+
+  function hoverMenu(){
+    setMenuIsHover(true)
+    console.log("HoverMenu")
+    if(buttonIsHover || menuIsHover){
+      handleOpen()
+    }
+    else{
+      handleClose()
+    }
+  }
+
+  function leaveMenu(){
+    setMenuIsHover(false)
+    console.log("leaveMenu")
+    if(buttonIsHover || menuIsHover){
+      handleOpen()
+    }
+    else{
+      handleClose()
+    }
   }
   return (
     <div
       className="buttonStyle"
-      onMouseEnter = {handleClick}
+      onMouseEnter = {hoverButton}
+      //onMouseOver = {handleClick}
+      onMouseOut = {leaveButton}
     >
       <Button
         aria-haspopup="true"
         color="inherit"
         aria-controls="dropdown-menu"
         ref = {anchorElement}
-        // onClick={handleClick}
-        // onMouseOver={handleClick}
+        //onClick={handleClick}
+        onMouseEnter={hoverButton}
+        onMouseOut={leaveButton}
       >
         {display}
       </Button>
       <Menu
         anchorEl={anchorElement.current}
         open={isOpen}
-        // onClose={handleClose}
+        onClose={handleClose}
         MenuListProps={{
-          onMouseOut: handleClose,
+          onMouseOver: hoverMenu,
+          onMouseOut: leaveMenu,
           sx: { py: 0 }
         }}
       >

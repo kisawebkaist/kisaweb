@@ -1,0 +1,45 @@
+html,
+body {
+    margin: 0;
+}
+
+footer {
+    padding: 1%;
+    background-color: #21262B;
+}
+
+.footerElement {
+    display: flex;
+    flex-direction: column;
+}
+
+.footerContainer {
+    padding-left: 3%;
+    width: 30%;
+    display: inline-flex;
+    flex-direction: column;
+    background-color: #21262B;
+    align-items: flex-start;
+}
+
+.footerTopic {
+    display: block;
+    color: azure;
+}
+
+.footerText {
+    color: #ffffff;
+    opacity: 0.5;
+}
+
+.icon {
+    padding: 3px;
+    width: 7%;
+    height: 7%;
+    transition: transform 0.3s ease-in-out;
+}
+
+.icon:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
