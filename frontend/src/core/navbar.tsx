@@ -12,7 +12,7 @@ type NavbarEntryP = {
 const RenderLink = (data: NavLinkT) => {
   const { href, text, style } = data.data
   return (
-    <div className="buttonStyle">
+    <div className="navbar-link">
       <Button component={RouterLink} to={href} color="inherit">
         {text}
       </Button>
@@ -22,68 +22,69 @@ const RenderLink = (data: NavLinkT) => {
 
 const RenderDropdown = (data: NavDropdownT) => {
   const { display, entries } = data.data
-  const [isOpen, setIsOpen] = React.useState(false)
+  // const [isOpen, setIsOpen] = React.useState(false)
   const [menuIsHover, setMenuIsHover] = React.useState(false)
   const [buttonIsHover, setButtonIsHover] = React.useState(false)
   // const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const anchorElement = React.useRef(null)
-  function handleOpen() {
-      setIsOpen(true);
-  }
+  // function handleOpen() {
+  //     setIsOpen(true);
+  // }
 
-  function handleClose() {
-    setIsOpen(false);
-  }
+  // function handleClose() {
+  //   setIsOpen(false);
+  // }
 
   function hoverButton(){
     console.log("HoverButton")
     setButtonIsHover(true);
-    if(buttonIsHover || menuIsHover){
-      setIsOpen(true);
-    }
-    else{
-      setIsOpen(false);
-    }
+    // if(buttonIsHover || menuIsHover){
+    //   setIsOpen(true);
+    // }
+    // else{
+    //   setIsOpen(false);
+    // }
   }
 
   function leaveButton(){
     setButtonIsHover(false)
     console.log("LeaveButton")
-    if(buttonIsHover || menuIsHover){
-      handleOpen()
-    }
-    else{
-      handleClose()
-    }
+    // if(buttonIsHover || menuIsHover){
+    //   handleOpen()
+    // }
+    // else{
+    //   handleClose()
+    // }
   }
 
   function hoverMenu(){
     setMenuIsHover(true)
     console.log("HoverMenu")
-    if(buttonIsHover || menuIsHover){
-      handleOpen()
-    }
-    else{
-      handleClose()
-    }
+    // if(buttonIsHover || menuIsHover){
+    //   handleOpen()
+    // }
+    // else{
+    //   handleClose()
+    // }
   }
 
   function leaveMenu(){
     setMenuIsHover(false)
+    // setButtonIsHover(false)
     console.log("leaveMenu")
-    if(buttonIsHover || menuIsHover){
-      handleOpen()
-    }
-    else{
-      handleClose()
-    }
+    // if(buttonIsHover || menuIsHover){
+    //   handleOpen()
+    // }
+    // else{
+    //   handleClose()
+    // }
   }
   return (
     <div
-      className="buttonStyle"
+      className="navbar-dropdown"
       onMouseEnter = {hoverButton}
       //onMouseOver = {handleClick}
-      onMouseOut = {leaveButton}
+      onMouseLeave = {leaveButton}
     >
       <Button
         aria-haspopup="true"
@@ -91,27 +92,31 @@ const RenderDropdown = (data: NavDropdownT) => {
         aria-controls="dropdown-menu"
         ref = {anchorElement}
         //onClick={handleClick}
-        onMouseEnter={hoverButton}
-        onMouseOut={leaveButton}
+        // onMouseEnter={hoverButton}
+        // onMouseOut={leaveButton}
       >
         {display}
       </Button>
-      <Menu
+      {/* <Menu
         anchorEl={anchorElement.current}
-        open={isOpen}
-        onClose={handleClose}
+        open={buttonIsHover || menuIsHover}
+        // onClose={handleClose}
         MenuListProps={{
-          onMouseOver: hoverMenu,
-          onMouseOut: leaveMenu,
+          onMouseEnter: hoverMenu,
+          onMouseLeave: leaveMenu,
           sx: { py: 0 }
         }}
-      >
-        <Lister
-          array={entries}
-          render={NavbarEntry}
-          props={{}}
-        />
-      </Menu>
+      > */}
+        <div
+          className = {`navbar-dropdown-menu ${buttonIsHover ? '' : 'hide'}`}
+        >
+          <Lister
+            array={entries}
+            render={NavbarEntry}
+            props={{}}
+          />
+        </div>
+      {/* </Menu> */}
     </div>
   );
 }
@@ -142,14 +147,16 @@ const Navbar = ({ config }: NavbarP) => {
   return (
     <div className="navbarContainer">
       <div className="logo">
-      <img src="/kisaLogo.png" alt="Kisa Logo" width="75" height="75"/>
-      <span>KAIST International <br />Student Association</span>
+        <img src="/kisaLogo.png" alt="Kisa Logo" width="75" height="75"/>
+        <span>KAIST International <br />Student Association</span>
       </div>
-      <Lister
-        array={config}
-        render={NavbarEntry}
-        props={{}}
-      />
+      <div className = 'navbar-links'>
+        <Lister
+          array={config}
+          render={NavbarEntry}
+          props={{}}
+        />
+      </div>
     </div>
   )
 }

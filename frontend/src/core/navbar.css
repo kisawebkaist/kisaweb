@@ -22,16 +22,36 @@ html, body {
     margin-right: 10px;
 }
 
-.buttonStyle,
-.dropdown {
+.navbar-link,
+.navbar-dropdown {
     color: #8E9193;
     text-align: center;
     padding: 14px 16px;
     background-color: #21262B;
     display: flex;
     align-items: center;
+    position: relative;
 }
 
 .buttonStyle:hover {
     color: whitesmoke;
+}
+div.navbar-dropdown{
+  display : flex;
+  flex-flow : column wrap;
+}
+.navbar-dropdown-menu{
+  display: flex;
+  flex-flow: column wrap;
+  position: absolute;
+  top: 55px;
+  width:100%;
+}
+.navbar-dropdown-menu.hide{
+  display: none;
+}
+
+.navbar-links{
+  display: flex;
+  flex-flow: row wrap;
 }
