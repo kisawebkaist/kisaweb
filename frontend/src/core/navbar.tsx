@@ -13,7 +13,7 @@ const RenderLink = (data: NavLinkT) => {
   const { href, text, style } = data.data
   return (
     <div className="navbar-link">
-      <Button component={RouterLink} to={href} color="inherit">
+      <Button component={RouterLink} to={href} color="inherit" className="buttonStyle">
         {text}
       </Button>
     </div>
@@ -35,7 +35,7 @@ const RenderDropdown = (data: NavDropdownT) => {
   //   setIsOpen(false);
   // }
 
-  function hoverButton(){
+  function hoverButton() {
     console.log("HoverButton")
     setButtonIsHover(true);
     // if(buttonIsHover || menuIsHover){
@@ -46,7 +46,7 @@ const RenderDropdown = (data: NavDropdownT) => {
     // }
   }
 
-  function leaveButton(){
+  function leaveButton() {
     setButtonIsHover(false)
     console.log("LeaveButton")
     // if(buttonIsHover || menuIsHover){
@@ -57,7 +57,7 @@ const RenderDropdown = (data: NavDropdownT) => {
     // }
   }
 
-  function hoverMenu(){
+  function hoverMenu() {
     setMenuIsHover(true)
     console.log("HoverMenu")
     // if(buttonIsHover || menuIsHover){
@@ -68,7 +68,7 @@ const RenderDropdown = (data: NavDropdownT) => {
     // }
   }
 
-  function leaveMenu(){
+  function leaveMenu() {
     setMenuIsHover(false)
     // setButtonIsHover(false)
     console.log("leaveMenu")
@@ -82,18 +82,19 @@ const RenderDropdown = (data: NavDropdownT) => {
   return (
     <div
       className="navbar-dropdown"
-      onMouseEnter = {hoverButton}
+      onMouseEnter={hoverButton}
       //onMouseOver = {handleClick}
-      onMouseLeave = {leaveButton}
+      onMouseLeave={leaveButton}
     >
       <Button
+      className="buttonStyle"
         aria-haspopup="true"
         color="inherit"
         aria-controls="dropdown-menu"
-        ref = {anchorElement}
-        //onClick={handleClick}
-        // onMouseEnter={hoverButton}
-        // onMouseOut={leaveButton}
+        ref={anchorElement}
+      //onClick={handleClick}
+      // onMouseEnter={hoverButton}
+      // onMouseOut={leaveButton}
       >
         {display}
       </Button>
@@ -107,15 +108,15 @@ const RenderDropdown = (data: NavDropdownT) => {
           sx: { py: 0 }
         }}
       > */}
-        <div
-          className = {`navbar-dropdown-menu ${buttonIsHover ? '' : 'hide'}`}
-        >
-          <Lister
-            array={entries}
-            render={NavbarEntry}
-            props={{}}
-          />
-        </div>
+      <div
+        className={`navbar-dropdown-menu ${buttonIsHover ? '' : 'hide'}`}
+      >
+        <Lister
+          array={entries}
+          render={NavbarEntry}
+          props={{}}
+        />
+      </div>
       {/* </Menu> */}
     </div>
   );
@@ -146,18 +147,20 @@ type NavbarP = {
 const Navbar = ({ config }: NavbarP) => {
   return (
     <div className="navbarContainer">
-      <div className="logo">
-        <img src="/kisaLogo.png" alt="Kisa Logo" width="75" height="75"/>
-        <span>KAIST International <br />Student Association</span>
-      </div>
-      <div className = 'navbar-links'>
+      <a href="/home">
+        <div className="logo">
+          <img src="/kisaLogo.png" alt="Kisa Logo" width="75" height="75" />
+          <span>KAIST International <br />Student Association</span>
+        </div>
+      </a>
+      <div className='navbar-links'>
         <Lister
           array={config}
           render={NavbarEntry}
           props={{}}
         />
       </div>
-    </div>
+    </div >
   )
 }
 

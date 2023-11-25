@@ -22,6 +22,20 @@ footer {
     align-items: flex-start;
 }
 
+.footerContact {
+    padding-left: 3%;
+    width: 30%;
+    display: inline-flex;
+    flex-direction: column;
+    background-color: #21262B;
+    align-items: flex-start;
+}
+
+.contactElement {
+    display: flex;
+    flex-direction: row;
+}
+
 .footerTopic {
     display: block;
     color: azure;
@@ -34,12 +48,23 @@ footer {
 
 .icon {
     padding: 3px;
-    width: 7%;
-    height: 7%;
+    width: 28px;
+    height: 28px;
     transition: transform 0.3s ease-in-out;
 }
 
 .icon:hover {
     transform: scale(1.1);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+@media screen and (max-width: 500px) {
+    .footerContainer {
+        padding-left: 3%;
+        width: 30%;
+        display: block;
+        background-color: #21262B;
+        align-items: flex-start;
+    }
+
 }

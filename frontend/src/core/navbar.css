@@ -9,6 +9,10 @@ html, body {
     background-color: #21262B;
 }
 
+.navbarContainer a {
+  text-decoration: none;
+}
+
 .logo {
     display: flex;
     align-items: center;
@@ -54,4 +58,11 @@ div.navbar-dropdown{
 .navbar-links{
   display: flex;
   flex-flow: row wrap;
+}
+
+@media screen and (max-width: 500px) {
+  .navbarContainer a {
+    float: none;
+    display: block;
+  }
 }
