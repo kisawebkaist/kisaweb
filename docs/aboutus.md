@@ -32,7 +32,7 @@ type InternalBoardMemberT = {
 - Request : GET
 - Response :
 ```ts
-MemberT
+MemberT[]
 ```
 
 ## Getting all Internal Members
@@ -41,7 +41,7 @@ MemberT
 - Request : GET
 - Response :
 ```ts
-InternalBoardMemberT
+InternalBoardMemberT[]
 ```
 
 ## Getting all Divisions
@@ -49,5 +49,5 @@ InternalBoardMemberT
 - Request : GET
 - Response :
 ```ts
-DivisionT
+DivisionT[]
 ```
