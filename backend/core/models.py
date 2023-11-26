@@ -2,6 +2,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
+from .utils import JSONModel, JSONModelSerializer
 from phone_field import PhoneField
 from tinymce.models import HTMLField
 from django.core.validators import RegexValidator
@@ -100,25 +101,6 @@ class Category(models.Model):
 
 # End of Abstract Classes
 
-class Footer(models.Model):
-    kisa_text = models.CharField(max_length=500, blank=True)
-
-    location = models.CharField(max_length=80, blank=False)
-    phnum_eng = PhoneField(blank=False)
-    phnum_kor = PhoneField(blank=False)
-    email = models.EmailField(max_length=50, blank=False)
-
-    fb_link = models.URLField(blank=True)
-    insta_link = models.URLField(blank=True)
-    yt_link = models.URLField(blank=True)
-
-    def save(self, *args, **kwargs):
-        # if you'll not check for self.pk
-        # then error will also raised in update of exists model
-        if not self.pk and Footer.objects.all():
-            raise ValidationError('There is can be only one Footer instance')
-        return super().save(*args, **kwargs)
-
 
 class EmptyQueryset(models.Model):
     events = models.CharField(max_length=200, blank=True)
@@ -131,10 +113,16 @@ class EmptyQueryset(models.Model):
         return super().save(*args, **kwargs)
 
 
-class Navbar(models.Model):
-    kisa_voice_link = models.URLField(blank=True)
-    kisa_books_link = models.URLField(blank=True)
-    internships_link = models.URLField(blank=True)
-    kaist_ara_link = models.URLField(blank=True)
-    course_resources_link = models.URLField(blank=True)
-    kisa_room_reservation_link = models.URLField(blank=True)
+class NavBar(JSONModel):
+    schema_title="NavBarT"
+    deployed_pk = 1
+
+class Footer(JSONModel):
+    schema_title = "Footer"
+    deployed_pk = 1
+
+class NavBarSerializer(JSONModelSerializer):
+    model_class = NavBar
+
+class FooterSerializer(JSONModelSerializer):
+    model_class = Footer

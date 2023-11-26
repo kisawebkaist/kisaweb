@@ -1,11 +1,11 @@
-from django.urls import path, include
+from django.urls import path, include, re_path
 
 from web.settings import URL_SHORTENER_PREFIX
 
 from . import views
 
 urlpatterns = [
-    path('', views.homepage, name='homepage'),
+    # path('', views.homepage, name='homepage'),
     # path('important-links', views.important_links, name='important_links'),
 
     path('events/', include('events.urls')),
@@ -19,4 +19,5 @@ urlpatterns = [
     path('important-links/', include('important_links.urls')),
     path('alumni/', include('alumni.urls')),
     path(f'{URL_SHORTENER_PREFIX}/', include('url_shortener.urls')),
+    re_path(r'misc/*', views.MiscAPIView.as_view()),
 ]
