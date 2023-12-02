@@ -22,92 +22,32 @@ const RenderLink = (data: NavLinkT) => {
 
 const RenderDropdown = (data: NavDropdownT) => {
   const { display, entries } = data.data
-  // const [isOpen, setIsOpen] = React.useState(false)
   const [menuIsHover, setMenuIsHover] = React.useState(false)
   const [buttonIsHover, setButtonIsHover] = React.useState(false)
-  // const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const anchorElement = React.useRef(null)
-  // function handleOpen() {
-  //     setIsOpen(true);
-  // }
-
-  // function handleClose() {
-  //   setIsOpen(false);
-  // }
 
   function hoverButton() {
-    console.log("HoverButton")
     setButtonIsHover(true);
-    // if(buttonIsHover || menuIsHover){
-    //   setIsOpen(true);
-    // }
-    // else{
-    //   setIsOpen(false);
-    // }
   }
 
   function leaveButton() {
     setButtonIsHover(false)
-    console.log("LeaveButton")
-    // if(buttonIsHover || menuIsHover){
-    //   handleOpen()
-    // }
-    // else{
-    //   handleClose()
-    // }
-  }
-
-  function hoverMenu() {
-    setMenuIsHover(true)
-    console.log("HoverMenu")
-    // if(buttonIsHover || menuIsHover){
-    //   handleOpen()
-    // }
-    // else{
-    //   handleClose()
-    // }
-  }
-
-  function leaveMenu() {
-    setMenuIsHover(false)
-    // setButtonIsHover(false)
-    console.log("leaveMenu")
-    // if(buttonIsHover || menuIsHover){
-    //   handleOpen()
-    // }
-    // else{
-    //   handleClose()
-    // }
   }
   return (
     <div
       className="navbar-dropdown"
       onMouseEnter={hoverButton}
-      //onMouseOver = {handleClick}
       onMouseLeave={leaveButton}
     >
       <Button
-      className="buttonStyle"
+        className="buttonStyle"
         aria-haspopup="true"
         color="inherit"
         aria-controls="dropdown-menu"
         ref={anchorElement}
-      //onClick={handleClick}
-      // onMouseEnter={hoverButton}
-      // onMouseOut={leaveButton}
       >
         {display}
       </Button>
-      {/* <Menu
-        anchorEl={anchorElement.current}
-        open={buttonIsHover || menuIsHover}
-        // onClose={handleClose}
-        MenuListProps={{
-          onMouseEnter: hoverMenu,
-          onMouseLeave: leaveMenu,
-          sx: { py: 0 }
-        }}
-      > */}
       <div
         className={`navbar-dropdown-menu ${buttonIsHover ? '' : 'hide'}`}
       >
@@ -117,7 +57,6 @@ const RenderDropdown = (data: NavDropdownT) => {
           props={{}}
         />
       </div>
-      {/* </Menu> */}
     </div>
   );
 }
@@ -159,6 +98,11 @@ const Navbar = ({ config }: NavbarP) => {
           render={NavbarEntry}
           props={{}}
         />
+      </div>
+      <div className = "rightElement">
+        <a href = "#">
+          <Button className = "rightElement">LOGIN</Button>
+        </a>
       </div>
     </div >
   )
