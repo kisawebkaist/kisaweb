@@ -22,7 +22,6 @@ const RenderLink = (data: NavLinkT) => {
 
 const RenderDropdown = (data: NavDropdownT) => {
   const { display, entries } = data.data
-  const [menuIsHover, setMenuIsHover] = React.useState(false)
   const [buttonIsHover, setButtonIsHover] = React.useState(false)
   const anchorElement = React.useRef(null)
 
