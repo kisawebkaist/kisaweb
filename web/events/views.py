@@ -6,6 +6,7 @@ from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from django import forms
 from django.utils.text import Truncator
+from django.utils.decorators import method_decorator
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import HTML, Hidden
@@ -42,6 +43,7 @@ def modify_registration(request, pk):
 
     return HttpResponse('Success')
 
+@method_decorator(login_required, name='dispatch')
 
 class EventCreate(CreateView):
     model = Event
@@ -61,7 +63,7 @@ class EventCreate(CreateView):
         else:
             return super().post(request, *args, **kwargs)
 
-
+@method_decorator(login_required, name='dispatch')
 class EventUpdate(UpdateView):
     model = Event
     form_class = EventForm
