@@ -1,12 +1,7 @@
-import os
-from time import time
-from django.http.response import HttpResponseRedirect
-import requests
-import json
-import datetime
-from web.settings import SECRET_KEY
+import base64, json, os, secrets, urllib.parse
 
-import urllib.parse
+from django.http.response import HttpResponseRedirect
+from web.settings import SECRET_KEY, ALLOWED_HOSTS
 
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth import login, logout
@@ -14,6 +9,8 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 
 from sso.models import User, LoginError
+from django.core.validators import URLValidator
+from django.core.exceptions import ValidationError
 from django.views import View
 from django.http import HttpResponse
 from django.views.decorators.http import require_http_methods
@@ -22,11 +19,8 @@ from django.views.decorators.http import require_http_methods
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
-import base64
 from Crypto.Cipher import AES
-
-import secrets
-import hashlib
+from Crypto.Util.Padding import unpad
 
 KSSO_LOGIN_URL = os.environ.get('KSSO_LOGIN_URL')
 KSSO_LOGOUT_URL = os.environ.get('KSSO_LOGOUT_URL')
@@ -72,24 +66,33 @@ keys_and_fields = [
     ('acad_ebs_org_name_kor', 'student_department_name_korean'),
 ]
 
+def ensure_relative_url(url):
+    if url[0] == '/':
+        return url
+    try:
+        return urllib.parse.urlparse(url)._replace(scheme='', netloc='').geturl()
+    except:
+        return '/'
+    
+    
 def decrypt(data, state, host) :
     BS = AES.block_size 
-    unpad = lambda s : s[0:-s[-1]] 
     if host in ('ka', 'co','ca') :
-        key = (CAIS_AES_ID_SECRET+str(state))[80:96] # 32bit
+        key = (CAIS_AES_ID_SECRET+str(state))[80:96] # 128 bit
     else :
-        key = (SA_AES_ID_SECRET+str(state))[80:96] # 32bit
-    iv=key[:16] # 16bit
+        key = (SA_AES_ID_SECRET+str(state))[80:96] # 128 bit
+    iv=key[:16] # 128 bit
     cipher = AES.new(key.encode("utf8"), AES.MODE_CBC, IV=iv.encode("utf8"))
     deciphed = cipher.decrypt(base64.b64decode(data))   
-    deciphed = unpad(deciphed)
+    deciphed = unpad(deciphed, BS)
     return deciphed
 
+@require_http_methods(['POST'])
 def login_view(request):
 
-    next = request.GET.get('next', '/')
+    next = request.POST.get('next', '/')
     if request.user and request.user.is_authenticated:
-        return redirect(next)
+        return HttpResponseRedirect(ensure_relative_url(next))
 
     if request.session.get(KSSO_STATE_KEY) is None:
         state = secrets.token_hex(16)
@@ -107,15 +110,15 @@ def login_view(request):
     return redirect(redirect_url)
 
 @require_http_methods(['POST'])
-@csrf_exempt
+
 def login_response_view(request):
 
     if bool(request.POST.get('success')):
 
         params = {
-            'state': request.POST.get('state'),
-            'raw_result': request.POST.get('result'),
-            'http_host': request.META.get('HTTP_HOST'),
+            'state': request.POST.get('state', ''),
+            'raw_result': request.POST.get('result', ''),
+            'http_host': request.META.get('HTTP_HOST', ''),
             'next': request.GET.get('next', '/')
         }
         
@@ -131,8 +134,8 @@ def login_handler_view(request):
 
     next = request.GET.get('next', '/')
     if request.user and request.user.is_authenticated:
-        return redirect(next)
-
+        return HttpResponseRedirect(ensure_relative_url(next))
+    
     context = request.GET
     saved_state = request.session.get(KSSO_STATE_KEY)
     del request.session[KSSO_STATE_KEY]
@@ -140,29 +143,38 @@ def login_handler_view(request):
     if saved_state is None or saved_state != context.get('state'):
         return redirect('login-error')
     
-    result = decrypt(context.get('raw_result'), context.get('state'), context.get('http_host') [:2]).decode('utf-8')
-    result = json.loads(result, encoding='utf-8')
+    #TODO: proper error handling and logging
+    try:
+        result = decrypt(context.get('raw_result'), context.get('state'), context.get('http_host') [:2]).decode('utf-8')
+        result = json.loads(result, encoding='utf-8')
 
-    user_info = result['dataMap']['USER_INFO']
-        
-    if not User.objects.filter(pk=user_info['kaist_uid']).exists():
-        user_params = {}
-        for key, field in keys_and_fields:
-            if key in user_info:
-                user_params[field] = user_info[key]
-        username = user_params['full_name']
-        for c in "!#$%^&*(),./<>?\|":
-            username = username.replace(c, '')
-        username = username.strip()
-        username = username.replace(' ', '_')
-        user_params['username'] = f"{username}_{secrets.token_hex(4)}"
-        user = User(**user_params)
-        user.save()
-    else:
-        user = User.objects.get(pk=user_info['kaist_uid'])
+        user_info = result['dataMap']['USER_INFO']
+            
+        if not User.objects.filter(pk=user_info['kaist_uid']).exists():
+            user_params = {}
+            for key, field in keys_and_fields:
+                if key in user_info:
+                    user_params[field] = user_info.get(key)
 
-    login(request, user)
-    return redirect(next)
+            username = user_params['full_name']
+            for c in "!#$%^&*(),./<>?\|":
+                username = username.replace(c, '')
+            username = username.strip()
+            username = username.replace(' ', '_')
+            user_params['username'] = f"{username}_{user_params['kaist_uid']}"
+            user = User(**user_params)
+
+            user.full_clean()
+            
+            user.save()
+        else:
+            user = User.objects.get(pk=user_info['kaist_uid'])
+
+        login(request, user)
+        return HttpResponseRedirect(ensure_relative_url(next))
+    
+    except Exception as e:
+        return redirect('login-error')
 
 def login_error_view(request):
     return render(request, 'sso/login_error.html', {})
