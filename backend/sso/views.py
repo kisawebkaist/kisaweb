@@ -110,7 +110,7 @@ def login_view(request):
     return redirect(redirect_url)
 
 @require_http_methods(['POST'])
-
+@csrf_exempt
 def login_response_view(request):
 
     if bool(request.POST.get('success')):
@@ -130,6 +130,7 @@ def login_response_view(request):
     else:
         return redirect('login-error')
 
+# TODO: merge this to above post with an origin header check?
 def login_handler_view(request):
 
     next = request.GET.get('next', '/')
