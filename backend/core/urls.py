@@ -19,5 +19,5 @@ urlpatterns = [
     path('important-links/', include('important_links.urls')),
     path('alumni/', include('alumni.urls')),
     path(f'{URL_SHORTENER_PREFIX}/', include('url_shortener.urls')),
-    re_path(r'misc/*', views.MiscAPIView.as_view()),
+    re_path(r'misc/*', views.MiscAPIView.as_view(), name='misc'),
 ]

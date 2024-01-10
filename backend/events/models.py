@@ -7,6 +7,7 @@ from django.utils.text import slugify
 from tinymce.models import HTMLField
 
 from web.settings import BASE_DIR
+from sso.models import KAISTProfile
 
 # Create your models here.
 
@@ -86,7 +87,7 @@ class Event(models.Model):
 
     max_occupancy = models.PositiveSmallIntegerField(blank=True, null=True)
     current_occupancy = models.PositiveSmallIntegerField(blank=True, default=0)
-    participants = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
+    participants = models.ManyToManyField(KAISTProfile, blank=True)
     important_message = models.CharField(max_length=200, blank=True)
 
     description = HTMLField()

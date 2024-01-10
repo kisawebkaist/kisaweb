@@ -6,6 +6,8 @@ from django.core.exceptions import ValidationError
 from election.tests import test_adjusted_votes_formula
 from tinymce.models import HTMLField
 
+from sso.models import KAISTProfile
+
 # Create your models here.
 
 ELECTION_MEDIA_UPLOAD_URL = 'election/img'
@@ -164,7 +166,7 @@ class Election(models.Model):
 '''
 
 class Voter(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='votes') # the user who votes
+    user = models.ForeignKey(KAISTProfile, on_delete=models.CASCADE, related_name='votes') # the user who votes
     voted_candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE, related_name='voters') # the candidate who is voted
     voted_election = models.ForeignKey(Election, on_delete=models.CASCADE, related_name='voters') # the election in which the vote is casted
     vote_type = models.CharField(max_length=10, blank=True) # the type of the vote (yes/no etc.)

@@ -62,7 +62,7 @@ def encrypt(user_info: dict, state: str)->str:
 
 class LoginTest(TestCase):
 
-    def test_normal_login(self):
+    def test_normal_login_logout(self):
         # fetch csrf token
         client = Client(enforce_csrf_checks=True)
         client.get('/')
@@ -78,6 +78,7 @@ class LoginTest(TestCase):
 
         # login-reponse POST request from iam2
         headers['Origin'] = 'https://iam2.kaist.ac.kr'
+        del headers['X-CSRFToken']
         payload = {
             'result': encrypt(generate_user_info(), state),
             'state': state,
@@ -88,6 +89,14 @@ class LoginTest(TestCase):
             payload,
             headers = headers
         )
-
         self.assertEqual(r.status_code, 302)
         self.assertNotEqual(r.headers['Location'], reverse('login-error'))
+
+
+        # logout POST request from iam2
+        headers['X-CSRFToken'] = client.cookies['csrftoken'].value
+        del headers['Origin']
+        r = client.post(
+            reverse('logout'),
+            headers = headers
+        )

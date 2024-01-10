@@ -78,9 +78,9 @@ INSTALLED_APPS = [
 
     ## ---- Created by KISA webteam ---- ##
     'core',  # core pages (eg. homepage, about page, etc)
+    'sso',
     'events',
     'election',
-    'sso',  # contains the User model
     'aboutus',
     'multimedia',
     'blog',
@@ -97,6 +97,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'sso.middleware.KAuthMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "django_pagination_bootstrap.middleware.PaginationMiddleware", #django_pagination_bootstrap middleware
@@ -212,7 +213,7 @@ DATETIME_INPUT_FORMATS += [
 ]
 
 # Custom User model
-AUTH_USER_MODEL = 'sso.User'
+AUTH_USER_MODEL = 'core.User'
 
 # X_FRAME_OPTIONS = 'SAMEORIGIN'  # Required by django-3-jet dashboard
 

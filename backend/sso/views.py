@@ -4,11 +4,11 @@ from django.http.response import HttpResponseRedirect, HttpResponseForbidden
 from web.settings import SECRET_KEY
 
 from django.urls import reverse
-from django.contrib.auth import login, logout
 from django.shortcuts import render
 from django.shortcuts import redirect
 
-from .models import User
+from .models import KAISTProfile
+from .middleware import klogin, klogout
 
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
@@ -53,7 +53,7 @@ def decrypt(data, state, host) :
 def login_view(request):
     next = request.POST.get('next', '/')
 
-    if request.user and request.user.is_authenticated:
+    if request.kaist_profile.is_authenticated:
         return HttpResponseRedirect(ensure_relative_url(next))
 
     if request.session.get('state') is None:
@@ -84,7 +84,7 @@ def login_response_view(request):
         logger.info(f"Invalid \"Origin\" header: {origin} in login-response (state: {state}, raw_result:{raw_result}, user-agent: {request.META.get('HTTP_USER_AGENT')})")
         return HttpResponseForbidden(_(f'This page requires that "Origin" header to be "https://iam2.kaist.ac.kr" to prevent cross-subdomain <a href="https://en.wikipedia.org/wiki/Cross-site_request_forgery">CSRF,s</a>.'))
     
-    if request.user.is_authenticated:
+    if request.kaist_profile.is_authenticated:
         return HttpResponseRedirect(next)
 
     # TODO: to find out if bool is even the right function to use here
@@ -102,19 +102,16 @@ def login_response_view(request):
         result = json.loads(result)
 
         user_info = result['dataMap']['USER_INFO']
-            
-        if not User.objects.filter(pk=user_info['kaist_uid']).exists():
-            user = User.from_info_json(user_info)
-            user.full_clean()
-            user.save()
-        else:
-            user = User.objects.get(pk=user_info['kaist_uid'])
+        user = KAISTProfile.from_info_json(user_info)
+        user.full_clean()
+        user.save()
 
-        login(request, user)
+        klogin(request, user)
+
         return HttpResponseRedirect(ensure_relative_url(next))
     
     except Exception as e:
-        logger.exception('An exception occurred in login-response while processing result. (state: {state}, raw_result: {result})')
+        logger.exception(f'An exception occurred in login-respon se while processing result. (state: {state}, raw_result: {result})')
         return redirect('login-error')
 
 
@@ -126,10 +123,10 @@ def login_error_view(request):
 def logout_view(request):
     next = ensure_relative_url(request.POST.get('next', '/'))
 
-    if not request.user.is_authenticated:
+    if not request.kaist_profile.is_authenticated:
         return HttpResponseRedirect(next)
 
-    logout(request)
+    klogout(request)
     
     data = {
         'client_id': KSSO_CLIENT_ID,

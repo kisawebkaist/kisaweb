@@ -70,7 +70,7 @@ class ElectionAdmin(admin.ModelAdmin):
 class VoterAdmin(admin.ModelAdmin):
     list_display = ['user', 'user_email', 'is_kisa', 'joined_debate', 'voted_election']
     search_fields = ['user__kaist_email', 'user__username']
-    list_filter = ['is_kisa', 'joined_debate', 'user__is_staff']
+    list_filter = ['is_kisa', 'joined_debate']
     readonly_fields = ['user', 'user_email', 'voted_election']
     exclude = ['voted_candidate', 'vote_type'] # do not show the vote details in the admin page
 

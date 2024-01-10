@@ -1,11 +1,14 @@
 from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
-from .utils import JSONModel, JSONModelSerializer
-from phone_field import PhoneField
+
 from tinymce.models import HTMLField
-from django.core.validators import RegexValidator
+
+from sso.models import KAISTProfile
+from .utils import JSONModel, JSONModelSerializer
 
 # Validators
 separator_validator = RegexValidator(r'[^\w\-]', inverse_match=True, message='Spaces and punctuation (except "-" and "_") are not allowed.')
@@ -126,3 +129,9 @@ class NavBarSerializer(JSONModelSerializer):
 
 class FooterSerializer(JSONModelSerializer):
     model_class = Footer
+
+class User(AbstractUser):
+    kaist_profile = models.OneToOneField(KAISTProfile, on_delete=models.CASCADE)
+
+    def get_kaist_profile(self):
+        return self.kaist_profile

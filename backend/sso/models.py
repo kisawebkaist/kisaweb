@@ -2,12 +2,10 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.crypto import get_random_string
 
-from tinymce.models import HTMLField
-
 # Create your models here.
 
 
-class User(AbstractUser):
+class KAISTProfile(models.Model):
     # make all fields except KAIST UID 'blank=true' because some fields might be empty
     # these are all the fields KISA registered for
 
@@ -89,22 +87,16 @@ class User(AbstractUser):
         ('acad_ebs_org_name_kor', 'student_department_name_korean'),
     ]
 
+    is_authenticated = True
+
     @classmethod
-    def from_info_json(cls, user_info: dict)->'User':
+    def from_info_json(cls, user_info: dict)->'KAISTProfile':
         user_params = dict()
-        for key, field in User.keys_and_fields:
+        for key, field in KAISTProfile.keys_and_fields:
             if key in user_info:
                 user_params[field] = user_info.get(key)
-
-        username = user_params['full_name']
-        for c in "!#$%^&*(),./<>?\|":
-            username = username.replace(c, '')
-        username = username.strip()
-        username = username.replace(' ', '_')
-
-        user_params['username'] = f"{username}_{user_params['kaist_uid']}"
-        user_params['password'] = get_random_string(12)
-        return User(**user_params)
+        return KAISTProfile(**user_params)
+    
 
 class LoginError(models.Model):
     email = models.EmailField()

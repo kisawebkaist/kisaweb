@@ -3,6 +3,7 @@ from .models import Footer, NavBar
 from events.models import Event
 from aboutus.models import DivisionContent
 from django.conf import settings
+from django.urls import reverse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 import rest_framework.status
@@ -40,7 +41,7 @@ class MiscAPIView(APIView):
 
     def get(self, request, format=None):
         for endpoint in MiscAPIView.klass_from_endpoint:
-            if request.path == '/api/misc/'+endpoint:
+            if request.path == reverse('misc') + endpoint:
                 klass = MiscAPIView.klass_from_endpoint[endpoint]
                 serializer = klass.serializer_class(klass.get_deployed())
                 return Response(serializer.data)
