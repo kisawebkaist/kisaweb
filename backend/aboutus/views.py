@@ -2,7 +2,12 @@ from django.shortcuts import render
 from django.db.models import F
 from datetime import datetime
 from django.conf import settings
-from .models import MainContent, Member, InternalBoardMember, DivisionContent, ConstitutionPDF
+from .models import \
+    MainContent, \
+    Member, \
+    InternalBoardMember, \
+    DivisionContent,  \
+    ConstitutionPDF
 
 def aboutus(request):
     current_date = datetime.today()
@@ -28,3 +33,22 @@ def aboutus(request):
         'request_scheme'            : request_scheme
     }
     return render(request, 'aboutus/aboutus.html', context)
+
+from .serializers import \
+    DivisionSerializer, \
+    InternalBoardMemberSerializer, \
+    MemberSerializer
+from rest_framework.viewsets import \
+    ReadOnlyModelViewSet
+
+class MemberViewset(ReadOnlyModelViewSet):
+    serializer_class = MemberSerializer
+    queryset = Member.objects.all()
+
+class DivisionViewset(ReadOnlyModelViewSet):
+    serializer_class = DivisionSerializer
+    queryset = DivisionContent.objects.all()
+
+class InternalBoardMemberViewset(ReadOnlyModelViewSet):
+    serializer_class = InternalBoardMemberSerializer
+    queryset = InternalBoardMember.objects.all()
