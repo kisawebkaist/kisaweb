@@ -1,23 +1,18 @@
-import base64, json, os, secrets, urllib.parse
+import base64, json, os, logging, secrets, urllib.parse
 
-from django.http.response import HttpResponseRedirect
-from web.settings import SECRET_KEY, ALLOWED_HOSTS
+from django.http.response import HttpResponseRedirect, HttpResponseForbidden
+from web.settings import SECRET_KEY
 
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse
 from django.contrib.auth import login, logout
 from django.shortcuts import render
 from django.shortcuts import redirect
 
-from sso.models import User, LoginError
-from django.core.validators import URLValidator
-from django.core.exceptions import ValidationError
-from django.views import View
-from django.http import HttpResponse
+from .models import User
+
 from django.views.decorators.http import require_http_methods
-
-
-from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from django.utils.translation import gettext as _
 
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
@@ -26,45 +21,12 @@ KSSO_LOGIN_URL = os.environ.get('KSSO_LOGIN_URL')
 KSSO_LOGOUT_URL = os.environ.get('KSSO_LOGOUT_URL')
 
 KSSO_CLIENT_ID = os.environ.get('KSSO_CLIENT_ID')
-KSSO_STATE_KEY = os.environ.get('KSSO_STATE_KEY')
 
 CAIS_AES_ID_SECRET = os.environ.get('KSSO_SECRET_KEY')
 SA_AES_ID_SECRET = os.environ.get('KSSO_SECRET_KEY')
 
-keys_and_fields = [
-    ('kaist_uid', 'kaist_uid'), 
-    ('ku_kname', 'korean_name'), 
-    ('displayname', 'full_name'), 
-    ('sn', 'first_name'), 
-    ('givenname', 'last_name'),
-    ('ku_born_date', 'dob'), 
-    ('c', 'nationality'), 
-    ('ku_sex', 'sex'),
-    ('mail', 'kaist_email'), 
-    ('ku_ch_mail', 'external_email'),
-    ('ku_employee_number', 'employee_number'), 
-    ('ku_std_no', 'student_number'), 
-    ('ku_acad_org', 'bachelors_department_code'), 
-    ('ku_acad_name', 'bachelors_department_name'), 
-    ('ku_campus', 'campus'),
-    ('title', 'title_english'), 
-    ('ku_psft_user_status', 'student_status_english'), 
-    ('ku_psft_user_status_kor', 'student_status_korean'),
-    ('ku_acad_prog_code', 'degree_code'), 
-    ('ku_acad_prog', 'degree_name_korean'), 
-    ('ku_acad_prog_eng', 'degree_name_english'),
-    ('employeeType', 'user_group'), 
-    ('ku_prog_effdt', 'student_admission_datetime'), 
-    ('ku_stdnt_type_id', 'student_type_id'), 
-    ('ku_stdnt_type_class', 'student_type_class'), 
-    ('ku_category_id', 'student_category_id'),
-    ('ku_prog_start_date', 'student_enrollment_date'), 
-    ('ku_prog_end_date', 'student_graduation_date'),
-    ('acad_ebs_org_id', 'student_department_id'), 
-    ('uid', 'sso_id'),
-    ('acad_ebs_org_name_eng', 'student_department_name_english'), 
-    ('acad_ebs_org_name_kor', 'student_department_name_korean'),
-]
+
+logger = logging.getLogger(__name__)
 
 def ensure_relative_url(url):
     if url[0] == '/':
@@ -89,84 +51,61 @@ def decrypt(data, state, host) :
 
 @require_http_methods(['POST'])
 def login_view(request):
-
     next = request.POST.get('next', '/')
+
     if request.user and request.user.is_authenticated:
         return HttpResponseRedirect(ensure_relative_url(next))
 
-    if request.session.get(KSSO_STATE_KEY) is None:
+    if request.session.get('state') is None:
         state = secrets.token_hex(16)
-        request.session[KSSO_STATE_KEY] = state
+        request.session['state'] = state
     else:
-        state = request.session[KSSO_STATE_KEY]
+        state = request.session['state']
 
     data = {
         'client_id': KSSO_CLIENT_ID,
-        'redirect_url': request.build_absolute_uri(reverse('login-response')) + '?next=' + next,
+        'redirect_url': request.build_absolute_uri(reverse('login-response')) + '?next=' + urllib.parse.quote_plus(next),
         'state': state,
     }
-
-    redirect_url = f"{KSSO_LOGIN_URL}?{'&'.join([f'{key}={value}' for key, value in data.items()])}"
-    return redirect(redirect_url)
+    return HttpResponseRedirect(f"{KSSO_LOGIN_URL}?{urllib.parse.urlencode(data)}")
 
 @require_http_methods(['POST'])
 @csrf_exempt
 def login_response_view(request):
+    next = ensure_relative_url(request.POST.get('next', '/'))
+    state = request.POST.get('state', '0'*16)
+    raw_result = request.POST.get('result', '')
+    success = request.POST.get('success')
+    http_host = request.META.get('HTTP_HOST') # host header validation is already done by middleware
+    origin = request.META.get('HTTP_ORIGIN')
 
-    if bool(request.POST.get('success')):
 
-        params = {
-            'state': request.POST.get('state', ''),
-            'raw_result': request.POST.get('result', ''),
-            'http_host': request.META.get('HTTP_HOST', ''),
-            'next': request.GET.get('next', '/')
-        }
-        
-        response = redirect('login-handler')
-        response['Location'] = f'{response["Location"]}?{"&".join([f"{key}={urllib.parse.quote(value)}" for key, value in params.items()])}' 
-        
-        return response
+    if not origin == 'https://iam2.kaist.ac.kr':
+        logger.info(f"Invalid \"Origin\" header: {origin} in login-response (state: {state}, raw_result:{raw_result}, user-agent: {request.META.get('HTTP_USER_AGENT')})")
+        return HttpResponseForbidden(_(f'This page requires that "Origin" header to be "https://iam2.kaist.ac.kr" to prevent cross-subdomain <a href="https://en.wikipedia.org/wiki/Cross-site_request_forgery">CSRF,s</a>.'))
     
-    else:
+    if request.user.is_authenticated:
+        return HttpResponseRedirect(next)
+
+    # TODO: to find out if bool is even the right function to use here
+    if not bool(success):
         return redirect('login-error')
 
-# TODO: merge this to above post with an origin header check?
-def login_handler_view(request):
-
-    next = request.GET.get('next', '/')
-    if request.user and request.user.is_authenticated:
-        return HttpResponseRedirect(ensure_relative_url(next))
+    saved_state = request.session.get('state')
+    del request.session['state']
     
-    context = request.GET
-    saved_state = request.session.get(KSSO_STATE_KEY)
-    del request.session[KSSO_STATE_KEY]
-    
-    if saved_state is None or saved_state != context.get('state'):
+    if saved_state is None or saved_state != state:
         return redirect('login-error')
     
-    #TODO: proper error handling and logging
     try:
-        result = decrypt(context.get('raw_result'), context.get('state'), context.get('http_host') [:2]).decode('utf-8')
-        result = json.loads(result, encoding='utf-8')
+        result = decrypt(raw_result, state, http_host[:2]).decode('utf-8')
+        result = json.loads(result)
 
         user_info = result['dataMap']['USER_INFO']
             
         if not User.objects.filter(pk=user_info['kaist_uid']).exists():
-            user_params = {}
-            for key, field in keys_and_fields:
-                if key in user_info:
-                    user_params[field] = user_info.get(key)
-
-            username = user_params['full_name']
-            for c in "!#$%^&*(),./<>?\|":
-                username = username.replace(c, '')
-            username = username.strip()
-            username = username.replace(' ', '_')
-            user_params['username'] = f"{username}_{user_params['kaist_uid']}"
-            user = User(**user_params)
-
+            user = User.from_info_json(user_info)
             user.full_clean()
-            
             user.save()
         else:
             user = User.objects.get(pk=user_info['kaist_uid'])
@@ -175,20 +114,26 @@ def login_handler_view(request):
         return HttpResponseRedirect(ensure_relative_url(next))
     
     except Exception as e:
+        logger.exception('An exception occurred in login-response while processing result. (state: {state}, raw_result: {result})')
         return redirect('login-error')
+
 
 def login_error_view(request):
     return render(request, 'sso/login_error.html', {})
 
+
+@require_http_methods(['POST'])
 def logout_view(request):
+    next = ensure_relative_url(request.POST.get('next', '/'))
+
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(next)
+
+    logout(request)
+    
     data = {
         'client_id': KSSO_CLIENT_ID,
-        'redirect_url': request.build_absolute_uri(reverse('logout-response')),
+        'redirect_url': request.build_absolute_uri(next),
     }
-    location = f"{KSSO_LOGOUT_URL}?{'&'.join([f'{key}={value}' for key, value in data.items()])}"
-    response = HttpResponseRedirect(location)
-    return response
 
-def logout_response_view(request):
-    logout(request)
-    return redirect('/')
+    return HttpResponseRedirect(f"{KSSO_LOGOUT_URL}?{urllib.parse.urlencode(data)}")

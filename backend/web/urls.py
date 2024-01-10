@@ -26,7 +26,7 @@ urlpatterns = [
 
     path('tinymce/', include('tinymce.urls')),
     path('maintenance-mode/', include('maintenance_mode.urls')),
-    path('api/', include('core.urls')),
+    path('', include('core.urls')),
 ]
 
 # Add static file urls
