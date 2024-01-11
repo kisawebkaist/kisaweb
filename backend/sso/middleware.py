@@ -1,13 +1,24 @@
+import base64, json, logging, os
 from django.core.exceptions import ImproperlyConfigured
 from django.middleware.csrf import rotate_token
 from django.utils.functional import SimpleLazyObject
+from django.views.decorators.debug import sensitive_variables
+
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import unpad
 
 from .models import KAISTProfile
 
+CAIS_AES_ID_SECRET = os.environ.get('KSSO_SECRET_KEY')
+SA_AES_ID_SECRET = os.environ.get('KSSO_SECRET_KEY')
+
 SESSION_KEY = 'kaist_profile'
+CACHE_KEY = '_cached_kaist_profile'
+
+logger = logging.getLogger(__name__)
 
 def get_kaist_profile(request):
-    if not hasattr(request, '_cached_kaist_profile'):
+    if not hasattr(request, CACHE_KEY):
         session_key = request.session.get(SESSION_KEY)
         if session_key:
             request._cached_kaist_profile = KAISTProfile.objects.get(pk=int(session_key))
@@ -16,6 +27,18 @@ def get_kaist_profile(request):
         else:
             request._cached_kaist_profile = KAISTAnonymousUser()
     return request._cached_kaist_profile
+
+def decrypt(data, state, host) :
+    BS = AES.block_size 
+    if host in ('ka', 'co','ca') :
+        key = (CAIS_AES_ID_SECRET+str(state))[80:96] # 128 bit
+    else :
+        key = (SA_AES_ID_SECRET+str(state))[80:96] # 128 bit
+    iv=key[:16] # 128 bit
+    cipher = AES.new(key.encode("utf8"), AES.MODE_CBC, IV=iv.encode("utf8"))
+    deciphed = cipher.decrypt(base64.b64decode(data))   
+    deciphed = unpad(deciphed, BS)
+    return deciphed
 
 class KAuthMiddleware:
     def __init__(self, get_response):
@@ -38,6 +61,20 @@ class KAuthMiddleware:
 class KAISTAnonymousUser:
     is_authenticated = False
 
+@sensitive_variables("raw_result", "state")
+def kauthenticate(request, raw_result, state):
+    try:
+        http_host = request.META.get('HTTP_HOST')
+        result = decrypt(raw_result, state, http_host[:2]).decode('utf-8')
+        result = json.loads(result)
+        user = KAISTProfile.from_info_json(result['dataMap']['USER_INFO'])
+        user.full_clean()
+        user.save()
+        return user
+    except:
+        logging.exception(f'Login failed: (raw_result: {raw_result}, state: {state})')
+        return None
+
 def klogin(request, kaist_profile: KAISTProfile):
     if SESSION_KEY in request.session:
         session_key = int(request.session.get(SESSION_KEY))
@@ -46,9 +83,12 @@ def klogin(request, kaist_profile: KAISTProfile):
     else:
         request.session.cycle_key()
     request.session[SESSION_KEY] = str(kaist_profile.pk)
-    print(request.session[SESSION_KEY])
+
+    if hasattr(request, "kaist_profile"):
+        request.kaist_profile = kaist_profile
+
     rotate_token(request)
 
 def klogout(request):
     request.session.flush()
-    request.user = KAISTAnonymousUser()
+    request.kaist_profile = KAISTAnonymousUser()

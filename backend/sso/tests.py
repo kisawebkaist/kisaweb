@@ -7,7 +7,7 @@ from django.test import TestCase, Client
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad
 
-from .views import SA_AES_ID_SECRET
+from .middleware import SA_AES_ID_SECRET
 
 # Create your tests here.
 def generate_user_info(
@@ -73,7 +73,7 @@ class LoginTest(TestCase):
             'X-CSRFToken': csrftoken,
             'Host': 'localhost'
         }
-        r = client.post(reverse('login'), headers=headers)
+        r = client.post(reverse('klogin'), headers=headers)
         state = parse_qs(urlparse(r.headers['Location']).query)['state'][0]
 
         # login-reponse POST request from iam2
@@ -85,18 +85,18 @@ class LoginTest(TestCase):
             'success': 'true'
         }
         r = client.post(
-            reverse('login-response'),
+            reverse('klogin-response'),
             payload,
             headers = headers
         )
         self.assertEqual(r.status_code, 302)
-        self.assertNotEqual(r.headers['Location'], reverse('login-error'))
-
+        self.assertNotEqual(r.headers['Location'], reverse('klogin-error'))
+        self.assertNotEqual(csrftoken, client.cookies['csrftoken'].value) 
 
         # logout POST request from iam2
         headers['X-CSRFToken'] = client.cookies['csrftoken'].value
         del headers['Origin']
         r = client.post(
-            reverse('logout'),
+            reverse('klogout'),
             headers = headers
         )
