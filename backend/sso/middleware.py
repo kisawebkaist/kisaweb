@@ -1,4 +1,4 @@
-import base64, json, logging, os
+import base64, json, logging, os, datetime
 from django.core.exceptions import ImproperlyConfigured
 from django.middleware.csrf import rotate_token
 from django.utils.functional import SimpleLazyObject
@@ -68,6 +68,7 @@ def kauthenticate(request, raw_result, state):
         result = decrypt(raw_result, state, http_host[:2]).decode('utf-8')
         result = json.loads(result)
         user = KAISTProfile.from_info_json(result['dataMap']['USER_INFO'])
+        user.last_login = datetime.datetime.now()
         user.full_clean()
         user.save()
         return user

@@ -6,6 +6,7 @@ from . import views
 
 urlpatterns = [
     path('', views.homepage, name='homepage'),
+    path('check-login-status', views.check_login_status_view, name='check-login-status'),
     path('important-links', views.important_links, name='important_links'),
 
     path('events/', include('events.urls')),

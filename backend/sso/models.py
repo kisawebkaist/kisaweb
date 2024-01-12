@@ -38,7 +38,7 @@ class KAISTProfile(models.Model):
     degree_name_korean = models.CharField(max_length=100, blank=True, null=True)  # ku_acad_prog
     degree_name_english = models.CharField(max_length=100, blank=True, null=True)  # ku_acad_prog_eng
 
-    user_group = models.CharField(max_length=10, blank=True, null=True)  # employeeType
+    employee_type = models.CharField(max_length=10, blank=True, null=True)  # employeeType
     student_admission_datetime = models.DateTimeField(blank=True, null=True)  # ku_prog_effdt
     student_type_id = models.IntegerField(blank=True, null=True)  # ku_stdnt_type_id
     student_type_class = models.CharField(max_length=20, blank=True, null=True)  # ku_stdnt_type_class
@@ -51,6 +51,8 @@ class KAISTProfile(models.Model):
     sso_id = models.CharField(max_length=100, blank=True, null=True)  # uid
     student_department_name_english = models.CharField(max_length=100, blank=True, null=True)  # acad_ebs_org_name_eng
     student_department_name_korean = models.CharField(max_length=100, blank=True, null=True)  # acad_ebs_org_name_kor
+
+    last_login = models.DateTimeField(blank=False)
 
     keys_and_fields = [
         ('kaist_uid', 'kaist_uid'), 
@@ -74,7 +76,7 @@ class KAISTProfile(models.Model):
         ('ku_acad_prog_code', 'degree_code'), 
         ('ku_acad_prog', 'degree_name_korean'), 
         ('ku_acad_prog_eng', 'degree_name_english'),
-        ('employeeType', 'user_group'), 
+        ('employeeType', 'employee_type'), 
         ('ku_prog_effdt', 'student_admission_datetime'), 
         ('ku_stdnt_type_id', 'student_type_id'), 
         ('ku_stdnt_type_class', 'student_type_class'), 
@@ -96,7 +98,7 @@ class KAISTProfile(models.Model):
             if key in user_info:
                 user_params[field] = user_info.get(key)
         return KAISTProfile(**user_params)
-    
+
 
 class LoginError(models.Model):
     email = models.EmailField()

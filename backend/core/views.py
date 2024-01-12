@@ -1,3 +1,5 @@
+from django.contrib.auth import authenticate
+from django.http import JsonResponse
 from django.shortcuts import render, HttpResponse, redirect
 from django.views.decorators.csrf import ensure_csrf_cookie
 from .models import Footer, NavBar
@@ -6,8 +8,9 @@ from aboutus.models import DivisionContent
 from django.conf import settings
 from django.urls import reverse
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
-import rest_framework.status
+import rest_framework.status as status
 
 # Create your views here.
 
@@ -31,6 +34,14 @@ def homepage(request):
 def important_links(request):
     return render(request, 'core/important_links.html')
 
+@api_view(['GET'])
+@ensure_csrf_cookie
+def check_login_status_view(request):
+    return JsonResponse({
+        'member_logined': request.user.is_authenticated,
+        'ksso_logined': request.kaist_profile.is_authenticated,
+    })
+
 class MiscAPIView(APIView):
     klass_from_endpoint = {
         'navbar': NavBar,
@@ -43,4 +54,4 @@ class MiscAPIView(APIView):
                 klass = MiscAPIView.klass_from_endpoint[endpoint]
                 serializer = klass.serializer_class(klass.get_deployed())
                 return Response(serializer.data)
-        return Response(status=rest_framework.status.HTTP_404_NOT_FOUND)
+        return JsonResponse(status=status.HTTP_404_NOT_FOUND)

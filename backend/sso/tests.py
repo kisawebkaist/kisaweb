@@ -1,13 +1,17 @@
 import json, base64
+from urllib.parse import urlencode
 from urllib.parse import parse_qs, urlparse
 
 from django.urls import reverse
-from django.test import TestCase, Client
+
+from rest_framework.test import APIClient, APITestCase
+import rest_framework.status as status
 
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad
 
 from .middleware import SA_AES_ID_SECRET
+from .views import KSSO_SITE
 
 # Create your tests here.
 def generate_user_info(
@@ -60,12 +64,14 @@ def encrypt(user_info: dict, state: str)->str:
 
     return base64.b64encode(cipher.encrypt(result_padded)).decode()
 
-class LoginTest(TestCase):
+class LoginTest(APITestCase):
 
     def test_normal_login_logout(self):
         # fetch csrf token
-        client = Client(enforce_csrf_checks=True)
-        client.get('/')
+        client = APIClient(enforce_csrf_checks=True)
+        r = client.get('/check-login-status')
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+
         csrftoken = client.cookies['csrftoken'].value
 
         # login POST request
@@ -73,11 +79,16 @@ class LoginTest(TestCase):
             'X-CSRFToken': csrftoken,
             'Host': 'localhost'
         }
-        r = client.post(reverse('klogin'), headers=headers)
+        r = client.post(
+            reverse('klogin'),
+            {'next': '/'},
+            headers=headers
+            )
+        self.assertEqual(r.status_code, status.HTTP_302_FOUND)
         state = parse_qs(urlparse(r.headers['Location']).query)['state'][0]
 
         # login-reponse POST request from iam2
-        headers['Origin'] = 'https://iam2.kaist.ac.kr'
+        headers['Origin'] = KSSO_SITE
         del headers['X-CSRFToken']
         payload = {
             'result': encrypt(generate_user_info(), state),
@@ -86,11 +97,11 @@ class LoginTest(TestCase):
         }
         r = client.post(
             reverse('klogin-response'),
-            payload,
-            headers = headers
+            urlencode(payload),
+            headers = headers,
+            content_type='application/x-www-form-urlencoded'
         )
-        self.assertEqual(r.status_code, 302)
-        self.assertNotEqual(r.headers['Location'], reverse('klogin-error'))
+        self.assertEqual(r.status_code, status.HTTP_302_FOUND)
         self.assertNotEqual(csrftoken, client.cookies['csrftoken'].value) 
 
         # logout POST request from iam2
@@ -100,3 +111,4 @@ class LoginTest(TestCase):
             reverse('klogout'),
             headers = headers
         )
+        self.assertEqual(r.status_code, status.HTTP_302_FOUND)
