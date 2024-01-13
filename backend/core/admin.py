@@ -1,6 +1,5 @@
 from django.contrib import admin
 
-from .models import User
 # from adminsortable.admin import SortableAdmin
 
 # # Register your models here.
@@ -12,5 +11,3 @@ from .models import User
 
 # admin.site.register(Footer)
 # admin.site.register(Navbar)
-
-admin.site.register(User)

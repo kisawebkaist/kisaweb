@@ -1,13 +1,11 @@
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
-from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
 
 from tinymce.models import HTMLField
 
-from sso.models import KAISTProfile
 from .utils import JSONModel, JSONModelSerializer
 
 # Validators
@@ -129,9 +127,3 @@ class NavBarSerializer(JSONModelSerializer):
 
 class FooterSerializer(JSONModelSerializer):
     model_class = Footer
-
-class User(AbstractUser):
-    kaist_profile = models.OneToOneField(KAISTProfile, on_delete=models.CASCADE)
-
-    def get_kaist_profile(self):
-        return self.kaist_profile

@@ -77,6 +77,7 @@ INSTALLED_APPS = [
     "django_pagination_bootstrap", #pagination for multimedia page
 
     ## ---- Created by KISA webteam ---- ##
+    'auth_mem',
     'core',  # core pages (eg. homepage, about page, etc)
     'sso',
     'events',
@@ -213,7 +214,7 @@ DATETIME_INPUT_FORMATS += [
 ]
 
 # Custom User model
-AUTH_USER_MODEL = 'core.User'
+AUTH_USER_MODEL = 'auth_mem.User'
 
 # X_FRAME_OPTIONS = 'SAMEORIGIN'  # Required by django-3-jet dashboard
 
@@ -282,9 +283,22 @@ TINYMCE_DEFAULT_CONFIG = {
     "custom_undo_redo_levels": 10,
 }
 
-X_FRAME_OPTIONS = 'SAMEORIGIN'
+X_FRAME_OPTIONS = 'DENY'
 
 # Url Shortener Url Settings
 URL_SHORTENER_PREFIX    = 'short-link'
 
 DEFAULT_AUTO_FIELD  = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+        ],
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
+    'DEFAULT_THROTTLE_CLASSES': [
+        'core.throttling.ScopedRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'usernamecheck': '40/day',
+    }
+}

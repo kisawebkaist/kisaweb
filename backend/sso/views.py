@@ -6,10 +6,12 @@ from django.urls import reverse
 from django.utils.translation import gettext as _
 
 from rest_framework.decorators import api_view, parser_classes
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.parsers import FormParser
 import rest_framework.status as status
 
 from .middleware import klogin, klogout, kauthenticate
+from core.exceptions import IncorrectEndpointException
 
 KSSO_LOGIN_URL = os.environ.get('KSSO_LOGIN_URL')
 KSSO_LOGOUT_URL = os.environ.get('KSSO_LOGOUT_URL')
@@ -40,7 +42,7 @@ def login_view(request):
 
     Here, since the redirect endpoint is at the backend-side, it will take the responsibility for redirect
     """
-    next = request.data.get('next')
+    next = request.data.get('next', '/')
 
     if request.kaist_profile.is_authenticated or request.user.is_authenticated:
         return HttpResponseRedirect(ensure_relative_url(next))
@@ -81,33 +83,29 @@ def login_response_view(request):
     if not origin == KSSO_SITE:
         logger.info(f"Invalid \"Origin\" header: {origin} in login-response (state: {state}, raw_result:{raw_result}, user-agent: {request.META.get('HTTP_USER_AGENT')})")
         # the response won't even be readable in a browser unless it comes from the same origin
-        return JsonResponse(
-            {'detail': _(f'This page requires that "Origin" header to be "{KSSO_SITE}" to prevent cross-subdomain csrf.')},
-            status = status.HTTP_403_FORBIDDEN
-            )
+        raise PermissionDenied(detail=_(f'This page requires that "Origin" header to be "{KSSO_SITE}" to prevent cross-subdomain csrf.'))
     
     if request.kaist_profile.is_authenticated or request.user.is_authenticated:
         return HttpResponseRedirect(next, headers=headers)
-    
-    error_response = JsonResponse(
-        {'detail': _('Login failed: ')}, 
-        headers = headers,
-        status = status.HTTP_400_BAD_REQUEST
-        )
+
     
     # TODO: to find out if bool is even the right function to use here
     if not bool(success):
-        return error_response
+        return JsonResponse(
+            {'detail': _('Login failed.')}, 
+            headers = headers,
+            status = status.HTTP_400_BAD_REQUEST
+            )
 
     saved_state = request.session.get('state')
     del request.session['state']
     
     if saved_state is None or saved_state != state:
-        return error_response
+        raise PermissionDenied(detail=_("Incorrect credentials provided."))
     
     user = kauthenticate(request, raw_result, state)
     if user is None:
-        return error_response
+        raise PermissionDenied(detail=_("Incorrect credentials provided."))
     
     klogin(request, user)
 
@@ -129,10 +127,7 @@ def logout_view(request):
     - Make a post request and follow the redirect
     """
     if request.user.is_authenticated:
-        return JsonResponse(
-            {'detail': _("SSO logout failed: please log out using member logout.")},
-            status = status.HTTP_418_IM_A_TEAPOT
-        )
+        raise IncorrectEndpointException(detail="Use the other endpoint to logout.")
 
     klogout(request)
     

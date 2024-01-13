@@ -1,47 +1,34 @@
-from django.contrib.auth import authenticate
 from django.http import JsonResponse
-from django.shortcuts import render, HttpResponse, redirect
 from django.views.decorators.csrf import ensure_csrf_cookie
-from .models import Footer, NavBar
-from events.models import Event
-from aboutus.models import DivisionContent
-from django.conf import settings
+from django.utils.translation import gettext as _
 from django.urls import reverse
-from rest_framework.views import APIView
+
 from rest_framework.decorators import api_view
+from rest_framework.views import APIView
 from rest_framework.response import Response
 import rest_framework.status as status
 
-# Create your views here.
+from .models import Footer, NavBar
 
-@ensure_csrf_cookie
-def homepage(request):
-    # if settings.MAINTENANCE_MODE == True:
-    #     return redirect('important_links')
-    # else:
-    #     num_shown_events = 6
-    #     events = Event.objects.all().order_by("-id")
-    #     latest_events = events[: min(num_shown_events, len(events))]
-    #     division_list = DivisionContent.objects.all()
-    #     colors = ['red', 'green', 'orange', 'blue', 'black', 'purple']
-    #     context = {
-    #         "event_list": latest_events,
-    #         "division_list": list(zip(division_list, colors)),
-    #     }
-    #     return render(request, 'core/homepage.html', context)
-    return HttpResponse("Hi")
+# def important_links(request):
+#     return render(request, 'core/important_links.html')
 
-def important_links(request):
-    return render(request, 'core/important_links.html')
-
+# TODO: Discuss with frontend devs for format
 @api_view(['GET'])
 @ensure_csrf_cookie
-def check_login_status_view(request):
+def get_state_view(request):
+    """
+    For Frontend
+    ------------
+    - Everytime the page loads, make a request to this endpoint to fetch the state information stored in backend.
+    - This will also set the csrftoken cookie
+    """
     return JsonResponse({
         'member_logined': request.user.is_authenticated,
         'ksso_logined': request.kaist_profile.is_authenticated,
     })
 
+# TODO: poorly designed, rewrite
 class MiscAPIView(APIView):
     klass_from_endpoint = {
         'navbar': NavBar,

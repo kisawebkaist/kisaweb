@@ -69,7 +69,7 @@ class LoginTest(APITestCase):
     def test_normal_login_logout(self):
         # fetch csrf token
         client = APIClient(enforce_csrf_checks=True)
-        r = client.get('/check-login-status')
+        r = client.get(reverse('state'))
         self.assertEqual(r.status_code, status.HTTP_200_OK)
 
         csrftoken = client.cookies['csrftoken'].value

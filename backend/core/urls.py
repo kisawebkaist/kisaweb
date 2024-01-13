@@ -5,9 +5,7 @@ from web.settings import URL_SHORTENER_PREFIX
 from . import views
 
 urlpatterns = [
-    path('', views.homepage, name='homepage'),
-    path('check-login-status', views.check_login_status_view, name='check-login-status'),
-    path('important-links', views.important_links, name='important_links'),
+    path('state', views.get_state_view, name='state'),
 
     path('events/', include('events.urls')),
     path('election/', include('election.urls')),
