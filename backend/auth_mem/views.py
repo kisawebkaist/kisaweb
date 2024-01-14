@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.http import JsonResponse
+from django.utils.translation import gettext as _
 
 from rest_framework.decorators import api_view, throttle_classes
 from rest_framework.exceptions import ParseError, PermissionDenied, ValidationError
