@@ -294,11 +294,15 @@ REST_FRAMEWORK = {
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser',
         ],
+
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
+
     'DEFAULT_THROTTLE_CLASSES': [
         'core.throttling.ScopedRateThrottle',
     ],
+
     'DEFAULT_THROTTLE_RATES': {
         'usernamecheck': '40/day',
+        'verification': '5/day'
     }
 }

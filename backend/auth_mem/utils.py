@@ -62,10 +62,11 @@ class MailVerificationCode:
         self.code = code
         self.email = email
         self.available_attempts = available_attempts
+        self.extra_info = None
 
     @classmethod
     def new(cls, email):
-        return MailVerificationCode(base64.b64encode(secrets.token_bytes(8)).decode(), email, cls.MAX_ATTEMPTS)
+        return MailVerificationCode(base64.b64encode(secrets.token_bytes(3)).decode(), email, cls.MAX_ATTEMPTS)
 
     @classmethod
     def __get_session_key(cls, context:str):
@@ -90,34 +91,44 @@ class MailVerificationCode:
             return (None, code_obj.available_attempts)
         
         del session[session_key]
-        return (code_obj.email, 0)
+        return (code_obj, 0)
     
     @classmethod
-    def attempt_pw(cls, session, code)->(Union[str, None], int):
+    def attempt_pw(cls, session, code:str)->(Union[str, None], int):
         """
         Returns (mail, num of available attempts)
         - if the attempt fails, mail will be None
         """
-        return cls.__attempt_context(session, code, cls.PW_CHANGE)
+        code_obj, num_avai_attempts = cls.__attempt_context(session, code, cls.PW_CHANGE)
+        if code_obj is None:
+            return (None, num_avai_attempts)
+        return (code_obj.extra_info['password'], num_avai_attempts)
     
     @classmethod
-    def attempt_reg(cls, session, code)->(Union[str, None], int):
+    def attempt_reg(cls, session, code:str)->(Union[str, None], int):
         """
-        Return (mail, num of available attempts)
-        - if the attempt fails, mail will None
+        Return (password, num of available attempts)
+        - if the attempt fails, password will None
         """
-        return cls.__attempt_context(session, code, cls.REGISTRATION)
+        code_obj, num_avai_attempts =  cls.__attempt_context(session, code, cls.REGISTRATION)
+        if code_obj is None:
+            return (None, num_avai_attempts)
+        return (code_obj.email, num_avai_attempts)
 
     @classmethod
     def deserialize(cls, json_str):
         dict_obj = json.loads(json_str)
-        return cls(dict_obj['code'], dict_obj['code'], dict_obj['failed_attempts'])
+        code_obj = cls(dict_obj['code'], dict_obj['code'], dict_obj['available_attempts'])
+        if 'extra_info' in dict_obj and dict_obj['extra_info'] is not None:
+            code_obj.extra_info = dict_obj['extra_info']
+        return code_obj
     
     def saveForMailRegistraion(self, session, username):
         session[self.__get_session_key(self.REGISTRATION)] = self.serialize()
         self.send_mail(f"you requested to register this mail for a KISA account with username {username}.")
 
-    def saveForPasswordChange(self, session):
+    def saveForPasswordChange(self, session, password):
+        self.extra_info = {'password': password}
         session[self.__get_session_key(self.PW_CHANGE)] = self.serialize()
         self.send_mail("you requested for a password change for your KISA account.")
 
@@ -126,7 +137,8 @@ class MailVerificationCode:
             {
                 'code': self.code,
                 'email': self.email,
-                'available_attempts': self.available_attempts
+                'available_attempts': self.available_attempts,
+                'extra_info': getattr(self, 'extra_info', None)
             }
         )
     
@@ -141,9 +153,7 @@ class MailVerificationCode:
         encoded_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
 
         create_message = {"raw": encoded_message}
-        send_message  = (
-            GMailAPI.client.service.users()
-            .messages()
-            .send(userId="me", body=create_message)
-            .execute()
-        )
+        try:
+            GMailAPI.client.service.users().messages().send(userId="me", body=create_message).execute()
+        except GHttpError as e:
+            logger.exception(f"An error occured while sending a mail: {e}")

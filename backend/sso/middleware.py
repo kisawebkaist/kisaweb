@@ -28,12 +28,9 @@ def get_kaist_profile(request):
             request._cached_kaist_profile = KAISTAnonymousUser()
     return request._cached_kaist_profile
 
-def decrypt(data, state, host) :
+def decrypt(data, state) :
     BS = AES.block_size 
-    if host in ('ka', 'co','ca') :
-        key = (CAIS_AES_ID_SECRET+str(state))[80:96] # 128 bit
-    else :
-        key = (SA_AES_ID_SECRET+str(state))[80:96] # 128 bit
+    key = (SA_AES_ID_SECRET+str(state))[80:96] # 128 bit
     iv=key[:16] # 128 bit
     cipher = AES.new(key.encode("utf8"), AES.MODE_CBC, IV=iv.encode("utf8"))
     deciphed = cipher.decrypt(base64.b64decode(data))   
@@ -64,8 +61,7 @@ class KAISTAnonymousUser:
 @sensitive_variables("raw_result", "state")
 def kauthenticate(request, raw_result, state):
     try:
-        http_host = request.META.get('HTTP_HOST')
-        result = decrypt(raw_result, state, http_host[:2]).decode('utf-8')
+        result = decrypt(raw_result, state).decode('utf-8')
         result = json.loads(result)
         user = KAISTProfile.from_info_json(result['dataMap']['USER_INFO'])
         user.last_login = datetime.datetime.now()

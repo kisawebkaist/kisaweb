@@ -92,12 +92,17 @@ class KAISTProfile(models.Model):
     is_authenticated = True
 
     @classmethod
-    def from_info_json(cls, user_info: dict)->'KAISTProfile':
+    def from_info_json(cls, user_info: dict):
         user_params = dict()
+        query = cls.objects.filter(pk=user_info['kaist_uid'])
+        if query.exists():
+            user = query[0]
+        else:
+            user = KAISTProfile()
         for key, field in KAISTProfile.keys_and_fields:
             if key in user_info:
-                user_params[field] = user_info.get(key)
-        return KAISTProfile(**user_params)
+                setattr(user, field, user_info[key])
+        return user
 
 
 class LoginError(models.Model):

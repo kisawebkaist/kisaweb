@@ -1,4 +1,4 @@
-import abc,inspect,os,json
+import abc,inspect,os,json, urllib
 from collections import OrderedDict
 from typing import Optional, Union
 from rest_framework import serializers
@@ -159,3 +159,11 @@ def get_ordered_version(obj:Union[list, dict, OrderedDict]):
         for key, value in obj.items():
             obj[key] = get_ordered_version(value)
     return obj
+
+def ensure_relative_url(url):
+    if url[0] == '/':
+        return url
+    try:
+        return urllib.parse.urlparse(url)._replace(scheme='', netloc='').geturl()
+    except:
+        return '/'

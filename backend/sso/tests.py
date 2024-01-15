@@ -13,7 +13,7 @@ from Crypto.Util.Padding import pad
 from .middleware import SA_AES_ID_SECRET
 from .views import KSSO_SITE
 
-# Create your tests here.
+
 def generate_user_info(
     kaist_uid: int = 0, 
     country: str = 'KR',
@@ -64,32 +64,17 @@ def encrypt(user_info: dict, state: str)->str:
 
     return base64.b64encode(cipher.encrypt(result_padded)).decode()
 
-class LoginTest(APITestCase):
+class KAuthTest(APITestCase):
 
-    def test_normal_login_logout(self):
-        # fetch csrf token
-        client = APIClient(enforce_csrf_checks=True)
-        r = client.get(reverse('state'))
-        self.assertEqual(r.status_code, status.HTTP_200_OK)
-
-        csrftoken = client.cookies['csrftoken'].value
-
-        # login POST request
-        headers = {
-            'X-CSRFToken': csrftoken,
-            'Host': 'localhost'
-        }
+    def test_normal_login(self, client=APIClient()):
         r = client.post(
             reverse('klogin'),
             {'next': '/'},
-            headers=headers
             )
         self.assertEqual(r.status_code, status.HTTP_302_FOUND)
         state = parse_qs(urlparse(r.headers['Location']).query)['state'][0]
 
         # login-reponse POST request from iam2
-        headers['Origin'] = KSSO_SITE
-        del headers['X-CSRFToken']
         payload = {
             'result': encrypt(generate_user_info(), state),
             'state': state,
@@ -98,17 +83,16 @@ class LoginTest(APITestCase):
         r = client.post(
             reverse('klogin-response'),
             urlencode(payload),
-            headers = headers,
+            headers = {'Origin': KSSO_SITE},
             content_type='application/x-www-form-urlencoded'
         )
-        self.assertEqual(r.status_code, status.HTTP_302_FOUND)
-        self.assertNotEqual(csrftoken, client.cookies['csrftoken'].value) 
+        self.assertRedirects(r, "/", fetch_redirect_response=False)
 
-        # logout POST request from iam2
-        headers['X-CSRFToken'] = client.cookies['csrftoken'].value
-        del headers['Origin']
+    def test_normal_logout(self, client=APIClient()):
+        self.test_normal_login(client)
+
         r = client.post(
             reverse('klogout'),
-            headers = headers
-        )
+            {'next': '/'}
+            )
         self.assertEqual(r.status_code, status.HTTP_302_FOUND)

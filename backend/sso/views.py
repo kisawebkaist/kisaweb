@@ -12,6 +12,7 @@ import rest_framework.status as status
 
 from .middleware import klogin, klogout, kauthenticate
 from core.exceptions import IncorrectEndpointException
+from core.utils import ensure_relative_url
 
 KSSO_LOGIN_URL = os.environ.get('KSSO_LOGIN_URL')
 KSSO_LOGOUT_URL = os.environ.get('KSSO_LOGOUT_URL')
@@ -20,14 +21,6 @@ KSSO_CLIENT_ID = os.environ.get('KSSO_CLIENT_ID')
 KSSO_SITE = f'https://{urllib.parse.urlparse(KSSO_LOGIN_URL).netloc}'
 
 logger = logging.getLogger(__name__)
-
-def ensure_relative_url(url):
-    if url[0] == '/':
-        return url
-    try:
-        return urllib.parse.urlparse(url)._replace(scheme='', netloc='').geturl()
-    except:
-        return '/'
 
 @api_view(['POST'])
 def login_view(request):

@@ -109,6 +109,9 @@ wrapt = "^1.16.0"
 zipp = "^3.17.0"
 psycopg2-binary = "^2.9.9"
 pypharmaco = {url = "https://github.com/Calici/pypharmaco/releases/download/v0.0.1/pypharmaco-0.0.1-py3-none-any.whl"}
+google-api-python-client = "^2.113.0"
+google-auth-httplib2 = "^0.2.0"
+google-auth-oauthlib = "^1.2.0"
 
 
 [build-system]

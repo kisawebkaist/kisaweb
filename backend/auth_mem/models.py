@@ -11,10 +11,10 @@ class User(AbstractUser):
     def get_kaist_profile(self):
         return self.kaist_profile
     
-# TODO: Put the user into designed user group information upon creation
 class SignupToken(models.Model):
     kaist_email = models.EmailField(unique=True)
     expiry = models.DateTimeField(blank=False)
+    user_groups = models.IntegerField() # bitfield
 
     @classmethod
     def exists(cls, kaist_profile:KAISTProfile)->bool:
