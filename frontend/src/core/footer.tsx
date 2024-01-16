@@ -1,5 +1,5 @@
 import { FooterT } from "../API/misc"
-import "./footer.css"
+import "../components/css/footer.css"
 
 export type FooterP = FooterT
 const Footer = ({

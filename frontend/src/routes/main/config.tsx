@@ -7,6 +7,7 @@ const Home = React.lazy(() => import('../../pages/index'))
 const Faq = React.lazy(() => import('../../pages/faq'))
 const QueryFallback = React.lazy(() => import ("../../components/QueryFallback"))
 const AboutUs = React.lazy(() => import('../../pages/about-us'))
+const Blog = React.lazy(() => import('../../pages/blog'))
 
 /**
  * @brief refer to https://reactrouter.com/en/main/hooks/use-routes
@@ -24,7 +25,11 @@ const routes : RouteObject[] = [
     }, {
       path : 'about-us',
       element : <AboutUs />
-    },{
+    }, 
+    {
+      path: "blog",
+      element: <Blog />
+    }, {
       path : "*",
       element : <QueryFallback />
     }]

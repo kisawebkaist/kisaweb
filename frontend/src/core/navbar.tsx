@@ -1,16 +1,16 @@
 import NavEntryT, { NavDropdownT, NavLinkT } from "./navbar-type"
 import Lister from "../components/lister"
-import { Menu, Button } from "@mui/material";
+import { Button } from "@mui/material";
 import { Link as RouterLink } from 'react-router-dom';
 import React from 'react';
-import "./navbar.css"
+import "../components/css/navbar.css"
 
 type NavbarEntryP = {
   data: NavEntryT
 }
 
 const RenderLink = (data: NavLinkT) => {
-  const { href, text, style } = data.data
+  const { href, text, style} = data.data
   return (
     <div className="navbar-link">
       <Button component={RouterLink} to={href} color="inherit" className="buttonStyle">
