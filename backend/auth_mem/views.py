@@ -1,6 +1,8 @@
 import urllib.parse
 
+from django.conf import settings
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.core.validators import EmailValidator
@@ -8,19 +10,17 @@ from django.http import JsonResponse, HttpResponseRedirect
 from django.conf import settings
 from django.utils.translation import gettext as _
 
-from rest_framework.decorators import api_view, throttle_classes
+from rest_framework.decorators import api_view, throttle_classes, permission_classes
 from rest_framework.exceptions import ParseError, PermissionDenied, ValidationError
 import rest_framework.status as status
 
 from core.throttling import ScopedRateThrottle
 from core.exceptions import IncorrectEndpointException
-from sso.decorators import klogin_required
 
 from .models import User, SignupToken
-from .decorators import login_required
 from .utils import MailVerificationCode
 from core.utils import ensure_relative_url
-from sso.views import KSSO_LOGOUT_URL, KSSO_CLIENT_ID
+from sso.permissions import IsKAuthenticated
 
 class UsernameCheckRateThrottle(ScopedRateThrottle):
     scope_attr = 'usernamecheck'
@@ -29,6 +29,7 @@ class MailVerificationCodeRateThrottle(ScopedRateThrottle):
     scope_attr = 'verification'
 
 email_validator = EmailValidator()
+username_validator = UnicodeUsernameValidator()
 
 @api_view(['POST'])
 def login_view(request):
@@ -76,10 +77,10 @@ def login_view(request):
     if redirect_klogout:
         # need to logout from ksso
         data = {
-            'client_id': KSSO_CLIENT_ID,
+            'client_id': settings.KSSO_CLIENT_ID,
             'redirect_url': request.build_absolute_uri(next)
         }
-        return HttpResponseRedirect(f"{KSSO_LOGOUT_URL}?{urllib.parse.urlencode(data)}")
+        return HttpResponseRedirect(f"{settings.KSSO_LOGOUT_URL}?{urllib.parse.urlencode(data)}")
     
     return HttpResponseRedirect(next)
 
@@ -97,7 +98,7 @@ def logout_view(request):
 
 @api_view(['GET'])
 @throttle_classes([UsernameCheckRateThrottle])
-@klogin_required
+@permission_classes([IsKAuthenticated])
 def check_username_view(request):
     if not SignupToken.exists(request.kaist_profile):
         raise PermissionDenied()
@@ -112,7 +113,7 @@ def check_username_view(request):
     
 
 @api_view(['POST'])
-@klogin_required
+@permission_classes([IsKAuthenticated])
 def signup_view(request):
     """
     Format
@@ -124,20 +125,24 @@ def signup_view(request):
     """
     token = SignupToken.get(request.kaist_profile)
     if token is None:
-        raise PermissionDenied()
+        raise PermissionDenied(detail=_("Valid signup token is not found."))
     username = request.data.get('username', '')
     password = request.data.get('password', '')
     
-    if User.objects.exists(username=username):
+    if User.objects.filter(username=username).exists():
         raise ParseError()
     
     try:
-        User.username.run_validators(username)
+        username_validator(username)
         validate_password(password)
     except DjangoValidationError as e:
         raise ValidationError(detail=e.error_dict, code=e.code)
     
-    token.use(username, password)
+    valid_username = User.normalize_username(username)
+    if valid_username != username:
+        raise ParseError()
+    
+    token.use(valid_username, password, request.kaist_profile)
 
     return JsonResponse(
         data={}
@@ -145,7 +150,7 @@ def signup_view(request):
     
 @api_view(['POST'])
 @throttle_classes([MailVerificationCodeRateThrottle])
-@login_required
+@permission_classes([IsKAuthenticated])
 def register_mail_view(request):
     """
     Format
@@ -168,7 +173,7 @@ def register_mail_view(request):
     )
 
 @api_view(['POST'])
-@login_required
+@permission_classes([IsKAuthenticated])
 def attempt_mail_reg_view(request):
     """
     Format
@@ -192,7 +197,7 @@ def attempt_mail_reg_view(request):
 
 @api_view(['POST'])
 @throttle_classes([MailVerificationCodeRateThrottle])
-@klogin_required
+@permission_classes([IsKAuthenticated])
 def change_pw_view(request):
     """
     Format
@@ -222,7 +227,7 @@ def change_pw_view(request):
     )
 
 @api_view(['POST'])
-@klogin_required
+@permission_classes([IsKAuthenticated])
 def attempt_pw_change_view(request):
     """
     Format

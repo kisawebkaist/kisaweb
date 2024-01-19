@@ -1,5 +1,5 @@
 import base64, json, logging, secrets, os
-from email.message import EmailMessage
+from email.mime.text import MIMEText
 from typing import Union
 
 from django.utils.crypto import constant_time_compare
@@ -86,7 +86,7 @@ class MailVerificationCode:
             if code_obj.available_attempts == 0:
                 del session[session_key]
             else:
-                code_obj.saveForPasswordChange(session)
+                session[cls.__get_session_key(context)] = code_obj.serialize()
 
             return (None, code_obj.available_attempts)
         
@@ -144,11 +144,10 @@ class MailVerificationCode:
     
     #TODO: write a better template
     def send_mail(self, reason:str):
-        message = EmailMessage()
+        message = MIMEText(f"Dear KISA member,<br><br>Your instant authentication code is below for KISA services.<br>Auth Code: <b>{self.code}</b><br>This mail was sent because {reason}<br><br>Best Regards,<br>KISA Web Team", "html")
         message["To"] = self.email
         message["From"] = f"KISA Web Team <{GMailAPI.FROM_MAIL}>"
         message["Subject"] = "[No Reply] Your Personal Authentication for KISA Services"
-        message.set_content(f"Dear KISA member,\nYour instant authentication code is below for KISA services.\nAuth Code: {self.code}\nThis mail was sent because {reason}\nBest Regards,\nKISA Web Team")
 
         encoded_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
 

@@ -238,18 +238,13 @@ DOCS_ACCESS = 'staff'
 ## -------------------------- ##
 
 
-## -- SSO -- ##
-LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'homepage'
-LOGOUT_REDIRECT_URL = 'homepage'
 
-# TODO: Resolve dependencies on below two variables and delete them
-LOGIN_DEV = False
-LOGIN_PROD = True
+# sso 
 
-KISA_AUTH_METHOD = ENV_VARS.get('PRODUCTION')
-## --------- ##
-
+KSSO_CLIENT_ID = os.environ['KSSO_CLIENT_ID']
+KSSO_LOGIN_URL = "https://iam2.kaist.ac.kr/api/sso/commonLogin"
+KSSO_LOGOUT_URL = "https://iam2.kaist.ac.kr/api/sso/logout"
+KSSO_ORIGIN = "https://iam2.kaist.ac.kr"
 
 ## -- django-maintenance-mode settings -- ##
 # (default values in https://github.com/fabiocaccamo/django-maintenance-mode)
@@ -291,11 +286,13 @@ URL_SHORTENER_PREFIX    = 'short-link'
 DEFAULT_AUTO_FIELD  = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'core.utils.StrictCSRFSessionAuthentication',
+    ],
+
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser',
         ],
-
-    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 
     'DEFAULT_THROTTLE_CLASSES': [
         'core.throttling.ScopedRateThrottle',
@@ -304,5 +301,7 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_RATES': {
         'usernamecheck': '40/day',
         'verification': '5/day'
-    }
+    },
+
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }

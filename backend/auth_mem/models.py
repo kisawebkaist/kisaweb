@@ -14,13 +14,14 @@ class User(AbstractUser):
 class SignupToken(models.Model):
     kaist_email = models.EmailField(unique=True)
     expiry = models.DateTimeField(blank=False)
-    user_groups = models.IntegerField() # bitfield
+    user_groups = models.IntegerField(default=0) # bitfield
 
     @classmethod
     def exists(cls, kaist_profile:KAISTProfile)->bool:
         kmail = kaist_profile.kaist_email
-        if cls.objects.exists(kaist_email=kmail):
-            token = cls.objects.get(kaist_email=kmail)
+        query = cls.objects.filter(kaist_email=kmail)
+        if query.exists():
+            token = query[0]
             if token.expiry > datetime.datetime.now():
                 return True
             token.delete()
@@ -33,8 +34,6 @@ class SignupToken(models.Model):
             return cls.objects.get(kaist_email=kaist_profile.kaist_email)
         return None
     
-    def use(self, username, password):
-        user = User.objects.create_user(username, password=password)
-        user.date_joined = datetime.date.today()
-        user.save()
+    def use(self, username, password, kaist_profile):
+        user = User.objects.create_user(username, password=password, kaist_profile=kaist_profile)
         self.delete()

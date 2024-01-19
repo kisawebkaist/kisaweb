@@ -50,7 +50,6 @@ class KAuthMiddleware:
             raise ImproperlyConfigured(
                 "KAuthMiddleware requires auth middleware to be installed"
             )
-        
         request.kaist_profile = SimpleLazyObject(lambda: get_kaist_profile(request))
         return self.get_response(request)
         

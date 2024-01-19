@@ -1,24 +1,23 @@
-import os, logging, secrets, urllib.parse
+import logging, secrets, urllib.parse
 
+from django.conf import settings
 from django.http import JsonResponse, HttpResponseRedirect
-from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse
 from django.utils.translation import gettext as _
 
-from rest_framework.decorators import api_view, parser_classes
+from rest_framework.decorators import api_view, parser_classes, authentication_classes
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.parsers import FormParser
 import rest_framework.status as status
 
 from .middleware import klogin, klogout, kauthenticate
 from core.exceptions import IncorrectEndpointException
-from core.utils import ensure_relative_url
+from core.utils import ensure_relative_url, CSRFExemptSessionAuthentication
 
-KSSO_LOGIN_URL = os.environ.get('KSSO_LOGIN_URL')
-KSSO_LOGOUT_URL = os.environ.get('KSSO_LOGOUT_URL')
-KSSO_CLIENT_ID = os.environ.get('KSSO_CLIENT_ID')
-
-KSSO_SITE = f'https://{urllib.parse.urlparse(KSSO_LOGIN_URL).netloc}'
+KSSO_LOGIN_URL = settings.KSSO_LOGIN_URL
+KSSO_LOGOUT_URL = settings.KSSO_LOGOUT_URL
+KSSO_CLIENT_ID = settings.KSSO_CLIENT_ID
+KSSO_ORIGIN = settings.KSSO_ORIGIN
 
 logger = logging.getLogger(__name__)
 
@@ -56,7 +55,7 @@ def login_view(request):
 
 @api_view(['POST'])
 @parser_classes([FormParser])
-@csrf_exempt
+@authentication_classes([CSRFExemptSessionAuthentication])
 def login_response_view(request):
     """
     This POST request is supposed to be sent by sso website and contains encrypted user information.
@@ -69,14 +68,14 @@ def login_response_view(request):
     origin = request.META.get('HTTP_ORIGIN')
 
     headers = {
-        'Access-Control-Allow-Origin': KSSO_SITE,
+        'Access-Control-Allow-Origin': KSSO_ORIGIN,
         'Access-Control-Allow-Credentials': 'true'
     }
 
-    if not origin == KSSO_SITE:
+    if not origin == KSSO_ORIGIN:
         logger.info(f"Invalid \"Origin\" header: {origin} in login-response (state: {state}, raw_result:{raw_result}, user-agent: {request.META.get('HTTP_USER_AGENT')})")
         # the response won't even be readable in a browser unless it comes from the same origin
-        raise PermissionDenied(detail=_(f'This page requires that "Origin" header to be "{KSSO_SITE}" to prevent cross-subdomain csrf.'))
+        raise PermissionDenied(detail=_(f'CSRF Failed: Origin checking failed - {origin} does not match any trusted origins.'))
     
     if request.kaist_profile.is_authenticated or request.user.is_authenticated:
         return HttpResponseRedirect(next, headers=headers)

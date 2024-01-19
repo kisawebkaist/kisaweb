@@ -4,7 +4,6 @@ from django.utils.html import mark_safe
 import yaml
 
 from .models import EmptyQueryset
-from web.settings import KISA_AUTH_METHOD, LOGIN_DEV, LOGIN_PROD
 
 
 def string_adder(text: str, add_string: str, line_len: int) -> str:
@@ -64,12 +63,4 @@ def empty_queryset(request):
     empty = EmptyQueryset.objects.all()
     return {
         'empty': empty,
-    }
-
-
-def login_type(request):
-    return {
-        'authmethod': KISA_AUTH_METHOD,
-        'logindev': LOGIN_DEV,
-        'loginprod': LOGIN_PROD,
     }

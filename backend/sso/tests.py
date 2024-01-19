@@ -2,6 +2,7 @@ import json, base64
 from urllib.parse import urlencode
 from urllib.parse import parse_qs, urlparse
 
+from django.conf import settings
 from django.urls import reverse
 
 from rest_framework.test import APIClient, APITestCase
@@ -11,13 +12,12 @@ from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad
 
 from .middleware import SA_AES_ID_SECRET
-from .views import KSSO_SITE
 
 
 def generate_user_info(
-    kaist_uid: int = 0, 
+    kaist_uid: int = 1, 
     country: str = 'KR',
-    kaist_mail: str = 'nupjuk@kaist.ac.kr',
+    kaist_email: str = 'nupjuk@kaist.ac.kr',
 ):
     return {
         'kaist_uid': str(abs(kaist_uid)%(10^8)).zfill(8),
@@ -28,7 +28,7 @@ def generate_user_info(
         'ku_born_date': '2024-01-01',
         'c': country,
         'ku_sex': 'M',
-        'mail': kaist_mail,
+        'mail': kaist_email,
         'ku_ch_mail': 'nupjuk@gmail.com',
         'ku_std_no': '20240101',
         'ku_campus': 'D1/D1',
@@ -66,7 +66,7 @@ def encrypt(user_info: dict, state: str)->str:
 
 class KAuthTest(APITestCase):
 
-    def test_normal_login(self, client=APIClient()):
+    def test_normal_login(self, client=APIClient(), user_info=generate_user_info()):
         r = client.post(
             reverse('klogin'),
             {'next': '/'},
@@ -76,14 +76,14 @@ class KAuthTest(APITestCase):
 
         # login-reponse POST request from iam2
         payload = {
-            'result': encrypt(generate_user_info(), state),
+            'result': encrypt(user_info, state),
             'state': state,
             'success': 'true'
         }
         r = client.post(
             reverse('klogin-response'),
             urlencode(payload),
-            headers = {'Origin': KSSO_SITE},
+            headers = {'Origin': settings.KSSO_ORIGIN},
             content_type='application/x-www-form-urlencoded'
         )
         self.assertRedirects(r, "/", fetch_redirect_response=False)
