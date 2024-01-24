@@ -1,6 +1,9 @@
-import urllib
+import urllib, string, secrets
 
 from rest_framework.authentication import SessionAuthentication as DRFSessionAuthetication
+
+URLSAFE_CHARACTERS = string.ascii_letters + string.digits + '-_.~'
+"""Reference: RFC 3986"""
 
 class StrictCSRFSessionAuthentication(DRFSessionAuthetication):
     """
@@ -28,3 +31,6 @@ def ensure_relative_url(url):
         return urllib.parse.urlparse(url)._replace(scheme='', netloc='').geturl()
     except:
         return '/'
+    
+def get_random_urlsafe_string(numchar):
+    return ''.join(secrets.choice(URLSAFE_CHARACTERS) for i in range(numchar))

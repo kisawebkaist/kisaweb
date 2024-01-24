@@ -12,7 +12,7 @@ import rest_framework.status as status
 
 from .middleware import klogin, klogout, kauthenticate
 from core.exceptions import IncorrectEndpointException
-from core.utils import ensure_relative_url, CSRFExemptSessionAuthentication
+from core.utils import ensure_relative_url, get_random_urlsafe_string, CSRFExemptSessionAuthentication
 
 KSSO_LOGIN_URL = settings.KSSO_LOGIN_URL
 KSSO_LOGOUT_URL = settings.KSSO_LOGOUT_URL
@@ -40,7 +40,7 @@ def login_view(request):
         return HttpResponseRedirect(ensure_relative_url(next))
 
     if request.session.get('state') is None:
-        state = secrets.token_hex(16)
+        state = get_random_urlsafe_string(8)
         request.session['state'] = state
         request.session['next'] = ensure_relative_url(next)
     else:

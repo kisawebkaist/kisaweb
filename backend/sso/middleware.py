@@ -30,9 +30,8 @@ def get_kaist_profile(request):
 
 def decrypt(data, state) :
     BS = AES.block_size 
-    key = (SA_AES_ID_SECRET+str(state))[80:96] # 128 bit
-    iv=key[:16] # 128 bit
-    cipher = AES.new(key.encode("utf8"), AES.MODE_CBC, IV=iv.encode("utf8"))
+    key = (SA_AES_ID_SECRET+str(state))[80:96].encode("utf8") # 128 bit
+    cipher = AES.new(key, AES.MODE_CBC, IV=key)
     deciphed = cipher.decrypt(base64.b64decode(data))   
     deciphed = unpad(deciphed, BS)
     return deciphed
