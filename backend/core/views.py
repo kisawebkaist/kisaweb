@@ -1,17 +1,11 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.utils.translation import gettext as _
-from django.urls import reverse
 
 from rest_framework.decorators import api_view
-from rest_framework.views import APIView
-from rest_framework.response import Response
-import rest_framework.status as status
+from rest_framework.exceptions import NotFound
 
-from .models import Footer, NavBar
-
-# def important_links(request):
-#     return render(request, 'core/important_links.html')
+from .models import Misc
 
 # TODO: Discuss with frontend devs for format
 @api_view(['GET'])
@@ -28,17 +22,13 @@ def get_state_view(request):
         'ksso_logined': request.kaist_profile.is_authenticated,
     })
 
-# TODO: poorly designed, rewrite
-class MiscAPIView(APIView):
-    klass_from_endpoint = {
-        'navbar': NavBar,
-        'footer': Footer,
-    }
 
-    def get(self, request, format=None):
-        for endpoint in MiscAPIView.klass_from_endpoint:
-            if request.path == reverse('misc') + endpoint:
-                klass = MiscAPIView.klass_from_endpoint[endpoint]
-                serializer = klass.serializer_class(klass.get_deployed())
-                return Response(serializer.data)
-        return JsonResponse(status=status.HTTP_404_NOT_FOUND)
+@api_view(['GET'])
+def get_misc_view(request, slug=""):
+    query = Misc.objects.filter(slug=slug)
+    if query.exists() and query[0].is_active:
+        return JsonResponse(
+            query[0].data,
+            safe=False
+        )
+    raise NotFound()

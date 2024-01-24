@@ -48,6 +48,11 @@ class GMailAPI:
         except GHttpError as e:
             logger.exception(f"An error occurred while initializing gmail api client: {e}")
 
+    @classmethod
+    def init(cls):
+        if cls.client is None:
+            cls.client = GMailAPI()
+
 class MailVerificationCode:
     """
     A class for generating, storing, and sending mail-verification-codes

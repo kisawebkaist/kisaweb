@@ -11,5 +11,5 @@ class AuthmemConfig(AppConfig):
         if not settings.DEBUG:
             import logging
             logging.getLogger(__name__).info("Started GMailAPI.")
-            GMailAPI()
+            GMailAPI.init()
         pass

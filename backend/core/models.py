@@ -4,9 +4,10 @@ from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
 
-from tinymce.models import HTMLField
+from jsonschema import ValidationError as JSONValidationError
+from jsonschema import Draft7Validator
 
-from .utils import JSONModel, JSONModelSerializer
+from tinymce.models import HTMLField
 
 # Validators
 separator_validator = RegexValidator(r'[^\w\-]', inverse_match=True, message='Spaces and punctuation (except "-" and "_") are not allowed.')
@@ -114,16 +115,14 @@ class EmptyQueryset(models.Model):
         return super().save(*args, **kwargs)
 
 
-class NavBar(JSONModel):
-    schema_title="NavBarT"
-    deployed_pk = 1
-
-class Footer(JSONModel):
-    schema_title = "Footer"
-    deployed_pk = 1
-
-class NavBarSerializer(JSONModelSerializer):
-    model_class = NavBar
-
-class FooterSerializer(JSONModelSerializer):
-    model_class = Footer
+class Misc(models.Model):
+    data = models.JSONField()
+    schema = models.JSONField()
+    slug = models.SlugField(unique=True)
+    is_active = models.BooleanField(default=True)
+    
+    def clean(self):
+        try:
+            Draft7Validator(self.schema).validate(self.data)
+        except JSONValidationError as e:
+            ValidationError(params=e.schema, message=e.message)

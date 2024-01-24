@@ -1,0 +1,303 @@
+[
+{
+    "model": "core.misc",
+    "pk": 1,
+    "fields": {
+        "data": [
+            {
+                "data": {
+                    "href": "/about-us/",
+                    "text": "About Us"
+                },
+                "type": "link"
+            },
+            {
+                "data": {
+                    "href": "/events/",
+                    "text": "Events"
+                },
+                "type": "link"
+            },
+            {
+                "data": {
+                    "href": "/blog/view/",
+                    "text": "Blog"
+                },
+                "type": "link"
+            },
+            {
+                "data": {
+                    "href": "/faq/",
+                    "text": "FAQ"
+                },
+                "type": "link"
+            },
+            {
+                "data": {
+                    "href": "/multimedia/",
+                    "text": "Multimedia"
+                },
+                "type": "link"
+            },
+            {
+                "data": {
+                    "display": "Welfare",
+                    "entries": [
+                        {
+                            "data": {
+                                "href": "https://docs.google.com/forms/d/e/1FAIpQLSe-H7GFHY-3U5aKNsGvS_DySOH3qb93Yth_EV3lmz5NaPG28Q/viewform",
+                                "text": "KISA Voice"
+                            },
+                            "type": "link"
+                        },
+                        {
+                            "data": {
+                                "href": "https://www.facebook.com/groups/817190881629523/",
+                                "text": "KISA Books: Buy & Sell"
+                            },
+                            "type": "link"
+                        },
+                        {
+                            "data": {
+                                "href": "/short-link/internships",
+                                "text": "Internships"
+                            },
+                            "type": "link"
+                        }
+                    ]
+                },
+                "type": "dropdown"
+            },
+            {
+                "data": {
+                    "display": "Resources",
+                    "entries": [
+                        {
+                            "data": {
+                                "href": "https://kaistackr-my.sharepoint.com/:f:/g/personal/kisa_kaist_ac_kr/EuVXzCOBY2xNio-fQ8OgwewBD8r0pmUtiED9N9OmljCefA?e=djOlOz",
+                                "text": "Course Resources"
+                            },
+                            "type": "link"
+                        },
+                        {
+                            "data": {
+                                "href": "/important-links/",
+                                "text": "KISA Books: Buy & Sell"
+                            },
+                            "type": "link"
+                        }
+                    ]
+                },
+                "type": "dropdown"
+            },
+            {
+                "data": {
+                    "href": "/alumni/",
+                    "text": "Alumni"
+                },
+                "type": "link"
+            },
+            {
+                "data": {
+                    "href": "/election/",
+                    "text": "Election"
+                },
+                "type": "link"
+            }
+        ],
+        "schema": {
+            "$ref": "#/definitions/NavbarT",
+            "title": "NavBarT",
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "definitions": {
+                "NavbarT": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/NavEntryT"
+                    }
+                },
+                "NavLinkT": {
+                    "type": "object",
+                    "title": "NavLinkT",
+                    "required": [
+                        "type",
+                        "data"
+                    ],
+                    "properties": {
+                        "data": {
+                            "type": "object",
+                            "required": [
+                                "href",
+                                "text"
+                            ],
+                            "properties": {
+                                "href": {
+                                    "type": "string"
+                                },
+                                "text": {
+                                    "type": "string"
+                                },
+                                "style": {
+                                    "type": "object",
+                                    "properties": {
+                                        "hover": {
+                                            "type": "object",
+                                            "additionalProperties": {
+                                                "type": [
+                                                    "string",
+                                                    "number"
+                                                ]
+                                            }
+                                        },
+                                        "active": {
+                                            "type": "object",
+                                            "additionalProperties": {
+                                                "type": [
+                                                    "string",
+                                                    "number"
+                                                ]
+                                            }
+                                        },
+                                        "normal": {
+                                            "type": "object",
+                                            "additionalProperties": {
+                                                "type": [
+                                                    "string",
+                                                    "number"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "additionalProperties": false
+                                }
+                            },
+                            "additionalProperties": false
+                        },
+                        "type": {
+                            "type": "string",
+                            "const": "link"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "NavEntryT": {
+                    "type": "object",
+                    "oneOf": [
+                        {
+                            "$ref": "#/definitions/NavLinkT"
+                        },
+                        {
+                            "$ref": "#/definitions/NavDropdownT"
+                        }
+                    ]
+                },
+                "NavDropdownT": {
+                    "type": "object",
+                    "title": "NavDropdownT",
+                    "required": [
+                        "type",
+                        "data"
+                    ],
+                    "properties": {
+                        "data": {
+                            "type": "object",
+                            "required": [
+                                "display",
+                                "entries"
+                            ],
+                            "properties": {
+                                "display": {
+                                    "type": "string"
+                                },
+                                "entries": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/NavLinkT"
+                                    }
+                                }
+                            },
+                            "additionalProperties": false
+                        },
+                        "type": {
+                            "type": "string",
+                            "const": "dropdown"
+                        }
+                    },
+                    "additionalProperties": false
+                }
+            }
+        },
+        "slug": "navbar",
+        "is_active": true
+    }
+},
+{
+    "model": "core.misc",
+    "pk": 2,
+    "fields": {
+        "data": [
+            {
+                "pk": 1,
+                "model": "core.footer",
+                "fields": {
+                    "json": {
+                        "email": "kisa.kaist.ac.kr",
+                        "fb_link": "https://www.facebook.com/groups/KAIST.KISA",
+                        "yt_link": "https://www.youtube.com/channel/UCsjJvtRBrNPZu8emypWHUBw/featured",
+                        "location": "KAIST, 291 Daehak-ro, Yuseong-gu, Daejeon 34141, Republic of Korea",
+                        "kisa_text": "We are KISA.",
+                        "phnum_eng": "+82-10-2750-6709",
+                        "phnum_kor": "+82-10-5039-5433",
+                        "insta_link": "https://www.instagram.com/kisakaist/"
+                    }
+                }
+            }
+        ],
+        "schema": {
+            "$id": "Footer",
+            "type": "object",
+            "title": "Footer",
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "required": [
+                "kisa_text",
+                "location",
+                "phnum_eng",
+                "phnum_kor",
+                "email",
+                "fb_link",
+                "insta_link",
+                "yt_link"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "fb_link": {
+                    "type": "string"
+                },
+                "yt_link": {
+                    "type": "string"
+                },
+                "location": {
+                    "type": "string"
+                },
+                "kisa_text": {
+                    "type": "string"
+                },
+                "phnum_eng": {
+                    "type": "string"
+                },
+                "phnum_kor": {
+                    "type": "string"
+                },
+                "insta_link": {
+                    "type": "string"
+                }
+            },
+            "description": "Footer information"
+        },
+        "slug": "footer",
+        "is_active": true
+    }
+}
+]

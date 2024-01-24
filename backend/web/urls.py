@@ -22,11 +22,22 @@ urlpatterns = [
     # path('grappelli/', include('grappelli.urls')), # grappelli URLS
     # path('jet/', include('jet.urls', 'jet')),  # Django JET URLS
     # path('jet/dashboard/', include('jet.dashboard.urls', 'jet-dashboard')),  # Django JET dashboard URLS
+    path('', include('core.urls')),
     path('admin/', admin.site.urls),
     path('member/', include('auth_mem.urls')),
+    path('events/', include('events.urls')),
+    path('election/', include('election.urls')),
+    path('faq/', include('faq.urls')),
+    path('docs/', include('docs.urls')),
+    path('sso/', include('sso.urls')),
+    path('about-us/', include('aboutus.urls')),
+    path('multimedia/', include('multimedia.urls')),
+    path('blog/', include('blog.urls')),
+    path('important-links/', include('important_links.urls')),
+    path('alumni/', include('alumni.urls')),
+    path(f'{settings.URL_SHORTENER_PREFIX}/', include('url_shortener.urls')),
     path('tinymce/', include('tinymce.urls')),
     path('maintenance-mode/', include('maintenance_mode.urls')),
-    path('', include('core.urls')),
 ]
 
 # Add static file urls
