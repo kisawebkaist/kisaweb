@@ -1,12 +1,41 @@
-html, body {
+html,
+body {
     margin: 0;
     font-family: Ubuntu, Roboto, "times new roman", times, roman, serif;
+}
+
+.readMore {
+    max-width: 25%;
+    padding: 10px;
+    background-color: #21262B;
+    border-radius: 10px;
+    transition: transform 0.15s ease-in-out;
+}
+
+.readMore:hover {
+    transform: scale(1.05);
+}
+
+.readMore .readMoreText {
+    text-decoration: none;
+    color: whitesmoke;
+    font-size: medium;
+}
+
+.featuredPost {
+    margin: 0;
+    padding-top: 1%;
+    background-color: whitesmoke;
+}
+
+.featuredPost h1 {
+    color: #333333;
 }
 
 .card {
     display: flex;
     flex-direction: column;
-    margin: 2.5%;
+    margin: 0.5%;
     width: 30%;
 }
 
@@ -30,10 +59,17 @@ html, body {
     align-items: center;
 }
 
+.cardContent img {
+    height: 100%;
+    width: 100%;
+    margin-top: 2%;
+    margin-bottom: 3%;
+}
+
 .date {
     opacity: 80%;
     margin-left: auto;
-    margin-right:  0.7%;
+    margin-right: 0.7%;
     align-self: flex-end;
     font-size: medium;
 }
@@ -53,4 +89,78 @@ html, body {
 .cardContainer {
     display: flex;
     align-items: center;
+}
+
+.cardContainer .card {
+    margin: 2% auto;
+}
+
+.buttonStyle {
+    display: inline-block;
+}
+
+.buttonStyle Button {
+    background-color: #ddd;
+    border: none;
+    color: black;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 35px;
+}
+
+.buttonStyle Button:hover {
+    background-color: #6EC6FF;
+    color: whitesmoke;
+}
+
+.buttonStyle .activeButton {
+    background-color: #21262B;
+    color: white;
+}
+
+.listViewContainer {
+    margin-top: 2%;
+    margin-bottom: 2%;
+    padding-left: 20%;
+    padding-right: 20%;
+    display: flex;
+    align-items: center;
+}
+
+.listViewContainer img {
+    width: 45%;
+    height: 45%;
+    border-radius: 20px;
+}
+
+.textData {
+    margin-left: 10%;
+    display: flex;
+    flex-direction: column;
+}
+
+.textData .tag {
+    color: #4A90E2;
+    font-size: smaller;
+    margin-top: 10px;
+}
+
+.textData a {
+    color: #21262B;
+    text-decoration: none;
+    font-size: xx-large;
+    text-align: center;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.textData .subtext {
+    margin-top: 3%;
+    margin-bottom: 5%;
+    color: #333333;
+    opacity: 90%;
 }
