@@ -12,6 +12,7 @@ from django.utils.translation import gettext as _
 
 from rest_framework.decorators import api_view, throttle_classes, permission_classes
 from rest_framework.exceptions import ParseError, PermissionDenied, ValidationError
+from rest_framework.response import Response
 import rest_framework.status as status
 
 from core.throttling import ScopedRateThrottle
@@ -52,20 +53,15 @@ def login_view(request):
     if request.kaist_profile.is_authenticated:
         query = User.objects.filter(kaist_profile=request.kaist_profile.pk)
         if not query.exists():
-            return JsonResponse(
-                {
-                    'detail': _('No such member exists with current kaist login credentials.')
-                },
-                status = status.HTTP_400_BAD_REQUEST
-            )
+            raise ParseError(_('No such member exists with current kaist login credentials.'))
         username = query[0].username
-    elif not "username" in request.data:
-        raise ParseError(detail=_('Username was not provided.'))
-    else:
-        username = request.data["username"]
+    if not "username" in request.data:
+        raise ParseError(_('Username was not provided.'))
+    
+    username = request.data["username"]
     
     if not "password" in request.data:
-        raise ParseError(detail=_('Password was not provided.'))
+        raise ParseError(_('Password was not provided.'))
     
     password = request.data["password"]
     user = authenticate(username=username, password=password)
@@ -92,7 +88,7 @@ def logout_view(request):
     - Make a post request and follow the redirect
     """
     if request.kaist_profile.is_authenticated and not request.user.is_authenticated:
-        return IncorrectEndpointException(detail=_("Use the other endpoint to logout."))
+        raise IncorrectEndpointException(detail=_("Use the other endpoint to logout."))
     logout(request)
     return HttpResponseRedirect('/')
 
@@ -191,9 +187,7 @@ def attempt_mail_reg_view(request):
         )
     request.user.email = email
     request.user.save()
-    return JsonResponse(
-        data={}
-    )
+    return Response()
 
 @api_view(['POST'])
 @throttle_classes([MailVerificationCodeRateThrottle])
@@ -222,9 +216,7 @@ def change_pw_view(request):
     
     code_obj = MailVerificationCode.new(user.email)
     code_obj.saveForPasswordChange(request.session, password)
-    return JsonResponse(
-        data={}
-    )
+    return Response()
 
 @api_view(['POST'])
 @permission_classes([IsKAuthenticated])
@@ -251,6 +243,4 @@ def attempt_pw_change_view(request):
     user.set_password(password)
     user.save()
     update_session_auth_hash(request, user)
-    return JsonResponse(
-        data = {}
-    )
+    return Response()

@@ -4,6 +4,7 @@ from django.utils.translation import gettext as _
 
 from rest_framework.decorators import api_view
 from rest_framework.exceptions import NotFound
+from rest_framework.response import Response
 
 from .models import Misc
 
@@ -17,7 +18,7 @@ def get_state_view(request):
     - Everytime the page loads, make a request to this endpoint to fetch the state information stored in backend.
     - This will also set the csrftoken cookie
     """
-    return JsonResponse({
+    return Response({
         'member_logined': request.user.is_authenticated,
         'ksso_logined': request.kaist_profile.is_authenticated,
     })
