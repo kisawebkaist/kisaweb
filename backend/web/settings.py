@@ -77,7 +77,6 @@ INSTALLED_APPS = [
     "django_pagination_bootstrap", #pagination for multimedia page
 
     ## ---- Created by KISA webteam ---- ##
-    'auth_mem',
     'core',  # core pages (eg. homepage, about page, etc)
     'sso',
     'events',
@@ -98,7 +97,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'sso.middleware.KAuthMiddleware',
+    'sso.middleware.OTPMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "django_pagination_bootstrap.middleware.PaginationMiddleware", #django_pagination_bootstrap middleware
@@ -211,7 +210,7 @@ DATETIME_INPUT_FORMATS += [
 ]
 
 # Custom User model
-AUTH_USER_MODEL = 'auth_mem.User'
+AUTH_USER_MODEL = 'sso.User'
 
 # X_FRAME_OPTIONS = 'SAMEORIGIN'  # Required by django-3-jet dashboard
 
@@ -239,6 +238,7 @@ DOCS_ACCESS = 'staff'
 # sso 
 
 KSSO_CLIENT_ID = os.environ['KSSO_CLIENT_ID']
+KSSO_SA_AES_ID_SECRET = os.environ['KSSO_SECRET_KEY']
 KSSO_LOGIN_URL = "https://iam2.kaist.ac.kr/api/sso/commonLogin"
 KSSO_LOGOUT_URL = "https://iam2.kaist.ac.kr/api/sso/logout"
 KSSO_ORIGIN = "https://iam2.kaist.ac.kr"

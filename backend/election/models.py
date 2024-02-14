@@ -7,8 +7,7 @@ from django.dispatch import receiver
 from django.core.exceptions import ValidationError
 from election.tests import test_adjusted_votes_formula
 
-from auth_mem.models import User
-from sso.models import KAISTProfile
+from sso.models import User
 
 # Create your models here.
 
@@ -136,7 +135,7 @@ class Candidate(models.Model):
 class Vote(models.Model):
     class Meta:
         index_together = ('user', 'candidate')
-    user = models.ForeignKey(KAISTProfile, on_delete=models.PROTECT, related_name='votes') # the user who votes
+    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='votes') # the user who votes
     candidate = models.ForeignKey(Candidate, on_delete=models.PROTECT, related_name='voters') # the candidate who is voted
     vote_type = models.BooleanField(default=True) 
 
@@ -156,7 +155,7 @@ class DebateAttendance(models.Model):
         return attendance_list
 
 class VotingExceptionToken(models.Model):
-    user = models.ForeignKey(KAISTProfile, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     election = models.ForeignKey(Election, on_delete=models.CASCADE)
 
 # TODO: write a SIGINT handler that waits for threads other than the main thread

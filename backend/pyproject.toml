@@ -112,6 +112,7 @@ pypharmaco = {url = "https://github.com/Calici/pypharmaco/releases/download/v0.0
 google-api-python-client = "^2.113.0"
 google-auth-httplib2 = "^0.2.0"
 google-auth-oauthlib = "^1.2.0"
+pyotp = "^2.9.0"
 
 
 [build-system]

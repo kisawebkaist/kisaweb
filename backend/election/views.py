@@ -4,14 +4,13 @@ from django.utils.translation import gettext as _
 
 from rest_framework.decorators import authentication_classes, api_view
 from rest_framework.exceptions import MethodNotAllowed, NotFound, PermissionDenied, ParseError
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from core.utils import get_object_or_404
-from sso.permissions import IsKAuthenticated
-from sso.models import KAISTProfile
+from sso.models import User
 
 from .models import Election, Candidate, Vote, VotingExceptionToken
 from .serializers import *
@@ -44,7 +43,7 @@ class CandidateAPIView(APIView):
         return Response()
     
 @api_view(['GET', 'POST'])
-@authentication_classes([IsKAuthenticated])
+@authentication_classes([IsAuthenticated])
 def vote_info(request):
     is_eligible = is_eligible(request.kaist_profile)
     already_voted = Vote.objects.filter(user=request.kaist_profile).exists()
@@ -70,7 +69,7 @@ def vote_info(request):
     
     raise MethodNotAllowed()
 
-def is_eligible(user:KAISTProfile)->bool:
+def is_eligible(user:User)->bool:
     if VotingExceptionToken.objects.filter(user=user, election=Election.objects.latest()).exists():
         return True
     if user.nationality == 'KOR' or user.kaist_email == None:

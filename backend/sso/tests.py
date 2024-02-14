@@ -11,7 +11,7 @@ import rest_framework.status as status
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad
 
-from .middleware import SA_AES_ID_SECRET
+from .views import KSSO_SA_AES_ID_SECRET
 
 
 def generate_user_info(
@@ -59,16 +59,16 @@ def encrypt(user_info: dict, state: str)->str:
     }
     result_padded = pad(json.dumps(result_json).encode(), 16)
 
-    iv = (SA_AES_ID_SECRET+state)[80:96].encode()
+    iv = (KSSO_SA_AES_ID_SECRET+state)[80:96].encode()
     cipher = AES.new(iv, AES.MODE_CBC, iv)
 
     return base64.b64encode(cipher.encrypt(result_padded)).decode()
 
-class KAuthTest(APITestCase):
+class AuthTest(APITestCase):
 
     def test_normal_login(self, client=APIClient(), user_info=generate_user_info()):
         r = client.post(
-            reverse('klogin'),
+            reverse('login'),
             {'next': '/'},
             )
         self.assertEqual(r.status_code, status.HTTP_302_FOUND)
@@ -81,7 +81,7 @@ class KAuthTest(APITestCase):
             'success': 'true'
         }
         r = client.post(
-            reverse('klogin-response'),
+            reverse('login-response'),
             urlencode(payload),
             headers = {'Origin': settings.KSSO_ORIGIN},
             content_type='application/x-www-form-urlencoded'
@@ -92,7 +92,7 @@ class KAuthTest(APITestCase):
         self.test_normal_login(client)
 
         r = client.post(
-            reverse('klogout'),
+            reverse('logout'),
             {'next': '/'}
             )
         self.assertEqual(r.status_code, status.HTTP_302_FOUND)
