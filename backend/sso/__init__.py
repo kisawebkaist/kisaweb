@@ -1,0 +1,1 @@
+TOTP_SESSION_KEY = '_totp_verified'

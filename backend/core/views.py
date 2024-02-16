@@ -19,8 +19,8 @@ def get_state_view(request):
     - This will also set the csrftoken cookie
     """
     return Response({
-        'member_logined': request.user.is_authenticated,
-        'ksso_logined': request.kaist_profile.is_authenticated,
+        'already_logined': request.user.is_authenticated,
+        'is_verified': request.user.is_authenticated and request.user.is_verified(request),
     })
 
 

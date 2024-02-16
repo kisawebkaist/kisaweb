@@ -30,7 +30,7 @@ def ensure_relative_url(url):
     if url[0] == '/':
         return url
     url = urllib.parse.urlparse(url)._replace(scheme='', netloc='').geturl()
-    if url[0] != '/':
+    if url == "" or url[0] != '/':
         url = '/' + url
     return url
     

@@ -6,4 +6,4 @@ class IsKISA(BasePermission):
 
 class IsKISAVerified(IsKISA):
     def has_permission(self, request, view):
-        return super().has_permission(request, view) and request.user.is_verified
+        return super().has_permission(request, view) and request.user.is_verified(request)

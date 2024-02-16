@@ -1,4 +1,4 @@
-import base64, logging, pyotp, datetime, secrets
+import base64, logging, pyotp, datetime, secrets, time
 
 from email.mime.text import MIMEText
 
@@ -11,11 +11,12 @@ from rest_framework.exceptions import Throttled, ParseError
 from googleapiclient.errors import HttpError as GHttpError
 
 from .utils import GMailAPI
+from .  import TOTP_SESSION_KEY
 
 logger = logging.getLogger(__name__)
 
 def generate_mail_otp():
-    return base64.b64encode(secrets.token_bytes(3)).encode('utf-8')
+    return base64.b64encode(secrets.token_bytes(3)).decode('utf-8')
 
 class MailOTPSession(models.Model):
     MAX_ATTEMPT = 5
@@ -23,16 +24,16 @@ class MailOTPSession(models.Model):
     data = models.JSONField(default=dict)
     otp = models.CharField(default=generate_mail_otp)
     time_started = models.DateTimeField(auto_now_add=True)
-    mail = models.EmailField()
+    email = models.EmailField()
     available_attempts = models.SmallIntegerField(default=MAX_ATTEMPT)
 
     def verify(self, otp):
-        result = constant_time_compare(self.otp, otp) and datetime.datetime.now() - self.time_started <= self.MAX_LIFETIME
+        result = constant_time_compare(self.otp, otp)
         with transaction.atomic():
-            query = MailOTPSession.objects.select_for_update(no_wait=True).filter(self.pk)
-            if not query.exists():
+            otp_obj = MailOTPSession.objects.select_for_update(nowait=True).filter(pk=self.pk).first()
+            if otp_obj is None:
                 raise ParseError()
-            otp_obj = query[0]
+            result = result and datetime.datetime.now() - self.time_started <= self.MAX_LIFETIME
             if result:
                 data = otp_obj.data
                 otp_obj.delete()
@@ -67,24 +68,27 @@ class TOTPDevice(models.Model):
 
     secret = models.CharField(default=pyotp.random_base32)
     last_failed_attempt_time = models.DateTimeField(default=datetime.datetime.now)
-    next_delay_sec = models.IntegerField(default=ON_DELAY_INIT)
+    next_delay_sec = models.FloatField(default=ON_DELAY_INIT)
     on_cooldown = models.BooleanField(default=False)
     
     def verify(self, token):
-        wait_time = (self.last_failed_attempt_time - datetime.datetime.now()) + self.next_delay_sec*datetime.timedelta(seconds=1)
-        if self.on_cooldown and wait_time > 0:
-            raise Throttled()
-        result = pyotp.TOTP(self.secret).verify(token, valid_window=self.VALID_WINDOW) and not TOTPUsedToken.check_used(token, self)
+        result = pyotp.TOTP(self.secret).verify(token, valid_window=self.VALID_WINDOW)
         with transaction.atomic():
             device = TOTPDevice.objects.select_for_update().get(pk=self.pk)
+            wait_time = (device.last_failed_attempt_time - datetime.datetime.now()) + device.next_delay_sec*datetime.timedelta(seconds=1)
+            if device.on_cooldown and wait_time > datetime.timedelta(seconds=0):
+                raise Throttled(wait=wait_time.total_seconds())
+            result = result and not TOTPUsedToken.check_used(token, self)
             if result:
-                self.on_cooldown = False
-                self.next_delay_sec = self.ON_DELAY_INIT
+                device.on_cooldown = False
+                device.next_delay_sec = device.ON_DELAY_INIT
+                TOTPUsedToken.insert(token, device)
             else:
-                self.on_cooldown = True
-                self.next_delay_sec = 2 * self.next_delay_sec
+                device.on_cooldown = True
+                device.next_delay_sec *= 2
+                device.last_failed_attempt_time = datetime.datetime.now()
             device.save()
-        return result
+            return result
         
         
     
@@ -98,18 +102,18 @@ class TOTPUsedToken(models.Model):
     @classmethod
     def check_used(cls, token, device):
         with transaction.atomic():
-            query = cls.objects.select_for_update().filter(token=token, device=device)
-            return query.exists() and datetime.datetime.now() >= query[0].time_used + TOTPDevice.VALID_WINDOW * datetime.timedelta(seconds=30)
+            result = cls.objects.select_for_update().filter(device=device, token=token).first()
+            return result is not None and datetime.datetime.now() <= result.time_used + TOTPDevice.VALID_WINDOW * datetime.timedelta(seconds=30)
     
     @classmethod
     def insert(cls, token, device):
         with transaction.atomic():
-            query = cls.objects.select_for_update().filter(token=token, device=device)
-            if query.exists():
-                used_token = query[0]
-                used_token.time_used = datetime.datetime.now()
-            else:
+            used_token = cls.objects.select_for_update().filter(device=device, token=token).first()
+            if used_token is None:
                 TOTPUsedToken(time_used=datetime.datetime.now(), device=device, token=token).save()
+                
+            else:
+                used_token.time_used = datetime.datetime.now()
 
 
 class User(AbstractUser):
@@ -221,6 +225,9 @@ class User(AbstractUser):
     
     def is_kisa(self):
         return self.kisa_division != 0
+    
+    def is_verified(self, request):
+        return TOTP_SESSION_KEY in request.session and bool(request.session[TOTP_SESSION_KEY])
         
 
 class LoginError(models.Model):

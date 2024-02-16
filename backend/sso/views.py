@@ -18,6 +18,7 @@ import rest_framework.status as status
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
 
+from . import TOTP_SESSION_KEY
 from .models import User, MailOTPSession
 from .permissions import IsKISA, IsKISAVerified
 from core.utils import ensure_relative_url, get_random_urlsafe_string, CSRFExemptSessionAuthentication
@@ -31,6 +32,8 @@ MAIL_OTP_BASE_SESSION_KEY = "_mail_otp_"
 
 logger = logging.getLogger(__name__)
 email_validator = EmailValidator()
+
+#TODO: throttle any request that triggers "send-mail"
 
 def decrypt(data, state):
     try:
@@ -123,6 +126,7 @@ def login_response_view(request):
         result = json.loads(result)
         user = User.from_info_json(result['dataMap']['USER_INFO'])
         login(request, user)
+        request.session.pop(TOTP_SESSION_KEY, None)
         # the errors in here might indicate just simple data corruption or our secret key is not secret anymore
     except KeyError as e:
         logger.warning(f'Suspicious Operation: key error: %s', e)
@@ -138,12 +142,12 @@ def login_response_view(request):
 @api_view(['POST'])
 @permission_classes([IsKISA])
 def check_totp_view(request):
-    """
-    Format 
-    """
-    if request.user.totp_device.verify(request.data['token']):
-        request.user.is_verified = True
-    return Response()
+    if request.user.totp_device.verify(request.data.get('token', '')):
+        request.session[TOTP_SESSION_KEY] = True
+        request.session.cycle_key()
+    else: 
+        raise ParseError()
+    return Response({})
 
 @api_view(['POST'])
 @permission_classes([IsKISAVerified])
@@ -171,12 +175,12 @@ def change_email_view(request):
         otp_session.save()
         otp_session.send("you want to change your email to this address. ")
         request.session[MAIL_OTP_BASE_SESSION_KEY+"change_email"] = otp_session.pk
-    return Response()
+    return Response({})
 
 @api_view(['POST'])
 @permission_classes([IsKISAVerified])
 def change_email_response_view(request):
-    otp = request.data['otp']
+    otp = request.data['token']
     pk = request.session.get(MAIL_OTP_BASE_SESSION_KEY+"change_email", None)
     if pk is None:
         raise ParseError()
@@ -194,23 +198,24 @@ def change_email_response_view(request):
         )
     request.user.email = data['email']
     request.user.save()
-    return Response()
+    request.session.pop(MAIL_OTP_BASE_SESSION_KEY+"change_email", None)
+    return Response({})
 
 
 @api_view(['POST'])
 @permission_classes([IsKISA])
 def lost_totp_secret_view(request):
     with transaction.atomic():
-        otp_session = MailOTPSession(mail=request.user.email)
+        otp_session = MailOTPSession(email=request.user.email)
         otp_session.save()
         otp_session.send("you lost your totp secret.")
         request.session[MAIL_OTP_BASE_SESSION_KEY+"lost_totp"] = otp_session.pk
-    return Response()
+    return Response({})
 
 @api_view(['POST'])
 @permission_classes([IsKISA])
 def lost_totp_secret_response_view(request):
-    otp = request.data['otp']
+    otp = request.data.get('token', '')
     pk = request.session.get(MAIL_OTP_BASE_SESSION_KEY+"lost_totp", None)
     if pk is None:
         raise ParseError()
@@ -229,6 +234,7 @@ def lost_totp_secret_response_view(request):
     new_secret = pyotp.random_base32()
     request.user.totp_device.secret = new_secret
     request.user.totp_device.save()
+    request.session.pop(MAIL_OTP_BASE_SESSION_KEY+"lost_totp", None)
     return Response({
         "secret": new_secret,
         "auth_uri": pyotp.TOTP(new_secret).provisioning_uri(name=request.user.email, issuer_name="KISA")
