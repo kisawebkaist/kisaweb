@@ -5,7 +5,7 @@ server {
   client_max_body_size 100M;
   # Just for testing api calls
   location /static/rest_framework/{
-    proxy_pass http://${BACKEND_ENDPOINT}:${BACKEND_LISTEN_PORT};
+    proxy_pass http://${BACKEND_ENDPOINT}:${BACKEND_PORT};
     proxy_set_header HOST $http_host;
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -26,7 +26,7 @@ server {
   }
   # For Other things
   location / {
-    proxy_pass http://${BACKEND_ENDPOINT}:${BACKEND_LISTEN_PORT};
+    proxy_pass http://${BACKEND_ENDPOINT}:${BACKEND_PORT};
     proxy_set_header HOST $http_host;
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -44,7 +44,7 @@ server {
   server_name ${NGINX_HOST};
   client_max_body_size 100M;
   location / {
-    proxy_pass http://${FRONTEND_ENDPOINT}:${FRONTEND_LISTEN_PORT};
+    proxy_pass http://${FRONTEND_ENDPOINT}:${FRONTEND_PORT};
     proxy_set_header Host $host;
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;

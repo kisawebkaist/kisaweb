@@ -54,13 +54,12 @@ services:
     ports:
       - 80:8081
       - 8000:8080
-      - 3000:8081
     depends_on:
       - frontend
       - backend
     environment:
       - BACKEND_ENDPOINT=backend
-      - BACKEND_PORT=8000
+      - BACKEND_PORT=8080
       - BACKEND_LISTEN_PORT=8080
       - FRONTEND_ENDPOINT=frontend
       - FRONTEND_PORT=3000
