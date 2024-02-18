@@ -35,16 +35,14 @@ class GMailAPI:
         GMailAPI.client = self
 
         self.credentials = None
-        try:
-            self.credentials = GCredentials.from_authorized_user_file("gmail-api-token.json")
-            if not self.credentials.valid:
-                if self.credentials and self.credentials.expired and self.credentials.refresh_token:
-                    self.credentials.refresh(GRequest())
-                with open("gmail-api-token.json", "w+") as token:
-                    token.write(self.credentials.to_json())
-            self.service = gbuild('gmail', 'v1', credentials=self.credentials)
-        except GRefreshError as e:
-            logger.exception(f"Token refresh failed: {e}")
+        self.service = None
+        self.credentials = GCredentials.from_authorized_user_file("gmail-api-token.json")
+        if not self.credentials.valid:
+            if self.credentials and self.credentials.expired and self.credentials.refresh_token:
+                self.credentials.refresh(GRequest())
+            with open("gmail-api-token.json", "w+") as token:
+                token.write(self.credentials.to_json())
+        self.service = gbuild('gmail', 'v1', credentials=self.credentials)
 
     @classmethod
     def init(cls):

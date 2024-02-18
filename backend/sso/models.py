@@ -1,4 +1,4 @@
-import base64, logging, pyotp, datetime, secrets, time
+import base64, json, logging, pyotp, datetime, secrets, time
 
 from email.mime.text import MIMEText
 
@@ -56,10 +56,10 @@ class MailOTPSession(models.Model):
         encoded_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
 
         create_message = {"raw": encoded_message}
-        try:
+        if GMailAPI.client and GMailAPI.client.service:
             GMailAPI.client.service.users().messages().send(userId="me", body=create_message).execute()
-        except GHttpError as e:
-            logger.exception(f"An error occured while sending a mail: {e}")
+        else:
+            logger.warning(f"Mail OTP code send failure to {self.email}")
 
 
 class TOTPDevice(models.Model):
@@ -158,12 +158,12 @@ class User(AbstractUser):
     kaist_uid = models.IntegerField(primary_key=True)  # kaist_uid
 
     korean_name = models.CharField(max_length=100, blank=True, null=True)  # ku_kname
-    full_name = models.CharField(max_length=100, blank=True, null=True)  # displayname
-    first_name = models.CharField(max_length=100, blank=True, null=True)  # sn
-    last_name = models.CharField(max_length=100, blank=True, null=True)  # givenname
+    full_name = models.CharField(max_length=100)  # displayname
+    first_name = models.CharField(max_length=100)  # sn
+    last_name = models.CharField(max_length=100)  # givenname
 
     dob = models.DateField(blank=True, null=True)  # ku_born_date
-    nationality = models.CharField(max_length=100, blank=True, null=True)  # c
+    nationality = models.CharField(max_length=100)  # c
     sex = models.CharField(max_length=20, blank=True, null=True)  # ku_sex
 
     kaist_email = models.EmailField(max_length=100, blank=True, null=True)  # mail
@@ -175,7 +175,7 @@ class User(AbstractUser):
     bachelors_department_name = models.CharField(max_length=200, blank=True, null=True)  # ku_acad_name
     campus = models.CharField(max_length=5, blank=True, null=True)  # ku_campus
 
-    title_english = models.CharField(max_length=100, blank=True, null=True)  # title
+    title_english = models.CharField(max_length=100)  # title
     student_status_english = models.CharField(max_length=100, blank=True, null=True)  # ku_psft_user_status
     student_status_korean = models.CharField(max_length=100, blank=True, null=True)  # ku_psft_user_status_kor
 
@@ -183,7 +183,7 @@ class User(AbstractUser):
     degree_name_korean = models.CharField(max_length=100, blank=True, null=True)  # ku_acad_prog
     degree_name_english = models.CharField(max_length=100, blank=True, null=True)  # ku_acad_prog_eng
 
-    employee_type = models.CharField(max_length=10, blank=True, null=True)  # employeeType
+    employee_type = models.CharField(max_length=10)  # employeeType
     student_admission_datetime = models.DateTimeField(blank=True, null=True)  # ku_prog_effdt
     student_type_id = models.IntegerField(blank=True, null=True)  # ku_stdnt_type_id
     student_type_class = models.CharField(max_length=20, blank=True, null=True)  # ku_stdnt_type_class
@@ -214,6 +214,14 @@ class User(AbstractUser):
         user.full_clean()
         user.save()
         return user
+    
+    def get_info_json(self):
+        info_json = dict()
+        for key, field in self.KSSO_KEYS_AND_FIELDS:
+            info_json[key] = getattr(self, field)
+            if isinstance(info_json[key], datetime.date):
+                info_json[key] = str(info_json[key])
+        return info_json
     
     def update_from_info_json(self, user_info:dict):
         for key, field in self.KSSO_KEYS_AND_FIELDS:

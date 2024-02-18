@@ -3,28 +3,6 @@ server {
   listen ${BACKEND_LISTEN_PORT};
   server_name ${NGINX_HOST};
   client_max_body_size 100M;
-  # Just for testing api calls
-  location /static/rest_framework/{
-    proxy_pass http://${BACKEND_ENDPOINT}:${BACKEND_PORT};
-    proxy_set_header HOST $http_host;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto $scheme;
-    proxy_set_header Upgrade $http_upgrade;
-    proxy_set_header Connection "Upgrade";
-    proxy_connect_timeout  600;
-    proxy_send_timeout  600;
-    proxy_read_timeout  600;
-  }
-  # For Media Files
-  location /media/ {
-    root /app;
-  }
-  # For Static Files
-  location /static/ {
-    root /app;
-  }
-  # For Other things
   location / {
     proxy_pass http://${BACKEND_ENDPOINT}:${BACKEND_PORT};
     proxy_set_header HOST $http_host;

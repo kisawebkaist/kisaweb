@@ -11,20 +11,33 @@ from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from core.utils import get_object_or_404
 from sso.models import User
+from sso.permissions import IsKISAVerifiedOrReadOnly
 
 from .models import Election, Candidate, Vote, VotingExceptionToken
 from .serializers import *
 
+def is_eligible(user:User)->bool:
+    if VotingExceptionToken.objects.filter(user=user, election=Election.objects.latest()).exists():
+        return True
+    if user.nationality == 'KOR' or user.kaist_email == None:
+        return False
+    # TODO: check what's happening here with old code
+    if 'E' in user.employee_type and 'researcher' in user.title_english.lower():
+        return True
+    return False
+
 class ElectionInfoViewSet(ReadOnlyModelViewSet):
     serializer_class = ElectionInfoSerializer
     queryset = Election.objects.filter(is_open_public=True)
+    lookup_field = 'slug'
 
 class ElectionResultViewSet(ReadOnlyModelViewSet):
     serializer_class = ElectionResultSerializer
     queryset = Election.objects.filter(is_open_public=True, results_out=True)
+    lookup_field = 'slug'
 
 class CandidateAPIView(APIView):
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsKISAVerifiedOrReadOnly]
     
     def get(self, request, election_slug, slug, format=None):
         election = get_object_or_404(Election, slug=election_slug)
@@ -40,12 +53,12 @@ class CandidateAPIView(APIView):
             raise PermissionDenied()
         serializer = CandidateSerializer(data=request.data)
         serializer.save()
-        return Response()
+        return Response({})
     
 @api_view(['GET', 'POST'])
 @authentication_classes([IsAuthenticated])
 def vote_info(request):
-    is_eligible = is_eligible(request.kaist_profile)
+    eligible = is_eligible(request.user)
     already_voted = Vote.objects.filter(user=request.kaist_profile).exists()
     if request.method == 'GET':
         return Response({
@@ -53,7 +66,7 @@ def vote_info(request):
             'already_voted': already_voted
         })
     if request.method == 'POST':
-        if not is_eligible:
+        if not eligible:
             raise PermissionDenied(_("Sorry, you are not elligible for voting."))
         if already_voted:
             raise PermissionDenied(_("You have already voted."))
@@ -67,14 +80,5 @@ def vote_info(request):
             Vote(user=request.kaist_profile, candidate=result[0], vote_type=bool(request.data['vote_type']))
         return Response()
     
-    raise MethodNotAllowed()
-
-def is_eligible(user:User)->bool:
-    if VotingExceptionToken.objects.filter(user=user, election=Election.objects.latest()).exists():
-        return True
-    if user.nationality == 'KOR' or user.kaist_email == None:
-        return False
-    if 'E' in user.user_group and 'researcher' in user.title_english.lower():
-        return True
-    return False
+    raise MethodNotAllowed(request.method)
     

@@ -12,7 +12,7 @@ class CandidateSerializer(serializers.Serializer):
     slug = serializers.SlugField()
 
     def get_name(self, candidate):
-        return candidate.kaist_profile.full_name
+        return candidate.account.get_full_name()
     
     def get_election(self, candidate):
         return candidate.election.slug
@@ -29,11 +29,12 @@ class ElectionInfoSerializer(serializers.ModelSerializer):
             'image',
             'debate_url',
             'slug',
+            'candidates'
         ]
     start_datetime = serializers.DateTimeField()
     end_datetime = serializers.DateTimeField()
-    intro_msg = serializers.CharField()
-    instructions = serializers.CharField()
+    intro_msg = serializers.JSONField()
+    instructions = serializers.JSONField()
     image = serializers.ImageField()
     debate_url = serializers.URLField()
     slug = serializers.SlugField()
@@ -57,8 +58,8 @@ class ElectionResultSerializer(serializers.ModelSerializer):
         candidates = Candidate.objects.filter(election=election)
         if candidates.count() == 1:
             return {
-                'yes': Vote.objects.filter(candidate=candidate[0], vote_type=True),
-                'no': Vote.objects.filter(candidate=candidate[0], vote_type=False)
+                'yes': Vote.objects.filter(candidate=candidates[0], vote_type=True),
+                'no': Vote.objects.filter(candidate=candidates[0], vote_type=False)
             }
         
         result = dict()

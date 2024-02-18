@@ -122,9 +122,6 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'maintenance_mode.context_processors.maintenance_mode',  # PyPi django-maintenance-mode
                 "django.template.context_processors.request", # django_pagination_bootstrap context provider
-
-                # -- Created by KISA Team -- #
-                'election.context_processors.navbar_election_link_visible',
             ],
         },
     },

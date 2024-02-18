@@ -5,7 +5,6 @@ from urllib.parse import parse_qs, urlparse
 from django.conf import settings
 from django.urls import reverse
 
-from rest_framework.exceptions import *
 from rest_framework.test import APIClient, APITestCase, APILiveServerTestCase
 import rest_framework.status as status
 
@@ -88,6 +87,33 @@ def get_cookie_value(jar, key, default=''):
     else:
         token = token.value
     return token
+
+def login(user:User, base_url="http://localhost:8080"):
+    """a helper method to login to admin site in browser"""
+    s = requests.session()
+    s.get(base_url+reverse('state'))
+    csrftoken = s.cookies['csrftoken']
+
+    r = s.post(base_url+reverse('login'), headers={'X-CSRFToken': csrftoken}, allow_redirects=False)
+    state = parse_qs(urlparse(r.headers['Location']).query)['state'][0]
+
+    payload = {
+        'result': encrypt(user.get_info_json(), state),
+        'state': state,
+        'success': 'true'
+    }
+    r = s.post(
+        base_url+reverse('login-response'), 
+        payload, 
+        headers={
+            'X-CSRFToken': csrftoken,
+            'Origin': settings.KSSO_ORIGIN
+        },
+        allow_redirects=False
+    )
+    print(s.cookies)
+    
+
 
 class AuthTest(APITestCase):
     otp_mail = None
@@ -182,7 +208,7 @@ class AuthTest(APITestCase):
             {'token': '000000'},
             headers=headers
         )
-        self.assertRaises(PermissionDenied)
+        self.assertEqual(r.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_totp_login_denied_replay(self, client=APIClient()):
         client.force_login(self.test_user)

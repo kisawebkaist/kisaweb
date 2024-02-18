@@ -1,70 +1,23 @@
-# from django import forms
-# from django.contrib import admin
-# from django.utils.html import mark_safe
+from django import forms
+from django.contrib import admin
 
-# from .models import Candidate, Election, Voter
-
-# # Register your models here.
-
-# class CandidateAdminForm(forms.ModelForm):
-#     class Meta:
-#         model = Candidate
-#         fields = '__all__'
-#         widgets = {
-#             'kisa_history': forms.Textarea(attrs={
-#                 'placeholder': 'text',
-#             }),
-#         }
+from .models import *
 
 
-# class CandidateAdmin(admin.ModelAdmin):
-#     form = CandidateAdminForm
+class CandidateAdmin(admin.ModelAdmin):
+    pass
 
-#     list_display = [
-#         'name',
-#         'image_tag',
-#         'kisa_history_template_string',
-#         'date',
-#         'votes',
-#         'yes',
-#         'no',
-#     ]
+class ElectionAdmin(admin.ModelAdmin):
+    pass
 
-#     def votes(self, x):
-#         return x.voters.count()
+class VoteAdmin(admin.ModelAdmin):
+    pass
 
-#     def yes(self, x):
-#         return x.voters.filter(vote_type='yes').count()
-    
-#     def no(self, x):
-#         return x.voters.filter(vote_type='no').count()
+class DebateAttendanceAdmin(admin.ModelAdmin):
+    pass
 
-#     def image_tag(self, obj):
-#         if not obj.image:
-#             path = '/static/img/candidate-default-dist.png'
-#         else:
-#             path = obj.image.url
-#         return mark_safe(f'<img src="{path}" alt="Candidate Image" width="150" height="150" />')
-
-#     image_tag.short_description = 'Current Image'
-
-#     def kisa_history_template_string(self, obj):
-#         history = obj.kisa_history.split('\n')
-#         return mark_safe('<br />'.join([line for line in history]))
-
-#     kisa_history_template_string.short_description = 'Kisa History'
-
-#     readonly_fields = ['image_tag', 'date', 'votes', 'yes', 'no']
-
-
-# class ElectionAdmin(admin.ModelAdmin):
-#     list_display = [
-#         '__str__',
-#         'candidates_list',
-#     ]
-
-#     def candidates_list(self, obj):
-#         return mark_safe('<br />'.join([c.name for c in obj.candidates.all()]))
+class VotingExceptionTokenAdmin(admin.ModelAdmin):
+    pass
 
 
 # class VoterAdmin(admin.ModelAdmin):
@@ -95,6 +48,8 @@
 #         return x.user.is_staff
 
 
-# admin.site.register(Candidate, CandidateAdmin)
-# admin.site.register(Election, ElectionAdmin)
-# admin.site.register(Voter, VoterAdmin)
+admin.site.register(Candidate, CandidateAdmin)
+admin.site.register(Election, ElectionAdmin)
+admin.site.register(Vote, VoteAdmin)
+admin.site.register(DebateAttendance, DebateAttendanceAdmin)
+admin.site.register(VotingExceptionToken, VotingExceptionTokenAdmin)
