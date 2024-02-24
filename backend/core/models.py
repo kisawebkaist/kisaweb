@@ -64,6 +64,7 @@ class Tag(models.Model):
 class Content(models.Model):
     title = models.CharField(max_length=200, blank=False)
     content = HTMLField()
+    new_content = models.JSONField(default = dict)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     slug = models.SlugField(max_length=100, null=True, unique=True, editable=False)
@@ -120,7 +121,7 @@ class Misc(models.Model):
     schema = models.JSONField()
     slug = models.SlugField(unique=True)
     is_active = models.BooleanField(default=True)
-    
+
     def clean(self):
         try:
             Draft7Validator(self.schema).validate(self.data)

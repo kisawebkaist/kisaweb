@@ -1,67 +1,23 @@
-from django.core.paginator import Paginator
-
-from django.http.response import HttpResponse
-from django.shortcuts import render
-from django.db.models import Count
+from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
+from rest_framework import filters
+from .serializers import  PostTagSerializer, PostAllSerializer, PostSerializer
 from .models import Post, PostTag
 
-RESULTS_PER_PAGE = 12
+class PostViewSet(ModelViewSet):
+    serializer_class = PostAllSerializer
+    queryset = Post.objects.all().order_by('-created')
+    filter_backends = [ filters.SearchFilter ]
+    lookup_field = 'slug'
+    search_fields = [ 'title', 'tags__tag_name' ]
 
-def post_view(request, post_slug):
-  blog_post = Post.objects.filter(slug=post_slug).first()
-  if blog_post == None:
-    return HttpResponse('Blog Post Does Not Exist', status=404)
-  context = {
-    'content': blog_post.content,
-    'title': blog_post.title,
-    'tags': blog_post.tags,
-    'image': blog_post.image,
-    'created': blog_post.created,
-  }
-  return render(request, 'blog/blog_post.html', context)
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return PostAllSerializer
+        else:
+            return PostSerializer
 
-def blog_view(request):
-  searched_tags = request.GET.get('tags', '').split(',')
-  posts = Post.objects.order_by('-created').all()
-  if searched_tags != ['']:
-    posts = Post.objects.filter(tags__tag_name__in=searched_tags).annotate(num_tags=Count('tags')).filter(num_tags=len(searched_tags)).order_by('-created')
-
-  paginator = Paginator(posts, RESULTS_PER_PAGE)
-  page_number = request.GET.get('page')
-
-  if page_number == None:
-    page_number = '1'
-
-  page_obj = paginator.get_page(page_number)
-  page_number = page_obj.number
-
-  cnt_page_links = 5
-  page_ids_l, page_ids_r = list(), list()
-  add, sub = 1, 1
-  for i in range(cnt_page_links):
-    if page_number + add <= paginator.num_pages:
-      page_ids_r.append(page_number + add)
-      add += add
-  for i in range(cnt_page_links):
-    if page_number - sub >= 1:
-      page_ids_l.append(page_number - sub)
-      sub += sub
-  page_ids = page_ids_l[::-1] + [page_number] + page_ids_r
-
-  get_request_params_without_page_info = request.GET.copy()
-  if get_request_params_without_page_info.__contains__('page'):
-    get_request_params_without_page_info.pop('page')
-  get_request_url_without_page_info = get_request_params_without_page_info.urlencode()
-  if get_request_url_without_page_info == '':
-    query_suffix_for_paginator = ''
-  else:
-    query_suffix_for_paginator = f'&{get_request_url_without_page_info}'
-  context = {
-    'tagObjects': PostTag.objects.order_by('tag_name').all(),
-    'posts': page_obj,
-    'num_results': len(posts),
-    'page_ids': page_ids,
-    'cur_page': page_number,
-    'query_suffix_for_paginator': query_suffix_for_paginator,
-  }
-  return render(request, 'blog/blog_posts.html', context)
+class PostTagViewSet(ReadOnlyModelViewSet):
+    serializer_class = PostTagSerializer
+    queryset = PostTag.objects.all()
+    filter_backends = [ filters.SearchFilter ]
+    search_fields = [ 'tag_name' ]
