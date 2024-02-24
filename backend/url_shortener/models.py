@@ -74,8 +74,6 @@ class UrlShortener(models.Model):
             )
             url_log.save()
 
-
-
 class UrlVisit(models.Model):
     visitor     = models.ForeignKey(
         to = UrlVisitor, on_delete = models.CASCADE
