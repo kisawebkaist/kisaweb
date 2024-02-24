@@ -6,7 +6,7 @@ from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 router.register(
-  r'category', views.FaqCategoryViewset, basename = 'faq-category'
+    r'category', views.FaqCategoryViewset, basename = 'faq-category'
 )
 router.register('', views.FaqViewset, basename = 'faq')
 urlpatterns = router.urls
