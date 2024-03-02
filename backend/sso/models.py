@@ -46,7 +46,6 @@ class MailOTPSession(models.Model):
                 otp_obj.save()
             return (None, available_attempts)
         
-    #TODO: write a better template
     def send(self, reason:str):
         message = MIMEText(f"Dear KISA member,<br><br>Your instant authentication code is below for KISA services.<br>Auth Code: <b>{self.otp}</b><br>This mail was sent because {reason}<br><br>Best Regards,<br>KISA Web Team", "html")
         message["To"] = self.email
@@ -60,6 +59,13 @@ class MailOTPSession(models.Model):
             GMailAPI.client.service.users().messages().send(userId="me", body=create_message).execute()
         else:
             logger.warning(f"Mail OTP code send failure to {self.email}")
+
+    @classmethod
+    def clear_expired(cls):
+        now = datetime.datetime.now()
+        for session in cls.objects.all():
+            if now - session.time_started > cls.MAX_LIFETIME:
+                session.delete()
 
 
 class TOTPDevice(models.Model):
@@ -114,6 +120,14 @@ class TOTPUsedToken(models.Model):
                 
             else:
                 used_token.time_used = datetime.datetime.now()
+
+    @classmethod
+    def clear_expired(cls):
+        now = datetime.datetime.now()
+        valid_duration = TOTPDevice.VALID_WINDOW * datetime.timedelta(seconds=30)
+        for token in cls.objects.all():
+            if now - token.time_used > valid_duration:
+                token.delete()
 
 
 class User(AbstractUser):
@@ -211,6 +225,14 @@ class User(AbstractUser):
                 setattr(user, field, user_info[key])
         user.username = str(user.kaist_uid)
         user.set_unusable_password()
+
+        # set the default mail to be the user's external mail or kaist mail
+        # the external mail is first priority just in case KAIST SSO got hacked
+        if user.external_email is not None and user.external_email != "":
+            user.email = user.external_email
+        elif user.kaist_email is not None and user.kaist_email != "":
+            user.email = user.kaist_email
+
         user.full_clean()
         user.save()
         return user

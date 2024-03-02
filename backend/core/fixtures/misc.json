@@ -235,24 +235,16 @@
     "model": "core.misc",
     "pk": 2,
     "fields": {
-        "data": [
-            {
-                "pk": 1,
-                "model": "core.footer",
-                "fields": {
-                    "json": {
-                        "email": "kisa.kaist.ac.kr",
-                        "fb_link": "https://www.facebook.com/groups/KAIST.KISA",
-                        "yt_link": "https://www.youtube.com/channel/UCsjJvtRBrNPZu8emypWHUBw/featured",
-                        "location": "KAIST, 291 Daehak-ro, Yuseong-gu, Daejeon 34141, Republic of Korea",
-                        "kisa_text": "We are KISA.",
-                        "phnum_eng": "+82-10-2750-6709",
-                        "phnum_kor": "+82-10-5039-5433",
-                        "insta_link": "https://www.instagram.com/kisakaist/"
-                    }
-                }
-            }
-        ],
+        "data": {
+            "email": "kisa.kaist.ac.kr",
+            "fb_link": "https://www.facebook.com/groups/KAIST.KISA",
+            "yt_link": "https://www.youtube.com/channel/UCsjJvtRBrNPZu8emypWHUBw/featured",
+            "location": "KAIST, 291 Daehak-ro, Yuseong-gu, Daejeon 34141, Republic of Korea",
+            "kisa_text": "We are KISA.",
+            "phnum_eng": "+82-10-2750-6709",
+            "phnum_kor": "+82-10-5039-5433",
+            "insta_link": "https://www.instagram.com/kisakaist/"
+        },
         "schema": {
             "$id": "Footer",
             "type": "object",

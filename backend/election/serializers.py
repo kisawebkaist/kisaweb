@@ -2,14 +2,18 @@ import rest_framework.serializers as serializers
 
 from .models import Candidate, Election, Vote
 
-class CandidateSerializer(serializers.Serializer):
+class CandidateSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     election = serializers.SerializerMethodField()
     manifesto = serializers.JSONField()
-    speech_url = serializers.URLField()
-    kisa_history = serializers.JSONField()
-    image = serializers.ImageField()
+    speech_url = serializers.URLField(required=False)
+    kisa_history = serializers.JSONField(required=False)
+    image = serializers.ImageField(required=False)
     slug = serializers.SlugField()
+
+    class Meta:
+        model = Candidate
+        fields = ['manifesto', 'speech_url', 'kisa_history', 'image']
 
     def get_name(self, candidate):
         return candidate.account.get_full_name()

@@ -1,13 +1,7 @@
 from django.contrib import admin
+from .models import *
 
-# from adminsortable.admin import SortableAdmin
+class MiscAdmin(admin.ModelAdmin):
+    pass
 
-# # Register your models here.
-
-# admin.site.site_header = 'KISA Web Administration'
-
-# class DivisionItemAdmin(SortableAdmin):
-#   exclue = ['the_order']
-
-# admin.site.register(Footer)
-# admin.site.register(Navbar)
+admin.site.register(Misc, MiscAdmin)

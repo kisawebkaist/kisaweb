@@ -5,7 +5,7 @@ from django.contrib.auth import login, logout
 from django.core.validators import EmailValidator
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import transaction
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.translation import gettext as _
 
@@ -57,7 +57,6 @@ login_out_schema = jsonschema.Draft7Validator({
         }
 })
 
-# TODO: Proper input validation and type checking to avoid some weird type casting
 @api_view(['POST'])
 def login_view(request):
     """
@@ -99,7 +98,7 @@ def login_response_view(request):
     We also need to allow CORS from sso website with credentials.
     """
     if request.user.is_authenticated:
-        return HttpResponseRedirect('/', headers=headers)
+        return HttpResponseRedirect('/')
     
     state = request.data['state']
     raw_result = request.data['result']
@@ -109,7 +108,7 @@ def login_response_view(request):
     next = request.session.pop('next', '/')
 
     if not bool(success) or raw_result == "" or saved_state == "" or not isinstance(state, str) or saved_state != state:
-        return ParseError()
+        raise ParseError()
 
     headers = {
         'Access-Control-Allow-Origin': KSSO_ORIGIN,
@@ -137,14 +136,14 @@ def login_response_view(request):
         logger.warning(f'Suspicious Operation: user model validation failed: %s', e)
         raise ParseError()
     
-    return HttpResponseRedirect(next, headers)
+    return HttpResponseRedirect(next, headers=headers)
 
 @api_view(['POST'])
 @permission_classes([IsKISA])
 def check_totp_view(request):
     if request.user.totp_device.verify(request.data.get('token', '')):
-        request.session[TOTP_SESSION_KEY] = True
         request.session.cycle_key()
+        request.session[TOTP_SESSION_KEY] = True
     else: 
         raise ParseError()
     return Response({})
@@ -164,7 +163,7 @@ def change_totp_secret(request):
 @api_view(['POST'])
 @permission_classes([IsKISAVerified])
 def change_email_view(request):
-    email = request.data['email']
+    email = request.data.get('email', '')
     try:
         email_validator(email)
         email = User.objects.normalize_email(email)
@@ -180,7 +179,7 @@ def change_email_view(request):
 @api_view(['POST'])
 @permission_classes([IsKISAVerified])
 def change_email_response_view(request):
-    otp = request.data['token']
+    otp = request.data.get('token', '')
     pk = request.session.get(MAIL_OTP_BASE_SESSION_KEY+"change_email", None)
     if pk is None:
         raise ParseError()
