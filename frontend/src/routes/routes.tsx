@@ -1,5 +1,4 @@
 import {
-  BrowserRouter as Router,
   useRoutes
 } from "react-router-dom"
 import mainConfig from './main/config'

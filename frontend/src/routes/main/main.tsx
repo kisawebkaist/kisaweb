@@ -17,9 +17,9 @@ const Main = () => {
         <Navbar config = {navbarConfig} />
       </header>
       <main>
-        <div className="mainContent">
+        {/* <div className="mainContent">
           <img src="https://media.tenor.com/CWgfFh7ozHkAAAAC/rick-astly-rick-rolled.gif" width="100%"/>
-        </div>
+        </div> */}
         <Outlet />
       </main>
       {footerConfig && <Footer {...footerConfig} />}

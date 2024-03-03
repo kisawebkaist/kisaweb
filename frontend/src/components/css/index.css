@@ -1,9 +1,19 @@
-html, body {
-    margin: 0;
-    font-family: Ubuntu, Roboto, "times new roman", times, roman, serif;
+html,
+body {
+  margin: 0;
+  font-family: Ubuntu, Roboto, "times new roman", times, roman, serif;
 }
 
 /*For main component (Content) */
 .mainContent {
-    display: flex;
+  display: flex;
+}
+
+.hoverable {
+  transition: all 0.2s ease-in-out;
+}
+
+.hoverable:hover {
+  cursor: pointer;
+  opacity: 0.8;
 }
