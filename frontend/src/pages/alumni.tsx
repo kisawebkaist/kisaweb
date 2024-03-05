@@ -89,11 +89,12 @@ const divisionRender = ({ data, division }: {data: AlumniDataT[], division: stri
 
 const Alumni = () => {
     return (
-        <Lister
+        /*<Lister
                 array = {{ allData, allDivision }}
                 render = {divisionRender}
                 props = {{}}
-        />
+        />*/
+        <span>Under Developing</span>
     )
 }
 
