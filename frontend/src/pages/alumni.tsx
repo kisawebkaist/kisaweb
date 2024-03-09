@@ -2,6 +2,7 @@ import Lister from "../components/lister";
 import React, { useState } from "react";
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import "../components/css/alumni.css"
 
 /**
  * @brief This can be used as a structure of alumni api data.
@@ -44,8 +45,7 @@ const fakeDivisionData: AlumniDataT[] = [
     }
 ]
 
-const allDivision = ["President", "Welfare Division", "Events Division", "Promotions And Public Relations Division", "Web Division", "Finance Division"]
-const allData = [fakePresidentData, fakeDivisionData, fakeDivisionData, fakeDivisionData, fakeDivisionData, fakeDivisionData]
+//const allDivision = ["President", "Welfare Division", "Events Division", "Promotions And Public Relations Division", "Web Division", "Finance Division"]
 
 const cardComponent = ({ data }: { data: AlumniDataT }) => {
     const [hover, setHover] = useState(false);
@@ -72,16 +72,20 @@ const cardComponent = ({ data }: { data: AlumniDataT }) => {
     );
 }
 
-const divisionRender = ({ data, division }: {data: AlumniDataT[], division: string}) => {
+const DivisionRender = ({ data, division }: { data: AlumniDataT[], division: string }) => {
     return (
-        <div>
-            <span>{division}</span>
+        <>
+        <center>
+            <span className = "divisionName">{division}</span>
+        </center>
+        <div className ="cardContainer">
             <Lister
-                    array={data}
-                    render={cardComponent}
-                    props={{}}
-                />
+                array = {data}
+                render={cardComponent}
+                props={{}}
+            />
         </div>
+        </>
     );
 }
 
@@ -89,12 +93,15 @@ const divisionRender = ({ data, division }: {data: AlumniDataT[], division: stri
 
 const Alumni = () => {
     return (
-        /*<Lister
-                array = {{ allData, allDivision }}
-                render = {divisionRender}
-                props = {{}}
-        />*/
-        <span>Under Developing</span>
+        <>
+        <br />
+        <DivisionRender data = {fakePresidentData} division = "President" />
+        <DivisionRender data = {fakeDivisionData} division = "Welfare Division" />
+        <DivisionRender data = {fakeDivisionData} division = "Events Division" />
+        <DivisionRender data = {fakeDivisionData} division = "Promotions And Public Relations Division" />
+        <DivisionRender data = {fakeDivisionData} division = "Web Division" />
+        <DivisionRender data = {fakeDivisionData} division = "Finance Division" />
+        </>
     )
 }
 
