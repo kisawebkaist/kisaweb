@@ -7,6 +7,7 @@ from django.db import models, transaction
 from django.dispatch import receiver
 from django.contrib.auth.models import AbstractUser
 from django.utils.crypto import constant_time_compare
+from django.template.loader import render_to_string
 
 from rest_framework.exceptions import Throttled, ParseError
 
@@ -20,6 +21,7 @@ def generate_mail_otp():
     return base64.b64encode(secrets.token_bytes(3)).decode('utf-8')
 
 class MailOTPSession(models.Model):
+    template = 'sso/email.html'
     MAX_ATTEMPT = 5
     MAX_LIFETIME = datetime.timedelta(minutes=8)
     data = models.JSONField(default=dict)
@@ -48,7 +50,11 @@ class MailOTPSession(models.Model):
             return (None, available_attempts)
 
     def send(self, reason:str):
-        message = MIMEText(f"Dear KISA member,<br><br>Your instant authentication code is below for KISA services.<br>Auth Code: <b>{self.otp}</b><br>This mail was sent because {reason}<br><br>Best Regards,<br>KISA Web Team", "html")
+        message = MIMEText(render_to_string(
+            self.template,
+            {'otp' : self.otp, 'reason' : reason}),
+            "html"
+        )
         message["To"] = self.email
         message["From"] = f"KISA Web Team <{GMailAPI.FROM_MAIL}>"
         message["Subject"] = "[No Reply] Your Personal Authentication for KISA Services"

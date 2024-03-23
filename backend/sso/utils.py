@@ -1,5 +1,5 @@
-import base64, json, logging, secrets, os
-
+from __future__ import annotations
+import logging
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
@@ -26,12 +26,12 @@ class GMailAPI:
     'https://www.googleapis.com/auth/gmail.send',
     ]
     FROM_MAIL = "kisa.web@gmail.com"
-    client = None
+    client : GMailAPI
 
     def __init__(self):
         if GMailAPI.client is not None:
             raise ValueError()
-        
+
         GMailAPI.client = self
 
         self.credentials = None
