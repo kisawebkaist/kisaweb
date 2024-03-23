@@ -31,7 +31,7 @@ services:
       - KSSO_CLIENT_ID=DEV
       - KSSO_LOGIN_URL=https://iam2.kaist.ac.kr
       - KSSO_LOGOUT_URL=https://iam2.kaist.ac.kr
-      - ALLOWED_HOSTS=http://localhost:8001,localhost
+      - ALLOWED_HOSTS=localhost
       - CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:81
 
   frontend:

@@ -38,7 +38,7 @@ services:
       - KSSO_LOGIN_URL=https://iam2.kaist.ac.kr
       - KSSO_LOGOUT_URL=https://iam2.kaist.ac.kr
       - ALLOWED_HOSTS=kisa.kaist.ac.kr
-      - CORS_ALLOWED_ORIGINS=https://kisa.kaist.ac.kr
+      - CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:81,https://kisa.kaist.ac.kr:10001
   frontend:
     build:
       dockerfile: dockerfile.frontend
@@ -46,16 +46,15 @@ services:
       target: prod
       args:
         - REACT_APP_API_PUBLIC_KEY=/run/secrets/public_key
-        - REACT_APP_API_ENDPOINT=https://kisa.kaist.ac.kr:8000/api/
+        - REACT_APP_API_ENDPOINT=https://kisa.kaist.ac.kr:10002/api/
   nginx:
     build:
       dockerfile: dockerfile
       context: ./install/nginx
       target: prod
     ports:
-      - 80:80
-      - 443:443
-      - 8000:8081
+      - 10001:443
+      - 10002:8081
     environment:
       - BACKEND_ENDPOINT=backend
       - BACKEND_PORT=8000
