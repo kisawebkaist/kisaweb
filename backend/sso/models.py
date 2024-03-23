@@ -2,14 +2,15 @@ import base64, json, logging, pyotp, datetime, secrets, time
 
 from email.mime.text import MIMEText
 
+from django.contrib.sessions.management.commands import clearsessions
 from django.db import models, transaction
+from django.dispatch import receiver
 from django.contrib.auth.models import AbstractUser
 from django.utils.crypto import constant_time_compare
 
 from rest_framework.exceptions import Throttled, ParseError
 
-from googleapiclient.errors import HttpError as GHttpError
-
+from core.utils import housekeeping_signal
 from .utils import GMailAPI
 from .  import TOTP_SESSION_KEY
 
@@ -258,7 +259,12 @@ class User(AbstractUser):
     
     def is_verified(self, request):
         return TOTP_SESSION_KEY in request.session and bool(request.session[TOTP_SESSION_KEY])
+    
+    def __str__(self):
+        return f'{self.get_full_name()}({self.email}, {self.kaist_uid})'
         
-
-class LoginError(models.Model):
-    email = models.EmailField()
+@receiver(signal=housekeeping_signal)
+def housekeeping_sig_listener(sender, **kwargs):
+    MailOTPSession.clear_expired()
+    TOTPUsedToken.clear_expired()
+    clearsessions.Command().handle()

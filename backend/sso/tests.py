@@ -21,7 +21,7 @@ def generate_user_info(
     kaist_email: str = 'nupjuk@kaist.ac.kr',
 ):
     return {
-        'kaist_uid': str(abs(kaist_uid)%(10^8)).zfill(8),
+        'kaist_uid': kaist_uid,
         'ku_kname': 'NUPJUK KIM',
         'displayname': 'NUPJUK, KIM',
         'sn': 'KIM',
@@ -67,7 +67,7 @@ def encrypt(user_info: dict, state: str)->str:
 
 def generate_user(
         kaist_uid = 1,
-        country = 'KR',
+        country = 'KOR',
         kaist_email = 'nupjuk@kaist.ac.kr',
         kisa_division = 0,
         totp_secret = None

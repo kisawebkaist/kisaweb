@@ -1,4 +1,4 @@
-import base64, json, jsonschema, logging, urllib.parse, pyotp
+import base64, json, logging, urllib.parse, pyotp
 
 from django.conf import settings
 from django.contrib.auth import login, logout
@@ -47,29 +47,10 @@ def decrypt(data, state):
         logger.warning("Suspicious operation: decryption failed: %s", e)
         raise ParseError()
 
-login_out_schema = jsonschema.Draft7Validator({
-        "type": "object",
-        "properties": {
-            "next": {
-                "type": "string",
-                "description": "The url to be redirected after login"
-            }
-        }
-})
 
 @api_view(['POST'])
 def login_view(request):
-    """
-    For Frontend
-    ------------
-    - Make a post request and follow the redirect
-
-    Here, since the redirect endpoint is at the backend-side, it will take the responsibility for redirect
-    """
-    if not login_out_schema.is_valid(request.data):
-        raise ParseError()
-
-    next = ensure_relative_url(request.data.get('next', '/'))
+    next = ensure_relative_url(str(request.data.get('next', '/')))
 
     if request.user.is_authenticated:
         return HttpResponseRedirect(next)
@@ -93,16 +74,16 @@ def login_view(request):
 @authentication_classes([CSRFExemptSessionAuthentication])
 def login_response_view(request):
     """
-    This POST request is supposed to be sent by sso website and contains encrypted user information.
+    This POST request is supposed to be sent by SSO website and contains encrypted user information.
     This view is csrf_exempted but we will enforce strict origin-checking manually.
     We also need to allow CORS from sso website with credentials.
     """
     if request.user.is_authenticated:
         return HttpResponseRedirect('/')
     
-    state = request.data['state']
-    raw_result = request.data['result']
-    success = request.data['success']
+    state = str(request.data.get('state', '00000000'))
+    raw_result = str(request.data.get('result', ''))
+    success = request.data.get('success')
     origin = request.META.get('HTTP_ORIGIN')
     saved_state = request.session.pop('state', '')
     next = request.session.pop('next', '/')
@@ -141,7 +122,7 @@ def login_response_view(request):
 @api_view(['POST'])
 @permission_classes([IsKISA])
 def check_totp_view(request):
-    if request.user.totp_device.verify(request.data.get('token', '')):
+    if request.user.totp_device.verify(str(request.data.get('token', ''))):
         request.session.cycle_key()
         request.session[TOTP_SESSION_KEY] = True
     else: 
@@ -163,7 +144,7 @@ def change_totp_secret(request):
 @api_view(['POST'])
 @permission_classes([IsKISAVerified])
 def change_email_view(request):
-    email = request.data.get('email', '')
+    email = str(request.data.get('email', ''))
     try:
         email_validator(email)
         email = User.objects.normalize_email(email)
@@ -179,7 +160,7 @@ def change_email_view(request):
 @api_view(['POST'])
 @permission_classes([IsKISAVerified])
 def change_email_response_view(request):
-    otp = request.data.get('token', '')
+    otp = str(request.data.get('token', ''))
     pk = request.session.get(MAIL_OTP_BASE_SESSION_KEY+"change_email", None)
     if pk is None:
         raise ParseError()
@@ -214,7 +195,7 @@ def lost_totp_secret_view(request):
 @api_view(['POST'])
 @permission_classes([IsKISA])
 def lost_totp_secret_response_view(request):
-    otp = request.data.get('token', '')
+    otp = str(request.data.get('token', ''))
     pk = request.session.get(MAIL_OTP_BASE_SESSION_KEY+"lost_totp", None)
     if pk is None:
         raise ParseError()
@@ -241,14 +222,7 @@ def lost_totp_secret_response_view(request):
 
 @api_view(['POST'])
 def logout_view(request):
-    """
-    For Frontend
-    ------------
-    - Make a post request and follow the redirect
-    """
-    if not login_out_schema.is_valid(request.data):
-        raise ParseError()
-    next = ensure_relative_url(request.data.get('next', '/'))
+    next = ensure_relative_url(str(request.data.get('next', '/')))
     if not request.user.is_authenticated:
         return HttpResponseRedirect(next)
     
