@@ -37,6 +37,7 @@ body {
     flex-direction: column;
     margin: 0.5%;
     width: 30%;
+    height: fit-content;
 }
 
 .card:hover {

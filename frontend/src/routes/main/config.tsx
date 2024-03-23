@@ -1,5 +1,6 @@
 import { RouteObject } from "react-router-dom";
 import React from "react";
+import Alumni from "../../pages/alumni";
 
 // Import Components Here (Lazily)
 const Main = React.lazy(() => import('./main'))
@@ -25,10 +26,12 @@ const routes : RouteObject[] = [
     }, {
       path : 'about-us',
       element : <AboutUs />
-    }, 
-    {
+    }, {
       path: "blog",
       element: <Blog />
+    }, {
+      path: "alumni",
+      element: <Alumni />
     }, {
       path : "*",
       element : <QueryFallback />
