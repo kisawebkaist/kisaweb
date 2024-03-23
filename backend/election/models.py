@@ -20,13 +20,13 @@ class Election(models.Model):
         permissions = [
             ('preview_election', 'Can preview the election before it is published'),
         ] # some additional permissions for the users regarding the election
-    
+
     start_datetime = models.DateTimeField(default=datetime.datetime.now, blank=True)
     end_datetime = models.DateTimeField()
     intro_msg = models.JSONField(default=dict, blank=True)
     instructions = models.JSONField(default=dict, blank=True)
     image = models.ImageField(upload_to=ELECTION_MEDIA_UPLOAD_URL, blank=True, null=True)
-    debate_url = models.CharField(max_length=512, blank=True, null=True) 
+    debate_url = models.CharField(max_length=512, blank=True, null=True)
     slug = models.SlugField(max_length=50, blank=True, help_text="You can leave this blank.") # the slug will usually be the same as str(self)
     is_open_public = models.BooleanField(default=False, blank=True)
     """if the election information is visible to the public"""
@@ -34,7 +34,7 @@ class Election(models.Model):
     """if the election results are visible to the public"""
     results_cache_datetime = models.DateTimeField(default=datetime.datetime.now, blank=True)
     results_archived = models.BooleanField(default=False, blank=True)
-    
+
     def get_election_type(self):
         return 'multi' if Candidate.objects.filter(election=self).count()>1 else 'single'
 
@@ -73,8 +73,8 @@ class Election(models.Model):
                 )
         if self.slug is None or self.slug == "":
             self.slug = self.slugifiy()
-        return super().clean() 
-    
+        return super().clean()
+
     def update_election_result_cache(self, force=False):
         # caching for both performance and voters' privacy
         with transaction.atomic():
@@ -83,7 +83,7 @@ class Election(models.Model):
 
             if not force and (now-locked_self.results_cache_datetime < locked_self.CACHE_TTL or locked_self.results_archived):
                 return
-            
+
             counter = dict()
             candidates = Candidate.objects.filter(election=locked_self).all()
             for candidate in candidates:
@@ -111,7 +111,7 @@ class Election(models.Model):
                 voting_exeception.delete()
             self.results_archived = True
             self.save()
-    
+
     @classmethod
     def current_or_error(cls):
         elections = cls.objects.order_by('-start_datetime').all()
@@ -120,7 +120,7 @@ class Election(models.Model):
             if election.start_datetime <= now and election.end_datetime >= now:
                 return election
         raise ParseError(_("There is no ongoing election."))
-    
+
 
 class Candidate(models.Model):
     class Meta:
@@ -140,7 +140,7 @@ class Candidate(models.Model):
 
     def __str__(self):
         return f"{str(self.election)}_{self.slug}"
-    
+
     def slugify(self):
         ideal = self.account.get_full_name().replace(' ', '-')
         if not Candidate.objects.filter(election=self.election, slug=ideal).exists():
@@ -151,7 +151,7 @@ class Candidate(models.Model):
             if not Candidate.objects.filter(election=self.election, slug=test).exists():
                 return test
             attempt += 1
-            
+
     def clean(self):
         if self.slug is None or self.slug == "":
             self.slug = self.slugify()
@@ -176,7 +176,7 @@ class Vote(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     election = models.ForeignKey(Election, on_delete=models.CASCADE)
     candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE)
-    vote_type = models.BooleanField(default=True) 
+    vote_type = models.BooleanField(default=True)
 
     def clean(self):
         if self.candidate.election != self.election:
@@ -185,7 +185,7 @@ class Vote(models.Model):
                 params={"candidate": str(self.candidate)}
             )
         return super().clean()
-    
+
     def __str__(self) -> str:
         return f"{str(self.user)}'s vote for {str(self.election)}"
 
