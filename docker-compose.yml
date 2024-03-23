@@ -13,7 +13,7 @@ services:
       dockerfile: dockerfile.backend
       context: ./backend
       target: dev
-    command: poetry run python manage.py runserver 0.0.0.0:8080
+    command: poetry run python manage.py runserver 0.0.0.0:8080 --noreload
     volumes:
       - ./backend:/app
     depends_on:
