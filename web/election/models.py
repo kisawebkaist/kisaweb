@@ -176,7 +176,7 @@ class Voter(models.Model):
     When an election model instance is updated, the "update_election" signal is sent.
 '''
 
-@receiver(models.signals.post_save, sender=Election)
+@receiver(models.signals.post_save, sender=Election) # when an election is updated (saved)
 def update_election(sender, instance, *args, **kwargs):
 
     # if there are voters marked as not joined the debate, but they are in the debate email list
