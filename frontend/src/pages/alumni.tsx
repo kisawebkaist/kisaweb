@@ -1,6 +1,7 @@
 import Lister from "../components/lister";
 import React, { useState } from "react";
 import Card from '@mui/material/Card';
+import { Button } from "@mui/material";
 import CardContent from '@mui/material/CardContent';
 import "../components/css/alumni.css"
 
@@ -10,14 +11,16 @@ import "../components/css/alumni.css"
  */
 export type AlumniDataT = {
     name: string;
+    division: string;
     headYear: string;
     workPeriod: string;
     picture: string; //Should be great if we have
 };
 
-const fakePresidentData: AlumniDataT[] = [
+const fakeAlumniData: AlumniDataT[] = [
     {
         name: "Ysa Margarita F. San Juan",
+        division: "President",
         headYear: "2022",
         workPeriod: "Fall 2020 - Fall 2022",
         picture: "https://qph.cf2.quoracdn.net/main-qimg-e9be1cf0430dfd81717b5450e7734d17-pjlq"
@@ -25,27 +28,27 @@ const fakePresidentData: AlumniDataT[] = [
     {
         name: "Ilham",
         headYear: "2023",
+        division: "President",
         workPeriod: "Fall 2023 - Spring2024",
         picture: "https://qph.cf2.quoracdn.net/main-qimg-e9be1cf0430dfd81717b5450e7734d17-pjlq"
-    }
-]
-
-const fakeDivisionData: AlumniDataT[] = [
+    },
     {
         name: "Rick Asley",
         headYear: "2022",
+        division: "Events Division",
         workPeriod: "Fall 2020 - Fall 2022",
         picture: "https://qph.cf2.quoracdn.net/main-qimg-e9be1cf0430dfd81717b5450e7734d17-pjlq"
     } ,
     {
         name: "John Cena",
         headYear: "2023",
+        division: "Web Division",
         workPeriod: "Fall 2023 - Spring2024",
         picture: "https://qph.cf2.quoracdn.net/main-qimg-e9be1cf0430dfd81717b5450e7734d17-pjlq"
     }
 ]
 
-//const allDivision = ["President", "Welfare Division", "Events Division", "Promotions And Public Relations Division", "Web Division", "Finance Division"]
+const allDivision = ["All", "President", "Welfare Division", "Events Division", "Promotions And Public Relations Division", "Web Division", "Finance Division"]
 
 const cardComponent = ({ data }: { data: AlumniDataT }) => {
     const [hover, setHover] = useState(false);
@@ -72,12 +75,9 @@ const cardComponent = ({ data }: { data: AlumniDataT }) => {
     );
 }
 
-const DivisionRender = ({ data, division }: { data: AlumniDataT[], division: string }) => {
+const DivisionRender = ({ data }: { data: AlumniDataT[] }) => {
     return (
         <>
-        <center>
-            <span className = "divisionName">{division}</span>
-        </center>
         <div className ="cardContainer">
             <Lister
                 array = {data}
@@ -89,18 +89,43 @@ const DivisionRender = ({ data, division }: { data: AlumniDataT[], division: str
     );
 }
 
+const filteredContent = (category: string, alumniData: AlumniDataT[]): AlumniDataT[] => {
+    if (category === 'All') {
+        return alumniData;
+    }
+
+    return alumniData.filter(blog => {
+        return blog.division.includes(category);
+    });
+};
+
 
 
 const Alumni = () => {
+    const [selectedCategory, setSelectedCategory] = useState<string>('All');
+
+    const relatedContent = filteredContent(selectedCategory, fakeAlumniData);
     return (
         <>
-        <br />
-        <DivisionRender data = {fakePresidentData} division = "President" />
-        <DivisionRender data = {fakeDivisionData} division = "Welfare Division" />
-        <DivisionRender data = {fakeDivisionData} division = "Events Division" />
-        <DivisionRender data = {fakeDivisionData} division = "Promotions And Public Relations Division" />
-        <DivisionRender data = {fakeDivisionData} division = "Web Division" />
-        <DivisionRender data = {fakeDivisionData} division = "Finance Division" />
+        <center>
+            <h2>Alumni</h2>
+            <div className="buttonStyle">
+                {allDivision.map((tag) => (
+                    <Button
+                        className={selectedCategory === tag ? 'activeButton' : ''}
+                        onClick={() => setSelectedCategory(tag)}>
+                        {tag}
+                    </Button>
+                ))}
+            </div>
+        </center>
+       <div>
+                <Lister
+                    array={[relatedContent]}
+                    render={DivisionRender}
+                    props={{}}
+                />
+        </div>
         </>
     )
 }

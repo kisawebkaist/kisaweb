@@ -72,3 +72,30 @@ body {
     display: flex;
     align-items: center;
 }
+
+.buttonStyle {
+    display: inline-block;
+}
+
+.buttonStyle Button {
+    background-color: #ddd;
+    border: none;
+    color: black;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 35px;
+}
+
+.buttonStyle Button:hover {
+    background-color: #6EC6FF;
+    color: whitesmoke;
+}
+
+.buttonStyle .activeButton {
+    background-color: #21262B;
+    color: white;
+}
