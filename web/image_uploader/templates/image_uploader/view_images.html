@@ -1,0 +1,39 @@
+
+{% extends 'core/base/base.html' %}
+
+{% load static %}
+{% load compress %}
+
+{% block title %}Image Uploader{% endblock %}
+
+{% block css %}
+{% compress css file image_uploader %}
+<!-- <link rel="stylesheet" type="text/x-scss" href="{% static 'scss/image_uploader_main.scss' %}"> -->
+{% endcompress %}
+{% endblock %}
+
+{% block main %}
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12 text-center">
+      <h1>View Images</h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 text-center">
+      <div class="row">
+        {% for image in images %}
+        <div class="col-4">
+          <img src="{{ image.file }}" alt="{{ image.alt }}" class="img-fluid">
+          <p>{{ image.title }}</p>
+          <p>{{ image.date }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

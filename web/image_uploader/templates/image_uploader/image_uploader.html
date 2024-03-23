@@ -1,0 +1,47 @@
+{% extends 'core/base/base.html' %}
+
+{% load static %}
+{% load compress %}
+
+{% block title %}Image Uploader{% endblock %}
+
+{% block css %}
+{% compress css file image_uploader %}
+<!-- <link rel="stylesheet" type="text/x-scss" href="{% static 'scss/image_uploader_main.scss' %}"> -->
+{% endcompress %}
+{% endblock %}
+
+{% block main %}
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12 text-center">
+      <h1>Image Uploader</h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 text-center">
+      <form action="/image_uploader/upload/" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group mt-3">
+          <label for="file">Upload Image</label>
+          <input type="file" class="form-control-file" id="file" name="file">
+        </div>
+        <div class="form-group mt-3">
+          <label for="title">Title</label>
+          <input type="text" class="form-control" id="title" name="title">
+        </div>
+        <div class="form-group mt-3">
+          <label for="alt">Alt Text</label>
+          <input type="text" class="form-control" id="alt" name="alt">
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Upload</button>
+        </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+
+

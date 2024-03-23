@@ -48,8 +48,10 @@ SECRET_KEY = os.environ['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(int(os.environ.get('DJANGO_DEBUG', default=0)))
 
-ALLOWED_HOSTS = os.environ['DJANGO_ALLOWED_HOSTS'].split()
 
+# Get the list of allowed hosts from the environment variable DJANGO_ALLOWED_HOSTS which is an string of comma separated ip addresses
+
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS').split(',')
 
 # Application definition
 
@@ -84,6 +86,7 @@ INSTALLED_APPS = [
     'blog',
     'faq',
     'important_links',
+    'image_uploader',
     'url_shortener',
     'alumni',
 ]
@@ -193,6 +196,11 @@ STATICFILES_FINDERS = [
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+print('BASE_DIR:', BASE_DIR)
+print('STATIC_ROOT:', STATIC_ROOT)
+print('MEDIA_ROOT:', MEDIA_ROOT)
+
 
 DATETIME_INPUT_FORMATS += [
     '%Y-%m-%d %I:%M %p',  # 2020-01-20 06:30 PM

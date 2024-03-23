@@ -14,6 +14,7 @@ urlpatterns = [
     path('docs/', include('docs.urls')),
     path('sso/', include('sso.urls')),
     path('about-us/', include('aboutus.urls')),
+    path('image_uploader/', include('image_uploader.urls')),
     path('multimedia/', include('multimedia.urls')),
     path('blog/', include('blog.urls')),
     path('important-links/', include('important_links.urls')),
