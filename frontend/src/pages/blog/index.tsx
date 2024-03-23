@@ -3,7 +3,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import { Button } from "@mui/material";
 import Lister from "../../components/lister"
-import "../components/css/blog.css"
+import "../../components/css/blog.css"
 
 /**
  * @brief This can be used as a structure of blog data for api.

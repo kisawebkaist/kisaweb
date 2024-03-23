@@ -6,7 +6,7 @@ class PostTagSerializer(serializer.ModelSerializer):
         model = PostTag
         fields = ['tag_name', ]
 
-class PostAllSerializer(serializer.Serializer):
+class PostAllSerializer(serializer.ModelSerializer):
     tags = PostTagSerializer(many = True)
     class Meta:
         model = Post
@@ -14,7 +14,7 @@ class PostAllSerializer(serializer.Serializer):
             'title', 'description', 'created', 'modified', 'slug', 'tags'
         ]
 
-class PostSerializer(serializer.Serializer):
+class PostSerializer(serializer.ModelSerializer):
     tags = PostTagSerializer(many = True, required = False)
     class Meta:
         model = Post

@@ -67,7 +67,9 @@ class Content(models.Model):
     new_content = models.JSONField(default = dict)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-    slug = models.SlugField(max_length=100, null=True, unique=True, editable=False)
+    slug = models.SlugField(
+        max_length=100, null=True, unique=True, editable=False
+    )
 
     def save(self, *args, **kwargs):
 
