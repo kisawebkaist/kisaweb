@@ -85,12 +85,12 @@ type NavbarP = {
 const Navbar = ({ config }: NavbarP) => {
   return (
     <div className="navbarContainer">
-      <a href="/home">
+      <RouterLink to = "/home">
         <div className="logo">
           <img src="/kisaLogo.png" alt="Kisa Logo" width="75" height="75" />
           <span>KAIST International <br />Student Association</span>
         </div>
-      </a>
+      </RouterLink>
       <div className='navbar-links'>
         <Lister
           array={config}
@@ -99,9 +99,9 @@ const Navbar = ({ config }: NavbarP) => {
         />
       </div>
       <div className = "rightElement">
-        <a href = "#">
+        <RouterLink to = "#">
           <Button className = "rightElement">LOGIN</Button>
-        </a>
+        </RouterLink>
       </div>
     </div >
   )

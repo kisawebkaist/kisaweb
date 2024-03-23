@@ -49,7 +49,8 @@ SECRET_KEY = ENV_VARS.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = not ENV_VARS.get('PRODUCTION')
 
-ALLOWED_HOSTS = ENV_VARS.get('DJANGO_ALLOWED_HOSTS')
+ALLOWED_HOSTS = ENV_VARS.get('ALLOWED_HOSTS')
+CORS_ALLOWED_ORIGINS = ENV_VARS.get('CORS_ALLOWED_ORIGINS')
 
 # Application definition
 
@@ -74,7 +75,8 @@ INSTALLED_APPS = [
     'docs',  # PyPi django-docs
     'phone_field',  # PyPi django-phone-field
     'adminsortable',
-    "django_pagination_bootstrap", #pagination for multimedia page
+    "django_pagination_bootstrap", #pagination for multimedia page,
+    'django_draftjs',
 
     ## ---- Created by KISA webteam ---- ##
     'core',  # core pages (eg. homepage, about page, etc)
@@ -180,7 +182,6 @@ USE_I18N = True
 USE_L10N = False
 
 # USE_TZ = True
-CORS_ALLOW_ALL_ORIGINS = True
 
 
 # Static files (CSS, JavaScript, Images)
@@ -231,7 +232,7 @@ DOCS_ACCESS = 'staff'
 
 
 
-# sso 
+# sso
 
 KSSO_CLIENT_ID = os.environ['KSSO_CLIENT_ID']
 KSSO_SA_AES_ID_SECRET = os.environ['KSSO_SECRET_KEY']

@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export type DivisionT = {
   division_name: string;
   division_description: string;
@@ -147,14 +149,18 @@ const internalBoardMembers: InternalBoardMemberT[] = [
 
 export default class AboutUsAPI {
   static members = (): Promise<MemberT[]> => {
-    return new Promise<MemberT[]>((res, rej) => res(members));
+    return axios.get(
+      `${process.env.REACT_APP_API_ENDPOINT}about-us/members`
+    ).then((resp) => resp.data)
   };
   static internalMembers = (): Promise<InternalBoardMemberT[]> => {
-    return new Promise<InternalBoardMemberT[]>((res, rej) =>
-      res(internalBoardMembers)
-    );
+    return axios.get(
+      `${process.env.REACT_APP_API_ENDPOINT}about-us/internal-members`
+    ).then((resp) => resp.data)
   };
   static divisions = (): Promise<DivisionT[]> => {
-    return new Promise<DivisionT[]>((res, rej) => res(divisions));
+    return axios.get(
+      `${process.env.REACT_APP_API_ENDPOINT}about-us/divisions`
+    ).then((resp) => resp.data)
   };
 }

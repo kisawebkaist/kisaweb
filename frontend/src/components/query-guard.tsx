@@ -43,7 +43,7 @@ const QueryGuard =
           <Component {...renderProps} />
         )
       }
-    }, [Component, props, queryData]
+    }, [Component, props, queryData, fallback]
   )
   return (
     <React.Fragment>

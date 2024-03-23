@@ -113,6 +113,7 @@ google-api-python-client = "^2.113.0"
 google-auth-httplib2 = "^0.2.0"
 google-auth-oauthlib = "^1.2.0"
 pyotp = "^2.9.0"
+django-draftjs = {url = "https://github.com/jowillianto/draftjs-wysiwyg/releases/download/build-18-02-2024-0.0.1/django_draftjs-0.0.1-py3-none-any.whl"}
 
 
 [build-system]

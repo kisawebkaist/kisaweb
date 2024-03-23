@@ -16,10 +16,7 @@ ENV_VARS = EnvParser([
     create_entry('DB_PASSWORD', True),
     create_entry('DB_NAME', True),
     create_entry('DB_PORT', default_value = '5432'),
-    create_entry('DB_HOST', 'db', True),
-    create_entry(
-        'DJANGO_ALLOWED_HOSTS',
-        default_value = 'localhost',
-        parser = lambda x : x.split()
-    )
+    create_entry('DB_HOST', default_value = 'db'),
+    create_entry('ALLOWED_HOSTS', parser = lambda x: x.split(',')),
+    create_entry('CORS_ALLOWED_ORIGINS', parser = lambda x: x.split(',')),
 ])

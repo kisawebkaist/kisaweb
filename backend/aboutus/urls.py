@@ -1,4 +1,3 @@
-from django.urls import path
 from rest_framework.routers import DefaultRouter
 from . import views
 
@@ -8,13 +7,13 @@ from . import views
 
 router = DefaultRouter()
 router.register(
-  r'members', views.MemberViewset, basename = 'aboutus-members'
+    r'members', views.MemberViewset, basename = 'aboutus-members'
 )
 router.register(
-  r'internal-members', views.InternalBoardMemberViewset,
-  basename = 'aboutus-internal-members'
+    r'internal-members', views.InternalBoardMemberViewset,
+    basename = 'aboutus-internal-members'
 )
 router.register(
-  r'divisions', views.DivisionViewset, basename = 'aboutus-divisions'
+    r'divisions', views.DivisionViewset, basename = 'aboutus-divisions'
 )
 urlpatterns = router.urls

@@ -19,7 +19,7 @@ type BlogT_Complete = {
 type BlogT_Partial = Omit<BlogT_Complete, "new_content" | "content">;
 type TagT = { tag_name: string };
 
-class CompleteBlogAPI {
+export class CompleteBlogAPI {
   data: BlogT_Complete;
   content?: RawDraftContentState;
   constructor(blog: BlogT_Complete) {
@@ -46,7 +46,7 @@ class CompleteBlogAPI {
   }
 }
 
-class PartialBlogAPI {
+export class PartialBlogAPI {
   data: BlogT_Partial;
   constructor(blog: BlogT_Partial) {
     this.data = blog;

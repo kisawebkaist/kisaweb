@@ -46,7 +46,7 @@ class MailOTPSession(models.Model):
             else:
                 otp_obj.save()
             return (None, available_attempts)
-        
+
     def send(self, reason:str):
         message = MIMEText(f"Dear KISA member,<br><br>Your instant authentication code is below for KISA services.<br>Auth Code: <b>{self.otp}</b><br>This mail was sent because {reason}<br><br>Best Regards,<br>KISA Web Team", "html")
         message["To"] = self.email
@@ -77,7 +77,7 @@ class TOTPDevice(models.Model):
     last_failed_attempt_time = models.DateTimeField(default=datetime.datetime.now)
     next_delay_sec = models.FloatField(default=ON_DELAY_INIT)
     on_cooldown = models.BooleanField(default=False)
-    
+
     def verify(self, token):
         result = pyotp.TOTP(self.secret).verify(token, valid_window=self.VALID_WINDOW)
         with transaction.atomic():
@@ -96,9 +96,9 @@ class TOTPDevice(models.Model):
                 device.last_failed_attempt_time = datetime.datetime.now()
             device.save()
             return result
-        
-        
-    
+
+
+
 class TOTPUsedToken(models.Model):
     time_used = models.DateTimeField()
     device = models.ForeignKey(TOTPDevice, on_delete=models.CASCADE)
@@ -111,14 +111,14 @@ class TOTPUsedToken(models.Model):
         with transaction.atomic():
             result = cls.objects.select_for_update().filter(device=device, token=token).first()
             return result is not None and datetime.datetime.now() <= result.time_used + TOTPDevice.VALID_WINDOW * datetime.timedelta(seconds=30)
-    
+
     @classmethod
     def insert(cls, token, device):
         with transaction.atomic():
             used_token = cls.objects.select_for_update().filter(device=device, token=token).first()
             if used_token is None:
                 TOTPUsedToken(time_used=datetime.datetime.now(), device=device, token=token).save()
-                
+
             else:
                 used_token.time_used = datetime.datetime.now()
 
@@ -135,42 +135,42 @@ class User(AbstractUser):
     # make all fields except KAIST UID 'blank=true' because some fields might be empty
     # these are all the fields KISA registered for
     KSSO_KEYS_AND_FIELDS = [
-        ('kaist_uid', 'kaist_uid'), 
-        ('ku_kname', 'korean_name'), 
-        ('displayname', 'full_name'), 
-        ('sn', 'first_name'), 
+        ('kaist_uid', 'kaist_uid'),
+        ('ku_kname', 'korean_name'),
+        ('displayname', 'full_name'),
+        ('sn', 'first_name'),
         ('givenname', 'last_name'),
-        ('ku_born_date', 'dob'), 
-        ('c', 'nationality'), 
+        ('ku_born_date', 'dob'),
+        ('c', 'nationality'),
         ('ku_sex', 'sex'),
-        ('mail', 'kaist_email'), 
+        ('mail', 'kaist_email'),
         ('ku_ch_mail', 'external_email'),
-        ('ku_employee_number', 'employee_number'), 
-        ('ku_std_no', 'student_number'), 
-        ('ku_acad_org', 'bachelors_department_code'), 
-        ('ku_acad_name', 'bachelors_department_name'), 
+        ('ku_employee_number', 'employee_number'),
+        ('ku_std_no', 'student_number'),
+        ('ku_acad_org', 'bachelors_department_code'),
+        ('ku_acad_name', 'bachelors_department_name'),
         ('ku_campus', 'campus'),
-        ('title', 'title_english'), 
-        ('ku_psft_user_status', 'student_status_english'), 
+        ('title', 'title_english'),
+        ('ku_psft_user_status', 'student_status_english'),
         ('ku_psft_user_status_kor', 'student_status_korean'),
-        ('ku_acad_prog_code', 'degree_code'), 
-        ('ku_acad_prog', 'degree_name_korean'), 
+        ('ku_acad_prog_code', 'degree_code'),
+        ('ku_acad_prog', 'degree_name_korean'),
         ('ku_acad_prog_eng', 'degree_name_english'),
-        ('employeeType', 'employee_type'), 
-        ('ku_prog_effdt', 'student_admission_datetime'), 
-        ('ku_stdnt_type_id', 'student_type_id'), 
-        ('ku_stdnt_type_class', 'student_type_class'), 
+        ('employeeType', 'employee_type'),
+        ('ku_prog_effdt', 'student_admission_datetime'),
+        ('ku_stdnt_type_id', 'student_type_id'),
+        ('ku_stdnt_type_class', 'student_type_class'),
         ('ku_category_id', 'student_category_id'),
-        ('ku_prog_start_date', 'student_enrollment_date'), 
+        ('ku_prog_start_date', 'student_enrollment_date'),
         ('ku_prog_end_date', 'student_graduation_date'),
-        ('acad_ebs_org_id', 'student_department_id'), 
+        ('acad_ebs_org_id', 'student_department_id'),
         ('uid', 'sso_id'),
-        ('acad_ebs_org_name_eng', 'student_department_name_english'), 
+        ('acad_ebs_org_name_eng', 'student_department_name_english'),
         ('acad_ebs_org_name_kor', 'student_department_name_korean'),
     ]
 
     # kaist_uid is not student number (find below for another field named student_number)
-    kaist_uid = models.IntegerField(primary_key=True)  # kaist_uid
+    kaist_uid = models.IntegerField(default = 0)  # kaist_uid
 
     korean_name = models.CharField(max_length=100, blank=True, null=True)  # ku_kname
     full_name = models.CharField(max_length=100)  # displayname
@@ -214,7 +214,10 @@ class User(AbstractUser):
 
     kisa_division = models.PositiveIntegerField(default=0)
     totp_device = models.ForeignKey(TOTPDevice, on_delete=models.CASCADE, blank=True, null=True)
-    
+
+    def is_valid_kaist_account(self):
+        return self.kaist_uid != 0
+
     @classmethod
     def from_info_json(cls, user_info: dict):
         query = cls.objects.filter(pk=user_info['kaist_uid'])
@@ -237,7 +240,7 @@ class User(AbstractUser):
         user.full_clean()
         user.save()
         return user
-    
+
     def get_info_json(self):
         info_json = dict()
         for key, field in self.KSSO_KEYS_AND_FIELDS:
@@ -245,7 +248,7 @@ class User(AbstractUser):
             if isinstance(info_json[key], datetime.date):
                 info_json[key] = str(info_json[key])
         return info_json
-    
+
     def update_from_info_json(self, user_info:dict):
         for key, field in self.KSSO_KEYS_AND_FIELDS:
             if key in user_info:
@@ -253,18 +256,32 @@ class User(AbstractUser):
         self.full_clean()
         self.save()
         return self
-    
+
     def is_kisa(self):
         return self.kisa_division != 0
-    
+
     def is_verified(self, request):
         return TOTP_SESSION_KEY in request.session and bool(request.session[TOTP_SESSION_KEY])
-    
+
     def __str__(self):
         return f'{self.get_full_name()}({self.email}, {self.kaist_uid})'
-        
-@receiver(signal=housekeeping_signal)
-def housekeeping_sig_listener(sender, **kwargs):
-    MailOTPSession.clear_expired()
-    TOTPUsedToken.clear_expired()
-    clearsessions.Command().handle()
+
+    @staticmethod
+    def create(
+        kaist_uid : int,
+        email : str,
+        first_name : str,
+        last_name : str
+    ):
+        return User(
+            kaist_uid = kaist_uid,
+            email = email,
+            first_name = first_name,
+            last_name = last_name
+        )
+
+# @receiver(signal=housekeeping_signal)
+# def housekeeping_sig_listener(sender, **kwargs):
+#     MailOTPSession.clear_expired()
+#     TOTPUsedToken.clear_expired()
+#     clearsessions.Command().handle()

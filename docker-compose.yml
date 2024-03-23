@@ -13,7 +13,7 @@ services:
       dockerfile: dockerfile.backend
       context: ./backend
       target: dev
-    command: poetry run python manage.py runserver 0.0.0.0:8080
+    command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./backend:/app
     depends_on:
@@ -29,8 +29,10 @@ services:
       - DB_HOST=db
       - KSSO_SECRET_KEY=ucT83TdDq/kUERb+mV9t3viFpD5KcVWshN+XKsiVEk+9VcOK3g6zgWM1erc9h2r0hd6pZmsO2XuKZO3JGyrZdg==
       - KSSO_CLIENT_ID=DEV
-      - KSSO_LOGIN_URL="https://iam2.kaist.ac.kr"
-      - KSSO_LOGOUT_URL="https://iam2.kaist.ac.kr"
+      - KSSO_LOGIN_URL=https://iam2.kaist.ac.kr
+      - KSSO_LOGOUT_URL=https://iam2.kaist.ac.kr
+      - ALLOWED_HOSTS=http://localhost:8001,localhost
+      - CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:81
 
   frontend:
     build:
@@ -43,7 +45,7 @@ services:
       - /app/node_modules
     environment:
       - REACT_APP_PUBLIC_KEY=-----BEGIN PUBLIC KEY-----\nMIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgGAD0Xqs1D1mqbkTSPaEzSJCUiR4\nBt7LKsiC3OYh5Y8vCyC0cTSkcWwhW5oTZ5ZQ8ZYP4Ddz4Fnd8AG6s3Yjryr4ODS4\nLjPHVIGtw3tCaFTM832+YVAvc8ezPdcGth5at2n7MZrv9Kf/xcsPXOGZTxkhwKhN\njsmNtPywE8GlFMbrAgMBAAE=\n-----END PUBLIC KEY-----
-      - REACT_APP_API_ENDPOINT=http://localhost:8000/api/
+      - REACT_APP_API_ENDPOINT=http://localhost:8001/api/
   nginx:
     build:
       dockerfile: dockerfile
@@ -52,14 +54,15 @@ services:
     volumes:
       - ./backend/static:/app/static
     ports:
-      - 80:8081
-      - 8000:8080
+      - 81:8081
+      - 8001:8080
+      - 3000:8081
     depends_on:
       - frontend
       - backend
     environment:
       - BACKEND_ENDPOINT=backend
-      - BACKEND_PORT=8080
+      - BACKEND_PORT=8000
       - BACKEND_LISTEN_PORT=8080
       - FRONTEND_ENDPOINT=frontend
       - FRONTEND_PORT=3000
