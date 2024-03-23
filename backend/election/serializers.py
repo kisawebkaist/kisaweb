@@ -13,7 +13,15 @@ class CandidateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Candidate
-        fields = ['manifesto', 'speech_url', 'kisa_history', 'image']
+        fields = [
+            'slug',
+            'name',
+            'election',
+            'manifesto',
+            'speech_url',
+            'kisa_history',
+            'image',
+        ]
 
     def get_name(self, candidate):
         return candidate.account.get_full_name()
@@ -26,44 +34,45 @@ class ElectionInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Election
         fields = [
+            'slug',
+            'election_type',
             'start_datetime',
             'end_datetime',
             'intro_msg',
             'instructions',
             'image',
             'debate_url',
-            'slug',
-            'candidates'
+            'candidates',
         ]
-    start_datetime = serializers.DateTimeField()
-    end_datetime = serializers.DateTimeField()
-    intro_msg = serializers.JSONField()
-    instructions = serializers.JSONField()
-    image = serializers.ImageField()
-    debate_url = serializers.URLField()
-    slug = serializers.SlugField()
+    election_type = serializers.SerializerMethodField()
     candidates = serializers.SerializerMethodField()
+
+    def get_election_type(self, election):
+        return election.get_election_type()
 
     def get_candidates(self, election):
         return CandidateSerializer(Candidate.objects.filter(election=election), many=True).data
     
 class ElectionResultSerializer(serializers.ModelSerializer):
     class Meta:
+        model = Election
         fields = [
-            'slug'
+            'slug',
+            'election_type',
+            'result'
         ]
     election_type = serializers.SerializerMethodField()
     result = serializers.SerializerMethodField()
 
     def get_election_type(self, election):
-        return 'multi' if Candidate.objects.filter(election=election).count()>1 else 'single'
+        return election.get_election_type()
     
     def get_result(self, election):
-        candidates = Candidate.objects.filter(election=election)
+        candidates = Candidate.objects.filter(election=election).all()
         if candidates.count() == 1:
             return {
-                'yes': Vote.objects.filter(candidate=candidates[0], vote_type=True),
-                'no': Vote.objects.filter(candidate=candidates[0], vote_type=False)
+                'yes': candidates[0].num_votes,
+                'no': Vote.objects.filter(candidate=candidates[0], vote_type=False).count()
             }
         
         result = dict()
