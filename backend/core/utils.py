@@ -1,5 +1,6 @@
-import urllib, string, secrets
+import urllib.parse, string, secrets
 
+from django.dispatch import Signal
 from django.shortcuts import _get_queryset
 from rest_framework.authentication import SessionAuthentication as DRFSessionAuthetication
 from rest_framework.exceptions import NotFound
@@ -43,4 +44,6 @@ def get_object_or_404(klass, *args, **kwargs):
         return queryset.get(*args, **kwargs)
     except queryset.model.DoesNotExist:
         raise NotFound
-    
+
+housekeeping_signal = Signal()
+"""This signal will be sent frequently by cron to do some housekeeping"""
