@@ -22,6 +22,9 @@ services:
       - 10002:8000
     depends_on:
       - db
+    volumes:
+      - ./backend/static:/app/collectstatic
+      - ./backend/media:/app/media
     secrets:
       - db_name
       - db_user
@@ -49,8 +52,8 @@ services:
       - KSSO_CLIENT_ID=KISA
       - KSSO_LOGIN_URL=https://iam2.kaist.ac.kr
       - KSSO_LOGOUT_URL=https://iam2.kaist.ac.kr
-      - ALLOWED_HOSTS=kisa.kaist.ac.kr
-      - CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:81,https://kisa.kaist.ac.kr
+      - ALLOWED_HOSTS=kisa.kaist.ac.kr,https://kisa.kaist.ac.kr:8080
+      - CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:81,https://kisa.kaist.ac.kr:8080
   frontend:
     build:
       dockerfile: dockerfile.frontend
@@ -58,7 +61,7 @@ services:
       target: prod
       args:
         - REACT_APP_API_PUBLIC_KEY=/run/secrets/public_key
-        - REACT_APP_API_ENDPOINT=https://kisa.kaist.ac.kr/dev-backend/api/
+        - REACT_APP_API_ENDPOINT=https://kisa.kaist.ac.kr:8080/api/
     command: serve -s build -l tcp://0.0.0.0:3000
     ports:
       - 10001:3000

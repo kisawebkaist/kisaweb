@@ -20,6 +20,9 @@ services:
     command: sh -c "python manage.py migrate && gunicorn web.wsgi -b 0.0.0.0:8000 --workers=10"
     ports:
       - 10002:8000
+    volumes:
+      - ./backend/static:/app/collectstatic
+      - ./backend/media:/app/media
     secrets:
       - db_name
       - db_user
