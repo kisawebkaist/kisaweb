@@ -12,7 +12,7 @@ RUN npm install @emotion/styled --save
 FROM base as prod-base
 WORKDIR /app
 RUN npm install --silent --production
-RUN COPY . .
+COPY . .
 ARG REACT_APP_PUBLIC_KEY
 ENV REACT_APP_PUBLIC_KEY $REACT_APP_PUBLIC_KEY
 ARG REACT_APP_API_ENDPOINT

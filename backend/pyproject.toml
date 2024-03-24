@@ -3,7 +3,6 @@ name = "kisaweb"
 version = "0.1.0"
 description = ""
 authors = ["Jonathan Willianto <jowillianto@gmail.com>"]
-readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.12"

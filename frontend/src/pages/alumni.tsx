@@ -50,7 +50,7 @@ const fakeAlumniData: AlumniDataT[] = [
 
 const allDivision = ["All", "President", "Welfare Division", "Events Division", "Promotions And Public Relations Division", "Web Division", "Finance Division"]
 
-const cardComponent = ({ data }: { data: AlumniDataT }) => {
+const CardComponent = ({ data }: { data: AlumniDataT }) => {
     const [hover, setHover] = useState(false);
 
     const cardStyle = {
@@ -81,7 +81,7 @@ const DivisionRender = ({ data }: { data: AlumniDataT[] }) => {
         <div className ="cardContainer">
             <Lister
                 array = {data}
-                render={cardComponent}
+                render={CardComponent}
                 props={{}}
             />
         </div>

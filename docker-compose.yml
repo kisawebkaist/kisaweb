@@ -18,6 +18,11 @@ services:
       - ./backend:/app
     depends_on:
       - db
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        window: 10s
     environment:
       - SECRET_KEY=dVtGYO19KLsw8lY3kuAU3Qn2kSw6j1BqNrwOVMa92qWgu949jN
       - PRIVATE_KEY=-----BEGIN RSA PRIVATE KEY-----\nMIICWgIBAAKBgGAD0Xqs1D1mqbkTSPaEzSJCUiR4Bt7LKsiC3OYh5Y8vCyC0cTSk\ncWwhW5oTZ5ZQ8ZYP4Ddz4Fnd8AG6s3Yjryr4ODS4LjPHVIGtw3tCaFTM832+YVAv\nc8ezPdcGth5at2n7MZrv9Kf/xcsPXOGZTxkhwKhNjsmNtPywE8GlFMbrAgMBAAEC\ngYBDMWjgGSNO9RHB26UsIDQOzar+qqDkOfpu6GX/B6nHUnzPHng7Bvn5Wj7ozLup\njmwDQIkBRa60NYVJMId3HfHvnCsaSZFLZNDJcUhG1iUzDBQJL0n0xGR6jHPkTXFe\nX8JpcwuuCBBcLZJZqdjI7KuLwITMHSDEBWnCesikbJcCwQJBAKodqLI9dxqh8T7k\noOIeOA+MRAN4Qnhi9f5K51/8AEoKjMhv/FqPf53zZdVjpdbd05NzYsmRQ+grCiZ8\n8ryOjw8CQQCQfRs/E8M0YIAUCQFpjhGRvKnWT2wIdmmRrmNuV6J1DXGB8YblbHUQ\nbR/9XWBYXWX/GBuTMKTqGEJxPEE8xEplAkAetmwWgfJW5JXhfPVu3XXRmMlOtw+J\nHJS87FkJgz2qIG16Yn10/CNWKPNhqzPtru7b2CElswxHhj225SgN0s8RAkBER3qq\nsjIa/EdKMH9EXGidECTKK7oHvb1hpKFEMZGJ8xJir7ppjHk9i/QEDS5MU8axZ7kQ\nM3qbTV+Il0rU5oWpAkBrnbZWaT8eluZ2r7n0XLIp/R6o9udszBYoqqDJ6tWGh63T\nUgpye80iEYN2MD4KnG0qNSr94snBOpsd4GwtyP7U\n-----END RSA PRIVATE KEY-----
@@ -53,6 +58,9 @@ services:
       target: dev
     volumes:
       - ./backend/static:/app/static
+      - ./backend/media:/app/media
+      - ./install/ssl_config/letsencrypt/:/etc/letsencrypt
+      - ./install/ssl_config/wwwroot/:/wwwroot/
     ports:
       - 81:8081
       - 8001:8080

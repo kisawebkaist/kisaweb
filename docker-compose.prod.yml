@@ -7,9 +7,9 @@ services:
       - db_user
       - db_password
     environment:
-      - POSTGRES_DB=/run/secrets/db_name
-      - POSTGRES_USER=/run/secrets/db_user
-      - POSTGRES_PASSWORD=/run/secrets/db_password
+      - POSTGRES_DB_FILE=/run/secrets/db_name
+      - POSTGRES_USER_FILE=/run/secrets/db_user
+      - POSTGRES_PASSWORD_FILE=/run/secrets/db_password
     volumes:
       - ./data/db:/var/lib/postgresql/data
   backend:
@@ -17,7 +17,9 @@ services:
       dockerfile: dockerfile.backend
       context: ./backend
       target: prod
-    command: gunicorn web.wsgi -b 0.0.0.0:8000 --workers=10
+    command: sh -c "python manage.py migrate && gunicorn web.wsgi -b 0.0.0.0:8000 --workers=10"
+    ports:
+      - 10002:8000
     secrets:
       - db_name
       - db_user
@@ -26,6 +28,11 @@ services:
       - public_key
       - private_key
       - sso_secret
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        window: 10s
     environment:
       - PRODUCTION=true
       - SECRET_KEY=/run/secrets/secret_key
@@ -49,24 +56,8 @@ services:
         - REACT_APP_API_PUBLIC_KEY=/run/secrets/public_key
         - REACT_APP_API_ENDPOINT=https://kisa.kaist.ac.kr:8000/api/
     command: serve -s build -l tcp://0.0.0.0:3000
-  nginx:
-    build:
-      dockerfile: dockerfile
-      context: ./install/nginx
-      target: prod
     ports:
-      - 80:80
-      - 443:443
-      - 8000:8081
-    environment:
-      - BACKEND_ENDPOINT=backend
-      - BACKEND_PORT=8000
-      - BACKEND_LISTEN_PORT=8081
-      - FRONTEND_ENDPOINT=frontend
-      - FRONTEND_PORT=3000
-      - FRONTEND_HTTP_PORT=80
-      - FRONTEND_HTTPS_PORT=443
-      - NGINX_HOST=kisa.kaist.ac.kr
+      - 10001:3000
 secrets:
   db_name:
     file: ../secrets/db_name.txt
