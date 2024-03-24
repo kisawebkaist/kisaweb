@@ -24,7 +24,9 @@ services:
       - secret_key
       - public_key
       - private_key
+      - sso_secret
     environment:
+      - PRODUCTION=true
       - SECRET_KEY=/run/secrets/secret_key
       - PRIVATE_KEY=/run/secrets/private_key
       - PUBLIC_KEY=/run/secrets/public_key
@@ -33,8 +35,8 @@ services:
       - DB_PASSWORD=/run/secrets/db_password
       - DB_PORT=5432
       - DB_HOST=db
-      - KSSO_SECRET_KEY=ucT83TdDq/kUERb+mV9t3viFpD5KcVWshN+XKsiVEk+9VcOK3g6zgWM1erc9h2r0hd6pZmsO2XuKZO3JGyrZdg==
-      - KSSO_CLIENT_ID=DEV
+      - KSSO_SECRET_KEY=/run/secrets/sso_secret
+      - KSSO_CLIENT_ID=KISA
       - KSSO_LOGIN_URL=https://iam2.kaist.ac.kr
       - KSSO_LOGOUT_URL=https://iam2.kaist.ac.kr
       - ALLOWED_HOSTS=kisa.kaist.ac.kr
@@ -77,3 +79,5 @@ secrets:
     file: ../secrets/public_key.txt
   private_key:
     file: ../secrets/private_key.txt
+  sso_secret:
+    file: ../secrets/sso_secret.txt

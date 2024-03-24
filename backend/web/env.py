@@ -19,4 +19,6 @@ ENV_VARS = EnvParser([
     create_entry('DB_HOST', default_value = 'db'),
     create_entry('ALLOWED_HOSTS', parser = lambda x: x.split(',')),
     create_entry('CORS_ALLOWED_ORIGINS', parser = lambda x: x.split(',')),
+    create_entry('KSSO_SECRET_KEY', is_secret = True),
+    create_entry('KSSO_CLIENT_ID')
 ])
