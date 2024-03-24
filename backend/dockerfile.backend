@@ -40,5 +40,6 @@ WORKDIR /app
 # Multi Stage Builds
 FROM base-python AS prod
 COPY . .
+RUN pip install gunicorn
 
 FROM base-python as dev
