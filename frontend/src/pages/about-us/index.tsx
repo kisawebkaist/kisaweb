@@ -1,12 +1,12 @@
 import React from "react";
-import { Chart } from "../components/about-us/Chart";
+import { Chart } from "../../components/about-us/Chart";
 import AboutUsAPI, {
   DivisionT,
   InternalBoardMemberT,
   MemberT,
-} from "../API/about-us";
-import QueryGuard from "../components/query-guard";
-import QueryFallback from "../components/QueryFallback";
+} from "../../API/about-us";
+import QueryGuard from "../../components/query-guard";
+import QueryFallback from "../../components/QueryFallback";
 import { Box, Button, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 
