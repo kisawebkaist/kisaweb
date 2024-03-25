@@ -284,8 +284,8 @@ django-crispy-forms==2.1 ; python_version >= "3.9" and python_version < "3.12" \
 django-docs==0.3.3 ; python_version >= "3.9" and python_version < "3.12" \
     --hash=sha256:7e85c5b5dd0b9b4d24099740ab16ac0449ff8acdfe8b0e26c08f3a4e50e7e5e1 \
     --hash=sha256:f2b489ab122f6dc84a1a8f0e2be86dcc8b3958b31b2d0a4603570c47228408d0
-django-draftjs @ https://github.com/jowillianto/draftjs-wysiwyg/releases/download/build-18-02-2024-0.0.1/django_draftjs-0.0.1-py3-none-any.whl ; python_version >= "3.9" and python_version < "3.12" \
-    --hash=sha256:224948a867a90de4596db62ed7aacd4739fbbf6ef6045be884b30a612ef46390
+django-draftjs @ https://github.com/jowillianto/draftjs-wysiwyg/releases/download/build-26-03-2024/django_draftjs-0.0.2-py3-none-any.whl ; python_version >= "3.9" and python_version < "3.12" \
+    --hash=sha256:62a0ed0d464929549af60f209fb8da6a166ae63c02b439081d36b7c4fcee0a9e
 django-filter==23.5 ; python_version >= "3.9" and python_version < "3.12" \
     --hash=sha256:67583aa43b91fe8c49f74a832d95f4d8442be628fd4c6d65e9f811f5153a4e5c \
     --hash=sha256:99122a201d83860aef4fe77758b69dda913e874cc5e0eaa50a86b0b18d708400
