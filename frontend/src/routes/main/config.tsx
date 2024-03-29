@@ -1,6 +1,7 @@
 import { RouteObject } from "react-router-dom";
 import React from "react";
 import Alumni from "../../pages/alumni";
+import Multimedia from "../../pages/multimedia/multimedia";
 
 // Import Components Here (Lazily)
 const Main = React.lazy(() => import('./main'))
@@ -40,6 +41,9 @@ const routes : RouteObject[] = [
     }, {
       path: "alumni",
       element: <Alumni />
+    }, {
+      path: "multimedia",
+      element: <Multimedia />
     }, {
       path : "*",
       element : <QueryFallback />
