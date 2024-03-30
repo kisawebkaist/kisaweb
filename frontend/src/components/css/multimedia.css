@@ -1,0 +1,13 @@
+html,
+body {
+    margin: 0;
+    font-family: Ubuntu, Roboto, "times new roman", times, roman, serif;
+}
+
+.carousel {
+    background-color: whitesmoke;
+}
+
+.board {
+    margin: 0;
+}
