@@ -148,19 +148,19 @@ const internalBoardMembers: InternalBoardMemberT[] = [
 ];
 
 export default class AboutUsAPI {
-  static members = (): Promise<MemberT[]> => {
-    return axios.get(
-      `${process.env.REACT_APP_API_ENDPOINT}about-us/members`
-    ).then((resp) => resp.data)
+  static members = async (): Promise<MemberT[]> => {
+    return axios
+      .get(`${process.env.REACT_APP_API_ENDPOINT}about-us/members`)
+      .then((resp) => resp.data);
   };
   static internalMembers = (): Promise<InternalBoardMemberT[]> => {
-    return axios.get(
-      `${process.env.REACT_APP_API_ENDPOINT}about-us/internal-members`
-    ).then((resp) => resp.data)
+    return axios
+      .get(`${process.env.REACT_APP_API_ENDPOINT}about-us/internal-members`)
+      .then((resp) => resp.data);
   };
   static divisions = (): Promise<DivisionT[]> => {
-    return axios.get(
-      `${process.env.REACT_APP_API_ENDPOINT}about-us/divisions`
-    ).then((resp) => resp.data)
+    return axios
+      .get(`${process.env.REACT_APP_API_ENDPOINT}about-us/divisions`)
+      .then((resp) => resp.data);
   };
 }

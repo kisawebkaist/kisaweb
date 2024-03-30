@@ -38,8 +38,8 @@ export function ChartMember(props: ChartMemberProps) {
             }}
           >
             <Avatar
-              src={props.chartMember.image}
-              alt={props.chartMember.name}
+              src={props.chartMember?.image || "https://i.insider.com/602ee9ced3ad27001837f2ac?width=700"}
+              alt={props.chartMember?.name || "Rick Astley"}
               sx={{
                 width: 96,
                 height: 96,
@@ -78,7 +78,7 @@ export function ChartMember(props: ChartMemberProps) {
                 textTransform="uppercase"
                 fontWeight="bold"
               >
-                {props.chartMember.name}
+                {props.chartMember?.name || "Rick Astley"}
               </Typography>
             </Box>
             <Box
@@ -94,7 +94,7 @@ export function ChartMember(props: ChartMemberProps) {
                 textTransform="uppercase"
                 fontWeight="bold"
               >
-                {props.chartMember.position}
+                {props.chartMember?.position || "Rick Roller"}
               </Typography>
             </Box>
           </CardContent>
