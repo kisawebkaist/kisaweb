@@ -76,8 +76,7 @@ def cors_allow_login_response(sender, request, **kwargs):
     """
     In login_response view, a cross-site POST request is sent from SSO website. This allows CORS for that.
     """
-    return True
-    # return request.resolver_match.url_name == 'login-response' and request.headers.get("origin", None) == KSSO_ORIGIN
+    return request.resolver_match.url_name == 'login-response' and request.headers.get("origin", None) == KSSO_ORIGIN
 
 check_request_enabled.connect(cors_allow_login_response)
 
