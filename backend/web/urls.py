@@ -37,8 +37,8 @@ urlpatterns = [
     path('api/about-us/', include('aboutus.urls')),
     path('api/faq/', include('faq.urls')),
     path('api/blog/', include('blog.urls')),
-    path('api/sso', include('sso.urls')),
-    path('api/election', include('election.urls'))
+    path('api/sso/', include('sso.urls')),
+    path('api/election/', include('election.urls'))
 ]
 
 # Add static file urls
