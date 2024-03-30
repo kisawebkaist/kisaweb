@@ -1,5 +1,7 @@
 import base64, json, logging, urllib.parse, pyotp
 
+from corsheaders.signals import check_request_enabled
+
 from django.conf import settings
 from django.contrib.auth import login, logout
 from django.core.validators import EmailValidator
@@ -69,6 +71,16 @@ def login_view(request):
     }
     return HttpResponseRedirect(f"{KSSO_LOGIN_URL}?{urllib.parse.urlencode(data)}")
 
+
+def cors_allow_login_response(sender, request, **kwargs):
+    """
+    In login_response view, a cross-site POST request is sent from SSO website. This allows CORS for that.
+    """
+    return True
+    # return request.resolver_match.url_name == 'login-response' and request.headers.get("origin", None) == KSSO_ORIGIN
+
+check_request_enabled.connect(cors_allow_login_response)
+
 @api_view(['POST'])
 @parser_classes([FormParser])
 @authentication_classes([CSRFExemptSessionAuthentication])
@@ -91,11 +103,6 @@ def login_response_view(request):
     if not bool(success) or raw_result == "" or saved_state == "" or not isinstance(state, str) or saved_state != state:
         raise ParseError()
 
-    headers = {
-        'Access-Control-Allow-Origin': KSSO_ORIGIN,
-        'Access-Control-Allow-Credentials': 'true'
-    }
-
     if not origin == KSSO_ORIGIN:
         logger.info(f"Suspicious Operation: Invalid origin in login-response: (user-agent: {request.META.get('HTTP_USER_AGENT')}, origin: {origin})")
         raise PermissionDenied(detail=_(f'CSRF Failed: Origin checking failed - {origin} does not match any trusted origins.'))
@@ -107,9 +114,10 @@ def login_response_view(request):
         user = User.from_info_json(result['dataMap']['USER_INFO'])
         login(request, user)
         request.session.pop(TOTP_SESSION_KEY, None)
-        # the errors in here might indicate just simple data corruption or our secret key is not secret anymore
+        # the errors in here might indicate just simple data corruption or secret-key leak
     except KeyError as e:
         logger.warning(f'Suspicious Operation: key error: %s', e)
+        raise ParseError()
     except json.JSONDecodeError as e:
         logger.warning(f'Suspicious Operation: json decoding failed: %s', e)
         raise ParseError()
@@ -117,7 +125,7 @@ def login_response_view(request):
         logger.warning(f'Suspicious Operation: user model validation failed: %s', e)
         raise ParseError()
     
-    return HttpResponseRedirect(next, headers=headers)
+    return HttpResponseRedirect(next)
 
 @api_view(['POST'])
 @permission_classes([IsKISA])

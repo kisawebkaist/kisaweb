@@ -26,7 +26,7 @@ class GMailAPI:
     'https://www.googleapis.com/auth/gmail.send',
     ]
     FROM_MAIL = "kisa.web@gmail.com"
-    client : GMailAPI
+    client = None
 
     def __init__(self):
         if GMailAPI.client is not None:
