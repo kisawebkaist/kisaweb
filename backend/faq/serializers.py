@@ -5,12 +5,12 @@ class FaqSerializer(serializer.ModelSerializer):
     class Meta:
         model = FAQ
         fields = [
-            'question', 'timestamp', 'answer', 'category'
+            'question', 'timestamp', 'answer', 'category', 'id'
         ]
 
 class FaqCategorySerializer(serializer.ModelSerializer):
     class Meta:
         model = Category
         fields = [
-            'title_category'
+            'title_category', 'id'
         ]
