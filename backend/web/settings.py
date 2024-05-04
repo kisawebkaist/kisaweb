@@ -237,7 +237,7 @@ DOCS_ACCESS = 'staff'
 
 # sso
 
-KSSO_CLIENT_ID = ENV_VARS.get('KSSO_CLIENT_ID')
+KSSO_CLIENT_ID = 'KISA'
 KSSO_SA_AES_ID_SECRET = ENV_VARS.get('KSSO_SECRET_KEY')
 KSSO_LOGIN_URL = "https://iam2.kaist.ac.kr/api/sso/commonLogin"
 KSSO_LOGOUT_URL = "https://iam2.kaist.ac.kr/api/sso/logout"

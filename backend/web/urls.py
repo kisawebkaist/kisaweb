@@ -22,7 +22,6 @@ urlpatterns = [
     # path('grappelli/', include('grappelli.urls')), # grappelli URLS
     # path('jet/', include('jet.urls', 'jet')),  # Django JET URLS
     # path('jet/dashboard/', include('jet.dashboard.urls', 'jet-dashboard')),  # Django JET dashboard URLS
-    path('', include('core.urls')),
     path('admin/', admin.site.urls),
     path('events/', include('events.urls')),
     path('docs/', include('docs.urls')),
@@ -34,6 +33,7 @@ urlpatterns = [
     path('maintenance-mode/', include('maintenance_mode.urls')),
 
     # CONVERTED
+    path('api/', include('core.urls')),
     path('api/about-us/', include('aboutus.urls')),
     path('api/faq/', include('faq.urls')),
     path('api/blog/', include('blog.urls')),
