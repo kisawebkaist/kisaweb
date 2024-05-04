@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.html import mark_safe
-from tinymce.models import HTMLField
+# from tinymce.models import HTMLField
 from adminsortable.models import SortableMixin
 from django.utils.html import mark_safe
 
@@ -10,7 +10,7 @@ class BaseContent(SortableMixin):
         ordering = ['the_order']
 
     title     = models.CharField(max_length = 100, null = True)
-    desc      = HTMLField(null=True)
+    desc      = models.JSONField(default = dict)
     image     = models.ImageField(null=True, blank=True)
     the_order = models.PositiveIntegerField(default=0, editable=False, db_index=True)
 
