@@ -22,7 +22,7 @@ type CategoryT = {
 
 ## Getting all Important Links (or Filtered)
 - Endpoint : `api/important_links`
-- Query Parameters : All Fields in LinkT including linking fields by category__title_category
+- Query Parameters : TBD
 - Request : GET
 - Response :
 ```ts
@@ -31,14 +31,14 @@ LinkT[]
 
 ## Getting all Categories (or Filtered)
 - Endpoint : `api/important_links/category`
-- Query Parameters : All Fields in CategoryT (Filters based on the parameters)
+- Query Parameters :TBD
 - Request : GET
 - Response :
 ```ts
 CategoryT[]
 ```
 
-
+<!--
 ### Tip
 - To get the information of a single category given the primary key of the category perform the following query :
 ```ts
@@ -53,4 +53,4 @@ the above query will return one single category containing the category specifie
 {
   endpoint : `api/important_links/category?title_category__startswith=${some_string}`
 }
-```
+``` -->

@@ -12,6 +12,7 @@ After receiving the data to the backend, the user should be redirected to the lo
 - Payload :
 ```ts
 {
+  short_url: string
   ip_address : string // This corresponds to the ip_address of the user
 }
 ```
