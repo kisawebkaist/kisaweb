@@ -4,51 +4,68 @@ import Alumni from "../../pages/alumni";
 import Multimedia from "../../pages/multimedia/multimedia";
 
 // Import Components Here (Lazily)
-const Main = React.lazy(() => import('./main'))
-const Home = React.lazy(() => import('../../pages/index'))
-const Faq = React.lazy(() => import('../../pages/faq'))
-const QueryFallback = React.lazy(() => import ("../../components/QueryFallback"))
-const AboutUs = React.lazy(() => import('../../pages/about-us'))
-const Blog = React.lazy(() => import('../../pages/blog'))
-const SlugBlog = React.lazy(() => import('../../pages/blog/slug'))
+const Main = React.lazy(() => import("./main"));
+const Home = React.lazy(() => import("../../pages/index"));
+const Faq = React.lazy(() => import("../../pages/faq"));
+const QueryFallback = React.lazy(
+  () => import("../../components/QueryFallback")
+);
+const AboutUs = React.lazy(() => import("../../pages/about-us"));
+const Blog = React.lazy(() => import("../../pages/blog"));
+const SlugBlog = React.lazy(() => import("../../pages/blog/slug"));
+const Links = React.lazy(() => import("../../pages/resources/links"));
 
 /**
  * @brief refer to https://reactrouter.com/en/main/hooks/use-routes
  */
-const routes : RouteObject[] = [
+const routes: RouteObject[] = [
   {
-    path : "/",
-    element : <Main />,
-    children : [{
-      index : true,
-      element : <Home />
-    }, {
-      path : "faq",
-      element : <Faq />
-    }, {
-      path : 'about-us',
-      element : <AboutUs />
-    }, {
-      path: "blog",
-      children : [{
-        path : '',
-        element: <Blog />,
+    path: "/",
+    element: <Main />,
+    children: [
+      {
+        index: true,
+        element: <Home />,
       },
       {
-        path : ':slug',
-        element : <SlugBlog />
-      }]
-    }, {
-      path: "alumni",
-      element: <Alumni />
-    }, {
-      path: "multimedia",
-      element: <Multimedia />
-    }, {
-      path : "*",
-      element : <QueryFallback />
-    }]
-  }
-]
+        path: "faq",
+        element: <Faq />,
+      },
+      {
+        path: "about-us",
+        element: <AboutUs />,
+      },
+      {
+        path: "blog",
+        children: [
+          {
+            path: "",
+            element: <Blog />,
+          },
+          {
+            path: ":slug",
+            element: <SlugBlog />,
+          },
+        ],
+      },
+      {
+        path: "alumni",
+        element: <Alumni />,
+      },
+      {
+        path: "multimedia",
+        element: <Multimedia />,
+      },
+      {
+        path: "links",
+        element: <Links />,
+      },
+      {
+        path: "*",
+        element: <QueryFallback />,
+      },
+    ],
+  },
+];
 
-export default routes
+export default routes;

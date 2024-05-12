@@ -16,6 +16,9 @@ interface AboutUsP {
   internalBoardMembers: InternalBoardMemberT[];
 }
 
+const constitutionLink =
+  "https://www.researchgate.net/profile/Martin-Monperrus/publication/359971198_Exhaustive_Survey_of_Rickrolling_in_Academic_Literature/links/63d2405bd9fb5967c206fdf0/Exhaustive-Survey-of-Rickrolling-in-Academic-Literature.pdf?_tp=eyJjb250ZXh0Ijp7ImZpcnN0UGFnZSI6InB1YmxpY2F0aW9uIiwicGFnZSI6InB1YmxpY2F0aW9uIn19";
+
 const AboutUs = (props: AboutUsP) => {
   return (
     <>
@@ -62,7 +65,7 @@ const AboutUs = (props: AboutUsP) => {
           p: 2,
         }}
       >
-        <Link to="/about-us/constitution">
+        <Link to={constitutionLink}>
           <Button
             variant="contained"
             sx={{ p: 2, fontSize: 16, fontWeight: "bold" }}

@@ -21,7 +21,7 @@ export function Chart(props: ChartProps) {
   const vicePresident = React.useMemo(
     () =>
       props.internalBoardMembers.find(
-        (member) => member.position === "Vice President"
+        (member) => member.position === "Deputy Secretary"
       )!,
     [props.internalBoardMembers]
   );
