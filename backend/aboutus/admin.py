@@ -1,20 +1,45 @@
 from django.contrib import admin
-from adminsortable.admin import SortableAdmin
+from django import forms
+from django_draftjs import EditorWidget
 
 from .models import MainContent, Member, DivisionContent, InternalBoardMember, ConstitutionPDF
 
-class BaseContentAdmin(SortableAdmin):
+class BaseContentAdmin(admin.ModelAdmin):
   exclude = ['the_order']
 
+@admin.register(Member)
 class MemberAdmin(admin.ModelAdmin):
   ordering = ['-year', 'semester', 'division', 'name']
 
-class InternalBoardAdmin(SortableAdmin):
+@admin.register(InternalBoardMember)
+class InternalBoardAdmin(admin.ModelAdmin):
   exclude = ['the_order']
 
-admin.site.register(MainContent, BaseContentAdmin)
-admin.site.register(DivisionContent, BaseContentAdmin)
-admin.site.register(Member, MemberAdmin)
-admin.site.register(InternalBoardMember, InternalBoardAdmin)
+@admin.register(DivisionContent)
+class DivisionContentAdmin(admin.ModelAdmin):
+  class Form(forms.ModelForm):
+    desc = forms.JSONField(widget = EditorWidget())
+    class Meta: 
+      model = DivisionContent
+      fields = [
+        'division_name', 
+        'desc',
+        'image'
+      ]
+  form = Form
+
+@admin.register(MainContent)
+class MainContentAdmin(admin.ModelAdmin):
+  class Form(forms.ModelForm):
+    desc = forms.JSONField(widget = EditorWidget())
+    class Meta: 
+      model = MainContent
+      fields = [
+        'title', 
+        'desc',
+        'image'
+      ]
+  form = Form
+
 admin.site.register(ConstitutionPDF)
 
