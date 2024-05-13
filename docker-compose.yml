@@ -47,7 +47,7 @@ services:
       - /app/node_modules
     environment:
       - REACT_APP_PUBLIC_KEY=-----BEGIN PUBLIC KEY-----\nMIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgGAD0Xqs1D1mqbkTSPaEzSJCUiR4\nBt7LKsiC3OYh5Y8vCyC0cTSkcWwhW5oTZ5ZQ8ZYP4Ddz4Fnd8AG6s3Yjryr4ODS4\nLjPHVIGtw3tCaFTM832+YVAvc8ezPdcGth5at2n7MZrv9Kf/xcsPXOGZTxkhwKhN\njsmNtPywE8GlFMbrAgMBAAE=\n-----END PUBLIC KEY-----
-      - REACT_APP_API_ENDPOINT=http://localhost:8001/api/
+      - REACT_APP_API_ENDPOINT=/api
   nginx:
     build:
       dockerfile: dockerfile

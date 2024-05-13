@@ -9,9 +9,7 @@ router.register(r'result', views.ElectionResultViewSet, 'election-result')
 
 # order matters
 urlpatterns = [
-    path('vote/', views.vote, name='vote')
+    path('vote/', views.vote, name='vote'),
+    path('<slug:election_slug>/<slug:slug>/', views.CandidateAPIView.as_view(), name='candidate'),
 ]
 urlpatterns += router.urls
-urlpatterns += [
-    path('<str:election_slug>/<str:slug>/', views.CandidateAPIView.as_view(), name='candidate'),
-]

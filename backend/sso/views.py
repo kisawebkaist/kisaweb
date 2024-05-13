@@ -49,13 +49,12 @@ def decrypt(data, state):
         logger.warning("Suspicious operation: decryption failed: %s", e)
         raise ParseError()
 
-
 @api_view(['POST'])
 def login_view(request):
     next = ensure_relative_url(str(request.data.get('next', '/')))
 
     if request.user.is_authenticated:
-        return HttpResponseRedirect(next)
+        return Response({"redirect": next})
 
     if request.session.get('state') is None:
         state = get_random_urlsafe_string(8)
@@ -69,14 +68,14 @@ def login_view(request):
         'redirect_url': request.build_absolute_uri(reverse('login-response')),
         'state': state,
     }
-    return HttpResponseRedirect(f"{KSSO_LOGIN_URL}?{urllib.parse.urlencode(data)}")
-
+    return Response({"redirect": f"{KSSO_LOGIN_URL}?{urllib.parse.urlencode(data)}"})
 
 def cors_allow_login_response(sender, request, **kwargs):
     """
     In login_response view, a cross-site POST request is sent from SSO website. This allows CORS for that.
     """
-    return request.resolver_match.url_name == 'login-response' and request.headers.get("origin", None) == KSSO_ORIGIN
+    request_origin = request.headers.get("origin", None)
+    return request.resolver_match.url_name == 'login-response' and (request_origin == KSSO_ORIGIN or (request_origin == "null" and settings.DEBUG))
 
 check_request_enabled.connect(cors_allow_login_response)
 
@@ -99,14 +98,14 @@ def login_response_view(request):
     saved_state = request.session.pop('state', '')
     next = request.session.pop('next', '/')
 
-    if not bool(success) or raw_result == "" or saved_state == "" or not isinstance(state, str) or saved_state != state:
+    if not bool(success) or raw_result == "" or saved_state == "" or saved_state != state:
         raise ParseError()
 
-    if not origin == KSSO_ORIGIN:
+    if not (origin == KSSO_ORIGIN or (settings.DEBUG and origin == "null")):
         logger.info(f"Suspicious Operation: Invalid origin in login-response: (user-agent: {request.META.get('HTTP_USER_AGENT')}, origin: {origin})")
         raise PermissionDenied(detail=_(f'CSRF Failed: Origin checking failed - {origin} does not match any trusted origins.'))
 
-    result = decrypt(raw_result, state)
+    result = decrypt(raw_result, saved_state)
     
     try:
         result = json.loads(result)
@@ -231,7 +230,7 @@ def lost_totp_secret_response_view(request):
 def logout_view(request):
     next = ensure_relative_url(str(request.data.get('next', '/')))
     if not request.user.is_authenticated:
-        return HttpResponseRedirect(next)
+        return Response({"redirect": next})
     
     logout(request)
     
@@ -240,4 +239,4 @@ def logout_view(request):
         'redirect_url': request.build_absolute_uri(next),
     }
 
-    return HttpResponseRedirect(f"{KSSO_LOGOUT_URL}?{urllib.parse.urlencode(data)}")
+    return Response({"redirect": f"{KSSO_LOGOUT_URL}?{urllib.parse.urlencode(data)}"})

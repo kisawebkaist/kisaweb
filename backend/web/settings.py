@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
-import os
+import os, logging
 from .env import ENV_VARS
 from dotenv import load_dotenv
 
@@ -53,6 +53,7 @@ DEBUG = True
 ALLOWED_HOSTS = ENV_VARS.get('ALLOWED_HOSTS')
 CORS_ALLOWED_ORIGINS = ENV_VARS.get('CORS_ALLOWED_ORIGINS')
 CSRF_TRUSTED_ORIGINS = ENV_VARS.get('CORS_ALLOWED_ORIGINS')
+CORS_ALLOW_CREDENTIALS = True
 
 # Application definition
 
@@ -96,7 +97,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
+    'sso.middleware.CustomSessionMiddleware',
     "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

@@ -1,8 +1,12 @@
+from django.contrib.sessions.models import Session
 import base64, json, logging, pyotp, datetime, secrets, time
 
 from email.mime.text import MIMEText
 
+from django.contrib.sessions.backends.db import SessionStore as DBStore
+from django.contrib.sessions.base_session import AbstractBaseSession
 from django.contrib.sessions.management.commands import clearsessions
+
 from django.db import models, transaction
 from django.dispatch import receiver
 from django.contrib.auth.models import AbstractUser
@@ -226,7 +230,7 @@ class User(AbstractUser):
 
     @classmethod
     def from_info_json(cls, user_info: dict):
-        query = cls.objects.filter(pk=user_info['kaist_uid'])
+        query = cls.objects.filter(kaist_uid=user_info['kaist_uid'])
         if query.exists():
             return query[0].update_from_info_json(user_info)
         user = cls()
