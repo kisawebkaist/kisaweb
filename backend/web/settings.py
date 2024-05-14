@@ -47,8 +47,7 @@ SECRET_KEY = ENV_VARS.get('SECRET_KEY')
 #       which is called by django_compress/django_libsass.
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = not ENV_VARS.get('PRODUCTION')
-DEBUG = True
+DEBUG = not ENV_VARS.get('PRODUCTION')
 
 ALLOWED_HOSTS = ENV_VARS.get('ALLOWED_HOSTS')
 CORS_ALLOWED_ORIGINS = ENV_VARS.get('CORS_ALLOWED_ORIGINS')
