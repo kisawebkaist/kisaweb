@@ -27,9 +27,9 @@ export default class ImportantLinks {
     categories: ImportantLinkCategoryT[];
   }> {
     return Promise.all([
-      axios.get(`${process.env.REACT_APP_API_ENDPOINT}important-links`),
+      axios.get(`${process.env.REACT_APP_API_ENDPOINT}/important-links`),
       axios.get(
-        `${process.env.REACT_APP_API_ENDPOINT}important-links/categories`
+        `${process.env.REACT_APP_API_ENDPOINT}/important-links/categories`
       ),
     ]).then(([linkResp, categoryResp]) => {
       const categoryHash = (
