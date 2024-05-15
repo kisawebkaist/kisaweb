@@ -17,18 +17,23 @@ from sso.permissions import IsKISAVerifiedOrReadOnly
 from .models import Election, Candidate, Vote, VotingExceptionToken
 from .serializers import *
 
-# TODO: check this function with SSO documentation and the constitution
+ELIGIBLE_USER_TYPES = "SGR" # students, graduates, researchers
+
 def is_eligible(user:User, election:Election)->bool:
+    '''See `Article.I.A.2` of KISA Constitution'''
     if election == None:
         election=Election.current_or_error()
+
     if VotingExceptionToken.objects.filter(user=user, election=election).exists() or user.is_kisa():
         return True
-    if user.nationality == 'KOR' or user.kaist_email == None:
+    
+    if user.nationality == 'KOR':
         return False
-    # TODO: check what's happening here with old code
-    if 'E' in user.employee_type and 'researcher' in user.title_english.lower():
-        return True
-    return True
+    for flag in ELIGIBLE_USER_TYPES:
+        if flag in user.employee_type:
+            return True
+    
+    return False
 
 class ElectionInfoViewSet(ReadOnlyModelViewSet):
     serializer_class = ElectionInfoSerializer
@@ -64,29 +69,31 @@ class CandidateAPIView(APIView):
 def vote(request):
     election = Election.current_or_error()
     eligible = is_eligible(request.user, election)
-    already_voted = Vote.objects.filter(user=request.user, election=election).exists()
 
     if request.method == 'GET':
         return Response({
             'is_eligible': eligible,
-            'already_voted': already_voted
+            'already_voted': Vote.objects.filter(user=request.user, election=election).exists()
         })
+    
     if request.method == 'POST':
         candidate = Candidate.objects.filter(slug=request.data.get('candidate', ''), election=election).first()
-        if candidate == None:
+        if candidate == None or request.data.get('vote_type') == None:
             raise ParseError()
         
         with transaction.atomic():
             if not eligible:
                 raise PermissionDenied(_("Sorry, you are not elligible for voting."))
-            if already_voted:
-                raise PermissionDenied(_("You have already voted."))
             
-            # if there's a race condition where two requests trigger save the 
+            vote_type = bool(request.data['vote_type'])
             if election.get_election_type() == 'multi':
-                Vote(user=request.user, election=election, candidate=candidate, vote_type=True).save()
-            else:
-                Vote(user=request.user, election=election, candidate=candidate, vote_type=bool(request.data['vote_type'])).save()
+                vote_type = True
+            
+            vote, created = Vote.objects.select_for_update(nowait=True).get_or_create(user=request.user, election=election)
+            if not created:
+                raise PermissionDenied(_('You have already voted.'))
+            vote.candidate = candidate
+            vote.vote_type = vote_type
             return Response({})
     
     raise MethodNotAllowed(request.method)

@@ -175,7 +175,7 @@ class Vote(models.Model):
         unique_together = ('user', 'election') # this is here to prevent subtle insert-race-conditions in voting without locking the whole table
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     election = models.ForeignKey(Election, on_delete=models.CASCADE)
-    candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE)
+    candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE, null=True)
     vote_type = models.BooleanField(default=True)
 
     def clean(self):
