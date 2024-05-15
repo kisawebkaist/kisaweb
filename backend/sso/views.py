@@ -1,4 +1,4 @@
-import base64, json, logging, urllib.parse, pyotp
+import base64, datetime, json, logging, urllib.parse, pyotp
 
 from corsheaders.signals import check_request_enabled
 
@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib.auth import login, logout
 from django.core.validators import EmailValidator
 from django.core.exceptions import ValidationError as DjangoValidationError
+from django.core.signing import BadSignature, SignatureExpired
 from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.urls import reverse
@@ -68,7 +69,9 @@ def login_view(request):
         'redirect_url': request.build_absolute_uri(reverse('login-response')),
         'state': state,
     }
-    return Response({"redirect": f"{KSSO_LOGIN_URL}?{urllib.parse.urlencode(data)}"})
+    response = Response({"redirect": f"{KSSO_LOGIN_URL}?{urllib.parse.urlencode(data)}"})
+    response.set_signed_cookie('login_nonce', state, salt='login_nonce', samesite='None', secure=(not settings.DEBUG), path=reverse('login-response'))
+    return response
 
 def cors_allow_login_response(sender, request, **kwargs):
     """
@@ -91,21 +94,29 @@ def login_response_view(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect('/')
     
-    state = str(request.data.get('state', '00000000'))
     raw_result = str(request.data.get('result', ''))
     success = request.data.get('success')
     origin = request.META.get('HTTP_ORIGIN')
-    saved_state = request.session.pop('state', '')
     next = request.session.pop('next', '/')
 
-    if not bool(success) or raw_result == "" or saved_state == "" or saved_state != state:
+    if not bool(success) or raw_result == "" or (not 'state' in request.session):
+        raise ParseError()
+    
+    try:
+        login_nonce = request.get_signed_cookie('login_nonce', salt='login_nonce', max_age=900) # 15 minutes
+    except KeyError|BadSignature|SignatureExpired:
+        raise ParseError()
+    
+    if login_nonce != request.session['state']:
         raise ParseError()
 
     if not (origin == KSSO_ORIGIN or (settings.DEBUG and origin == "null")):
         logger.info(f"Suspicious Operation: Invalid origin in login-response: (user-agent: {request.META.get('HTTP_USER_AGENT')}, origin: {origin})")
         raise PermissionDenied(detail=_(f'CSRF Failed: Origin checking failed - {origin} does not match any trusted origins.'))
 
-    result = decrypt(raw_result, saved_state)
+    result = decrypt(raw_result, request.session['state'])
+    # delay the removal of state as far as possible to prevent nonce refresh
+    del request.session['state']
     
     try:
         result = json.loads(result)
@@ -123,7 +134,9 @@ def login_response_view(request):
         logger.warning(f'Suspicious Operation: user model validation failed: %s', e)
         raise ParseError()
     
-    return HttpResponseRedirect(next)
+    response = HttpResponseRedirect(next)
+    response.delete_cookie('login_nonce', path=reverse('login-response'))
+    return response
 
 @api_view(['POST'])
 @permission_classes([IsKISA])
