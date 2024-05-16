@@ -60,7 +60,7 @@ INSTALLED_APPS = [
     # 'grappelli',
     # 'jet.dashboard',  # PyPi django-3-jet (needs to be before 'jet')
     # 'jet',  # PyPi django-3-jet (needs to be before 'django.contrib.admin')
-    'django.contrib.admin',
+    'django.contrib.admin.apps.SimpleAdminConfig',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -208,6 +208,13 @@ DATETIME_INPUT_FORMATS += [
     '%Y-%m-%d %H:%M',  # 2020-01-20 13:30
     '%Y-%m-%d',  # 2020-01-20
 ]
+
+DEFAULT_FROM_EMAIL = 'kisa@kaist.ac.kr'
+EMAIL_HOST = ENV_VARS.get("SMTP_SERVER")
+EMAIL_PORT = '587'
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = ENV_VARS.get("SMTP_USERNAME")
+EMAIL_HOST_PASSWORD = ENV_VARS.get("SMTP_PASSWORD")
 
 # Custom User model
 AUTH_USER_MODEL = 'sso.User'
