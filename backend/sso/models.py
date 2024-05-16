@@ -1,8 +1,8 @@
 from django.contrib.sessions.models import Session
 import base64, json, logging, pyotp, datetime, secrets, time
 
-from email.mime.text import MIMEText
-
+from django.conf import settings
+from django.core.mail import send_mail
 from django.contrib.sessions.backends.db import SessionStore as DBStore
 from django.contrib.sessions.base_session import AbstractBaseSession
 from django.contrib.sessions.management.commands import clearsessions
@@ -11,18 +11,19 @@ from django.db import models, transaction
 from django.dispatch import receiver
 from django.contrib.auth.models import AbstractUser
 from django.utils.crypto import constant_time_compare
+from django.utils.html import strip_tags
+from django.utils.translation import gettext_lazy as _
 from django.template.loader import render_to_string
 
 from rest_framework.exceptions import Throttled, ParseError
 
 from core.utils import housekeeping_signal
-from .utils import GMailAPI
 from .  import TOTP_SESSION_KEY
 
 logger = logging.getLogger(__name__)
 
 def generate_mail_otp():
-    return base64.b64encode(secrets.token_bytes(3)).decode('utf-8')
+    return str(secrets.randbelow(1000000)).ljust(6, '0')
 
 class MailOTPSession(models.Model):
     template = 'sso/email.html'
@@ -54,23 +55,15 @@ class MailOTPSession(models.Model):
             return (None, available_attempts)
 
     def send(self, reason:str):
-        message = MIMEText(render_to_string(
+        message = render_to_string(
             self.template,
-            {'otp' : self.otp, 'reason' : reason}),
-            "html"
+            {'otp' : self.otp, 'reason' : reason}
         )
-        message["To"] = self.email
-        message["From"] = f"KISA Web Team <{GMailAPI.FROM_MAIL}>"
-        message["Subject"] = "[No Reply] Your Personal Authentication for KISA Services"
-
-        encoded_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
-
-        create_message = {"raw": encoded_message}
-        if GMailAPI.client and GMailAPI.client.service:
-            GMailAPI.client.service.users().messages().send(userId="me", body=create_message).execute()
-        else:
-            logger.warning(f"Mail OTP code send failure to {self.email}")
-
+        to_mail = self.email
+        from_email = f"KISA Web Team <{settings.DEFAULT_FROM_EMAIL}>"
+        subject = "[No Reply] Your Personal Authentication for KISA Services"
+        send_mail(subject, strip_tags(message), from_email, [to_mail])
+        
     @classmethod
     def clear_expired(cls):
         now = datetime.datetime.now()
@@ -140,6 +133,16 @@ class TOTPUsedToken(models.Model):
             if now - token.time_used > valid_duration:
                 token.delete()
 
+class KISADivision(models.IntegerChoices):
+        NONE = 0, _("None")
+        WEB = 1, _("Web Division")
+        FINANCE = 2, _("Finace Division")
+        PPR = 3, _("PPR Division")
+        EVENTS = 4, _("Events Division")
+        WELFARE = 5, _("Welfare Division")
+        SECRETARY = 6, _("Secretary")
+        VICE_PRESIDENT = 7, _("Vice President")
+        PRESIDENT = 8, _("President")
 
 class User(AbstractUser):
     # make all fields except KAIST UID 'blank=true' because some fields might be empty
@@ -222,8 +225,8 @@ class User(AbstractUser):
     student_department_name_english = models.CharField(max_length=100, blank=True, null=True)  # acad_ebs_org_name_eng
     student_department_name_korean = models.CharField(max_length=100, blank=True, null=True)  # acad_ebs_org_name_kor
 
-    kisa_division = models.PositiveIntegerField(default=0)
-    totp_device = models.ForeignKey(TOTPDevice, on_delete=models.CASCADE, blank=True, null=True)
+    kisa_division = models.IntegerField(choices=KISADivision.choices, default=KISADivision.NONE)
+    totp_device = models.OneToOneField(TOTPDevice, on_delete=models.CASCADE)
 
     def is_valid_kaist_account(self):
         return self.kaist_uid != 0
@@ -231,24 +234,27 @@ class User(AbstractUser):
     @classmethod
     def from_info_json(cls, user_info: dict):
         query = cls.objects.filter(kaist_uid=user_info['kaist_uid'])
-        if query.exists():
-            return query[0].update_from_info_json(user_info)
-        user = cls()
-        for key, field in cls.KSSO_KEYS_AND_FIELDS:
-            if key in user_info:
-                setattr(user, field, user_info[key])
-        user.username = str(user.kaist_uid)
-        user.set_unusable_password()
+        with transaction.atomic():
+            if query.exists():
+                return query[0].update_from_info_json(user_info)
+            user = cls()
+            for key, field in cls.KSSO_KEYS_AND_FIELDS:
+                if key in user_info:
+                    setattr(user, field, user_info[key])
+            user.username = str(user.kaist_uid)
+            user.set_unusable_password()
 
-        # set the default mail to be the user's external mail or kaist mail
-        # the external mail is first priority just in case KAIST SSO got hacked
-        if user.external_email is not None and user.external_email != "":
-            user.email = user.external_email
-        elif user.kaist_email is not None and user.kaist_email != "":
-            user.email = user.kaist_email
+            user.totp_device = TOTPDevice()
+            user.totp_device.save()
 
-        user.full_clean()
-        user.save()
+            # set the default mail to be the user's external mail or kaist mail
+            if user.external_email is not None and user.external_email != "":
+                user.email = user.external_email
+            elif user.kaist_email is not None and user.kaist_email != "":
+                user.email = user.kaist_email
+
+            user.full_clean()
+            user.save()
         return user
 
     def get_info_json(self):
@@ -290,8 +296,8 @@ class User(AbstractUser):
             last_name = last_name
         )
 
-# @receiver(signal=housekeeping_signal)
-# def housekeeping_sig_listener(sender, **kwargs):
-#     MailOTPSession.clear_expired()
-#     TOTPUsedToken.clear_expired()
-#     clearsessions.Command().handle()
+@receiver(signal=housekeeping_signal)
+def housekeeping_sig_listener(sender, **kwargs):
+    MailOTPSession.clear_expired()
+    TOTPUsedToken.clear_expired()
+    clearsessions.Command().handle()

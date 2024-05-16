@@ -13,8 +13,8 @@ from django.urls import reverse
 from django.utils.translation import gettext as _
 
 from rest_framework.decorators import api_view, parser_classes, authentication_classes, permission_classes
-from rest_framework.exceptions import PermissionDenied, ParseError, ValidationError
-from rest_framework.parsers import FormParser
+from rest_framework.exceptions import PermissionDenied, ParseError, ValidationError, Throttled
+from rest_framework.parsers import FormParser, JSONParser
 from rest_framework.response import Response
 import rest_framework.status as status
 
@@ -46,8 +46,7 @@ def decrypt(data, state):
         deciphed = cipher.decrypt(base64.b64decode(data))   
         deciphed = unpad(deciphed, BS).decode('utf-8')
         return deciphed
-    except ValueError as e:
-        logger.warning("Suspicious operation: decryption failed: %s", e)
+    except ValueError:
         raise ParseError()
 
 @api_view(['POST'])
@@ -89,7 +88,7 @@ def login_response_view(request):
     """
     This POST request is supposed to be sent by SSO website and contains encrypted user information.
     This view is csrf_exempted but we will enforce strict origin-checking manually.
-    We also need to allow CORS from sso website with credentials.
+    We need to allow CORS from sso website with credentials and set sessionid cookie to samesite=None.
     """
     if request.user.is_authenticated:
         return HttpResponseRedirect('/')
@@ -115,11 +114,10 @@ def login_response_view(request):
         raise PermissionDenied(detail=_(f'CSRF Failed: Origin checking failed - {origin} does not match any trusted origins.'))
 
     result = decrypt(raw_result, request.session['state'])
-    # delay the removal of state as far as possible to prevent nonce refresh
-    del request.session['state']
     
     try:
         result = json.loads(result)
+        del request.session['state'] # delay the refresh of nonce as late as possible
         user = User.from_info_json(result['dataMap']['USER_INFO'])
         login(request, user)
         request.session.pop(TOTP_SESSION_KEY, None)
@@ -146,7 +144,9 @@ def check_totp_view(request):
         request.session[TOTP_SESSION_KEY] = True
     else: 
         raise ParseError()
-    return Response({})
+    return Response({
+        "redirect": ensure_relative_url(str(request.data.get('next', '/')))
+    })
 
 @api_view(['POST'])
 @permission_classes([IsKISAVerified])
@@ -163,6 +163,10 @@ def change_totp_secret(request):
 @api_view(['POST'])
 @permission_classes([IsKISAVerified])
 def change_email_view(request):
+    if MAIL_OTP_BASE_SESSION_KEY+'change_mail_cooldown' in request.session and datetime.datetime.fromtimestamp(request.session[MAIL_OTP_BASE_SESSION_KEY+'change_mail_cooldown']) > datetime.datetime.now():
+        raise Throttled()
+    request.session[MAIL_OTP_BASE_SESSION_KEY+'change_mail_cooldown'] = (datetime.datetime.now() + datetime.timedelta(minutes=2)).timestamp()
+    request.session.save()
     email = str(request.data.get('email', ''))
     try:
         email_validator(email)
@@ -198,12 +202,17 @@ def change_email_response_view(request):
     request.user.email = data['email']
     request.user.save()
     request.session.pop(MAIL_OTP_BASE_SESSION_KEY+"change_email", None)
+    request.session.pop(MAIL_OTP_BASE_SESSION_KEY+"change_mail_cooldown", None)
     return Response({})
 
 
 @api_view(['POST'])
 @permission_classes([IsKISA])
 def lost_totp_secret_view(request):
+    if MAIL_OTP_BASE_SESSION_KEY+'lost_totp_cooldown' in request.session and datetime.datetime.fromtimestamp(request.session[MAIL_OTP_BASE_SESSION_KEY+'lost_totp_cooldown']) > datetime.datetime.now():
+        raise Throttled()
+    request.session[MAIL_OTP_BASE_SESSION_KEY+'lost_totp_cooldown'] = (datetime.datetime.now() + datetime.timedelta(minutes=2)).timestamp()
+    request.session.save()
     with transaction.atomic():
         otp_session = MailOTPSession(email=request.user.email)
         otp_session.save()
@@ -234,6 +243,7 @@ def lost_totp_secret_response_view(request):
     request.user.totp_device.secret = new_secret
     request.user.totp_device.save()
     request.session.pop(MAIL_OTP_BASE_SESSION_KEY+"lost_totp", None)
+    request.session.pop(MAIL_OTP_BASE_SESSION_KEY+'lost_totp_cooldown', None)
     return Response({
         "secret": new_secret,
         "auth_uri": pyotp.TOTP(new_secret).provisioning_uri(name=request.user.email, issuer_name="KISA")
