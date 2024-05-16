@@ -2,20 +2,21 @@ from django.contrib import admin
 from django import forms
 from django_draftjs import EditorWidget
 
+from core.admin import register
 from .models import MainContent, Member, DivisionContent, InternalBoardMember, ConstitutionPDF
 
 class BaseContentAdmin(admin.ModelAdmin):
   exclude = ['the_order']
 
-@admin.register(Member)
+@register(Member)
 class MemberAdmin(admin.ModelAdmin):
   ordering = ['-year', 'semester', 'division', 'name']
 
-@admin.register(InternalBoardMember)
+@register(InternalBoardMember)
 class InternalBoardAdmin(admin.ModelAdmin):
   exclude = ['the_order']
 
-@admin.register(DivisionContent)
+@register(DivisionContent)
 class DivisionContentAdmin(admin.ModelAdmin):
   class Form(forms.ModelForm):
     desc = forms.JSONField(widget = EditorWidget())

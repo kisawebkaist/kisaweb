@@ -1,5 +1,7 @@
 from django.contrib import admin
+
+from core.admin import register
 from .models import Alumni,KISA_Position
 # Register your models here.
-admin.site.register(KISA_Position)
-admin.site.register(Alumni)
+register(KISA_Position)
+register(Alumni)

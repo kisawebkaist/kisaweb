@@ -1,11 +1,13 @@
 from typing import Tuple
 from django.contrib import admin
-from .models import UrlShortener, UrlVisitor
-from .forms import UrlShortenerForm
 from django.utils.safestring import mark_safe
 from django import forms
 from django.utils.html import linebreaks, format_html
 from web.settings import URL_SHORTENER_PREFIX
+
+from core.admin import register
+from .forms import UrlShortenerForm
+from .models import UrlShortener, UrlVisitor
 
 # TODO: Fix this clutch
 def get_main_website_url(full_url : str) -> Tuple[str, str]:
@@ -34,7 +36,7 @@ class NameWidget(forms.TextInput):
         widget = mark_safe(self.host_url) + super().render(*args, **kwargs)
         return widget
 
-@admin.register(UrlShortener)
+@register(UrlShortener)
 class UrlShortenerAdmin(admin.ModelAdmin):
     list_display = (
         'shortened_link', 'target_link', 'visitor_count', 'total_visit'
@@ -66,7 +68,7 @@ class UrlShortenerAdmin(admin.ModelAdmin):
             kwargs['widget']= NameWidget(self.host_url)
         return super().formfield_for_dbfield(db_field, **kwargs)
 
-@admin.register(UrlVisitor)
+@register(UrlVisitor)
 class UrlVisitorAdmin(admin.ModelAdmin):
     list_display = ('visitor', 'visited_links_and_count')
     def get_queryset(self, request):

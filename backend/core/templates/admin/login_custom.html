@@ -1,0 +1,87 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}{{ block.super }}
+<link rel="stylesheet" href="{% static "admin/css/login.css" %}">
+<script src="{% static "admin/js/login.js" %}"></script>
+{{ form.media }}
+{% endblock %}
+
+{% block bodyclass %}{{ block.super }} login{% endblock %}
+
+{% block usertools %}{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+{% block nav-sidebar %}{% endblock %}
+
+{% block content_title %}{% endblock %}
+
+{% block nav-breadcrumbs %}{% endblock %}
+
+{% block content %}
+{% if form.errors and not form.non_field_errors %}
+<p class="errornote">
+{% blocktranslate count counter=form.errors.items|length %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktranslate %}
+</p>
+{% endif %}
+
+{% if form.non_field_errors %}
+{% for error in form.non_field_errors %}
+<p class="errornote">
+    {{ error }}
+</p>
+{% endfor %}
+{% endif %}
+
+<div id="content-main">
+
+{% if user.is_authenticated and not user.is_staff %}
+<p class="errornote">
+{% blocktranslate trimmed %}
+    You are authenticated as {{ username }}, but are not authorized to
+    access this page. Would you like to login to a different account?
+{% endblocktranslate %}
+</p>
+{% endif %}
+
+{% if not is_authenticated %}
+<form action="{{ app_path }}" method="post" id="login-form">{% csrf_token %}
+  <div class="form-row">
+    {{ form.username.errors }}
+    {{ form.username.label_tag }} {{ form.username }}
+  </div>
+  <div class="form-row">
+    {{ form.password.errors }}
+    {{ form.password.label_tag }} {{ form.password }}
+    <input type="hidden" name="next" value="{{ next }}">
+  </div>
+  {% url 'admin_password_reset' as password_reset_url %}
+  {% if password_reset_url %}
+  <div class="password-reset-link">
+    <a href="{{ password_reset_url }}">{% translate 'Forgotten your password or username?' %}</a>
+  </div>
+  {% endif %}
+  <div class="submit-row">
+    <input type="submit" value="{% translate 'Log in' %}">
+    <input type="button" onclick="sso_login('{{ sso_login_path }}', '{{ next }}')" value="{% translate 'Or login in with SSO' %}">
+  </div>
+</form>
+{% endif %}
+
+{% if is_authenticated and not is_verified %}
+<form action="{{ 2fa_path }}" method="post" id="2fa_form" class="form-inline">
+  <div class="form-row">
+    <label for="username">Username</label>
+    <input id="username" type="text" value="{{ username }}" disabled>
+  </div>
+  <div class="form-row">
+    {{ 2fa_form.token.errors }}
+    {{ 2fa_form.token.label_tag }}  {{ 2fa_form.token }}
+    <input type="button" onclick="check_otp('{{ 2fa_path }}', '{{ next }}')" value="{% translate 'Submit' %}">
+  </div>
+</form>
+{% endif %}
+
+</div>
+{% endblock %}

@@ -2,13 +2,14 @@ from django.contrib import admin
 from django.utils.html import mark_safe
 from django import forms
 
+from core.admin import register
 from .models import Event
 # from .forms import EventForm
 
 # Register your models here.
 
 
-@admin.register(Event)
+@register(Event)
 class EventAdmin(admin.ModelAdmin):
     # form = EventForm
     # add_form_template = 'admin/crispy_form.html'
