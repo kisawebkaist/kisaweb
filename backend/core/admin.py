@@ -39,17 +39,18 @@ class CustomAdminSite(admin.AdminSite):
     two_fa_form = TwoFAForm
 
     def has_permission(self, request):
-        return super().has_permission(request) and request.user.is_verified(request)
+        return super().has_permission(request) and (not request.user.totp_device.is_active or request.user.is_verified(request))
     
     @method_decorator(never_cache)
     def login(self, request, extra_context=None):
         shown_username = "anonymous" if request.user.is_anonymous else request.user.email
         context = {
-            "is_authenticated": request.user.is_authenticated,
-            "is_verifed": request.user.is_authenticated and request.user.is_verified(request),
-            "2fa_form": self.two_fa_form,
             "2fa_path": reverse("check-otp"),
             "sso_login_path": reverse("login"),
+            "2fa_form": self.two_fa_form,
+
+            "is_authenticated": request.user.is_authenticated,
+            "need_2fa": request.user.is_authenticated and request.user.totp_device.is_active and not request.user.is_verified(request),
             "username": shown_username
         }
         context.update(extra_context or {})

@@ -12,7 +12,7 @@ from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from core.utils import get_object_or_404
 from sso.models import User
-from sso.permissions import IsKISAVerifiedOrReadOnly
+from sso.permissions import IsKISA, IsVerifiedOrReadOnly
 
 from .models import Election, Candidate, Vote, VotingExceptionToken
 from .serializers import *
@@ -46,7 +46,7 @@ class ElectionResultViewSet(ReadOnlyModelViewSet):
     lookup_field = 'slug'
 
 class CandidateAPIView(APIView):
-    permission_classes = [IsKISAVerifiedOrReadOnly]
+    permission_classes = [IsKISA, IsVerifiedOrReadOnly]
     
     def get(self, request, election_slug, slug, format=None):
         election = get_object_or_404(Election, slug=election_slug)
@@ -55,14 +55,14 @@ class CandidateAPIView(APIView):
             raise NotFound
         return Response(CandidateSerializer(candidate).data)
     
-    def put(self, request, election_slug, slug, format=None):
-        election = get_object_or_404(Election, slug=election_slug)
-        candidate = get_object_or_404(Candidate, election=election, slug=slug)
-        if candidate.account != request.user or election.start_datetime < datetime.datetime.now():
-            raise PermissionDenied()
-        serializer = CandidateSerializer(data=request.data)
-        serializer.save()
-        return Response({})
+    # def put(self, request, election_slug, slug, format=None):
+    #     election = get_object_or_404(Election, slug=election_slug)
+    #     candidate = get_object_or_404(Candidate, election=election, slug=slug)
+    #     if candidate.account != request.user or election.start_datetime < datetime.datetime.now():
+    #         raise PermissionDenied()
+    #     serializer = CandidateSerializer(data=request.data)
+    #     serializer.save()
+    #     return Response({})
     
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])

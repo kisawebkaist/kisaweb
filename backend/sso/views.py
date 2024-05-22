@@ -12,9 +12,10 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.translation import gettext as _
 
-from rest_framework.decorators import api_view, parser_classes, authentication_classes, permission_classes
+from rest_framework.decorators import api_view, parser_classes, authentication_classes, permission_classes, throttle_classes
 from rest_framework.exceptions import PermissionDenied, ParseError, ValidationError, Throttled
 from rest_framework.parsers import FormParser, JSONParser
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 import rest_framework.status as status
 
@@ -23,8 +24,9 @@ from Crypto.Util.Padding import unpad
 
 from . import TOTP_SESSION_KEY
 from .models import User, MailOTPSession
-from .permissions import IsKISA, IsKISAVerified
+from .permissions import IsKISA, IsVerified
 from core.utils import ensure_relative_url, get_random_urlsafe_string, CSRFExemptSessionAuthentication
+from core.throttling import EMAILOTPRateThrottle
 
 KSSO_LOGIN_URL = settings.KSSO_LOGIN_URL
 KSSO_LOGOUT_URL = settings.KSSO_LOGOUT_URL
@@ -69,7 +71,7 @@ def login_view(request):
         'state': state,
     }
     response = Response({"redirect": f"{KSSO_LOGIN_URL}?{urllib.parse.urlencode(data)}"})
-    response.set_signed_cookie('login_nonce', state, salt='login_nonce', samesite='None', secure=(not settings.DEBUG), path=reverse('login-response'))
+    response.set_signed_cookie('login_nonce', state, salt='login_nonce', samesite='None', secure=True, path=reverse('login-response'))
     return response
 
 def cors_allow_login_response(sender, request, **kwargs):
@@ -149,7 +151,7 @@ def check_totp_view(request):
     })
 
 @api_view(['POST'])
-@permission_classes([IsKISAVerified])
+@permission_classes([IsVerified])
 def change_totp_secret(request):
     new_secret = pyotp.random_base32()
     request.user.totp_device.secret = new_secret
@@ -161,7 +163,8 @@ def change_totp_secret(request):
 
 
 @api_view(['POST'])
-@permission_classes([IsKISAVerified])
+@permission_classes([IsVerified])
+@throttle_classes([EMAILOTPRateThrottle])
 def change_email_view(request):
     if MAIL_OTP_BASE_SESSION_KEY+'change_mail_cooldown' in request.session and datetime.datetime.fromtimestamp(request.session[MAIL_OTP_BASE_SESSION_KEY+'change_mail_cooldown']) > datetime.datetime.now():
         raise Throttled()
@@ -181,7 +184,7 @@ def change_email_view(request):
     return Response({})
 
 @api_view(['POST'])
-@permission_classes([IsKISAVerified])
+@permission_classes([IsVerified])
 def change_email_response_view(request):
     otp = str(request.data.get('token', ''))
     pk = request.session.get(MAIL_OTP_BASE_SESSION_KEY+"change_email", None)
@@ -207,12 +210,17 @@ def change_email_response_view(request):
 
 
 @api_view(['POST'])
-@permission_classes([IsKISA])
+@permission_classes([IsAuthenticated])
+@throttle_classes([EMAILOTPRateThrottle])
 def lost_totp_secret_view(request):
+    if not request.user.totp_device.is_active:
+        raise ParseError()
+    
     if MAIL_OTP_BASE_SESSION_KEY+'lost_totp_cooldown' in request.session and datetime.datetime.fromtimestamp(request.session[MAIL_OTP_BASE_SESSION_KEY+'lost_totp_cooldown']) > datetime.datetime.now():
         raise Throttled()
     request.session[MAIL_OTP_BASE_SESSION_KEY+'lost_totp_cooldown'] = (datetime.datetime.now() + datetime.timedelta(minutes=2)).timestamp()
     request.session.save()
+
     with transaction.atomic():
         otp_session = MailOTPSession(email=request.user.email)
         otp_session.save()
@@ -221,8 +229,11 @@ def lost_totp_secret_view(request):
     return Response({})
 
 @api_view(['POST'])
-@permission_classes([IsKISA])
+@permission_classes([IsAuthenticated])
 def lost_totp_secret_response_view(request):
+    if not request.user.totp_device.is_active:
+        raise ParseError()
+
     otp = str(request.data.get('token', ''))
     pk = request.session.get(MAIL_OTP_BASE_SESSION_KEY+"lost_totp", None)
     if pk is None:

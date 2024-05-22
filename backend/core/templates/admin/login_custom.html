@@ -69,7 +69,7 @@
 </form>
 {% endif %}
 
-{% if is_authenticated and not is_verified %}
+{% if need_2fa %}
 <form action="{{ 2fa_path }}" method="post" id="2fa_form" class="form-inline">
   <div class="form-row">
     <label for="username">Username</label>

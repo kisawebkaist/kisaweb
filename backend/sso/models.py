@@ -1,5 +1,5 @@
 from django.contrib.sessions.models import Session
-import base64, json, logging, pyotp, datetime, secrets, time
+import base64, json, logging, pyotp, datetime, secrets, time, math
 
 from django.conf import settings
 from django.core.mail import send_mail
@@ -74,28 +74,33 @@ class MailOTPSession(models.Model):
 
 class TOTPDevice(models.Model):
     VALID_WINDOW = 2
-    ON_DELAY_INIT = 0.25
+    DELAY_INIT = 0.25
+    BRUTE_FORCE_TOLERANCE = 5
+    MAX_DELAY = datetime.timedelta(days=1).seconds
+    MAX_FAILED_ATTEMPTS = 200
 
     secret = models.CharField(default=pyotp.random_base32)
     last_failed_attempt_time = models.DateTimeField(default=datetime.datetime.now)
-    next_delay_sec = models.FloatField(default=ON_DELAY_INIT)
-    on_cooldown = models.BooleanField(default=False)
+    num_failed_attempts = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=False)
 
     def verify(self, token):
-        result = pyotp.TOTP(self.secret).verify(token, valid_window=self.VALID_WINDOW)
+        if not self.is_active:
+            return False
+        
         with transaction.atomic():
-            device = TOTPDevice.objects.select_for_update().get(pk=self.pk)
-            wait_time = (device.last_failed_attempt_time - datetime.datetime.now()) + device.next_delay_sec*datetime.timedelta(seconds=1)
-            if device.on_cooldown and wait_time > datetime.timedelta(seconds=0):
-                raise Throttled(wait=wait_time.total_seconds())
-            result = result and not TOTPUsedToken.check_used(token, self)
+            device = TOTPDevice.objects.select_for_update(nowait=True).get(pk=self.pk)
+            if device.num_failed_attempts > self.BRUTE_FORCE_TOLERANCE:
+                wait_time = datetime.timedelta(seconds=self.DELAY_INIT*math.exp(device.num_failed_attempts-self.BRUTE_FORCE_TOLERANCE)) + datetime.datetime.now() - device.last_failed_attempt_time
+                if wait_time > datetime.timedelta(seconds=0):
+                    raise Throttled(wait=wait_time.total_seconds())
+                
+            result = pyotp.TOTP(self.secret).verify(token, valid_window=self.VALID_WINDOW) and not TOTPUsedToken.check_used(token, self)
             if result:
-                device.on_cooldown = False
-                device.next_delay_sec = device.ON_DELAY_INIT
+                device.num_failed_attempts = 0
                 TOTPUsedToken.insert(token, device)
             else:
-                device.on_cooldown = True
-                device.next_delay_sec *= 2
+                device.num_failed_attempts = min(device.num_failed_attempts+1, self.MAX_FAILED_ATTEMPTS)
                 device.last_failed_attempt_time = datetime.datetime.now()
             device.save()
             return result
