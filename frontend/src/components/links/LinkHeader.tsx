@@ -1,17 +1,15 @@
 import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
 
-const FaqHeader = () => {
+const LinkHeader = () => {
   return (
     <Box component="header" textAlign="center" my={2}>
       <Typography variant="h3">
-        <HighlightedLetter letter="F" />
-        requently <HighlightedLetter letter="A" />
-        sked <HighlightedLetter letter="Q" />
-        uestions
+        <HighlightedLetter letter="Important " />
+        Links
       </Typography>
       <Typography variant="subtitle1" color="#969696">
-        Can't find the answer you are looking? You can{" "}
+        Want to add a new link? You can{" "}
         <Typography display="inline" color="#3D5FDA" style={{ textDecoration: "none" }}>
           <a style={{ textDecoration: "none" }} href="/about-us">
             contact us
@@ -31,4 +29,4 @@ function HighlightedLetter({ letter }: { letter: string }) {
   );
 }
 
-export default FaqHeader;
+export default LinkHeader;

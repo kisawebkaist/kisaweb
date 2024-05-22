@@ -7,14 +7,8 @@ After receiving the data to the backend, the user should be redirected to the lo
 
 ## Backend APIs
 ### Getting a Shortened URL Entry
-- Endpoint : `api/url_shortener`
-- Request : POST
-- Payload :
-```ts
-{
-  short_url: string
-  ip_address : string // This corresponds to the ip_address of the user
-}
+- Endpoint : `api/url_shortener/:name`
+- Request : GET
 ```
 - Response (If the requested url_name exists, otherwise 404)
 ```ts
