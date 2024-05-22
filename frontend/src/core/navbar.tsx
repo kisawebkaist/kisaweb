@@ -87,7 +87,7 @@ const Navbar = ({ config }: NavbarP) => {
   // testing code, feel free to remove
   // might need to add an extra state for login button to change login, logout
   function getCookies() {
-    const cookiesVal = document.cookie.split(";");
+    const cookiesVal = document.cookie.split("; ");
     let cookies: {[name: string]: string} = {};
     for (let i=0; i<cookiesVal.length; i++) {
       let pair = cookiesVal[i].split("=");
