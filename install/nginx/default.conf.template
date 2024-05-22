@@ -1,9 +1,16 @@
 # Default configuration for NGINX Server
 server {
-  listen ${BACKEND_LISTEN_PORT};
+  listen ${BACKEND_LISTEN_PORT} ssl;
   server_name ${NGINX_HOST};
   client_max_body_size 100M;
-  location /api/ {
+
+  ssl_certificate     /app/localhost.crt;
+  ssl_certificate_key /app/localhost.key;
+  ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
+  ssl_ciphers         HIGH:!aNULL:!MD5;
+
+
+  location / {
     proxy_pass http://${BACKEND_ENDPOINT}:${BACKEND_PORT};
     proxy_set_header HOST $http_host;
     proxy_set_header X-Real-IP $remote_addr;
@@ -18,9 +25,14 @@ server {
 }
 
 server {
-  listen ${FRONTEND_LISTEN_PORT};
+  listen ${FRONTEND_LISTEN_PORT} ssl;
   server_name ${NGINX_HOST};
   client_max_body_size 100M;
+
+  ssl_certificate     /app/localhost.crt;
+  ssl_certificate_key /app/localhost.key;
+  ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
+  ssl_ciphers         HIGH:!aNULL:!MD5;
   
   location /api/ {
     proxy_pass http://${BACKEND_ENDPOINT}:${BACKEND_PORT};

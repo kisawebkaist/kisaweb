@@ -59,8 +59,6 @@ services:
     volumes:
       - ./backend/static:/app/static
       - ./backend/media:/app/media
-      - ./install/ssl_config/letsencrypt/:/etc/letsencrypt
-      - ./install/ssl_config/wwwroot/:/wwwroot/
     ports:
       - 81:8081
       - 8001:8080

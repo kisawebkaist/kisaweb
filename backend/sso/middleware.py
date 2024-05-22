@@ -11,6 +11,5 @@ class CustomSessionMiddleware(SessionMiddleware):
         super_response = super().process_response(request, response)
         if settings.SESSION_COOKIE_NAME in super_response.cookies and request.user.is_anonymous:
             super_response.cookies[settings.SESSION_COOKIE_NAME]['samesite'] = 'None'
-            if not settings.DEBUG:
-                super_response.cookies[settings.SESSION_COOKIE_NAME]['secure'] = True
+            super_response.cookies[settings.SESSION_COOKIE_NAME]['secure'] = True
         return super_response
