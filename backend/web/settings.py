@@ -299,12 +299,15 @@ REST_FRAMEWORK = {
         ],
 
     'DEFAULT_THROTTLE_CLASSES': [
-        'core.throttling.ScopedRateThrottle',
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
+        'core.throttling.UserRateThrottle',
     ],
 
     'DEFAULT_THROTTLE_RATES': {
-        'usernamecheck': '40/day',
-        'verification': '5/day'
+        'anon': '200/day',
+        'user': '1000/day',
+        'email_otp': '10/day',
     },
 
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
