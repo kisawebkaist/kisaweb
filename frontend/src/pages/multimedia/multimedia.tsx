@@ -55,7 +55,7 @@ const CarouselRender = ({ data }: { data: string[] }) => {
     return (
         <div className="carouselContainer">
             <center>
-                <span className="bgText">KISA EVENT</span>
+                <span className="bgText">OUR PROUDLY PRESENT</span>
                 <div className="carousel">
                     {data.map((image, index) => (
                         <CardRender data={image} />

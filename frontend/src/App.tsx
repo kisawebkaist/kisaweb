@@ -10,6 +10,7 @@ import '@fontsource/roboto/700.css';
 const theme = createTheme({
   typography: {
     fontFamily: [
+      "Noto Sans",
       "Ubuntu",
       "Roboto",
       "times new roman",
