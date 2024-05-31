@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
-import os
+import os, logging
 from .env import ENV_VARS
 from dotenv import load_dotenv
 
@@ -47,12 +47,12 @@ SECRET_KEY = ENV_VARS.get('SECRET_KEY')
 #       which is called by django_compress/django_libsass.
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = not ENV_VARS.get('PRODUCTION')
-DEBUG = True
+DEBUG = not ENV_VARS.get('PRODUCTION')
 
 ALLOWED_HOSTS = ENV_VARS.get('ALLOWED_HOSTS')
 CORS_ALLOWED_ORIGINS = ENV_VARS.get('CORS_ALLOWED_ORIGINS')
 CSRF_TRUSTED_ORIGINS = ENV_VARS.get('CORS_ALLOWED_ORIGINS')
+CORS_ALLOW_CREDENTIALS = True
 
 # Application definition
 
@@ -60,7 +60,7 @@ INSTALLED_APPS = [
     # 'grappelli',
     # 'jet.dashboard',  # PyPi django-3-jet (needs to be before 'jet')
     # 'jet',  # PyPi django-3-jet (needs to be before 'django.contrib.admin')
-    'django.contrib.admin',
+    'django.contrib.admin.apps.SimpleAdminConfig',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -96,7 +96,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
+    'sso.middleware.CustomSessionMiddleware',
     "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -209,6 +209,13 @@ DATETIME_INPUT_FORMATS += [
     '%Y-%m-%d',  # 2020-01-20
 ]
 
+DEFAULT_FROM_EMAIL = 'kisa@kaist.ac.kr'
+EMAIL_HOST = ENV_VARS.get("SMTP_SERVER")
+EMAIL_PORT = '587'
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = ENV_VARS.get("SMTP_USERNAME")
+EMAIL_HOST_PASSWORD = ENV_VARS.get("SMTP_PASSWORD")
+
 # Custom User model
 AUTH_USER_MODEL = 'sso.User'
 
@@ -292,12 +299,15 @@ REST_FRAMEWORK = {
         ],
 
     'DEFAULT_THROTTLE_CLASSES': [
-        'core.throttling.ScopedRateThrottle',
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
+        'core.throttling.UserRateThrottle',
     ],
 
     'DEFAULT_THROTTLE_RATES': {
-        'usernamecheck': '40/day',
-        'verification': '5/day'
+        'anon': '200/day',
+        'user': '1000/day',
+        'email_otp': '10/day',
     },
 
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',

@@ -4,7 +4,6 @@ The Authentication for KISA
 Goals:
 - Integration with KAIST SSO
 - Security and usability
-- Don't reinvent the wheel too much
 
 Implementation:
 - KAIST SSO Integration and differnt run levels with 2nd factor authentication (TOTP)
@@ -28,8 +27,7 @@ Implementation:
             - check the response; if redirect follow else do error-handling
 
 Configuration:
-- gmail-api-token.json in the root of backend folder
-- `utils.GMailAPI.get_api_token()` will help you reissue the api token; it must be run outside the container
+- for email otp, use the regular smtp backend and configure according to the official documentation
 
 Testing:
 - `tests.login()` will help you with the login

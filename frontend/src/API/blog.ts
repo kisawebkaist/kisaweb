@@ -38,7 +38,7 @@ export class CompleteBlogAPI {
       const rawState = convertToRaw(contentState);
       this.content = rawState;
       axios.post(
-        `${process.env.REACT_APP_API_ENDPOINT}blog/${this.data.slug}`,
+        `${process.env.REACT_APP_API_ENDPOINT}/blog/${this.data.slug}`,
         { new_content: rawState }
       );
     }
@@ -56,19 +56,19 @@ export class PartialBlogAPI {
 export default class BlogAPI {
   static allBlogs(queryParams: Record<string, any>): Promise<PartialBlogAPI[]> {
     return axios
-      .get(`${process.env.REACT_APP_API_ENDPOINT}blog/`, queryParams)
+      .get(`${process.env.REACT_APP_API_ENDPOINT}/blog/`, queryParams)
       .then((resp) =>
         resp.data.map((blog: BlogT_Partial) => new PartialBlogAPI(blog))
       );
   }
   static getBlog(slug: string) {
     return axios
-      .get(`${process.env.REACT_APP_API_ENDPOINT}blog/${slug}`)
+      .get(`${process.env.REACT_APP_API_ENDPOINT}/blog/${slug}`)
       .then((resp) => new CompleteBlogAPI(resp.data));
   }
   static allTags(queryParams: Record<string, any>): Promise<TagT[]> {
     return axios
-      .get(`${process.env.REACT_APP_API_ENDPOINT}blog/tags`, queryParams)
+      .get(`${process.env.REACT_APP_API_ENDPOINT}/blog/tags`, queryParams)
       .then((resp) => resp.data);
   }
 }

@@ -1,8 +1,8 @@
 import NavEntryT, { NavDropdownT, NavLinkT } from "./navbar-type"
 import Lister from "../components/lister"
 import { Button } from "@mui/material";
-import { Link as RouterLink } from 'react-router-dom';
-import React from 'react';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
+import React, { useEffect } from 'react';
 import "../components/css/navbar.css"
 
 type NavbarEntryP = {
@@ -83,6 +83,57 @@ type NavbarP = {
 }
 
 const Navbar = ({ config }: NavbarP) => {
+  
+  // testing code, feel free to remove
+  // might need to add an extra state for login button to change login, logout
+  function getCookies() {
+    const cookiesVal = document.cookie.split("; ");
+    let cookies: {[name: string]: string} = {};
+    for (let i=0; i<cookiesVal.length; i++) {
+      let pair = cookiesVal[i].split("=");
+      cookies[pair[0]] = decodeURIComponent(pair[1]);
+    }
+    return cookies;
+  }
+  function login() {
+    const endpoint = process.env.REACT_APP_API_ENDPOINT+'/sso/login/';
+    fetch(
+      endpoint, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCookies()['csrftoken']
+        },
+        redirect: "manual",
+        body: JSON.stringify({"next": useLocation})
+      }
+    ).then(r => r.json()).then(
+      content => {
+        window.location.href = content["redirect"];
+      });
+  }
+  function logout() {
+    const endpoint = process.env.REACT_APP_API_ENDPOINT+'/sso/logout';
+    fetch(
+      endpoint, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCookies()['csrftoken']
+        },
+        redirect: "manual",
+        body: JSON.stringify({"next": useLocation})
+      }
+    ).then(r => r.json()).then(
+      content => {
+        window.location.href = content["redirect"];
+      }
+    )
+  }
+
+  
   return (
     <div className="navbarContainer">
       <RouterLink to = "/">
@@ -100,7 +151,11 @@ const Navbar = ({ config }: NavbarP) => {
       </div>
       <div className = "rightElement">
         <RouterLink to = "/login">
-          <Button className = "rightElement">LOGIN</Button>
+          <Button 
+          className = "rightElement" 
+          onClick={login}>
+            LOGIN
+          </Button>
         </RouterLink>
       </div>
     </div >

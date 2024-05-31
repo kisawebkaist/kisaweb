@@ -3,6 +3,13 @@ body {
   margin: 0;
   font-family: "Noto Sans", Ubuntu, Roboto, "times new roman", times, roman, serif;
 }
+:root{
+  --night: #000f08ff;
+  --light-sky-blue: #85c7f2ff;
+  --yinmn-blue: #345995ff;
+  --jasmine: #f4d58dff;
+  --engineering-orange: #bf0603ff;
+}
 
 /*For main component (Content) */
 .mainContent {

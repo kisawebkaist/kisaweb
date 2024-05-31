@@ -7,14 +7,16 @@ from io import BytesIO
 from datetime import datetime
 import PIL
 from django.core.files.uploadedfile import SimpleUploadedFile
-from .models import Multimedia, Image
 from django import forms
 
-# Register your models here.
-admin.site.register(model.Video) # These two are needed to make the Image and Video instances from Multimedia page
-admin.site.register(model.Image)
+from core.admin import register, site
+from .models import Multimedia, Image
 
-@admin.register(model.MultimediaTag)
+# Register your models here.
+site.register(model.Video) # These two are needed to make the Image and Video instances from Multimedia page
+site.register(model.Image)
+
+@register(model.MultimediaTag)
 class MultimediaTag(admin.ModelAdmin):
   list_display = [
     'tag_name'

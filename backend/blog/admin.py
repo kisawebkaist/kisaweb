@@ -1,6 +1,8 @@
-from django.contrib import admin
-from .models import Post, PostTag
 from django import forms
+from django.contrib import admin
+
+from core.admin import register
+from .models import Post, PostTag
 from django_draftjs import EditorWidget
 
 '''
@@ -20,7 +22,7 @@ class PostForm(forms.ModelForm):
             'image',
             'new_content',
         ]
-@admin.register(Post)
+@register(Post)
 class PostAdmin(admin.ModelAdmin):
     list_display = ['title', 'slug', 'get_tags']
     readonly_fields = ['created', 'modified', 'slug']
@@ -28,6 +30,6 @@ class PostAdmin(admin.ModelAdmin):
     def get_tags(self, obj):
         return ['#' + p.tag_name for p in obj.tags.all()]
 
-@admin.register(PostTag)
+@register(PostTag)
 class PostTagAdmin(admin.ModelAdmin):
     list_display = ['tag_name']

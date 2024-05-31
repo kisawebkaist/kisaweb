@@ -26,4 +26,18 @@ ENV_VARS = EnvParser([
         is_secret = True, 
         default_value = "ucT83TdDq/kUERb+mV9t3viFpD5KcVWshN+XKsiVEk+9VcOK3g6zgWM1erc9h2r0hd6pZmsO2XuKZO3JGyrZdguc",
     ),
+    create_entry(
+        'SMTP_USERNAME',
+        is_secret = True,
+        default_value = 'kisa@example.com',
+    ),
+    create_entry(
+        'SMTP_PASSWORD',
+        is_secret = True,
+        default_value = 'password123'
+    ),
+    create_entry(
+        'SMTP_SERVER',
+        default_value = 'example.com'
+    ),
 ])

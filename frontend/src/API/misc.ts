@@ -1,3 +1,4 @@
+import axios from "axios";
 import NavEntryT from "../core/navbar-type";
 
 class NavbarAPI {
@@ -63,6 +64,12 @@ const mockFooter = {
 //       resolve(mockFooter);
 //     });
 //   };
+// }
+
+// class MiscAPI {
+//   static generic = <T> (path: string, fallback: () => T): Promise<T> => axios.get(`${process.env.REACT_APP_API_ENDPOINT}/misc/${path}`).then((res)=>res.data, fallback);
+//   static navbar = (): Promise<NavEntryT[]> => this.generic<NavEntryT[]>('navbar', () => mockNavbar);
+//   static footer = () : Promise<FooterT> => this.generic<FooterT>('footer', () => mockFooter);
 // }
 
 class FooterAPI {

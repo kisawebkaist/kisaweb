@@ -4,10 +4,10 @@ class IsKISA(BasePermission):
     def has_permission(self, request, view):
         return request.user != None and request.user.is_authenticated and request.user.is_kisa()
 
-class IsKISAVerified(IsKISA):
+class IsVerified(BasePermission):
     def has_permission(self, request, view):
         return super().has_permission(request, view) and request.user.is_verified(request)
     
-class IsKISAVerifiedOrReadOnly(IsKISAVerified):
+class IsVerifiedOrReadOnly(BasePermission):
     def has_permission(self, request, view):
         return request.method in SAFE_METHODS or super().has_permission(request, view)

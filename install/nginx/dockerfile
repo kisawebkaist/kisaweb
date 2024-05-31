@@ -8,6 +8,8 @@ RUN ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime
 # Development build
 FROM base as dev
 COPY ./default.conf.template /etc/nginx/templates/default.conf.template
+COPY ./localhost_cert.conf /app/localhost_cert.conf
+RUN openssl req -batch -x509 -nodes -days 365 -newkey rsa:2048 -keyout /app/localhost.key -out /app/localhost.crt -config /app/localhost_cert.conf
 
 # Production build
 FROM base as prod

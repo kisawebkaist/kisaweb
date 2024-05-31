@@ -1,21 +1,52 @@
 from django import forms
 from django.contrib import admin
 
+from core.admin import register, site
 from .models import *
 
+from django_draftjs import EditorWidget
 
+class CandidateForm(forms.ModelForm):
+    manifesto = forms.JSONField(widget=EditorWidget())
+    kisa_history = forms.JSONField(widget=EditorWidget())
+    class Meta:
+        model = Candidate
+        exclude = [
+            'num_votes'
+        ]
+
+class ElectionForm(forms.ModelForm):
+    intro_msg = forms.JSONField(widget=EditorWidget())
+    instructions = forms.JSONField(widget=EditorWidget())
+    class Meta:
+        model = Election
+        fields = '__all__'
+
+@register(Candidate)
 class CandidateAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['candidate', 'is_open_public']
+    form  = CandidateForm
+    ordering = ['-election__start_datetime']
 
+    def candidate(self, obj):
+        return str(obj)
+    
+    def has_change_permission(self, request, obj= None):
+        return super().has_change_permission(request, obj) #or (obj != None and request.user == obj.account)
+
+@register(Election)
 class ElectionAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['slug', 'is_open_public', 'results_out', 'results_archived']
+    form = ElectionForm
 
 class VoteAdmin(admin.ModelAdmin):
     pass
 
+@register(DebateAttendance)
 class DebateAttendanceAdmin(admin.ModelAdmin):
     pass
 
+@register(VotingExceptionToken)
 class VotingExceptionTokenAdmin(admin.ModelAdmin):
     pass
 
@@ -47,9 +78,3 @@ class VotingExceptionTokenAdmin(admin.ModelAdmin):
 #     def user_status(self, x):
 #         return x.user.is_staff
 
-
-admin.site.register(Candidate, CandidateAdmin)
-admin.site.register(Election, ElectionAdmin)
-admin.site.register(Vote, VoteAdmin)
-admin.site.register(DebateAttendance, DebateAttendanceAdmin)
-admin.site.register(VotingExceptionToken, VotingExceptionTokenAdmin)

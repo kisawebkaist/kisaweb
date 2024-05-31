@@ -1,4 +1,4 @@
-import base64, json, logging, urllib.parse, pyotp
+import base64, datetime, json, logging, urllib.parse, pyotp
 
 from corsheaders.signals import check_request_enabled
 
@@ -6,14 +6,16 @@ from django.conf import settings
 from django.contrib.auth import login, logout
 from django.core.validators import EmailValidator
 from django.core.exceptions import ValidationError as DjangoValidationError
+from django.core.signing import BadSignature, SignatureExpired
 from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.translation import gettext as _
 
-from rest_framework.decorators import api_view, parser_classes, authentication_classes, permission_classes
-from rest_framework.exceptions import PermissionDenied, ParseError, ValidationError
-from rest_framework.parsers import FormParser
+from rest_framework.decorators import api_view, parser_classes, authentication_classes, permission_classes, throttle_classes
+from rest_framework.exceptions import PermissionDenied, ParseError, ValidationError, Throttled
+from rest_framework.parsers import FormParser, JSONParser
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 import rest_framework.status as status
 
@@ -22,8 +24,9 @@ from Crypto.Util.Padding import unpad
 
 from . import TOTP_SESSION_KEY
 from .models import User, MailOTPSession
-from .permissions import IsKISA, IsKISAVerified
+from .permissions import IsKISA, IsVerified
 from core.utils import ensure_relative_url, get_random_urlsafe_string, CSRFExemptSessionAuthentication
+from core.throttling import EMAILOTPRateThrottle
 
 KSSO_LOGIN_URL = settings.KSSO_LOGIN_URL
 KSSO_LOGOUT_URL = settings.KSSO_LOGOUT_URL
@@ -45,17 +48,15 @@ def decrypt(data, state):
         deciphed = cipher.decrypt(base64.b64decode(data))   
         deciphed = unpad(deciphed, BS).decode('utf-8')
         return deciphed
-    except ValueError as e:
-        logger.warning("Suspicious operation: decryption failed: %s", e)
+    except ValueError:
         raise ParseError()
-
 
 @api_view(['POST'])
 def login_view(request):
     next = ensure_relative_url(str(request.data.get('next', '/')))
 
     if request.user.is_authenticated:
-        return HttpResponseRedirect(next)
+        return Response({"redirect": next})
 
     if request.session.get('state') is None:
         state = get_random_urlsafe_string(8)
@@ -69,14 +70,16 @@ def login_view(request):
         'redirect_url': request.build_absolute_uri(reverse('login-response')),
         'state': state,
     }
-    return HttpResponseRedirect(f"{KSSO_LOGIN_URL}?{urllib.parse.urlencode(data)}")
-
+    response = Response({"redirect": f"{KSSO_LOGIN_URL}?{urllib.parse.urlencode(data)}"})
+    response.set_signed_cookie('login_nonce', state, salt='login_nonce', samesite='None', secure=True, path=reverse('login-response'))
+    return response
 
 def cors_allow_login_response(sender, request, **kwargs):
     """
     In login_response view, a cross-site POST request is sent from SSO website. This allows CORS for that.
     """
-    return request.resolver_match.url_name == 'login-response' and request.headers.get("origin", None) == KSSO_ORIGIN
+    request_origin = request.headers.get("origin", None)
+    return request.resolver_match.url_name == 'login-response' and (request_origin == KSSO_ORIGIN or (request_origin == "null" and settings.DEBUG))
 
 check_request_enabled.connect(cors_allow_login_response)
 
@@ -87,29 +90,36 @@ def login_response_view(request):
     """
     This POST request is supposed to be sent by SSO website and contains encrypted user information.
     This view is csrf_exempted but we will enforce strict origin-checking manually.
-    We also need to allow CORS from sso website with credentials.
+    We need to allow CORS from sso website with credentials and set sessionid cookie to samesite=None.
     """
     if request.user.is_authenticated:
         return HttpResponseRedirect('/')
     
-    state = str(request.data.get('state', '00000000'))
     raw_result = str(request.data.get('result', ''))
     success = request.data.get('success')
     origin = request.META.get('HTTP_ORIGIN')
-    saved_state = request.session.pop('state', '')
     next = request.session.pop('next', '/')
 
-    if not bool(success) or raw_result == "" or saved_state == "" or not isinstance(state, str) or saved_state != state:
+    if not bool(success) or raw_result == "" or (not 'state' in request.session):
+        raise ParseError()
+    
+    try:
+        login_nonce = request.get_signed_cookie('login_nonce', salt='login_nonce', max_age=900) # 15 minutes
+    except KeyError|BadSignature|SignatureExpired:
+        raise ParseError()
+    
+    if login_nonce != request.session['state']:
         raise ParseError()
 
-    if not origin == KSSO_ORIGIN:
+    if not (origin == KSSO_ORIGIN or (settings.DEBUG and origin == "null")):
         logger.info(f"Suspicious Operation: Invalid origin in login-response: (user-agent: {request.META.get('HTTP_USER_AGENT')}, origin: {origin})")
         raise PermissionDenied(detail=_(f'CSRF Failed: Origin checking failed - {origin} does not match any trusted origins.'))
 
-    result = decrypt(raw_result, state)
+    result = decrypt(raw_result, request.session['state'])
     
     try:
         result = json.loads(result)
+        del request.session['state'] # delay the refresh of nonce as late as possible
         user = User.from_info_json(result['dataMap']['USER_INFO'])
         login(request, user)
         request.session.pop(TOTP_SESSION_KEY, None)
@@ -124,7 +134,9 @@ def login_response_view(request):
         logger.warning(f'Suspicious Operation: user model validation failed: %s', e)
         raise ParseError()
     
-    return HttpResponseRedirect(next)
+    response = HttpResponseRedirect(next)
+    response.delete_cookie('login_nonce', path=reverse('login-response'))
+    return response
 
 @api_view(['POST'])
 @permission_classes([IsKISA])
@@ -134,10 +146,12 @@ def check_totp_view(request):
         request.session[TOTP_SESSION_KEY] = True
     else: 
         raise ParseError()
-    return Response({})
+    return Response({
+        "redirect": ensure_relative_url(str(request.data.get('next', '/')))
+    })
 
 @api_view(['POST'])
-@permission_classes([IsKISAVerified])
+@permission_classes([IsVerified])
 def change_totp_secret(request):
     new_secret = pyotp.random_base32()
     request.user.totp_device.secret = new_secret
@@ -149,8 +163,13 @@ def change_totp_secret(request):
 
 
 @api_view(['POST'])
-@permission_classes([IsKISAVerified])
+@permission_classes([IsVerified])
+@throttle_classes([EMAILOTPRateThrottle])
 def change_email_view(request):
+    if MAIL_OTP_BASE_SESSION_KEY+'change_mail_cooldown' in request.session and datetime.datetime.fromtimestamp(request.session[MAIL_OTP_BASE_SESSION_KEY+'change_mail_cooldown']) > datetime.datetime.now():
+        raise Throttled()
+    request.session[MAIL_OTP_BASE_SESSION_KEY+'change_mail_cooldown'] = (datetime.datetime.now() + datetime.timedelta(minutes=2)).timestamp()
+    request.session.save()
     email = str(request.data.get('email', ''))
     try:
         email_validator(email)
@@ -165,7 +184,7 @@ def change_email_view(request):
     return Response({})
 
 @api_view(['POST'])
-@permission_classes([IsKISAVerified])
+@permission_classes([IsVerified])
 def change_email_response_view(request):
     otp = str(request.data.get('token', ''))
     pk = request.session.get(MAIL_OTP_BASE_SESSION_KEY+"change_email", None)
@@ -186,12 +205,22 @@ def change_email_response_view(request):
     request.user.email = data['email']
     request.user.save()
     request.session.pop(MAIL_OTP_BASE_SESSION_KEY+"change_email", None)
+    request.session.pop(MAIL_OTP_BASE_SESSION_KEY+"change_mail_cooldown", None)
     return Response({})
 
 
 @api_view(['POST'])
-@permission_classes([IsKISA])
+@permission_classes([IsAuthenticated])
+@throttle_classes([EMAILOTPRateThrottle])
 def lost_totp_secret_view(request):
+    if not request.user.totp_device.is_active:
+        raise ParseError()
+    
+    if MAIL_OTP_BASE_SESSION_KEY+'lost_totp_cooldown' in request.session and datetime.datetime.fromtimestamp(request.session[MAIL_OTP_BASE_SESSION_KEY+'lost_totp_cooldown']) > datetime.datetime.now():
+        raise Throttled()
+    request.session[MAIL_OTP_BASE_SESSION_KEY+'lost_totp_cooldown'] = (datetime.datetime.now() + datetime.timedelta(minutes=2)).timestamp()
+    request.session.save()
+
     with transaction.atomic():
         otp_session = MailOTPSession(email=request.user.email)
         otp_session.save()
@@ -200,8 +229,11 @@ def lost_totp_secret_view(request):
     return Response({})
 
 @api_view(['POST'])
-@permission_classes([IsKISA])
+@permission_classes([IsAuthenticated])
 def lost_totp_secret_response_view(request):
+    if not request.user.totp_device.is_active:
+        raise ParseError()
+
     otp = str(request.data.get('token', ''))
     pk = request.session.get(MAIL_OTP_BASE_SESSION_KEY+"lost_totp", None)
     if pk is None:
@@ -222,6 +254,7 @@ def lost_totp_secret_response_view(request):
     request.user.totp_device.secret = new_secret
     request.user.totp_device.save()
     request.session.pop(MAIL_OTP_BASE_SESSION_KEY+"lost_totp", None)
+    request.session.pop(MAIL_OTP_BASE_SESSION_KEY+'lost_totp_cooldown', None)
     return Response({
         "secret": new_secret,
         "auth_uri": pyotp.TOTP(new_secret).provisioning_uri(name=request.user.email, issuer_name="KISA")
@@ -231,7 +264,7 @@ def lost_totp_secret_response_view(request):
 def logout_view(request):
     next = ensure_relative_url(str(request.data.get('next', '/')))
     if not request.user.is_authenticated:
-        return HttpResponseRedirect(next)
+        return Response({"redirect": next})
     
     logout(request)
     
@@ -240,4 +273,4 @@ def logout_view(request):
         'redirect_url': request.build_absolute_uri(next),
     }
 
-    return HttpResponseRedirect(f"{KSSO_LOGOUT_URL}?{urllib.parse.urlencode(data)}")
+    return Response({"redirect": f"{KSSO_LOGOUT_URL}?{urllib.parse.urlencode(data)}"})
