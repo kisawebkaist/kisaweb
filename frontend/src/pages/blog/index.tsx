@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import BlogAPI from "../../API/blog";
+import axios from 'axios';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import { Button } from "@mui/material";
@@ -40,14 +42,6 @@ const fakeBlogData: BlogDataT[] = [
         passageLink: "https://www.youtube.com/shorts/KKlT6kReCZs",
         tags: ["#WeLoveOurHead"]
     }
-]
-
-const allUniqueTags = [
-    'All',
-    "#Lorem ipsum dolor sit amet",
-    "#kisaWebTeamIsDaBest",
-    "#NeverGonnaGiveYouUp",
-    "#WeLoveOurHead"
 ]
 
 const ReadMoreButton = ({ link }: { link: string }) => {
@@ -111,8 +105,21 @@ const filteredBlog = (category: string, blogData: BlogDataT[]): BlogDataT[] => {
 
 const Blog = () => {
     const [selectedCategory, setSelectedCategory] = useState<string>('All');
+    const [allUniqueTags, setAllUniqueTags] = useState<string[]>([]);
 
     const relatedBlog = filteredBlog(selectedCategory, fakeBlogData);
+    useEffect(() => {
+        const fetchTags = async () => {
+          try {
+            const tags = await BlogAPI.allTags({ someQueryParam: 'value' });
+            setAllUniqueTags(tags.map(tag => tag.tag_name));
+          } catch (error) {
+            console.error('Error fetching tags:', error);
+          }
+    };
+    
+        fetchTags();
+      }, []);
     return (
         <>
             <div className="featuredPost">
