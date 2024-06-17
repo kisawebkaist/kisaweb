@@ -35,5 +35,31 @@ export type NavDropdownT = GenericNavEntryT<
  * @brief the data type for navigation bar entries. A union between NavLinkT and NavDropdownT
  */
 type NavEntryT = NavLinkT | NavDropdownT
-
 export default NavEntryT
+
+export type FooterT = {
+  kisa_text: string;
+  location: string;
+  phnum_eng: string;
+  phnum_kor: string;
+  email: string;
+  fb_link: string;
+  insta_link: string;
+  yt_link: string;
+}
+
+// unstable
+export type UserDetail = {
+  name: string;
+  email: string;
+}
+
+export class UserInfo {
+  is_authenticated: boolean;
+  detail: UserInfo | null;
+
+  constructor(is_authenticated: boolean = false, detail: UserInfo | null = null) {
+    this.is_authenticated = is_authenticated;
+    this.detail = detail;
+  }
+}

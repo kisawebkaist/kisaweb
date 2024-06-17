@@ -9,6 +9,7 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('check-otp/', views.check_totp_view, name='check-otp'),
     path('change-otp-secret/', views.change_totp_secret, name='change-totp-secret'),
+    path('userinfo/', views.userinfo_view, name="userinfo")
 ]
 
 if hasattr(settings, "EMAIL_OTP_ENABLED") and settings.EMAIL_OTP_ENABLED:

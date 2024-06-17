@@ -34,7 +34,7 @@ class UserAdmin(DjangoUserAdmin):
     list_display = ["name", "email", "is_staff", "kisa_division"]
     list_filter = ["is_staff", "is_superuser", KISADivisionFilter, "groups"]
     fieldsets = (
-        (None, {"fields": ("username", "password")}),
+        (None, {"fields": ("username", "password", "totp_device")}),
         (_("Personal info"), {"fields": ("first_name", "last_name", "email", "kisa_division", "student_number")}),
         (
             _("Permissions"),

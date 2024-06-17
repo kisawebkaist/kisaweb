@@ -1,4 +1,4 @@
-import NavEntryT from "./navbar-type"; // Import the NavEntryT type
+import NavEntryT from "./types"; // Import the NavEntryT type
 
 // Fake data for the navigation bar
 const fakeNavbarData: NavEntryT[] = [

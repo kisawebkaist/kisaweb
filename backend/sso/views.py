@@ -79,7 +79,7 @@ def cors_allow_login_response(sender, request, **kwargs):
     In login_response view, a cross-site POST request is sent from SSO website. This allows CORS for that.
     """
     request_origin = request.headers.get("origin", None)
-    return request.resolver_match.url_name == 'login-response' and (request_origin == KSSO_ORIGIN or (request_origin == "null" and settings.DEBUG))
+    return request.resolver_match is not None and request.resolver_match.url_name == 'login-response' and (request_origin == KSSO_ORIGIN or (request_origin == "null" and settings.DEBUG))
 
 check_request_enabled.connect(cors_allow_login_response)
 
@@ -274,3 +274,14 @@ def logout_view(request):
     }
 
     return Response({"redirect": f"{KSSO_LOGOUT_URL}?{urllib.parse.urlencode(data)}"})
+
+@api_view(['GET'])
+def userinfo_view(request):
+    data = dict()
+    if request.user.is_authenticated: 
+        data['email'] = request.user.email
+        data['studentid'] = request.user.student_number
+    return Response({
+        "is_authenticated": request.user.is_authenticated,
+        "data": data
+    })

@@ -1,52 +1,35 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect } from "react"
 import { Outlet } from "react-router-dom"
 import Footer, { FooterP } from "../../core/footer"
-import Navbar from "../../core/navbar"
-import NavEntryT from "../../core/navbar-type"
+import Navbar, { NavbarP } from "../../core/navbar"
+import NavEntryT, { FooterT, UserInfo } from "../../core/types"
 import "../../components/css/index.css"
-import fakeFooterData from "../../core/fakeDataForFooter"
-import fakeNavbarData from "../../core/fakeDataForNavbar"
+import MiscAPI from "../../API/misc"
+import { AuthAPI } from "../../API/sso"
 
 const Main = () => {
-  const [navbarConfig, setNavbarConfig] = React.useState<NavEntryT[]>(fakeNavbarData)
-  const [footerConfig, setFooterConfig] = React.useState<FooterP>(fakeFooterData)
+  const [navbarConfig, setNavbarConfig] = React.useState<NavbarP>(new NavbarP());
+  const [footerConfig, setFooterConfig] = React.useState<FooterP>(new FooterP());
+  const [userInfo, setUserInfo] = React.useState<UserInfo>(new UserInfo());
 
-  // testing code, feel free to remove
-  // const [sessionState, setSessionState] = useState<SessionState>(initialSessionState);
-  function fetchState() {
-    // Here we need csrftoken cookie but in testing environment, backend and frontend are in different origins which is a problem
-    const stateEndpoint = process.env.REACT_APP_API_ENDPOINT+'/state';
-    fetch(
-      stateEndpoint
-    ).then((r)=>r.json()).then((response)=>{
-      // the response is now of the form {"already_logined": <if the user is authenticated with sso>, "is_verified": <if the user is authenticated with sso and 2nd factor>}
-      // the attributes can be changed based on the need from frontend, this endpoint is supposed to be called everytime the website loads as it will set the necessary cookies 
-      // and it will return the state information stored in the backend session
-    });
-  }
-  function fetchNavBarAndFooterConfig() {
-    const navbarEndpoint = process.env.REACT_APP_API_ENDPOINT+'/misc/navbar';
-    const footerEndpoint = process.env.REACT_APP_API_ENDPOINT+'/misc/footer';
+  useEffect(
+    () => {
+      MiscAPI.footer().then((footer:FooterT) => {setFooterConfig(new FooterP(footer))});
+      MiscAPI.navbar().then((entries:NavEntryT[]) => {setNavbarConfig(new NavbarP(entries, false))});
+      AuthAPI.userinfo().then(setUserInfo);
+    }, []
+  )
 
-    fetch(navbarEndpoint)
-    .then(r => r.json())
-    .then(setNavbarConfig);
+  useEffect(
+    () => {
+      setNavbarConfig(new NavbarP(navbarConfig.entries, userInfo.is_authenticated));
+    }, [navbarConfig.entries, userInfo.is_authenticated]
+  )
 
-    fetch(footerEndpoint)
-    .then(r => r.json())
-    .then(setFooterConfig);
-  }
-  function queryBackend() {
-    fetchState();
-    fetchNavBarAndFooterConfig();
-  }
-  useEffect(queryBackend, []);
-
-  // useEffect to query
   return (
     <React.Fragment>
       <header>
-        <Navbar config = {navbarConfig} />
+        <Navbar entries = {navbarConfig.entries} isAuthenticated = {navbarConfig.isAuthenticated}/>
       </header>
       <main>
         {/* <div className="mainContent">

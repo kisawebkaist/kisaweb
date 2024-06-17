@@ -1,10 +1,25 @@
-import { FooterT } from "../API/misc"
 import "../components/css/footer.css"
+import fakeFooterData from "./fakeDataForFooter";
+import { FooterT } from "./types";
 
-export type FooterP = FooterT
-const Footer = ({
+interface FooterProps {
+  topicName: string;
+  description: string[];
+}
+
+export class FooterP {
+  data: FooterT;
+
+  constructor(
+    data: FooterT = fakeFooterData
+  ) {
+    this.data = data;
+  }
+}
+
+const Footer = ({ data: {
   kisa_text, location, phnum_eng, phnum_kor, fb_link, insta_link, yt_link
-}: FooterP) => {
+}}: FooterP) => {
   return (
     <footer>
       <FooterComponent topicName="KISA" description={[kisa_text]} />
@@ -12,11 +27,6 @@ const Footer = ({
       <FooterContactComponent topicName="Follow Us" description={[fb_link, insta_link, yt_link]} />
     </footer>
   )
-}
-
-interface FooterProps {
-  topicName: string;
-  description: string[];
 }
 
 function FooterContactComponent({ topicName, description }: FooterProps) {
