@@ -1,6 +1,12 @@
+import FacebookIcon from '@mui/icons-material/Facebook'
+import InstagramIcon from '@mui/icons-material/Instagram';
+import YouTubeIcon from '@mui/icons-material/YouTube';
+
 import "../components/css/footer.css"
 import fakeFooterData from "./fakeDataForFooter";
 import { FooterT } from "./types";
+import { Box, Divider, IconButton, Typography } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 interface FooterProps {
   topicName: string;
@@ -9,54 +15,55 @@ interface FooterProps {
 
 export class FooterP {
   data: FooterT;
+  compactMode: boolean;
 
   constructor(
-    data: FooterT = fakeFooterData
+    data: FooterT = fakeFooterData,
+    compactMode: boolean = false
   ) {
     this.data = data;
+    this.compactMode = compactMode;
   }
 }
 
 const Footer = ({ data: {
   kisa_text, location, phnum_eng, phnum_kor, fb_link, insta_link, yt_link
-}}: FooterP) => {
+}, compactMode }: FooterP) => {
   return (
-    <footer>
-      <FooterComponent topicName="KISA" description={[kisa_text]} />
+    <Box component='footer' color='text.primary' sx={{ bgcolor: 'background.default', display: 'flex', flexDirection: 'row', justifyContent: 'space-around', zIndex: (theme) => theme.zIndex.drawer + 1 }} >
+      {
+        compactMode ? null: <FooterComponent topicName="KISA" description={[kisa_text]} />
+      }
       <FooterComponent topicName="Contact Us" description={[location, phnum_eng, phnum_kor]} />
       <FooterContactComponent topicName="Follow Us" description={[fb_link, insta_link, yt_link]} />
-    </footer>
+    </Box>
   )
 }
 
 function FooterContactComponent({ topicName, description }: FooterProps) {
   return (
-    <div className="footerContact">
-      <span className="footerTopic">{topicName}</span>
-      <div className="contactElement">
+    <Box>
+      <Typography>{topicName}</Typography>
+      <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
         {
-          description.map((item, index) => (
-            <div key={index} className="footerElement">
-              {
-                item.includes("instagram.com") ? (
-                  <a href={item} className="footerText">
-                    <img src="/instagram-logo.png" className="icon" alt="Instagram" />
-                  </a>
-                ) : item.includes("facebook.com") ? (
-                  <a href={item} className="footerText">
-                    <img src="/facebook-logo.png" className="icon" alt="Facebook" />
-                  </a>
-                ) : (
-                  <a href={item} className="footerText">
-                    <img src="/youtube-logo.png" className="icon" alt="YouTube" />
-                  </a>
-                )
-              }
-            </div>
-          ))
+          description.map((item, index) => 
+            item.includes("instagram.com") ? (
+              <IconButton component={Link} to={item}>
+                <InstagramIcon/>
+              </IconButton>
+            ) : item.includes("facebook.com") ? (
+              <IconButton component={Link} to={item}>
+                <FacebookIcon/>
+              </IconButton>
+            ) : (
+              <IconButton component={Link} to={item}>
+                <YouTubeIcon/>
+              </IconButton>
+            )
+          )
         }
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }
 
@@ -64,18 +71,12 @@ function FooterContactComponent({ topicName, description }: FooterProps) {
 
 function FooterComponent({ topicName, description }: FooterProps) {
   return (
-    <div className="footerContainer">
-      <span className="footerTopic">{topicName}</span>
-      {description.map((item, index) => (
-        <div key={index} className="footerElement">
-          {
-            (
-              <span className="footerText">{item}</span>
-          )
-          }
-        </div>
-      ))}
-    </div>
+    <Box>
+      <Typography>{topicName}</Typography>
+      {
+        description.map((item, index) => <Typography variant='body2'>{item}</Typography>)
+      }
+    </Box>
   );
 }
 

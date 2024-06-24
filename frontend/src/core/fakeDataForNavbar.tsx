@@ -1,7 +1,7 @@
-import NavEntryT from "./types"; // Import the NavEntryT type
+import { NavLinkT } from "./types"; // Import the NavEntryT type
 
 // Fake data for the navigation bar
-const fakeNavbarData: NavEntryT[] = [
+const fakeNavbarData: NavLinkT[] = [
   // {
   //   type: "link",
   //   data: {
@@ -74,57 +74,57 @@ const fakeNavbarData: NavEntryT[] = [
       },
     },
   },
-  {
-    type: "dropdown",
-    data: {
-      display: "Welfare",
-      entries: [
-        {
-          type: "link",
-          data: {
-            href: "/voice",
-            text: "KISA Voice",
-          },
-        },
-        {
-          type: "link",
-          data: {
-            href: "/books",
-            text: "KISA Books: Buy & Sell",
-          },
-        },
-        {
-          type: "link",
-          data: {
-            href: "/internships",
-            text: "Internships",
-          },
-        },
-      ],
-    },
-  },
-  {
-    type: "dropdown",
-    data: {
-      display: "Resources",
-      entries: [
-        {
-          type: "link",
-          data: {
-            href: "/course-resources",
-            text: "Course Resources",
-          },
-        },
-        {
-          type: "link",
-          data: {
-            href: "/links",
-            text: "Important Links",
-          },
-        },
-      ],
-    },
-  },
+  // {
+  //   type: "dropdown",
+  //   data: {
+  //     display: "Welfare",
+  //     entries: [
+  //       {
+  //         type: "link",
+  //         data: {
+  //           href: "/voice",
+  //           text: "KISA Voice",
+  //         },
+  //       },
+  //       {
+  //         type: "link",
+  //         data: {
+  //           href: "/books",
+  //           text: "KISA Books: Buy & Sell",
+  //         },
+  //       },
+  //       {
+  //         type: "link",
+  //         data: {
+  //           href: "/internships",
+  //           text: "Internships",
+  //         },
+  //       },
+  //     ],
+  //   },
+  // },
+  // {
+  //   type: "dropdown",
+  //   data: {
+  //     display: "Resources",
+  //     entries: [
+  //       {
+  //         type: "link",
+  //         data: {
+  //           href: "/course-resources",
+  //           text: "Course Resources",
+  //         },
+  //       },
+  //       {
+  //         type: "link",
+  //         data: {
+  //           href: "/links",
+  //           text: "Important Links",
+  //         },
+  //       },
+  //     ],
+  //   },
+  // },
   {
     type: "link",
     data: {

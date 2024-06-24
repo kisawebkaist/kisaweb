@@ -1,4 +1,4 @@
-import { ThemeProvider, createTheme } from "@mui/material";
+import { CircularProgress, Container, ThemeProvider, createTheme } from "@mui/material";
 import KisaRoutes from "./routes/routes";
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
@@ -20,6 +20,9 @@ const theme = createTheme({
       "serif",
     ].join(","),
   },
+    palette: {
+      mode: 'dark',
+    }
   // palette: {
   //   primary: {
   //     light: "#D5E1DB",
@@ -36,12 +39,17 @@ const theme = createTheme({
   // }
 });
 
+const loadingFallBack = 
+  <Container maxWidth="sm" sx={{ display: 'flex', justifyContent: 'center'}}>
+    <CircularProgress size="min(15vh, 15vw)" />
+  </Container>
+
 const App = () => {
   axios.defaults.xsrfCookieName = 'csrftoken';
   axios.defaults.xsrfHeaderName = 'X-CSRFToken';
   
   return (
-    <React.Suspense fallback={<p>Loading</p>}>
+    <React.Suspense fallback={loadingFallBack}>
       <ThemeProvider theme={theme}>
         <BrowserRouter>
           <KisaRoutes />

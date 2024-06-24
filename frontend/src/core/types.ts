@@ -55,11 +55,11 @@ export type UserDetail = {
 }
 
 export class UserInfo {
-  is_authenticated: boolean;
-  detail: UserInfo | null;
+  isAuthenticated: boolean;
+  detail: UserDetail | null;
 
-  constructor(is_authenticated: boolean = false, detail: UserInfo | null = null) {
-    this.is_authenticated = is_authenticated;
+  constructor(isAuthenticated: boolean = false, detail: UserDetail | null = null) {
+    this.isAuthenticated = isAuthenticated;
     this.detail = detail;
   }
 }
