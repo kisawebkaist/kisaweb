@@ -3,9 +3,8 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 
 import "../components/css/footer.css"
-import fakeFooterData from "./fakeDataForFooter";
 import { FooterT } from "./types";
-import { Box, Divider, IconButton, Typography } from '@mui/material';
+import { Box, IconButton, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 interface FooterProps {
@@ -13,24 +12,16 @@ interface FooterProps {
   description: string[];
 }
 
-export class FooterP {
+export type FooterP = {
   data: FooterT;
   compactMode: boolean;
-
-  constructor(
-    data: FooterT = fakeFooterData,
-    compactMode: boolean = false
-  ) {
-    this.data = data;
-    this.compactMode = compactMode;
-  }
 }
 
 const Footer = ({ data: {
   kisa_text, location, phnum_eng, phnum_kor, fb_link, insta_link, yt_link
 }, compactMode }: FooterP) => {
   return (
-    <Box component='footer' color='text.primary' sx={{ bgcolor: 'background.default', display: 'flex', flexDirection: 'row', justifyContent: 'space-around', zIndex: (theme) => theme.zIndex.drawer + 1 }} >
+    <Box component='footer' color='text.primary' sx={{ width: '100%', bgcolor: 'background.default', display: 'flex', flexDirection: 'row', justifyContent: 'space-around', zIndex: (theme) => theme.zIndex.drawer + 1 }} >
       {
         compactMode ? null: <FooterComponent topicName="KISA" description={[kisa_text]} />
       }

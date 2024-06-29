@@ -1,4 +1,5 @@
 import React from "react"
+import { NonIndexRouteObject, RouteObject } from "react-router-dom";
 
 type GenericNavEntryT<T, U> = {
   type : T,
@@ -48,18 +49,28 @@ export type FooterT = {
   yt_link: string;
 }
 
-// unstable
-export type UserDetail = {
+
+export type UserInfo = {
   name: string;
+  studentid: string;
   email: string;
 }
+interface BaseUser {
+  is_authenticated: boolean,
+  data: UserInfo | null,
+}
+export interface AnonymousUser extends BaseUser {
+  is_authenticated: false,
+  data: null,
+}
+export interface AuthenticatedUser extends BaseUser {
+  is_authenticated: true,
+  data: UserInfo,
+}
+export type User = AuthenticatedUser | AnonymousUser;
 
-export class UserInfo {
-  isAuthenticated: boolean;
-  detail: UserDetail | null;
 
-  constructor(isAuthenticated: boolean = false, detail: UserDetail | null = null) {
-    this.isAuthenticated = isAuthenticated;
-    this.detail = detail;
-  }
+export interface NavTabRoute extends NonIndexRouteObject {
+  path: string;
+  tabName: string;
 }

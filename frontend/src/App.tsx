@@ -1,12 +1,16 @@
-import { CircularProgress, Container, ThemeProvider, createTheme } from "@mui/material";
-import KisaRoutes from "./routes/routes";
 import React from "react";
-import { BrowserRouter } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
+import { CircularProgress, Container, ThemeProvider, createTheme } from "@mui/material";
+
+import axios from "axios";
+
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
-import axios from "axios";
+
+import routes from "./routes/main/config";
 
 const theme = createTheme({
   typography: {
@@ -39,10 +43,12 @@ const theme = createTheme({
   // }
 });
 
-const loadingFallBack = 
+const loadingFallBack = (
   <Container maxWidth="sm" sx={{ display: 'flex', justifyContent: 'center'}}>
-    <CircularProgress size="min(15vh, 15vw)" />
+    <CircularProgress size="min(min(15vh, 15vw), 500px)" />
   </Container>
+);
+const router = createBrowserRouter(routes);
 
 const App = () => {
   axios.defaults.xsrfCookieName = 'csrftoken';
@@ -51,9 +57,7 @@ const App = () => {
   return (
     <React.Suspense fallback={loadingFallBack}>
       <ThemeProvider theme={theme}>
-        <BrowserRouter>
-          <KisaRoutes />
-        </BrowserRouter>
+        <RouterProvider router={router}/>
       </ThemeProvider>
     </React.Suspense>
   );
