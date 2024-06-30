@@ -1,6 +1,7 @@
 import { IconButton, InputAdornment, TextField } from "@mui/material";
 import { Box } from "@mui/system";
-import SearchIcon from "@mui/icons-material/Search";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {faSearch} from "@fortawesome/free-solid-svg-icons"
 
 type LinkSearchProps = {
   onSearch: Function;
@@ -18,15 +19,10 @@ const LinkSearch = ({ onSearch }: LinkSearchProps) => {
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
-              <IconButton >
-                <SearchIcon
-                  sx={{
-                    transition: "color 0.1s ease-in",
-                    "&:hover": {
-                      cursor: "pointer",
-                      color: "black",
-                    },
-                  }}
+              <IconButton>
+                <FontAwesomeIcon
+                  icon={faSearch}
+                  className="transition-colors hover:text-black cursor-pointer"
                 />
               </IconButton>
             </InputAdornment>

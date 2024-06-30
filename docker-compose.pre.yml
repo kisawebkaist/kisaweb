@@ -56,7 +56,7 @@ services:
       - SMTP_USERNAME=admin
       - SMTP_PASSWORD=password123
       - ALLOWED_HOSTS=kisa.kaist.ac.kr,https://kisa.kaist.ac.kr:8080
-      - CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:81,https://kisa.kaist.ac.kr:8080
+      - CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:80,https://kisa.kaist.ac.kr:8080
   frontend:
     build:
       dockerfile: dockerfile.frontend

@@ -16,7 +16,7 @@ type LinkT = {
 type CategoryT = {
   title_category : string
   title_slug : string
-  id : number
+  id : number k
 }
 ```
 

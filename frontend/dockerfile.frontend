@@ -6,8 +6,6 @@ COPY ./package-lock.json ./package-lock.json
 FROM base as dev
 WORKDIR /app
 RUN npm install --silent --only=dev
-RUN npm install @emotion/react --save
-RUN npm install @emotion/styled --save
 
 FROM base as prod-base
 WORKDIR /app

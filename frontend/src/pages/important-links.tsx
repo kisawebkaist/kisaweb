@@ -1,15 +1,17 @@
-import { CategoryT, LinkT } from "../../API/links";
-import LinkCategory from "../../components/links/LinkCategory";
-import LinkHeader from "../../components/links/LinkHeader";
-import LinkEntity from "../../components/links/LinkEntity";
-import LinkSearch from "../../components/links/LinkSearch";
-import QueryGuard from "../../components/query-guard";
+import { CategoryT, LinkT } from "../API/links";
+import LinkCategory from "../components/links/LinkCategory";
+import LinkHeader from "../components/links/LinkHeader";
+import LinkEntity from "../components/links/LinkEntity";
+import LinkSearch from "../components/links/LinkSearch";
+import QueryGuard from "../components/query-guard";
 import React from "react";
-import { Typography, Stack } from "@mui/material";
+import { List, Stack, Typography } from "@mui/material";
 import { Container, Box } from "@mui/system";
-import Lister from "../../components/lister";
-import QueryFallback from "../../components/QueryFallback";
-import LinkAPI from "../../API/links";
+import Lister from "../components/lister";
+import QueryFallback from "../components/QueryFallback";
+import LinkAPI from "../API/links";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDropbox } from "@fortawesome/free-brands-svg-icons";
 
 // Define the expected types for faqs and categories
 type LinksP = {
@@ -52,6 +54,19 @@ const Faq = ({ links, categories }: LinksP) => {
     );
   }, [activeCategory, searchText, links]);
 
+  const linkContents = React.useMemo(() => {
+    if (filteredLinks.length !== 0)
+      return <Lister array={filteredLinks} render={LinkEntity} props={{}} />;
+    return (
+      <Stack className="h-80 opacity-50">
+        <FontAwesomeIcon icon={faDropbox} size="5x" className="mb-4" />
+        <Typography variant="body2" textAlign="center" className="text-5xl">
+          No Questions Yet
+        </Typography>
+      </Stack>
+    );
+  }, [filteredLinks]);
+
   const isActiveCategory = (category: CategoryT) => {
     return activeCategory === category.id;
   };
@@ -61,21 +76,10 @@ const Faq = ({ links, categories }: LinksP) => {
       <LinkHeader />
       {/* Search */}
       <LinkSearch onSearch={setSearchText} />
-      <Stack
-        direction={{
-          sm: "row",
-          xs: "column",
-        }}
-        gap={5}
-      >
+      <Stack direction="row" gap={5} justifyContent="space-between">
         {/* Categories */}
         <Box component="nav">
-          <SectionTitle title="Categories" />
-          <Stack
-            direction="column"
-            gap={1}
-            alignItems={{ sm: "flex-start", xs: "center" }}
-          >
+          <List>
             <Lister
               array={[generalCategory, ...categories]}
               render={LinkCategory}
@@ -84,14 +88,11 @@ const Faq = ({ links, categories }: LinksP) => {
                 setActiveCategory,
               }}
             />
-          </Stack>
+          </List>
         </Box>
         {/* Questions */}
-        <Box component="main" sx={{ width: "100%" }}>
-          <SectionTitle title="Links" />
-          <Stack direction="column" gap={1}>
-            <Lister array={filteredLinks} render={LinkEntity} props={{}} />
-          </Stack>
+        <Box component="main" className="w-2/3">
+          {linkContents}
         </Box>
       </Stack>
     </Container>
@@ -120,13 +121,5 @@ const LinksWithGuard = () => {
     />
   );
 };
-
-function SectionTitle({ title }: { title: string }) {
-  return (
-    <Typography variant="h6" fontWeight="bold">
-      {title}
-    </Typography>
-  );
-}
 
 export default LinksWithGuard;

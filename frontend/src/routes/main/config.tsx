@@ -15,8 +15,8 @@ const QueryFallback = React.lazy(
 const AboutUs = React.lazy(() => import("../../pages/about-us"));
 const Blog = React.lazy(() => import("../../pages/blog"));
 const SlugBlog = React.lazy(() => import("../../pages/blog/slug"));
-const Links = React.lazy(() => import("../../pages/resources/links"));
-const Shorten = React.lazy(() => import("../../pages/shorten"));
+const Links = React.lazy(() => import("../../pages/important-links"));
+const Shorten = React.lazy(() => import("../../pages/bitly"));
 
 /**
  * @brief refer to https://reactrouter.com/en/main/hooks/use-routes
@@ -27,11 +27,6 @@ export const tabRoutes: NavTabRoute[] = [
     element: <AboutUs />,
     tabName: "About Us",
   },
-  // {
-  //   path: "events",
-  //   element: <Events />,
-  //   tabName: "Events",
-  // },
   {
     path: "blog",
     children: [
@@ -50,6 +45,11 @@ export const tabRoutes: NavTabRoute[] = [
     path: "faq",
     element: <Faq />,
     tabName: "FAQ",
+  },
+  {
+    path : "important-links",
+    element : <Links />,
+    tabName : "Important Links"
   },
   {
     path: "multimedia",
@@ -72,6 +72,10 @@ export const routes: RouteObject[] = [
       {
         index: true,
         element: tabRoutes[0].element,
+      },
+      {
+        path : 'bitly/:slug',
+        element : <Shorten />
       },
       ...tabRoutes,
       // {

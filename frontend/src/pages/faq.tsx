@@ -1,14 +1,16 @@
+import React from "react";
 import FaqAPI, { CategoryT, FaqT } from "../API/faq";
 import FaqCategory from "../components/faq/FaqCategory";
 import FaqHeader from "../components/faq/FaqHeader";
 import FaqQuestion from "../components/faq/FaqQuestion";
 import FaqSearch from "../components/faq/FaqSearch";
 import QueryGuard from "../components/query-guard";
-import React from "react";
-import { Typography, Stack } from "@mui/material";
+import { Typography, Stack, List } from "@mui/material";
 import { Container, Box } from "@mui/system";
 import Lister from "../components/lister";
 import QueryFallback from "../components/QueryFallback";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDropbox } from "@fortawesome/free-brands-svg-icons";
 
 // Define the expected types for faqs and categories
 type FaqP = {
@@ -51,30 +53,37 @@ const Faq = ({ faqs, categories }: FaqP) => {
     );
   }, [activeCategory, searchText, faqs]);
 
+  const qnaContents = React.useMemo(() => {
+    if (filteredFaqs.length !== 0)
+      return <Lister array={filteredFaqs} render={FaqQuestion} props={{}} />
+    return (
+      <Stack className = 'h-80 opacity-50'>
+        <FontAwesomeIcon icon = {faDropbox} size = "5x" className = "mb-4"/>
+        <Typography variant="body2" textAlign="center" className = "text-5xl">
+          No Questions Yet
+        </Typography>
+      </Stack>
+    )
+
+  }, [ filteredFaqs ])
+
   const isActiveCategory = (category: CategoryT) => {
     return activeCategory === category.id;
   };
   return (
-    <Container maxWidth="md">
+    <Container className="">
       {/* Header */}
       <FaqHeader />
       {/* Search */}
       <FaqSearch onSearch={setSearchText} />
       <Stack
-        direction={{
-          sm: "row",
-          xs: "column",
-        }}
+        direction = "row"
+        justifyContent="space-between"
         gap={5}
       >
         {/* Categories */}
         <Box component="nav">
-          <SectionTitle title="Categories" />
-          <Stack
-            direction="column"
-            gap={1}
-            alignItems={{ sm: "flex-start", xs: "center" }}
-          >
+          <List>
             <Lister
               array={[generalCategory, ...categories]}
               render={FaqCategory}
@@ -83,19 +92,12 @@ const Faq = ({ faqs, categories }: FaqP) => {
                 setActiveCategory,
               }}
             />
-          </Stack>
+          </List>
         </Box>
         {/* Questions */}
-        <Box component="main" sx={{ width: "100%" }}>
-          <SectionTitle title="Questions" />
+        <Box component="main" className="w-2/3">
           <Stack direction="column" gap={1}>
-            <Lister array={filteredFaqs} render={FaqQuestion} props={{}} />
-            {/* {filteredFaqs.map(
-              (faq, index) => (
-                <FaqQuestion key={index} id={index} data={faq} />
-              ),
-              []
-            )} */}
+            {qnaContents}
           </Stack>
         </Box>
       </Stack>
@@ -125,13 +127,5 @@ const FaqWithGuard = () => {
     />
   );
 };
-
-function SectionTitle({ title }: { title: string }) {
-  return (
-    <Typography variant="h6" fontWeight="bold">
-      {title}
-    </Typography>
-  );
-}
 
 export default FaqWithGuard;
