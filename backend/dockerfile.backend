@@ -1,4 +1,4 @@
-FROM python:3.9-slim-bookworm as base-python
+FROM python:3.9-slim-bookworm AS base-python
 
 # Set timezone
 RUN apt-get update
@@ -18,4 +18,4 @@ FROM base-python AS prod
 RUN pip install gunicorn
 COPY . .
 
-FROM base-python as dev
+FROM base-python AS dev

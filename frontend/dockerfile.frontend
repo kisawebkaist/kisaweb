@@ -1,13 +1,13 @@
-FROM node:18.13 as base
+FROM node:18.13 AS base
 WORKDIR /app
 COPY ./package.json ./package.json
 COPY ./package-lock.json ./package-lock.json
 
-FROM base as dev
+FROM base AS dev
 WORKDIR /app
 RUN npm install --silent --only=dev
 
-FROM base as prod-base
+FROM base AS prod-base
 WORKDIR /app
 RUN npm install --silent --production
 COPY . .
@@ -19,7 +19,7 @@ ARG PUBLIC_URL
 ENV PUBLIC_URL $PUBLIC_URL
 RUN npm run build
 
-FROM node:18.13-slim as prod
+FROM node:18.13-slim AS prod
 WORKDIR /app
 COPY --from=prod-base /app/build /app/build
 RUN npm install -g serve
