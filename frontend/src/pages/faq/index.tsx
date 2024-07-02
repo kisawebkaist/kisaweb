@@ -1,16 +1,16 @@
 import React from "react";
-import FaqAPI, { CategoryT, FaqT } from "../API/faq";
-import FaqCategory from "../components/faq/FaqCategory";
-import FaqHeader from "../components/faq/FaqHeader";
-import FaqQuestion from "../components/faq/FaqQuestion";
-import FaqSearch from "../components/faq/FaqSearch";
-import QueryGuard from "../components/query-guard";
+import FaqAPI, { CategoryT, FaqT } from "../../API/faq";
+import FaqCategory from "./FaqCategory";
+import FaqHeader from "./FaqHeader";
+import FaqQuestion from "./FaqQuestion";
+import FaqSearch from "./FaqSearch";
 import { Typography, Stack, List } from "@mui/material";
 import { Container, Box } from "@mui/system";
-import Lister from "../components/lister";
-import QueryFallback from "../components/QueryFallback";
+import Lister from "../../components/lister";
+import QueryFallback from "../../components/QueryFallback";
+import QueryGuard from "../../components/query-guard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDropbox } from "@fortawesome/free-brands-svg-icons";
+import { faComment } from "@fortawesome/free-solid-svg-icons";
 
 // Define the expected types for faqs and categories
 type FaqP = {
@@ -57,8 +57,8 @@ const Faq = ({ faqs, categories }: FaqP) => {
     if (filteredFaqs.length !== 0)
       return <Lister array={filteredFaqs} render={FaqQuestion} props={{}} />
     return (
-      <Stack className = 'h-80 opacity-50'>
-        <FontAwesomeIcon icon = {faDropbox} size = "5x" className = "mb-4"/>
+      <Stack className = 'h-80 opacity-50' justifyContent="center" direction = "column">
+        <FontAwesomeIcon icon = {faComment} className="mb-4 text-5xl" />
         <Typography variant="body2" textAlign="center" className = "text-5xl">
           No Questions Yet
         </Typography>

@@ -35,10 +35,7 @@ const ShortenWithGuard = () => {
       direction="column"
       justifyContent="center"
       alignItems="center"
-      position = "absolute"
-      top = "50%"
-      left = "50%"
-      className = "-translate-x-1/2 -translate-y-1/2"
+      className = "-translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 absolute"
     >
       <Icon className="text-4xl mb-4" color="info">
         {url === undefined && (

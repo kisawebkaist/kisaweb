@@ -50,19 +50,52 @@ const Main = () => {
     window.addEventListener("resize", handleViewportResize);
   }, []);
 
+  const mainStyles = React.useMemo(() => {
+    return [
+      "min-h-[calc(100vh-14rem)]",
+      "w-full",
+      "p-4",
+      "z-10",
+      "backdrop-blur"
+    ].join(' ')
+  }, [])
+
+  const backgroundStyles = React.useMemo(() => {
+    return [
+      "absolute",
+      "z-0",
+      "top-20",
+      "left-0",
+      "min-h-[calc(100vh-14rem)]",
+      "w-full",
+      "bg-[url('./assets/kisaLogo.png')]",
+      "bg-no-repeat",
+      "bg-center",
+      "bg-fixed",
+      "bg-[length:50vh_50vh]",
+    ].join(' ')
+  }, [])
+
   return (
-    <React.Fragment>
+    <Stack direction="column">
       <Navbar
         userInfo={loaderData.userInfo}
         compactMode={compactMode}
         currentTab={currentTab}
         setCurrentTab={setCurrentTab}
       />
-      <Stack className = 'min-h-[80vh] w-full' direction = "column" component="main">
+      <Stack
+        className = {backgroundStyles}
+      />
+      <Stack
+        className={mainStyles}
+        direction="column"
+        component="main"
+      >
         <Outlet />
       </Stack>
       <Footer compactMode={compactMode} data={loaderData.footerConfig} />
-    </React.Fragment>
+    </Stack>
   );
 };
 

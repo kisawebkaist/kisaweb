@@ -3,12 +3,12 @@ import React from "react";
 import Alumni from "../../pages/alumni";
 import Multimedia from "../../pages/multimedia/multimedia";
 import { NavTabRoute } from "../../core/types";
-import { mainLoader, redirectLoader } from "./main";
+import { mainLoader } from "./main";
 
 // Import Components Here (Lazily)
 const Main = React.lazy(() => import("./main"));
 const Home = React.lazy(() => import("../../pages/index"));
-const Faq = React.lazy(() => import("../../pages/faq"));
+const Faq = React.lazy(() => import("../../pages/faq/index"));
 const QueryFallback = React.lazy(
   () => import("../../components/QueryFallback")
 );
@@ -78,22 +78,9 @@ export const routes: RouteObject[] = [
         element : <Shorten />
       },
       ...tabRoutes,
-      // {
-      //   path: "links",
-      //   element: <Links />,
-      // },
-      // {
-      //   path: "shorten",
-      //   children: [
-      //     {
-      //       path: ":slug",
-      //       element: <Shorten />,
-      //     },
-      //   ],
-      // },
       {
         path: "*",
-        loader: redirectLoader,
+        element : <QueryFallback />
       }
     ],
   },

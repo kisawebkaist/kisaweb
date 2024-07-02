@@ -160,6 +160,40 @@
   --tw-contain-style:  
 }
 
+.container {
+  width: 100%
+}
+
+@media (min-width: 640px) {
+  .container {
+    max-width: 640px
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 768px
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1024px
+  }
+}
+
+@media (min-width: 1280px) {
+  .container {
+    max-width: 1280px
+  }
+}
+
+@media (min-width: 1536px) {
+  .container {
+    max-width: 1536px
+  }
+}
+
 #root :is(.static) {
   position: static
 }
@@ -185,12 +219,24 @@
   top: 0px
 }
 
-#root :is(.m-auto) {
-  margin: auto
+#root :is(.left-1\/2) {
+  left: 50%
 }
 
-#root :is(.m-2) {
-  margin: 0.5rem
+#root :is(.top-1\/2) {
+  top: 50%
+}
+
+#root :is(.top-20) {
+  top: 5rem
+}
+
+#root :is(.z-0) {
+  z-index: 0
+}
+
+#root :is(.z-10) {
+  z-index: 10
 }
 
 #root :is(.my-2) {
@@ -203,25 +249,16 @@
   margin-bottom: 1rem
 }
 
-#root :is(.mx-2) {
-  margin-left: 0.5rem;
-  margin-right: 0.5rem
-}
-
 #root :is(.mb-4) {
   margin-bottom: 1rem
 }
 
-#root :is(.mb-2) {
-  margin-bottom: 0.5rem
+#root :is(.mr-2) {
+  margin-right: 0.5rem
 }
 
-#root :is(.mb-5) {
-  margin-bottom: 1.25rem
-}
-
-#root :is(.mt-10) {
-  margin-top: 2.5rem
+#root :is(.mb-8) {
+  margin-bottom: 2rem
 }
 
 #root :is(.inline) {
@@ -236,56 +273,112 @@
   height: 5rem
 }
 
-#root :is(.h-40) {
-  height: 10rem
-}
-
 #root :is(.h-80) {
   height: 20rem
 }
 
-#root :is(.min-h-screen) {
-  min-height: 100vh
+#root :is(.h-full) {
+  height: 100%
 }
 
-#root :is(.min-h-80) {
-  min-height: 20rem
+#root :is(.h-40) {
+  height: 10rem
 }
 
-#root :is(.min-h-full) {
-  min-height: 100%
+#root :is(.h-60) {
+  height: 15rem
+}
+
+#root :is(.h-10) {
+  height: 2.5rem
+}
+
+#root :is(.h-12) {
+  height: 3rem
+}
+
+#root :is(.h-32) {
+  height: 8rem
+}
+
+#root :is(.h-28) {
+  height: 7rem
+}
+
+#root :is(.h-14) {
+  height: 3.5rem
 }
 
 #root :is(.min-h-\[80vh\]) {
   min-height: 80vh
 }
 
-#root :is(.w-1\/3) {
-  width: 33.333333%
+#root :is(.min-h-\[90vh\]) {
+  min-height: 90vh
+}
+
+#root :is(.min-h-\[85vh\]) {
+  min-height: 85vh
+}
+
+#root :is(.min-h-\[83vh\]) {
+  min-height: 83vh
+}
+
+#root :is(.min-h-\[84vh\]) {
+  min-height: 84vh
+}
+
+#root :is(.min-h-\[calc\(100vh-13rem\)\]) {
+  min-height: calc(100vh - 13rem)
+}
+
+#root :is(.min-h-\[calc\(100vh-11rem\)\]) {
+  min-height: calc(100vh - 11rem)
+}
+
+#root :is(.min-h-\[calc\(100vh-12rem\)\]) {
+  min-height: calc(100vh - 12rem)
+}
+
+#root :is(.min-h-\[calc\(100vh-14rem\)\]) {
+  min-height: calc(100vh - 14rem)
 }
 
 #root :is(.w-2\/3) {
   width: 66.666667%
 }
 
+#root :is(.w-3\/12) {
+  width: 25%
+}
+
+#root :is(.w-9\/12) {
+  width: 75%
+}
+
 #root :is(.w-full) {
   width: 100%
 }
 
-#root :is(.w-80) {
-  width: 20rem
+#root :is(.w-40) {
+  width: 10rem
 }
 
-#root :is(.translate-x-1\/2) {
-  --tw-translate-x: 50%;
-  -webkit-transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-          transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
+#root :is(.w-1\/3) {
+  width: 33.333333%
 }
 
-#root :is(.translate-y-1\/2) {
-  --tw-translate-y: 50%;
-  -webkit-transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-          transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
+#root :is(.w-10\/12) {
+  width: 83.333333%
+}
+
+#root :is(.w-11\/12) {
+  width: 91.666667%
+}
+
+#root :is(.w-\[98\%\]) {
+  width: 98%
 }
 
 #root :is(.-translate-x-1\/2) {
@@ -296,12 +389,6 @@
 
 #root :is(.-translate-y-1\/2) {
   --tw-translate-y: -50%;
-  -webkit-transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-          transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
-}
-
-#root :is(.rotate-90) {
-  --tw-rotate: 90deg;
   -webkit-transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
           transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
 }
@@ -346,10 +433,6 @@
   flex-direction: column
 }
 
-#root :is(.flex-wrap) {
-  flex-wrap: wrap
-}
-
 #root :is(.items-center) {
   align-items: center
 }
@@ -358,37 +441,81 @@
   justify-content: center
 }
 
-#root :is(.self-center) {
-  align-self: center
+#root :is(.gap-x-0) {
+  -webkit-column-gap: 0px;
+          column-gap: 0px
 }
 
-#root :is(.justify-self-center) {
-  justify-self: center
+#root :is(.gap-x-0\.5) {
+  -webkit-column-gap: 0.125rem;
+          column-gap: 0.125rem
 }
 
-#root :is(.rounded-2xl) {
-  border-radius: 1rem
+#root :is(.gap-x-2) {
+  -webkit-column-gap: 0.5rem;
+          column-gap: 0.5rem
+}
+
+#root :is(.gap-y-0) {
+  row-gap: 0px
+}
+
+#root :is(.gap-y-0\.5) {
+  row-gap: 0.125rem
+}
+
+#root :is(.gap-y-4) {
+  row-gap: 1rem
+}
+
+#root :is(.gap-x-4) {
+  -webkit-column-gap: 1rem;
+          column-gap: 1rem
+}
+
+#root :is(.gap-y-2) {
+  row-gap: 0.5rem
+}
+
+#root :is(.self-end) {
+  align-self: flex-end
+}
+
+#root :is(.justify-self-end) {
+  justify-self: end
+}
+
+#root :is(.overflow-auto) {
+  overflow: auto
 }
 
 #root :is(.rounded-lg) {
   border-radius: 0.5rem
 }
 
+#root :is(.rounded-xl) {
+  border-radius: 0.75rem
+}
+
 #root :is(.border) {
   border-width: 1px
 }
 
-#root :is(.bg-sky-800\/80) {
-  background-color: rgb(7 89 133 / 0.8)
+#root :is(.border-8) {
+  border-width: 8px
 }
 
-#root :is(.bg-sky-200\/80) {
-  background-color: rgb(186 230 253 / 0.8)
+#root :is(.border-4) {
+  border-width: 4px
 }
 
-#root :is(.bg-gray-600) {
-  --tw-bg-opacity: 1;
-  background-color: rgb(75 85 99 / var(--tw-bg-opacity))
+#root :is(.border-dashed) {
+  border-style: dashed
+}
+
+#root :is(.border-gray-200) {
+  --tw-border-opacity: 1;
+  border-color: rgb(229 231 235 / var(--tw-border-opacity))
 }
 
 #root :is(.bg-black) {
@@ -396,19 +523,9 @@
   background-color: rgb(0 0 0 / var(--tw-bg-opacity))
 }
 
-#root :is(.bg-blue-200) {
+#root :is(.bg-cyan-600) {
   --tw-bg-opacity: 1;
-  background-color: rgb(191 219 254 / var(--tw-bg-opacity))
-}
-
-#root :is(.bg-blue-400) {
-  --tw-bg-opacity: 1;
-  background-color: rgb(96 165 250 / var(--tw-bg-opacity))
-}
-
-#root :is(.bg-blue-600) {
-  --tw-bg-opacity: 1;
-  background-color: rgb(37 99 235 / var(--tw-bg-opacity))
+  background-color: rgb(8 145 178 / var(--tw-bg-opacity))
 }
 
 #root :is(.bg-sky-600) {
@@ -416,43 +533,131 @@
   background-color: rgb(2 132 199 / var(--tw-bg-opacity))
 }
 
-#root :is(.bg-cyan-600) {
+#root :is(.bg-gray-400) {
   --tw-bg-opacity: 1;
-  background-color: rgb(8 145 178 / var(--tw-bg-opacity))
+  background-color: rgb(156 163 175 / var(--tw-bg-opacity))
+}
+
+#root :is(.bg-\[\]) {
+  background-color: 
+}
+
+#root :is(.bg-\[url\(\'\.\/kisaLogo\.png\'\)\]) {
+  background-image: url('./kisaLogo.png')
+}
+
+#root :is(.bg-\[url\(\'kisaLogo\.png\'\)\]) {
+  background-image: url('kisaLogo.png')
+}
+
+#root :is(.bg-\[url\(\'\$PUBLIC_URL\/kisaLogo\.png\'\)\]) {
+  background-image: url('$PUBLIC_URL/kisaLogo.png')
+}
+
+#root :is(.bg-\[url\(\'\/kisaLogo\.png\'\)\]) {
+  background-image: url('/kisaLogo.png')
+}
+
+#root :is(.bg-\[url\(\'\.\.\/assets\/kisaLogo\.png\'\)\]) {
+  background-image: url('../assets/kisaLogo.png')
+}
+
+#root :is(.bg-\[url\(\'\.\.\/\.\.\/assets\/kisaLogo\.png\'\)\]) {
+  background-image: url('../../assets/kisaLogo.png')
+}
+
+#root :is(.bg-\[url\(\'\.\/assets\/kisaLogo\.png\'\)\]) {
+  background-image: url('./assets/kisaLogo.png')
+}
+
+#root :is(.bg-auto) {
+  background-size: auto
+}
+
+#root :is(.bg-\[length\:50vh\]) {
+  background-size: 50vh
+}
+
+#root :is(.bg-\[length\:50vh_5vh\]) {
+  background-size: 50vh 5vh
+}
+
+#root :is(.bg-\[length\:50vh_50vh\]) {
+  background-size: 50vh 50vh
+}
+
+#root :is(.bg-fixed) {
+  background-attachment: fixed
+}
+
+#root :is(.bg-center) {
+  background-position: center
+}
+
+#root :is(.bg-no-repeat) {
+  background-repeat: no-repeat
 }
 
 #root :is(.p-4) {
   padding: 1rem
 }
 
-#root :is(.px-2) {
-  padding-left: 0.5rem;
-  padding-right: 0.5rem
+#root :is(.p-3) {
+  padding: 0.75rem
 }
 
-#root :is(.px-4) {
-  padding-left: 1rem;
-  padding-right: 1rem
+#root :is(.py-10) {
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem
 }
 
-#root :is(.py-4) {
-  padding-top: 1rem;
+#root :is(.px-10) {
+  padding-left: 2.5rem;
+  padding-right: 2.5rem
+}
+
+#root :is(.px-12) {
+  padding-left: 3rem;
+  padding-right: 3rem
+}
+
+#root :is(.px-32) {
+  padding-left: 8rem;
+  padding-right: 8rem
+}
+
+#root :is(.pt-2) {
+  padding-top: 0.5rem
+}
+
+#root :is(.pt-4) {
+  padding-top: 1rem
+}
+
+#root :is(.pt-12) {
+  padding-top: 3rem
+}
+
+#root :is(.pt-8) {
+  padding-top: 2rem
+}
+
+#root :is(.pb-4) {
   padding-bottom: 1rem
 }
 
-#root :is(.py-8) {
-  padding-top: 2rem;
-  padding-bottom: 2rem
-}
-
-#root :is(.py-2) {
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem
+#root :is(.text-center) {
+  text-align: center
 }
 
 #root :is(.text-2xl) {
   font-size: 1.5rem;
   line-height: 2rem
+}
+
+#root :is(.text-3xl) {
+  font-size: 1.875rem;
+  line-height: 2.25rem
 }
 
 #root :is(.text-4xl) {
@@ -465,65 +670,39 @@
   line-height: 1
 }
 
-#root :is(.font-extrabold) {
-  font-weight: 800
+#root :is(.text-xl) {
+  font-size: 1.25rem;
+  line-height: 1.75rem
+}
+
+#root :is(.text-9xl) {
+  font-size: 8rem;
+  line-height: 1
+}
+
+#root :is(.text-lg) {
+  font-size: 1.125rem;
+  line-height: 1.75rem
 }
 
 #root :is(.font-bold) {
   font-weight: 700
 }
 
+#root :is(.font-extrabold) {
+  font-weight: 800
+}
+
+#root :is(.font-black) {
+  font-weight: 900
+}
+
 #root :is(.uppercase) {
   text-transform: uppercase
 }
 
-#root :is(.text-gray-200\/80) {
-  color: rgb(229 231 235 / 0.8)
-}
-
-#root :is(.text-gray-500\/80) {
-  color: rgb(107 114 128 / 0.8)
-}
-
-#root :is(.text-sky-600) {
-  --tw-text-opacity: 1;
-  color: rgb(2 132 199 / var(--tw-text-opacity))
-}
-
-#root :is(.text-sky-600\/80) {
-  color: rgb(2 132 199 / 0.8)
-}
-
-#root :is(.text-sky-200\/100) {
-  color: rgb(186 230 253 / 1)
-}
-
-#root :is(.text-sky-200) {
-  --tw-text-opacity: 1;
-  color: rgb(186 230 253 / var(--tw-text-opacity))
-}
-
-#root :is(.text-sky-800\/80) {
-  color: rgb(7 89 133 / 0.8)
-}
-
-#root :is(.text-sky-200\/80) {
-  color: rgb(186 230 253 / 0.8)
-}
-
-#root :is(.text-sky-400) {
-  --tw-text-opacity: 1;
-  color: rgb(56 189 248 / var(--tw-text-opacity))
-}
-
-#root :is(.text-sky-800) {
-  --tw-text-opacity: 1;
-  color: rgb(7 89 133 / var(--tw-text-opacity))
-}
-
-#root :is(.text-sky-700) {
-  --tw-text-opacity: 1;
-  color: rgb(3 105 161 / var(--tw-text-opacity))
+#root :is(.italic) {
+  font-style: italic
 }
 
 #root :is(.text-white) {
@@ -535,10 +714,24 @@
   opacity: 0.5
 }
 
+#root :is(.opacity-80) {
+  opacity: 0.8
+}
+
+#root :is(.opacity-60) {
+  opacity: 0.6
+}
+
 #root :is(.shadow-none) {
   --tw-shadow: 0 0 #0000;
   --tw-shadow-colored: 0 0 #0000;
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)
+}
+
+#root :is(.blur) {
+  --tw-blur: blur(8px);
+  -webkit-filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+          filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)
 }
 
 #root :is(.filter) {
@@ -546,8 +739,13 @@
           filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)
 }
 
-#root :is(.backdrop-blur-sm) {
-  --tw-backdrop-blur: blur(4px);
+#root :is(.backdrop-blur) {
+  --tw-backdrop-blur: blur(8px);
+  -webkit-backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
+          backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)
+}
+
+#root :is(.backdrop-filter) {
   -webkit-backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
           backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)
 }

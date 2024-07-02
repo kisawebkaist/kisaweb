@@ -17,7 +17,7 @@ type BlogT_Complete = {
   tags: string;
 };
 type BlogT_Partial = Omit<BlogT_Complete, "new_content" | "content">;
-type TagT = { tag_name: string };
+export type TagT = { tag_name: string };
 
 export class CompleteBlogAPI {
   data: BlogT_Complete;

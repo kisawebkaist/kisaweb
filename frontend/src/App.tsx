@@ -1,6 +1,8 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-
+import "@fontsource/roboto";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/400-italic.css";
 import {
   CircularProgress,
   Container,
@@ -15,15 +17,29 @@ import routes from "./routes/main/config";
 
 const theme = createTheme({
   typography: {
-    fontFamily: [
-      "Ubuntu",
-      "Roboto",
-      "times new roman",
-      "times",
-      "roman",
-      "serif",
-    ].join(",")
-  }
+    fontFamily: ["Roboto", "times new roman", "times", "roman", "serif"].join(
+      ","
+    ),
+  },
+  palette: {
+    primary: {
+      main: "#43bFF8",
+      light: "#B1E3FD",
+      dark: "#0071bd",
+      contrastText: "#FFFFFF",
+    },
+    secondary: {
+      main: "#f87c43",
+      light: "#fccfbc",
+      dark: "#d15414",
+      contrastText: "#faeae7",
+    },
+    background : {
+      default : "#f1f5f9",
+      paper : "#f8fafc"
+    },
+    mode: "light",
+  },
 });
 
 const loadingFallBack = (

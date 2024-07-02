@@ -10,9 +10,9 @@ import {
   Icon,
 } from "@mui/material";
 import type { LinkT } from "../../API/links";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
-import React from "react";
 
 type EntityEntry = {
   data: LinkT;
@@ -25,23 +25,26 @@ const LinkEntity = ({ data }: EntityEntry) => {
     []
   );
   return (
-    <Accordion>
+    <Accordion className = "my-2">
       <AccordionSummary onClick={toggleOpen}>
-        <Stack direction="row" justifyContent="space-between" width="100%">
+        <Stack direction="row" justifyContent="space-between" className = "w-full">
           <Stack
             direction="row"
             alignItems="center"
-            gap={2}
-            className="transition-opacity ease-in rounded-lg shadow-none"
+            className="transition-opacity ease-in rounded-lg shadow-none max-w-2/3 gap-x-2"
           >
-            <Icon color="action" className={isOpen ? "rotate-45" : ""}>
-              <FontAwesomeIcon icon={faAdd} />
-            </Icon>
+            <FontAwesomeIcon icon = {faAdd} className={isOpen ? "rotate-45" : ""} />
             <Typography variant="h6" fontWeight="bold">
               {data.title}
             </Typography>
           </Stack>
-          <Stack direction="row" gap={1}>
+          <Stack
+            direction="row"
+            flexWrap="wrap"
+            justifyContent="flex-end"
+            alignItems="center"
+            className = "max-w-1/3 gap-x-0.5 gap-y-0.5"
+          >
             {data.is_english && (
               <Chip
                 label="English"
@@ -50,13 +53,13 @@ const LinkEntity = ({ data }: EntityEntry) => {
             )}
             {data.requires_sso && (
               <Chip
-                label="SSO Required"
+                label="SSO"
                 className="bg-sky-600 rounded-lg text-white font-bold"
               />
             )}
             {data.external_access && (
               <Chip
-                label="SSO Required"
+                label="External"
                 className="bg-cyan-600 rounded-lg text-white font-bold"
               />
             )}

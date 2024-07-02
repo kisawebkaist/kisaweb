@@ -1,7 +1,7 @@
 import { CardContent, Typography } from "@mui/material";
 
 const personalInfoUsageStatementLastModified = "2024-06-29";
-const personalInfoUsageStatement = 
+const personalInfoUsageStatement =
 (
     <CardContent>
         <Typography>
@@ -23,7 +23,7 @@ const personalInfoUsageStatement =
             </ul>
         </Typography>
         <Typography>
-            We do not share your personal information with third parties except when required by law or to protect our rights. 
+            We do not share your personal information with third parties except when required by law or to protect our rights.
             We do not sell, trade, or transfer your personal information to outside parties without your consent, except as described in this statement.
         </Typography>
         <Typography>

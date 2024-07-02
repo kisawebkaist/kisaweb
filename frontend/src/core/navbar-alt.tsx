@@ -51,7 +51,13 @@ export type NavbarP = {
 };
 
 const RenderNavTab = (data: NavTabRoute) => (
-  <Tab label={data.tabName} value={data.path} component={Link} to={data.path} />
+  <Tab
+    label={data.tabName}
+    value={data.path}
+    component={Link}
+    to={data.path}
+    className = "font-bold text-xl text-white"
+  />
 );
 
 const RenderAuthMenu = (
@@ -200,7 +206,7 @@ const Navbar = ({
   return (
     <React.Fragment>
       <AppBar
-        className="sticky top-0 left-0 backdrop-blur-sm h-20"
+        className="sticky top-0 left-0 h-20"
         sx={{
           zIndex: (theme) => theme.zIndex.drawer + 1,
         }}

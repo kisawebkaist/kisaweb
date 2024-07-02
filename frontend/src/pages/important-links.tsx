@@ -11,7 +11,7 @@ import Lister from "../components/lister";
 import QueryFallback from "../components/QueryFallback";
 import LinkAPI from "../API/links";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDropbox } from "@fortawesome/free-brands-svg-icons";
+import { faLinkSlash } from "@fortawesome/free-solid-svg-icons";
 
 // Define the expected types for faqs and categories
 type LinksP = {
@@ -58,8 +58,8 @@ const Faq = ({ links, categories }: LinksP) => {
     if (filteredLinks.length !== 0)
       return <Lister array={filteredLinks} render={LinkEntity} props={{}} />;
     return (
-      <Stack className="h-80 opacity-50">
-        <FontAwesomeIcon icon={faDropbox} size="5x" className="mb-4" />
+      <Stack className="h-80 opacity-50 gap-y-4">
+        <FontAwesomeIcon icon = {faLinkSlash} className = "text-5xl"/>
         <Typography variant="body2" textAlign="center" className="text-5xl">
           No Questions Yet
         </Typography>
@@ -76,9 +76,9 @@ const Faq = ({ links, categories }: LinksP) => {
       <LinkHeader />
       {/* Search */}
       <LinkSearch onSearch={setSearchText} />
-      <Stack direction="row" gap={5} justifyContent="space-between">
+      <Stack direction="row" justifyContent="space-between">
         {/* Categories */}
-        <Box component="nav">
+        <Box component="nav" className = "w-3/12 mr-2">
           <List>
             <Lister
               array={[generalCategory, ...categories]}
@@ -91,7 +91,7 @@ const Faq = ({ links, categories }: LinksP) => {
           </List>
         </Box>
         {/* Questions */}
-        <Box component="main" className="w-2/3">
+        <Box component="main" className="w-9/12">
           {linkContents}
         </Box>
       </Stack>

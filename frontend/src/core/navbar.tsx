@@ -115,8 +115,8 @@ const Navbar = ({ entries, isAuthenticated }: NavbarP) => {
         />
       </div>
       <div className = "rightElement">
-        <Button 
-          className = "rightElement" 
+        <Button
+          className = "rightElement"
           onClick={isAuthenticated? () => AuthAPI.logout(location).then(redirect => window.location.href = redirect): () => AuthAPI.login(location).then(redirect => window.location.href = redirect)}>
           {isAuthenticated? "LOGOUT": "LOGIN"}
         </Button>
