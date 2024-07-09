@@ -1,36 +1,84 @@
-import { IconButton, InputAdornment, TextField } from "@mui/material";
-import { Box } from "@mui/system";
+import { IconButton, InputAdornment, List, ListItemButton, MenuItem, Select, SelectChangeEvent, SxProps, TextField, Theme } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faSearch} from "@fortawesome/free-solid-svg-icons"
+import { CategoryT } from "../../API/links";
 
 type LinkSearchProps = {
   onSearch: Function;
 };
 
-const LinkSearch = ({ onSearch }: LinkSearchProps) => {
+export const LinkSearch = ({ onSearch }: LinkSearchProps) => {
   return (
-    <Box display="flex" justifyContent="center" my={2}>
-      <TextField
-        fullWidth
-        variant="filled"
-        type="search"
-        label="Search"
-        onChange={(e) => onSearch(e.target.value)}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton>
-                <FontAwesomeIcon
-                  icon={faSearch}
-                  className="transition-colors hover:text-black cursor-pointer"
-                />
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
-      />
-    </Box>
+    <TextField
+      fullWidth
+      variant="filled"
+      type="search"
+      label="Search"
+      onChange={(e) => onSearch(e.target.value)}
+      InputProps={{
+        endAdornment: (
+          <InputAdornment position="end">
+            <IconButton>
+              <FontAwesomeIcon
+                icon={faSearch}
+                className="transition-colors hover:text-black"
+              />
+            </IconButton>
+          </InputAdornment>
+        ),
+      }}
+    />
   );
 };
 
-export default LinkSearch;
+type LinkCategoryProps = {
+  categories: CategoryT[];
+  activeCategory: number;
+  setActiveCategory: (id: number) => void;
+  sx?: SxProps<Theme> | undefined;
+}
+const categoryAll: CategoryT = {
+  title_category: "All",
+  title_slug: "all",
+  id: -1,
+}
+
+export const LinkCategoryDropdown = ({ categories, activeCategory, setActiveCategory, sx}: LinkCategoryProps ) => {
+  const renderEntry = (category: CategoryT) => (
+    <MenuItem value={category.id}>{category.title_category}</MenuItem>
+  );
+  const handleChange = (event: SelectChangeEvent) => {
+    setActiveCategory(parseInt(event.target.value));
+  };
+
+  return (
+    <Select
+      value={activeCategory.toString()}
+      label="Category"
+      onChange={handleChange}
+      sx={sx}
+    >
+      {[categoryAll].concat(categories).map(renderEntry)}
+    </Select>
+  );
+};
+
+export const LinkCategorySidePanel = ({ categories, activeCategory, setActiveCategory, sx}: LinkCategoryProps) => {
+  const renderEntry = (category: CategoryT) => (
+    <ListItemButton 
+      selected={activeCategory === category.id}
+      onClick={() => setActiveCategory(category.id)}
+    >
+      {category.title_category}
+    </ListItemButton>
+  );
+
+  return (
+    <List
+      component="nav"
+      sx={sx}
+    >
+      {[categoryAll].concat(categories).map(renderEntry)}
+    </List>
+  );
+};

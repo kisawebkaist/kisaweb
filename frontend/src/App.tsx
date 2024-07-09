@@ -40,10 +40,17 @@ const theme = createTheme({
     },
     mode: "light",
   },
+  components: {
+    MuiAccordionSummary: {
+      defaultProps: {
+        sx: {flexDirection: 'row-reverse'}
+      }
+    }
+  },
 });
 
 const loadingFallBack = (
-  <Container maxWidth="sm" sx={{ display: "flex", justifyContent: "center" }}>
+  <Container sx={{ display: "flex", justifyContent: "center" }}>
     <CircularProgress size="min(min(15vh, 15vw), 500px)" />
   </Container>
 );

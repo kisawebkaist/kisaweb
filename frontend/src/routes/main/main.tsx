@@ -15,22 +15,11 @@ export type MainLoaderData = {
   userInfo: User;
 };
 
-export function redirectLoader({ request }: { request: any }) {
-  return redirect("/");
-}
-
 export async function mainLoader() {
-  const compactMode = shouldRenderCompact();
   return {
     footerConfig: await MiscAPI.footer(),
-    compactMode: compactMode,
     userInfo: await AuthAPI.userinfo(),
   };
-}
-
-function shouldRenderCompact() {
-  const { innerWidth, innerHeight } = window;
-  return innerHeight >= innerWidth;
 }
 
 const Main = () => {
@@ -39,16 +28,6 @@ const Main = () => {
   const [currentTab, setCurrentTab] = React.useState<string>(
     urlPathSplit[1] === "" ? tabRoutes[0].path : urlPathSplit[1]
   );
-  const [compactMode, setCompactMode] = React.useState<boolean>(
-    shouldRenderCompact()
-  );
-
-  useEffect(() => {
-    function handleViewportResize() {
-      setCompactMode(shouldRenderCompact);
-    }
-    window.addEventListener("resize", handleViewportResize);
-  }, []);
 
   const mainStyles = React.useMemo(() => {
     return [
@@ -80,7 +59,6 @@ const Main = () => {
     <Stack direction="column">
       <Navbar
         userInfo={loaderData.userInfo}
-        compactMode={compactMode}
         currentTab={currentTab}
         setCurrentTab={setCurrentTab}
       />
@@ -94,7 +72,7 @@ const Main = () => {
       >
         <Outlet />
       </Stack>
-      <Footer compactMode={compactMode} data={loaderData.footerConfig} />
+      <Footer data={loaderData.footerConfig} />
     </Stack>
   );
 };

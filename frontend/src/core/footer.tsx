@@ -8,18 +8,12 @@ import { Box, IconButton, Typography, Stack } from "@mui/material";
 import { Link } from "react-router-dom";
 import {
   faFacebook,
-  faInstagramSquare,
+  faInstagram,
   faYoutube,
 } from "@fortawesome/free-brands-svg-icons";
 
-interface FooterProps {
-  topicName: string;
-  description: string[];
-}
-
 export type FooterP = {
   data: FooterT;
-  compactMode: boolean;
 };
 
 const Footer = ({
@@ -31,8 +25,7 @@ const Footer = ({
     fb_link,
     insta_link,
     yt_link,
-  },
-  compactMode,
+  }
 }: FooterP) => {
   return (
     <Stack
@@ -41,29 +34,34 @@ const Footer = ({
       zIndex={(theme) => theme.zIndex.drawer + 1}
       bgcolor="primary.main"
       color="primary.contrastText"
-      className="p-4 h-28"
+      className="p-4"
+      sx={{display: "flex", justifyContent: "space-between"}}
     >
-      <Box className = "w-1/3">
-        <Typography className = "font-black text-xl">KISA</Typography>
-        <Typography variant="body2"  className = "text-lg">{kisa_text}</Typography>
-      </Box>
-      <Box className = "w-1/3">
-        <Typography className = "font-black text-xl">Contact Us</Typography>
-        <Typography variant = "body2" className = "text-lg">{location}</Typography>
-        <Typography variant = "body2" className = "text-lg">Phone : {phnum_kor}</Typography>
-        <Typography variant = "body2" className = "text-lg">Phone : {phnum_eng}</Typography>
+      <Box sx={{ display: {xs: 'none', sm: 'none', md: 'block'} }}>
+        <Typography fontWeight="bold">KISA</Typography>
+        <Typography variant="subtitle2">
+          {kisa_text}
+        </Typography>
       </Box>
       <Box>
-        <Typography className="font-black text-xl">Follow Us</Typography>
+        <Typography fontWeight="bold">Contact Us</Typography>
+        <Typography variant="subtitle2">
+          {location}<br/>
+          Phone: {phnum_kor}<br/>
+          Phone: {phnum_eng}
+        </Typography>
+      </Box>
+      <Box>
+        <Typography fontWeight="bold">Follow Us</Typography>
         <Stack direction="row">
-          <IconButton component={Link} to="instagram.com">
-            <FontAwesomeIcon icon={faInstagramSquare} size="2x"/>
+          <IconButton component={Link} to={insta_link}>
+            <FontAwesomeIcon icon={faInstagram}/>
           </IconButton>
-          <IconButton component={Link} to="facebook.com">
-            <FontAwesomeIcon icon={faFacebook} size="2x"/>
+          <IconButton component={Link} to={fb_link}>
+            <FontAwesomeIcon icon={faFacebook}/>
           </IconButton>
-          <IconButton component={Link} to="youtube.com">
-            <FontAwesomeIcon icon={faYoutube} size="2x"/>
+          <IconButton component={Link} to={yt_link}>
+            <FontAwesomeIcon icon={faYoutube}/>
           </IconButton>
         </Stack>
       </Box>

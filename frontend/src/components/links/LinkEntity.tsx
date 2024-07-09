@@ -8,11 +8,15 @@ import {
   Button,
   Chip,
   Icon,
+  SvgIcon,
+  IconButton,
+  Tooltip,
+  Box,
 } from "@mui/material";
 import type { LinkT } from "../../API/links";
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAdd } from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown, faArrowUpRightFromSquare, faCircleCheck, faCircleXmark} from "@fortawesome/free-solid-svg-icons";
 
 type EntityEntry = {
   data: LinkT;
@@ -24,57 +28,52 @@ const LinkEntity = ({ data }: EntityEntry) => {
     () => setIsOpen((prevIsOpen) => !prevIsOpen),
     []
   );
+
+  const renderFlags = () => {
+    const renderAvailibilityChip = (availible: boolean, label: string, className?: string) => (
+      <>
+        <Chip icon={availible? <FontAwesomeIcon icon={faCircleCheck}/>: <FontAwesomeIcon icon={faCircleXmark}/>} label={label} size="small" sx={{ display: {xs: 'none', sm: 'block'} }}/>
+        <Tooltip title={label} sx={{ display: {xs: 'block', sm: 'none'} }}>
+          <Box>{availible? <FontAwesomeIcon icon={faCircleCheck}/>: <FontAwesomeIcon icon={faCircleXmark}/>}</Box>
+        </Tooltip>
+      </>
+    );
+    return (
+      <Stack
+        direction="row"
+        alignItems="center"
+        gap={1}
+      >
+        {renderAvailibilityChip(data.is_english, "English", "bg-black")}
+        {renderAvailibilityChip(data.requires_sso, "SSO", "bg-sky-600")}
+        {renderAvailibilityChip(data.external_access, "External", "bg-cyan-600")}
+      </Stack>
+    );
+  };
   return (
     <Accordion className = "my-2">
-      <AccordionSummary onClick={toggleOpen}>
+      <AccordionSummary 
+      onClick={toggleOpen}
+      expandIcon={<FontAwesomeIcon icon = {faChevronDown}/>}
+      >
         <Stack direction="row" justifyContent="space-between" className = "w-full">
-          <Stack
-            direction="row"
-            alignItems="center"
-            className="transition-opacity ease-in rounded-lg shadow-none max-w-2/3 gap-x-2"
-          >
-            <FontAwesomeIcon icon = {faAdd} className={isOpen ? "rotate-45" : ""} />
-            <Typography variant="h6" fontWeight="bold">
-              {data.title}
-            </Typography>
-          </Stack>
-          <Stack
-            direction="row"
-            flexWrap="wrap"
-            justifyContent="flex-end"
-            alignItems="center"
-            className = "max-w-1/3 gap-x-0.5 gap-y-0.5"
-          >
-            {data.is_english && (
-              <Chip
-                label="English"
-                className="bg-black rounded-lg text-white font-bold"
-              />
-            )}
-            {data.requires_sso && (
-              <Chip
-                label="SSO"
-                className="bg-sky-600 rounded-lg text-white font-bold"
-              />
-            )}
-            {data.external_access && (
-              <Chip
-                label="External"
-                className="bg-cyan-600 rounded-lg text-white font-bold"
-              />
-            )}
-          </Stack>
+          <Typography alignContent="center">
+            {data.title}
+          </Typography>
+          <IconButton href={data.url}>
+            <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+          </IconButton>
         </Stack>
       </AccordionSummary>
-      <AccordionDetails>{data.description}</AccordionDetails>
-      <AccordionActions>
+      <AccordionDetails>
+      {data.description}
+      <Stack direction="row" justifyContent="space-between">
         <Typography variant="subtitle1" color="gray">
           {data.url}
         </Typography>
-        <Button variant="contained" href={data.url}>
-          Visit
-        </Button>
-      </AccordionActions>
+        {renderFlags()}
+      </Stack>
+      </AccordionDetails>
     </Accordion>
   );
 };

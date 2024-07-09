@@ -1,11 +1,10 @@
 import { CategoryT, LinkT } from "../API/links";
-import LinkCategory from "../components/links/LinkCategory";
 import LinkHeader from "../components/links/LinkHeader";
 import LinkEntity from "../components/links/LinkEntity";
-import LinkSearch from "../components/links/LinkSearch";
+import { LinkCategoryDropdown, LinkCategorySidePanel, LinkSearch } from "../components/links/LinkSearch";
 import QueryGuard from "../components/query-guard";
 import React from "react";
-import { List, Stack, Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import { Container, Box } from "@mui/system";
 import Lister from "../components/lister";
 import QueryFallback from "../components/QueryFallback";
@@ -19,79 +18,45 @@ type LinksP = {
   categories: CategoryT[];
 };
 
-const generalCategory: CategoryT = {
-  id: -1,
-  title_category: "All",
-  title_slug: "all_general_all",
-};
-
-const Faq = ({ links, categories }: LinksP) => {
-  const [searchText, setSearchText] = React.useState<string>();
+const ImportantLinks = ({ links, categories }: LinksP) => {
+  const [searchText, setSearchText] = React.useState<string>("");
   const [activeCategory, setActiveCategory] = React.useState<number>(-1);
   const [filteredLinks, setFilteredLinks] = React.useState<LinkT[]>(links);
 
   React.useEffect(() => {
-    setFilteredLinks(
-      links.filter((link: LinkT) => {
-        let isAccepted = true;
-        if (searchText !== undefined) {
-          if (
-            !(
-              link.title.toLowerCase().includes(searchText.toLowerCase()) ||
-              link.description.toLowerCase().includes(searchText.toLowerCase())
-            )
-          ) {
-            isAccepted = false;
-          }
-        }
-        if (activeCategory !== -1) {
-          if (link.category !== activeCategory) {
-            isAccepted = false;
-          }
-        }
-        return isAccepted ? link : null;
-      })
-    );
+    const matchesActiveCategory = (link: LinkT) => activeCategory === -1 || activeCategory === link.category;
+    const matchesSearchText = (link: LinkT) => {
+      const searchTextLower = searchText.toLowerCase();
+      return searchTextLower === "" || link.title.toLowerCase().includes(searchTextLower) || link.description.toLowerCase().includes(searchTextLower);
+    };
+
+    setFilteredLinks(links.filter(matchesActiveCategory).filter(matchesSearchText));
   }, [activeCategory, searchText, links]);
 
   const linkContents = React.useMemo(() => {
     if (filteredLinks.length !== 0)
       return <Lister array={filteredLinks} render={LinkEntity} props={{}} />;
     return (
-      <Stack className="h-80 opacity-50 gap-y-4">
-        <FontAwesomeIcon icon = {faLinkSlash} className = "text-5xl"/>
-        <Typography variant="body2" textAlign="center" className="text-5xl">
-          No Questions Yet
+      <Stack className="h-80 gap-y-4">
+        <FontAwesomeIcon icon = {faLinkSlash}/>
+        <Typography variant="body2" textAlign="center">
+          No Links Found.
         </Typography>
       </Stack>
     );
   }, [filteredLinks]);
 
-  const isActiveCategory = (category: CategoryT) => {
-    return activeCategory === category.id;
-  };
   return (
     <Container maxWidth="md">
-      {/* Header */}
       <LinkHeader />
-      {/* Search */}
-      <LinkSearch onSearch={setSearchText} />
+      <Stack>
+        <LinkCategoryDropdown categories={categories} activeCategory={activeCategory} setActiveCategory={setActiveCategory} sx={{ display: {xs: "block", sm: "none"} }}/>
+        <LinkSearch onSearch={setSearchText} />
+      </Stack>
       <Stack direction="row" justifyContent="space-between">
-        {/* Categories */}
-        <Box component="nav" className = "w-3/12 mr-2">
-          <List>
-            <Lister
-              array={[generalCategory, ...categories]}
-              render={LinkCategory}
-              props={{
-                isActiveCategory,
-                setActiveCategory,
-              }}
-            />
-          </List>
-        </Box>
+        <LinkCategorySidePanel categories={categories} activeCategory={activeCategory} setActiveCategory={setActiveCategory} sx={{ display: {xs: "none", sm: "block"}, width: "20%", marginRight: "2" }} />
         {/* Questions */}
-        <Box component="main" className="w-9/12">
+        <Box component="main" sx={{ flex: 1 }}>
           {linkContents}
         </Box>
       </Stack>
@@ -100,23 +65,23 @@ const Faq = ({ links, categories }: LinksP) => {
 };
 
 const LinksWithGuard = () => {
-  const query = React.useCallback<(params: undefined) => Promise<LinksP>>(
-    async (params: undefined) => {
-      const links = await LinkAPI.allLinks({});
-      const categories = await LinkAPI.allCategories({});
-      return {
-        links,
-        categories,
-      };
-    },
-    []
-  );
+  type QueryParams = {
+    linkParam: Record<string, any>,
+    categoryParam: Record<string, any>,
+  }
+  async function query(args: QueryParams) {
+    return {
+        links: await LinkAPI.allLinks(args.linkParam),
+        categories: await LinkAPI.allCategories(args.categoryParam)
+    };
+  }
+  // QueryGuard memorization is not working when switching tabs prolly due to being rerendered from scratch
   return (
     <QueryGuard
-      render={Faq}
+      render={ImportantLinks}
       props={{}}
       query={query}
-      args={undefined}
+      args={{linkParam: {}, categoryParam: {}}}
       fallback={QueryFallback()}
     />
   );

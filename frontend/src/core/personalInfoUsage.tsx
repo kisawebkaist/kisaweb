@@ -3,7 +3,7 @@ import { CardContent, Typography } from "@mui/material";
 const personalInfoUsageStatementLastModified = "2024-06-29";
 const personalInfoUsageStatement =
 (
-    <CardContent>
+    <CardContent sx={{ overflow: 'scroll'}}>
         <Typography>
             This Personal Information Usage Disclosure statement outlines how this website collects, uses, discloses and protects the personal information you provide when using our website.
         </Typography>

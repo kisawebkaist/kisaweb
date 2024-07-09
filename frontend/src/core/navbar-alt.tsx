@@ -45,24 +45,21 @@ export const navbarHeight = "75px";
 
 export type NavbarP = {
   userInfo: User;
-  compactMode: boolean;
   currentTab: string;
   setCurrentTab: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const RenderNavTab = (data: NavTabRoute) => (
+const renderNavTab = (data: NavTabRoute) => (
   <Tab
     label={data.tabName}
     value={data.path}
     component={Link}
     to={data.path}
-    className = "font-bold text-xl text-white"
   />
 );
 
-const RenderAuthMenu = (
+const renderAuthMenu = (
   { is_authenticated, data }: User,
-  compactMode: boolean
 ) => {
   const SettingsDialog = (user: UserInfo) => {
     const [open, setOpen] = useState<boolean>(false);
@@ -134,8 +131,8 @@ const RenderAuthMenu = (
 
   return is_authenticated ? (
     <SettingsDialog {...data} />
-  ) : compactMode ? (
-    <Tooltip title="Login">
+  ) : [(
+    <Tooltip title="Login" sx={{ display: {xs: 'block', md: 'none'} }}>
       <IconButton
         onClick={() =>
           AuthAPI.login("/").then(
@@ -143,25 +140,24 @@ const RenderAuthMenu = (
           )
         }
       >
-        {/* <LoginIcon color="primary" /> */}
         <FontAwesomeIcon icon={faRightToBracket} />
       </IconButton>
     </Tooltip>
-  ) : (
+  ) , (
     <Button
       onClick={() =>
         AuthAPI.login("/").then((redirect) => (window.location.href = redirect))
       }
+      sx={{ display: {xs: 'none', md: 'block'} }}
     >
       <FontAwesomeIcon icon={faRightToBracket} />
       LOGIN
     </Button>
-  );
+  )];
 };
 
 const Navbar = ({
   userInfo,
-  compactMode,
   currentTab,
   setCurrentTab,
 }: NavbarP) => {
@@ -171,24 +167,12 @@ const Navbar = ({
   const handleDrawerMenuOnClick = (event: React.SyntheticEvent) =>
     setDrawerOpen(!drawerOpen);
 
-  const navTabs = (orientation: "horizontal" | "vertical") => (
-    <Tabs
-      variant="scrollable"
-      orientation={orientation}
-      scrollButtons="auto"
-      value={currentTab}
-      onChange={(event, value) => setCurrentTab(value)}
-    >
-      {tabRoutes.map(RenderNavTab)}
-    </Tabs>
-  );
-
   const navMenuButton = (drawerOpen: boolean) => {
     const CustomTooltip = (props: { children: JSX.Element }) =>
       drawerOpen ? (
-        <Box>{props.children}</Box>
+        <Box sx={{display: {xs: 'block', sm: 'none'}}}>{props.children}</Box>
       ) : (
-        <Tooltip title="Navigation Menu">{props.children}</Tooltip>
+        <Tooltip title="Navigation Menu" sx={{display: {xs: 'block', sm: 'none'}}}>{props.children}</Tooltip>
       );
     return (
       <CustomTooltip>
@@ -212,29 +196,44 @@ const Navbar = ({
         }}
       >
         <Toolbar sx={{ justifyContent: "space-between" }}>
-          {compactMode ? navMenuButton(drawerOpen) : null}
+          {navMenuButton(drawerOpen)}
           <Box
             component="img"
             src="/kisaLogo.png"
             alt="KISA Logo"
             sx={{ height: "100%" }}
           />
-          {compactMode ? null : navTabs("horizontal")}
-          {RenderAuthMenu(userInfo, compactMode)}
+           <Tabs
+            variant="scrollable"
+            orientation="horizontal"
+            scrollButtons="auto"
+            value={currentTab}
+            onChange={(_, value) => setCurrentTab(value)}
+            sx={{display: {xs: 'none', sm: 'block'}}}
+            >
+            {tabRoutes.map(renderNavTab)}
+          </Tabs>
+          {renderAuthMenu(userInfo)}
         </Toolbar>
       </AppBar>
-      {compactMode ? (
-        <Drawer
-          open={drawerOpen}
-          PaperProps={{
-            sx: { bgColor: "primary.main", marginTop: navbarHeight },
-          }}
-          sx={{ flexShrink: 0 }}
-          onClose={() => setDrawerOpen(false)}
+      <Drawer
+        open={drawerOpen}
+        PaperProps={{
+          sx: { marginTop: navbarHeight },
+        }}
+        sx={{ flexShrink: 0 }}
+        onClose={() => setDrawerOpen(false)}
+      >
+         <Tabs
+          variant="scrollable"
+          orientation={"vertical"}
+          scrollButtons="auto"
+          value={currentTab}
+          onChange={(_, value) => setCurrentTab(value)}
         >
-          {navTabs("vertical")}
-        </Drawer>
-      ) : null}
+          {tabRoutes.map(renderNavTab)}
+        </Tabs>
+      </Drawer>
     </React.Fragment>
   );
 };
