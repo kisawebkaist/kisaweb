@@ -73,7 +73,7 @@ export function ChartMember(props: ChartMemberProps) {
             >
               <Typography
                 textAlign="center"
-                variant="h5"
+                variant="h3"
                 color="white"
                 textTransform="uppercase"
                 fontWeight="bold"
@@ -90,7 +90,7 @@ export function ChartMember(props: ChartMemberProps) {
             >
               <Typography
                 textAlign="center"
-                variant="h6"
+                variant="h4"
                 textTransform="uppercase"
                 fontWeight="bold"
               >
