@@ -6,33 +6,60 @@ import "@fontsource/roboto/400-italic.css";
 import {
   CircularProgress,
   Container,
-  ThemeProvider,
   createTheme,
 } from "@mui/material";
-import { StyledEngineProvider } from "@mui/material/styles";
+import { 
+  StyledEngineProvider,
+  ThemeProvider
+ } from "@mui/material/styles";
 
 import axios from "axios";
 
 import routes from "./routes/main/config";
 
+// Update the Typography's variant prop options
+declare module '@mui/material/Typography' {
+  interface TypographyPropsVariantOverrides {
+    h5: false;
+    h6: false;
+  }
+}
+
 const theme = createTheme({
   typography: {
-    fontFamily: ["Roboto", "times new roman", "times", "roman", "serif"].join(
-      ","
-    ),
+    fontFamily: ["Itim", "Roboto", "times", "roman", "serif"].join(","),
+    // copied it from mui default h3-6
+    h1: {
+      fontWeight: 400,
+      fontSize: "3rem",
+      lineHeight: 1.167,
+      letterSpacing: "0em",
+    },
+    h2: {
+      fontWeight: 400,
+      fontSize: "2.125rem",
+      lineHeight: 1.235,
+      letterSpacing: "0.00735em",
+    },
+    h3: {
+      fontWeight: 400,
+      fontSize: "1.5rem",
+      lineHeight: 1.334,
+      letterSpacing: "0em",
+    },
+    h4: {
+      fontWeight: 500,
+      fontSize: "1.25rem",
+      lineHeight: 1.6,
+      letterSpacing: "0.0075em",
+    },
   },
   palette: {
     primary: {
       main: "#43bFF8",
-      light: "#B1E3FD",
-      dark: "#0071bd",
-      contrastText: "#FFFFFF",
     },
     secondary: {
       main: "#f87c43",
-      light: "#fccfbc",
-      dark: "#d15414",
-      contrastText: "#faeae7",
     },
     background : {
       default : "#f1f5f9",

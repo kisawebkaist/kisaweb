@@ -4,7 +4,7 @@ import { Box } from "@mui/system";
 const LinkHeader = () => {
   return (
     <Box component="header" textAlign="center" my={2}>
-      <Typography variant="h3">
+      <Typography variant="h1">
         <HighlightedLetter letter="Important "/>
         Links
       </Typography>

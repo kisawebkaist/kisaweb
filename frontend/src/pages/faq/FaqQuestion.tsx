@@ -29,7 +29,7 @@ const FaqQuestion = ({ data }: QuestionEntry) => {
           className="transition-opacity ease-in rounded-lg shadow-none"
         >
           <FontAwesomeIcon icon={faAdd} className={isOpen ? "rotate-45" : ""} />
-          <Typography variant="h6" fontWeight="bold">
+          <Typography variant="h4" fontWeight="bold">
             {data.question}
           </Typography>
         </Stack>

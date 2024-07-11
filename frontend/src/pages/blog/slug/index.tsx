@@ -14,10 +14,10 @@ const BlogEntry = ({ blog }: BlogEntryP) => {
   return (
     <Stack direction="column" alignItems="center" className="gap-y-4 w-full">
       <Box className="py-10">
-        <Typography component="h1" variant="h4" className="text-center pb-4">
+        <Typography variant="h1">
           {blog.data.title}
         </Typography>
-        <Typography variant="body1" className="text-center italic">
+        <Typography fontStyle="italic" textAlign="center">
           {blog.data.description}
         </Typography>
       </Box>

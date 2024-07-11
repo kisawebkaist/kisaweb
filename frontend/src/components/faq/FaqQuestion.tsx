@@ -37,7 +37,7 @@ const FaqQuestion = ({ data }: QuestionEntry) => {
               className={"transition-transform " + (isOpen ? "rotate-45" : "")}
             />
           </Icon>
-          <Typography variant="h6" fontWeight="bold">
+          <Typography variant="h4" fontWeight="bold">
             {data.question}
           </Typography>
         </Stack>

@@ -162,7 +162,6 @@ const Navbar = ({
   setCurrentTab,
 }: NavbarP) => {
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
-  console.log(currentTab);
 
   const handleDrawerMenuOnClick = (event: React.SyntheticEvent) =>
     setDrawerOpen(!drawerOpen);
@@ -209,7 +208,9 @@ const Navbar = ({
             scrollButtons="auto"
             value={currentTab}
             onChange={(_, value) => setCurrentTab(value)}
+            textColor="inherit"
             sx={{display: {xs: 'none', sm: 'block'}}}
+            TabIndicatorProps={{sx: { backgroundColor: 'primary.contrastText' }}}
             >
             {tabRoutes.map(renderNavTab)}
           </Tabs>

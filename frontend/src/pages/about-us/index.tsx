@@ -24,14 +24,14 @@ const AboutUs = (props: AboutUsP) => {
     <>
       {/* Hero */}
       <Box py={3} px={5}>
-        <Typography variant="h3" textAlign="center">
+        <Typography variant="h1" textAlign="center">
           About Us
         </Typography>
-        <Typography variant="h4" textAlign="center" py={2}>
+        <Typography variant="h2" textAlign="center" py={2}>
           We are KISA, the KAIST International Students Association.
         </Typography>
         <Typography
-          variant="h5"
+          variant="h3"
           textAlign="center"
           color="#236FA1"
           fontWeight="bold"
@@ -65,21 +65,20 @@ const AboutUs = (props: AboutUsP) => {
           p: 2,
         }}
       >
-        <Link to={constitutionLink}>
-          <Button
-            variant="contained"
-            sx={{ p: 2, fontSize: 16, fontWeight: "bold" }}
-          >
-            KISA Constitution &#129149;
-          </Button>
-        </Link>
+        <Button
+          variant="contained"
+          sx={{ p: 2, fontSize: 16, fontWeight: "bold" }}
+          href={constitutionLink}
+        >
+          KISA Constitution &#129149;
+        </Button>
       </Box>
       {/* Organizational chart */}
       <Box px={5}>
         {/* <Typography variant="h4" textAlign="center">
           KAIST International Students Association
         </Typography> */}
-        <Typography variant="h3" textAlign="center" fontWeight="bold">
+        <Typography variant="h2" textAlign="center" fontWeight="bold">
           Organizational Chart
         </Typography>
         {/* Chart */}
