@@ -14,7 +14,7 @@ type BlogT_Complete = {
   created: string;
   modified: string;
   slug: string;
-  tags: string;
+  tags: TagT[];
 };
 type BlogT_Partial = Omit<BlogT_Complete, "new_content" | "content">;
 export type TagT = { tag_name: string };

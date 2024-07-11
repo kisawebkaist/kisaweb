@@ -3,7 +3,14 @@ import BlogAPI, { PartialBlogAPI, TagT } from "../../API/blog";
 // import Card from "@mui/material/Card";
 // import CardContent from "@mui/material/CardContent";
 import {
+  Box,
   Button,
+  Card,
+  CardActionArea,
+  CardContent,
+  CardMedia,
+  Chip,
+  Container,
   Divider,
   Grid,
   Icon,
@@ -18,6 +25,8 @@ import QueryGuard from "../../components/query-guard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-regular-svg-icons";
 import { useNavigate } from "react-router-dom";
+import { render } from "@testing-library/react";
+import { arch } from "os";
 
 // /**
 //  * @brief This can be used as a structure of blog data for api.
@@ -99,27 +108,56 @@ import { useNavigate } from "react-router-dom";
 //   );
 // };
 
+function sortBlogsByDateModified(blogs: PartialBlogAPI[]) {
+  blogs.sort((a, b) => new Date(b.data.modified).getTime() - new Date(a.data.modified).getTime());
+  return blogs;
+}
+
 const BlogCard = ({ data: blog }: { data: PartialBlogAPI }) => {
   const navigate = useNavigate();
+  const renderBlogTagChip = (tag_name: string) => (
+    <Chip label={tag_name} />
+  );
+
   return (
-    <Grid item xs={3}>
-      <Paper className="flex flex-col justify-center items-center gap-y-2 p-4">
+    <Grid item xs={12} sm={6} md={4} lg={3}>
+      <Card>
+        <CardActionArea onClick={() => navigate(`./${blog.data.slug}`)}>
+          <CardMedia
+            component="img"
+            alt=""
+            image="/kisaLogo.png"
+          />
+          <CardContent>
+          <Stack rowGap={1}>
+            <Typography variant="caption">
+              {new Date(blog.data.modified).toDateString()}
+            </Typography>
+            <Typography
+                variant="h2"
+                fontSize="large"
+                fontWeight="bold"
+              >
+                {blog.data.title}
+              </Typography>
+              <Typography fontStyle="italic">
+              {blog.data.description}
+            </Typography>
+            <Stack direction="row" gap={1}>
+              {blog.data.tags.map((tag=>tag.tag_name)).map(renderBlogTagChip)}
+            </Stack>
+          </Stack>
+          </CardContent>
+        </CardActionArea>
+      </Card>
+      {/* <Paper className="flex flex-col justify-center items-center gap-y-2 p-4">
         <Icon color="primary" className="w-40 h-40 opacity-50 ">
           <FontAwesomeIcon icon={faImage} className="text-9xl opacity-80" />
         </Icon>
         <Divider orientation="horizontal" flexItem/>
         <Stack direction="column" justifyContent="center" className="h-12">
-          <Typography
-            variant="h2"
-            fontSize="large"
-            className="text-center font-bold text-center"
-          >
-            {blog.data.title}
-          </Typography>
         </Stack>
-        <Typography variant="body1" className="text-center h-20">
-          {blog.data.description}
-        </Typography>
+        
         <Button
           className="w-full justify-self-end"
           variant="contained"
@@ -127,7 +165,7 @@ const BlogCard = ({ data: blog }: { data: PartialBlogAPI }) => {
         >
           Read
         </Button>
-      </Paper>
+      </Paper> */}
     </Grid>
   );
   // return (
@@ -175,18 +213,64 @@ type BlogP = {
 };
 
 const Blog = ({ blogs, tags }: BlogP) => {
-  const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
+  // const tagNames = React.useMemo(() => tags.map((tag) => tag.tag_name), [tags]);
+  sortBlogsByDateModified(blogs);
 
-  const relatedBlog = React.useMemo(() => {
-    if (selectedCategory === "ALL") return blogs;
-    else
-      return blogs.filter((blog) => blog.data.tags.includes(selectedCategory));
-  }, [selectedCategory, blogs]);
+  function renderLastestRelease(blogs: PartialBlogAPI[]) {
+    const current = new Date();
+    const lastMonth = new Date(current.getTime()-30*24*60*60*1000);
+    const toRender = blogs.filter(blog => new Date(blog.data.modified) >= lastMonth);
 
-  const tagNames = React.useMemo(() => tags.map((tag) => tag.tag_name), [tags]);
+    return ([
+      <Typography variant="h2">Lastest Release</Typography>,
+      <Grid container spacing={4} className="p-4">
+        <Lister array={toRender} render={BlogCard} props={undefined} />
+      </Grid>,
+      <Divider/>
+    ]);
+  }
+  
+  function renderBlogCards(blogs: PartialBlogAPI[]) {
+    let yearArchives: JSX.Element[] = [];
+    let currentYear = new Date(blogs[0].data.modified).getFullYear();
+    let currentYearArchive: JSX.Element[] = [];
+
+    function archiveCurrentYear() {
+      if (currentYearArchive.length !== 0) {
+        yearArchives.push(<Typography variant="h2">{currentYear}</Typography>);
+        yearArchives.push(
+          <Grid container spacing={4} className="p-4">
+            {currentYearArchive}
+          </Grid>
+        );
+        yearArchives.push(<Divider/>);
+      }
+    }
+
+    if (blogs.length > 0) {
+      for (let blog of blogs) {
+        let year = new Date(blog.data.modified).getFullYear();
+        if (year !== currentYear) {
+          archiveCurrentYear();
+          currentYear = year;
+          currentYearArchive = [];
+        } else {
+          currentYearArchive.push(<BlogCard data={blog} />);
+        }
+      }
+      archiveCurrentYear();
+    }
+    return yearArchives;
+  }
+
+  /*
+    the idea about tag-filtering is good but there are some problems
+    - tags are not categories, i.e. they are not mutually exclusive (so we might need some kind of checkbox list)
+    - there can be a lot of tags, i mean "a lot" and how would we implement it for mobile?
+  */
   return (
     <Stack>
-      <Stack direction="column" alignItems="center">
+      {/* <Stack direction="column" alignItems="center">
         <Typography variant="h4" className="my-4">
           Tags
         </Typography>
@@ -202,10 +286,12 @@ const Blog = ({ blogs, tags }: BlogP) => {
             render={Tag}
           />
         </Stack>
-      </Stack>
-      <Grid container spacing={4} className="p-4">
-        <Lister array={relatedBlog} render={BlogCard} props={{}} />
-      </Grid>
+      </Stack> */}
+      <Typography variant="h1" textAlign="center">KISA Blog</Typography>
+      {renderLastestRelease(blogs)}
+      <Typography variant="h2" textAlign="center">All blogs</Typography>
+      <Divider/>
+      {renderBlogCards(blogs)}
     </Stack>
   );
 };
