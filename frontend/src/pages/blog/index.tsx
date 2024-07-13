@@ -27,6 +27,7 @@ import { faImage } from "@fortawesome/free-regular-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { render } from "@testing-library/react";
 import { arch } from "os";
+import { HighlightedLetter } from "../../core/components";
 
 // /**
 //  * @brief This can be used as a structure of blog data for api.
@@ -222,7 +223,7 @@ const Blog = ({ blogs, tags }: BlogP) => {
     const toRender = blogs.filter(blog => new Date(blog.data.modified) >= lastMonth);
 
     return ([
-      <Typography variant="h2">Lastest Release</Typography>,
+      <Typography variant="h2" color="main">Latest Release</Typography>,
       <Grid container spacing={4} className="p-4">
         <Lister array={toRender} render={BlogCard} props={undefined} />
       </Grid>,
@@ -287,7 +288,7 @@ const Blog = ({ blogs, tags }: BlogP) => {
           />
         </Stack>
       </Stack> */}
-      <Typography variant="h1" textAlign="center">KISA Blog</Typography>
+      <Typography variant="fancy_h1" textAlign="center"><HighlightedLetter letter="KISA" /> Blog</Typography>
       {renderLastestRelease(blogs)}
       <Typography variant="h2" textAlign="center">All blogs</Typography>
       <Divider/>

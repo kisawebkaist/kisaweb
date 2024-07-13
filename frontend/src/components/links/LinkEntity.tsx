@@ -31,12 +31,7 @@ const LinkEntity = ({ data }: EntityEntry) => {
 
   const renderFlags = () => {
     const renderAvailibilityChip = (availible: boolean, label: string, className?: string) => (
-      <>
-        <Chip icon={availible? <FontAwesomeIcon icon={faCircleCheck}/>: <FontAwesomeIcon icon={faCircleXmark}/>} label={label} size="small" sx={{ display: {xs: 'none', sm: 'block'} }}/>
-        <Tooltip title={label} sx={{ display: {xs: 'block', sm: 'none'} }}>
-          <Box>{availible? <FontAwesomeIcon icon={faCircleCheck}/>: <FontAwesomeIcon icon={faCircleXmark}/>}</Box>
-        </Tooltip>
-      </>
+      <Chip icon={availible? <FontAwesomeIcon icon={faCircleCheck}/>: <FontAwesomeIcon icon={faCircleXmark}/>} label={label} size="small" />
     );
     return (
       <Stack
@@ -60,20 +55,32 @@ const LinkEntity = ({ data }: EntityEntry) => {
           <Typography alignContent="center">
             {data.title}
           </Typography>
-          <IconButton href={data.url}>
-            <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
-          </IconButton>
+          {
+            !isOpen &&
+            <IconButton href={data.url}>
+              <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+            </IconButton>
+          }
         </Stack>
       </AccordionSummary>
       <AccordionDetails>
-      {data.description}
-      <Stack direction="row" justifyContent="space-between">
-        <Typography variant="subtitle1" color="gray">
-          {data.url}
-        </Typography>
-        {renderFlags()}
-      </Stack>
+        <Stack gap={2}>
+          <Typography>
+          {data.description}
+          </Typography>
+          <Stack direction="row" justifyContent="space-between">
+            {renderFlags()}
+          </Stack>
+        </Stack>
       </AccordionDetails>
+      <AccordionActions>
+      <Typography variant="subtitle1" color="grey">
+            {data.url}
+          </Typography>
+        <IconButton href={data.url}>
+          <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+        </IconButton>
+      </AccordionActions>
     </Accordion>
   );
 };

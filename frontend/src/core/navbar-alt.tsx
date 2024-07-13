@@ -85,6 +85,7 @@ const renderAuthMenu = (
         <CardContent></CardContent>
         <CardActions>
           <Button
+            color="inherit"
             onClick={() =>
               AuthAPI.logout("/").then(
                 (redirect) => (window.location.href = redirect)
@@ -132,7 +133,7 @@ const renderAuthMenu = (
   return is_authenticated ? (
     <SettingsDialog {...data} />
   ) : [(
-    <Tooltip title="Login" sx={{ display: {xs: 'block', md: 'none'} }}>
+    <Tooltip color="inherit" title="Login" sx={{ display: {xs: 'block', md: 'none'} }}>
       <IconButton
         onClick={() =>
           AuthAPI.login("/").then(
@@ -145,6 +146,7 @@ const renderAuthMenu = (
     </Tooltip>
   ) , (
     <Button
+      color="inherit"
       onClick={() =>
         AuthAPI.login("/").then((redirect) => (window.location.href = redirect))
       }
@@ -171,11 +173,11 @@ const Navbar = ({
       drawerOpen ? (
         <Box sx={{display: {xs: 'block', sm: 'none'}}}>{props.children}</Box>
       ) : (
-        <Tooltip title="Navigation Menu" sx={{display: {xs: 'block', sm: 'none'}}}>{props.children}</Tooltip>
+        <Tooltip color="inherit" title="Navigation Menu" sx={{display: {xs: 'block', sm: 'none'}}}>{props.children}</Tooltip>
       );
     return (
       <CustomTooltip>
-        <IconButton onClick={handleDrawerMenuOnClick}>
+        <IconButton color="inherit" onClick={handleDrawerMenuOnClick}>
           {drawerOpen ? (
             <FontAwesomeIcon icon={faXmark} />
           ) : (

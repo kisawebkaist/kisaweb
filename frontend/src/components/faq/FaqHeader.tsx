@@ -1,10 +1,11 @@
 import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
+import { HighlightedLetter } from "../../core/components";
 
 const FaqHeader = () => {
   return (
     <Box component="header" textAlign="center" my={2}>
-      <Typography variant="h1">
+      <Typography variant="fancy_h1">
         <HighlightedLetter letter="F" />
         requently <HighlightedLetter letter="A" />
         sked <HighlightedLetter letter="Q" />
@@ -22,13 +23,5 @@ const FaqHeader = () => {
     </Box>
   );
 };
-
-function HighlightedLetter({ letter }: { letter: string }) {
-  return (
-    <Typography variant="inherit" color={"primary"} display="inline">
-      {letter}
-    </Typography>
-  );
-}
 
 export default FaqHeader;

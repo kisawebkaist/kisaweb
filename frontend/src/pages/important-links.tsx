@@ -53,7 +53,7 @@ const ImportantLinks = ({ links, categories }: LinksP) => {
         <LinkCategoryDropdown categories={categories} activeCategory={activeCategory} setActiveCategory={setActiveCategory} sx={{ display: {xs: "block", sm: "none"} }}/>
         <LinkSearch onSearch={setSearchText} />
       </Stack>
-      <Stack direction="row" justifyContent="space-between">
+      <Stack direction="row" justifyContent="space-between" gap={2}>
         <LinkCategorySidePanel categories={categories} activeCategory={activeCategory} setActiveCategory={setActiveCategory} sx={{ display: {xs: "none", sm: "block"}, width: "20%", marginRight: "2" }} />
         {/* Questions */}
         <Box component="main" sx={{ flex: 1 }}>

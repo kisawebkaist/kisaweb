@@ -1,10 +1,11 @@
 import { Link, Typography } from "@mui/material";
 import { Box } from "@mui/system";
+import { HighlightedLetter } from "../../core/components";
 
 const LinkHeader = () => {
   return (
     <Box component="header" textAlign="center" my={2}>
-      <Typography variant="h1">
+      <Typography variant="fancy_h1">
         <HighlightedLetter letter="Important "/>
         Links
       </Typography>
@@ -18,13 +19,5 @@ const LinkHeader = () => {
     </Box>
   );
 };
-
-function HighlightedLetter({ letter }: { letter: string }) {
-  return (
-    <Typography variant="inherit" color="primary" display="inline">
-      {letter}
-    </Typography>
-  );
-}
 
 export default LinkHeader;

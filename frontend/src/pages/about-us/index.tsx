@@ -7,8 +7,9 @@ import AboutUsAPI, {
 } from "../../API/about-us";
 import QueryGuard from "../../components/query-guard";
 import QueryFallback from "../../components/QueryFallback";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
+import { HighlightedLetter } from "../../core/components";
 
 interface AboutUsP {
   divisions: DivisionT[];
@@ -23,9 +24,9 @@ const AboutUs = (props: AboutUsP) => {
   return (
     <>
       {/* Hero */}
-      <Box py={3} px={5}>
-        <Typography variant="h1" textAlign="center">
-          About Us
+      <Stack py={3} px={5}>
+        <Typography variant="fancy_h1" textAlign="center">
+          About <HighlightedLetter letter="Us" />
         </Typography>
         <Typography variant="h2" textAlign="center" py={2}>
           We are KISA, the KAIST International Students Association.
@@ -55,7 +56,7 @@ const AboutUs = (props: AboutUsP) => {
           Relations, Finance, and Web. To learn more about KISA's divisions and
           what they do, you can check out the next page!
         </Typography>
-      </Box>
+      </Stack>
       {/* Link to constitution */}
       <Box
         sx={{
