@@ -22,6 +22,27 @@ declare module '@mui/material/Typography' {
   interface TypographyPropsVariantOverrides {
     h5: false;
     h6: false;
+    fancy_h1: true;
+    fancy_h2: true;
+    fancy_h3: true;
+    fancy_h4: true;
+  }
+}
+
+declare module '@mui/material/styles' {
+  interface TypographyVariants {
+    fancy_h1: React.CSSProperties;
+    fancy_h2: React.CSSProperties;
+    fancy_h3: React.CSSProperties;
+    fancy_h4: React.CSSProperties;
+  }
+
+  // allow configuration using `createTheme`
+  interface TypographyVariantsOptions {
+    fancy_h1?: React.CSSProperties;
+    fancy_h2?: React.CSSProperties;
+    fancy_h3?: React.CSSProperties;
+    fancy_h4?: React.CSSProperties;
   }
 }
 
@@ -48,6 +69,34 @@ const theme = createTheme({
       letterSpacing: "0em",
     },
     h4: {
+      fontWeight: 500,
+      fontSize: "1.25rem",
+      lineHeight: 1.6,
+      letterSpacing: "0.0075em",
+    },
+    fancy_h1: {
+      fontFamily: "Satisfy",
+      fontWeight: 400,
+      fontSize: "3rem",
+      lineHeight: 1.167,
+      letterSpacing: "0em",
+    },
+    fancy_h2: {
+      fontFamily: "Satisfy",
+      fontWeight: 400,
+      fontSize: "2.125rem",
+      lineHeight: 1.235,
+      letterSpacing: "0.00735em",
+    },
+    fancy_h3: {
+      fontFamily: "Satisfy",
+      fontWeight: 400,
+      fontSize: "1.5rem",
+      lineHeight: 1.334,
+      letterSpacing: "0em",
+    },
+    fancy_h4: {
+      fontFamily: "Satisfy",
       fontWeight: 500,
       fontSize: "1.25rem",
       lineHeight: 1.6,
