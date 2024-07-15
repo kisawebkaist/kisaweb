@@ -1,9 +1,9 @@
 import { RouteObject } from "react-router-dom";
 import React from "react";
 import Alumni from "../../pages/alumni";
-import Multimedia from "../../pages/multimedia/multimedia";
 import { NavTabRoute } from "../../core/types";
 import { mainLoader } from "./main";
+import { Multimedia, MultimediaHome } from "../../pages/multimedia/multimedia";
 
 // Import Components Here (Lazily)
 const Main = React.lazy(() => import("./main"));
@@ -53,7 +53,16 @@ export const tabRoutes: NavTabRoute[] = [
   },
   {
     path: "multimedia",
-    element: <Multimedia />,
+    children: [
+      {
+        path: "",
+        element: <MultimediaHome />
+      },
+      {
+        path: ":slug",
+        element: <Multimedia />
+      }
+    ],
     tabName: "Multimedia",
   },
   {

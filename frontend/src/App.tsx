@@ -6,12 +6,11 @@ import "@fontsource/roboto/400-italic.css";
 import {
   CircularProgress,
   Container,
-  createTheme,
 } from "@mui/material";
 import { 
-  StyledEngineProvider,
-  ThemeProvider
- } from "@mui/material/styles";
+  experimental_extendTheme as extendTheme,
+  Experimental_CssVarsProvider as CssVarsProvider,
+  StyledEngineProvider } from "@mui/material/styles";
 
 import axios from "axios";
 
@@ -46,7 +45,7 @@ declare module '@mui/material/styles' {
   }
 }
 
-const theme = createTheme({
+const theme = extendTheme({
   typography: {
     fontFamily: ["Itim", "Roboto", "times", "roman", "serif"].join(","),
     // copied it from mui default h3-6
@@ -103,18 +102,21 @@ const theme = createTheme({
       letterSpacing: "0.0075em",
     },
   },
-  palette: {
-    primary: {
-      main: "#43bFF8",
-    },
-    secondary: {
-      main: "#f87c43",
-    },
-    background : {
-      default : "#f1f5f9",
-      paper : "#f8fafc"
-    },
-    mode: "light",
+  colorSchemes: {
+    light: {
+      palette: {
+        primary: {
+          main: "#43bFF8",
+        },
+        secondary: {
+          main: "#f87c43",
+        },
+        background : {
+          default : "#f1f5f9",
+          paper : "#f8fafc"
+        },
+      }
+    }
   },
   components: {
     MuiAccordionSummary: {
@@ -139,9 +141,9 @@ const App = () => {
   return (
     <React.Suspense fallback={loadingFallBack}>
       <StyledEngineProvider injectFirst>
-        <ThemeProvider theme={theme}>
+        <CssVarsProvider theme={theme}>
           <RouterProvider router={router} />
-        </ThemeProvider>
+        </CssVarsProvider>
       </StyledEngineProvider>
     </React.Suspense>
   );

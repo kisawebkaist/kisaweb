@@ -35,7 +35,8 @@ const Main = () => {
       "w-full",
       "p-4",
       "z-10",
-      "backdrop-blur"
+      "backdrop-blur",
+      "box-border"
     ].join(' ')
   }, [])
 

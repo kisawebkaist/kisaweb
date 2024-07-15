@@ -110,8 +110,7 @@ import { HighlightedLetter } from "../../core/components";
 // };
 
 function sortBlogsByDateModified(blogs: PartialBlogAPI[]) {
-  blogs.sort((a, b) => new Date(b.data.modified).getTime() - new Date(a.data.modified).getTime());
-  return blogs;
+  return blogs.sort((a, b) => new Date(b.data.modified).getTime() - new Date(a.data.modified).getTime());
 }
 
 const BlogCard = ({ data: blog }: { data: PartialBlogAPI }) => {
@@ -288,7 +287,10 @@ const Blog = ({ blogs, tags }: BlogP) => {
           />
         </Stack>
       </Stack> */}
-      <Typography variant="fancy_h1" textAlign="center"><HighlightedLetter letter="KISA" /> Blog</Typography>
+      <Stack textAlign="center">
+        <Typography variant="fancy_h1" textAlign="center"><HighlightedLetter letter="KISA" /> Blog</Typography>
+        <Typography variant="subtitle1">Sharing is Caring</Typography>
+      </Stack>
       {renderLastestRelease(blogs)}
       <Typography variant="h2" textAlign="center">All blogs</Typography>
       <Divider/>
