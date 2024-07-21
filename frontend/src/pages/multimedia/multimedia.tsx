@@ -1,12 +1,12 @@
 import Lister from "../../components/lister";
-import React, { lazy, useState } from "react";
+import React, { lazy, useEffect, useState } from "react";
 import Card from '@mui/material/Card';
 import { Box, Button, ButtonBase, CardActionArea, CardHeader, CardMedia, Dialog, DialogContent, DialogTitle, Divider, Grid, Icon, ImageList, ImageListItem, ImageListItemBar, Paper, Stack, Typography, useTheme } from "@mui/material";
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, EffectFade, Keyboard, Navigation, Pagination, Zoom } from 'swiper/modules';
 import "../../components/css/multimedia.css"
-import { fakeMultimediaData, MultimediaImageT, MultimediaT } from "../../API/multimedia";
+import MultimediaAPI, { MultimediaImageT, MultimediaT } from "../../API/multimedia";
 
 import 'swiper/css';
 import 'swiper/css/zoom';
@@ -15,6 +15,8 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { HighlightedLetter } from "../../core/components";
 import { redirect, useNavigate, useParams } from "react-router-dom";
+import QueryGuard from "../../components/query-guard";
+import QueryFallback from "../../components/QueryFallback";
 
 // const fakeCarouselData = ["facebook-logo.png", "kisaLogo.png", "https://qph.cf2.quoracdn.net/main-qimg-e9be1cf0430dfd81717b5450e7734d17-pjlq"]
 // const fakeImageData = [""]
@@ -189,9 +191,9 @@ const sortMultimediaImagesByDateTime = (imgs: MultimediaImageT[]) => imgs.sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
 );
 
-export const Multimedia = () => {
+export const Multimedia = ({ data }: {data: MultimediaT[]}) => {
     const slug = useParams().slug as string;
-    const index = fakeMultimediaData.findIndex(multimedia=>(multimedia.slug===slug));
+    const index = data.findIndex(multimedia=>(multimedia.slug===slug));
     const [zoomedImageIndex, setZoomedImageIndex] = useState(0);
     const [zoomDialogState, setZoomDiaglogState] = useState(false);
     const aspectRatio = window.innerWidth / window.innerHeight;
@@ -205,7 +207,7 @@ export const Multimedia = () => {
         images: MultimediaImageT[];
     };
 
-    const groupsByDate = fakeMultimediaData[index].images.reduce(
+    const groupsByDate = data[index].images.reduce(
         (accumulator: ImageGroupedByDate[], currentVal: MultimediaImageT, currentIndex: number) => {
             const currentValDate = new Date(currentVal.date);
             if (accumulator.length === 0 || accumulator[accumulator.length-1].date.toDateString() !== currentValDate.toDateString()) {
@@ -222,7 +224,6 @@ export const Multimedia = () => {
         []);
 
     const imageOnClickHandler: React.MouseEventHandler<HTMLLIElement> = (event) => {
-        console.log(event.currentTarget);
         setZoomedImageIndex(parseInt(event.currentTarget.id));
         setZoomDiaglogState(true);
     }
@@ -250,21 +251,21 @@ export const Multimedia = () => {
     return (
         <Stack>
             <Stack textAlign="center">
-                <Typography variant="fancy_h1">{fakeMultimediaData[index].title}</Typography>
-                <Typography>{fakeMultimediaData[index].description}</Typography>
+                <Typography variant="fancy_h1">{data[index].title}</Typography>
+                <Typography>{data[index].description}</Typography>
             </Stack>
             <Divider/>
             {groupsByDate.map(ImageGroupByDate)}
             <Dialog open={zoomDialogState} onClose={()=>setZoomDiaglogState(false)} maxWidth="lg">
                 <DialogTitle variant="fancy_h2" textAlign="center">
-                    {fakeMultimediaData[index].title}
+                    {data[index].title}
                 </DialogTitle>
                 <DialogContent>
                 <Typography>
-                    {fakeMultimediaData[index].description}
+                    {data[index].description}
                 </Typography>
                 <Swiper
-                    initialSlide={0}
+                    initialSlide={zoomedImageIndex}
                     spaceBetween={30}
                     effect={'fade'}
                     keyboard={{
@@ -280,7 +281,7 @@ export const Multimedia = () => {
                     zoom={true}
                     modules={[Zoom, EffectFade, Keyboard, Navigation, Pagination]}
                 >
-                    {fakeMultimediaData[index].images.map(img => (
+                    {data[index].images.map(img => (
                         <SwiperSlide>
                             <Stack className="swiper-zoom-container" sx={{aspectRatio: aspectRatio}}>
                             <Typography width="100%" textAlign="right">{new Date(img.date).toDateString()}</Typography>
@@ -300,7 +301,7 @@ export const Multimedia = () => {
     );
 };
 
-export const MultimediaHome = () => {
+export const MultimediaHome = ({data}: {data: MultimediaT[]}) => {
     return (
         <Stack gap={2}>
             <Stack>
@@ -326,7 +327,7 @@ export const MultimediaHome = () => {
                 modules={[Autoplay, EffectFade, Keyboard, Navigation, Pagination]}
                 className="w-5/6"
             >
-                {fakeMultimediaData.map(multimedia => {
+                {data.map(multimedia => {
                     return {
                         title: multimedia.title,
                         slug: multimedia.slug,
@@ -338,9 +339,44 @@ export const MultimediaHome = () => {
             <Typography variant="h2" textAlign="center">Wayback Machine</Typography>
             <Divider/>
             <Grid container spacing={2}>
-                {fakeMultimediaData.map(AlbumCover)}
+                {data.map(AlbumCover)}
             </Grid>
         </Stack>
     );
 }
 
+export const MultimediaHomeWithGuard = () => {
+    async function query() {
+        return {
+            data: await MultimediaAPI.all()
+        }
+    }
+
+    return (
+        <QueryGuard 
+            render={MultimediaHome} 
+            props={{}} 
+            query={query} 
+            args={undefined} 
+            fallback={QueryFallback()}
+        />
+    )
+};
+
+export const MultimediaWithGuard = () => {
+    async function query() {
+        return {
+            data: await MultimediaAPI.all()
+        }
+    }
+
+    return (
+        <QueryGuard 
+            render={Multimedia} 
+            props={{}} 
+            query={query} 
+            args={undefined} 
+            fallback={QueryFallback()}
+        />
+    )
+};

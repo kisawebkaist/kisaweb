@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export type MultimediaT = {
     title: string;
     description: string;
@@ -80,3 +82,9 @@ export const fakeMultimediaData: MultimediaT[] = [
         slug: "25Spring"
     }
 ];
+
+export default class MultimediaAPI {
+    static all = () => axios
+        .get(`/api/multimedia/`)
+        .then(resp => resp.data as MultimediaT[])
+}
