@@ -6,7 +6,7 @@ from rest_framework.routers import DefaultRouter
 # API
 router = DefaultRouter()
 router.register(
-    '', views.PostViewSet, basename = 'blog-post'
+    'content', views.PostViewSet, basename = 'blog-post'
 )
 router.register(
     'tags', views.PostTagViewSet, basename = 'blog-post-tags'

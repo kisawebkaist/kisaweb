@@ -1,7 +1,10 @@
-from django.urls import path
-import multimedia.views as views
+from rest_framework.routers import DefaultRouter
 
-urlpatterns = [
-    path('', views.HomePageView.as_view(), name='multimedia'),
-    path('pages/<slug:slug>/', views.MultimediaView.as_view()),
-]
+from . import views
+
+router = DefaultRouter()
+router.register(
+    '', views.MultimediaViewSet, basename = 'multimedia'
+)
+
+urlpatterns = router.urls

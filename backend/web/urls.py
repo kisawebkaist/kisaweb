@@ -29,7 +29,6 @@ urlpatterns = [
     path('admin/', site.urls),
     path('events/', include('events.urls')),
     path('docs/', include('docs.urls')),
-    path('multimedia/', include('multimedia.urls')),
     path('important-links/', include('important_links.urls')),
     path('alumni/', include('alumni.urls')),
     path(f'{settings.URL_SHORTENER_PREFIX}/', include('url_shortener.urls')),
@@ -42,7 +41,8 @@ urlpatterns = [
     path('api/faq/', include('faq.urls')),
     path('api/blog/', include('blog.urls')),
     path('api/sso/', include('sso.urls')),
-    path('api/election/', include('election.urls'))
+    path('api/election/', include('election.urls')),
+    path('api/multimedia/', include('multimedia.urls'))
 ]
 
 # Add static file urls
