@@ -5,11 +5,11 @@ import AboutUsAPI, {
   InternalBoardMemberT,
   MemberT,
 } from "../../API/about-us";
-import QueryGuard from "../../components/query-guard";
-import QueryFallback from "../../components/QueryFallback";
+import QueryGuard from "../../components/common/query-guard";
+import QueryFallback from "../../components/common/QueryFallback";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
-import { HighlightedLetter } from "../../core/components";
+import { HighlightedLetter } from "../../components/common/HighlightedLetter";
 
 interface AboutUsP {
   divisions: DivisionT[];

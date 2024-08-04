@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import UrlShortener from "../API/url-shortener";
+import UrlShortener from "../../API/url-shortener";
 import { Stack, Icon, Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faSadCry, faSearch } from "@fortawesome/free-solid-svg-icons";

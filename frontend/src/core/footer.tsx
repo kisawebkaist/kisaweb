@@ -4,13 +4,14 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "../components/css/footer.css";
 import { FooterT } from "./types";
-import { Box, IconButton, Typography, Stack } from "@mui/material";
+import { Box, IconButton, Typography, Stack, useTheme, Paper } from "@mui/material";
 import { Link } from "react-router-dom";
 import {
   faFacebook,
   faInstagram,
   faYoutube,
 } from "@fortawesome/free-brands-svg-icons";
+import ShapeShifter from "../components/common/ShapeShifter";
 
 export type FooterP = {
   data: FooterT;
@@ -18,7 +19,6 @@ export type FooterP = {
 
 const Footer = ({
   data: {
-    kisa_text,
     location,
     phnum_eng,
     phnum_kor,
@@ -27,22 +27,25 @@ const Footer = ({
     yt_link,
   }
 }: FooterP) => {
+
   return (
-    <Stack
+    <Paper
       component="footer"
-      direction="row"
-      zIndex={(theme) => theme.zIndex.drawer + 1}
-      bgcolor="primary.main"
-      color="primary.contrastText"
-      className="p-4"
-      sx={{display: "flex", justifyContent: "space-between"}}
+      sx={{
+        display: "flex", 
+        justifyContent: "space-between", 
+        padding: 4, 
+        borderRadius: 0
+      }}
     >
-      <Box sx={{ display: {xs: 'none', sm: 'none', md: 'block'} }}>
-        <Typography fontWeight="bold">KISA</Typography>
-        <Typography variant="subtitle2">
-          {kisa_text}
-        </Typography>
-      </Box>
+      <ShapeShifter breakpoint="sm" down={<></>} up={
+        <Stack>
+          <Typography fontWeight="bold">KISA</Typography>
+          <Typography variant="subtitle2">
+            We are KISA.
+          </Typography>
+        </Stack>
+      } />
       <Box>
         <Typography fontWeight="bold">Contact Us</Typography>
         <Typography variant="subtitle2">
@@ -65,7 +68,7 @@ const Footer = ({
           </IconButton>
         </Stack>
       </Box>
-    </Stack>
+    </Paper>
   );
 };
 

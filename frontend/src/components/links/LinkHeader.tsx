@@ -1,6 +1,6 @@
 import { Link, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import { HighlightedLetter } from "../../core/components";
+import { HighlightedLetter } from "../common/HighlightedLetter";
 
 const LinkHeader = () => {
   return (

@@ -6,9 +6,9 @@ import FaqQuestion from "./FaqQuestion";
 import FaqSearch from "./FaqSearch";
 import { Typography, Stack, List } from "@mui/material";
 import { Container, Box } from "@mui/system";
-import Lister from "../../components/lister";
-import QueryFallback from "../../components/QueryFallback";
-import QueryGuard from "../../components/query-guard";
+import Lister from "../../components/common/lister";
+import QueryFallback from "../../components/common/QueryFallback";
+import QueryGuard from "../../components/common/query-guard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComment } from "@fortawesome/free-solid-svg-icons";
 

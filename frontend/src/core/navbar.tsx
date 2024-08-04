@@ -1,5 +1,5 @@
 import NavEntryT, { NavDropdownT, NavLinkT } from "./types"
-import Lister from "../components/lister"
+import Lister from "../components/common/lister"
 import { Button } from "@mui/material";
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import "../components/css/navbar.css"

@@ -1,6 +1,6 @@
 import { IconButton, InputAdornment, List, ListItemButton, MenuItem, Select, SelectChangeEvent, SxProps, TextField, Theme } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faSearch} from "@fortawesome/free-solid-svg-icons"
+import { faSearch } from "@fortawesome/free-solid-svg-icons"
 import { CategoryT } from "../../API/links";
 
 type LinkSearchProps = {
@@ -11,6 +11,7 @@ export const LinkSearch = ({ onSearch }: LinkSearchProps) => {
   return (
     <TextField
       fullWidth
+      autoFocus
       variant="filled"
       type="search"
       label="Search"
@@ -35,7 +36,6 @@ type LinkCategoryProps = {
   categories: CategoryT[];
   activeCategory: number;
   setActiveCategory: (id: number) => void;
-  sx?: SxProps<Theme> | undefined;
 }
 const categoryAll: CategoryT = {
   title_category: "All",
@@ -43,7 +43,7 @@ const categoryAll: CategoryT = {
   id: -1,
 }
 
-export const LinkCategoryDropdown = ({ categories, activeCategory, setActiveCategory, sx}: LinkCategoryProps ) => {
+export const LinkCategoryDropdown = ({ categories, activeCategory, setActiveCategory }: LinkCategoryProps) => {
   const renderEntry = (category: CategoryT) => (
     <MenuItem value={category.id}>{category.title_category}</MenuItem>
   );
@@ -56,16 +56,15 @@ export const LinkCategoryDropdown = ({ categories, activeCategory, setActiveCate
       value={activeCategory.toString()}
       label="Category"
       onChange={handleChange}
-      sx={sx}
     >
       {[categoryAll].concat(categories).map(renderEntry)}
     </Select>
   );
 };
 
-export const LinkCategorySidePanel = ({ categories, activeCategory, setActiveCategory, sx}: LinkCategoryProps) => {
+export const LinkCategorySidePanel = ({ categories, activeCategory, setActiveCategory }: LinkCategoryProps) => {
   const renderEntry = (category: CategoryT) => (
-    <ListItemButton 
+    <ListItemButton
       selected={activeCategory === category.id}
       onClick={() => setActiveCategory(category.id)}
     >
@@ -76,7 +75,7 @@ export const LinkCategorySidePanel = ({ categories, activeCategory, setActiveCat
   return (
     <List
       component="nav"
-      sx={sx}
+      sx={{ width: "20%", marginRight: "2" }}
     >
       {[categoryAll].concat(categories).map(renderEntry)}
     </List>

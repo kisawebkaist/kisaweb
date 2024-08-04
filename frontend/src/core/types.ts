@@ -1,5 +1,5 @@
 import React from "react"
-import { NonIndexRouteObject, RouteObject } from "react-router-dom";
+import { NonIndexRouteObject } from "react-router-dom";
 
 type GenericNavEntryT<T, U> = {
   type : T,
@@ -39,7 +39,6 @@ type NavEntryT = NavLinkT | NavDropdownT
 export default NavEntryT
 
 export type FooterT = {
-  kisa_text: string;
   location: string;
   phnum_eng: string;
   phnum_kor: string;
@@ -48,27 +47,6 @@ export type FooterT = {
   insta_link: string;
   yt_link: string;
 }
-
-
-export type UserInfo = {
-  name: string;
-  studentid: string;
-  email: string;
-}
-interface BaseUser {
-  is_authenticated: boolean,
-  data: UserInfo | null,
-}
-export interface AnonymousUser extends BaseUser {
-  is_authenticated: false,
-  data: null,
-}
-export interface AuthenticatedUser extends BaseUser {
-  is_authenticated: true,
-  data: UserInfo,
-}
-export type User = AuthenticatedUser | AnonymousUser;
-
 
 export interface NavTabRoute extends NonIndexRouteObject {
   path: string;

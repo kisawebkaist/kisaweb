@@ -1,16 +1,17 @@
-import { CategoryT, LinkT } from "../API/links";
-import LinkHeader from "../components/links/LinkHeader";
-import LinkEntity from "../components/links/LinkEntity";
-import { LinkCategoryDropdown, LinkCategorySidePanel, LinkSearch } from "../components/links/LinkSearch";
-import QueryGuard from "../components/query-guard";
+import { CategoryT, LinkT } from "../../API/links";
+import LinkHeader from "../../components/links/LinkHeader";
+import LinkEntity from "../../components/links/LinkEntity";
+import { LinkCategoryDropdown, LinkCategorySidePanel, LinkSearch } from "../../components/links/LinkSearch";
+import QueryGuard from "../../components/common/query-guard";
 import React from "react";
 import { Stack, Typography } from "@mui/material";
 import { Container, Box } from "@mui/system";
-import Lister from "../components/lister";
-import QueryFallback from "../components/QueryFallback";
-import LinkAPI from "../API/links";
+import Lister from "../../components/common/lister";
+import QueryFallback from "../../components/common/QueryFallback";
+import LinkAPI from "../../API/links";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLinkSlash } from "@fortawesome/free-solid-svg-icons";
+import ShapeShifter from "../../components/common/ShapeShifter";
 
 // Define the expected types for faqs and categories
 type LinksP = {
@@ -38,7 +39,7 @@ const ImportantLinks = ({ links, categories }: LinksP) => {
       return <Lister array={filteredLinks} render={LinkEntity} props={{}} />;
     return (
       <Stack className="h-80 gap-y-4">
-        <FontAwesomeIcon icon = {faLinkSlash}/>
+        <FontAwesomeIcon icon={faLinkSlash} />
         <Typography variant="body2" textAlign="center">
           No Links Found.
         </Typography>
@@ -50,11 +51,15 @@ const ImportantLinks = ({ links, categories }: LinksP) => {
     <Container maxWidth="md">
       <LinkHeader />
       <Stack>
-        <LinkCategoryDropdown categories={categories} activeCategory={activeCategory} setActiveCategory={setActiveCategory} sx={{ display: {xs: "block", sm: "none"} }}/>
+        <ShapeShifter breakpoint="sm" up={<></>} down={
+          <LinkCategoryDropdown categories={categories} activeCategory={activeCategory} setActiveCategory={setActiveCategory} />
+        } />
         <LinkSearch onSearch={setSearchText} />
       </Stack>
       <Stack direction="row" justifyContent="space-between" gap={2}>
-        <LinkCategorySidePanel categories={categories} activeCategory={activeCategory} setActiveCategory={setActiveCategory} sx={{ display: {xs: "none", sm: "block"}, width: "20%", marginRight: "2" }} />
+        <ShapeShifter breakpoint="sm" down={<></>} up={
+          <LinkCategorySidePanel categories={categories} activeCategory={activeCategory} setActiveCategory={setActiveCategory} />
+        } />
         {/* Questions */}
         <Box component="main" sx={{ flex: 1 }}>
           {linkContents}
@@ -71,8 +76,8 @@ const LinksWithGuard = () => {
   }
   async function query(args: QueryParams) {
     return {
-        links: await LinkAPI.allLinks(args.linkParam),
-        categories: await LinkAPI.allCategories(args.categoryParam)
+      links: await LinkAPI.allLinks(args.linkParam),
+      categories: await LinkAPI.allCategories(args.categoryParam)
     };
   }
   // QueryGuard memorization is not working when switching tabs prolly due to being rerendered from scratch
@@ -81,7 +86,7 @@ const LinksWithGuard = () => {
       render={ImportantLinks}
       props={{}}
       query={query}
-      args={{linkParam: {}, categoryParam: {}}}
+      args={{ linkParam: {}, categoryParam: {} }}
       fallback={QueryFallback()}
     />
   );

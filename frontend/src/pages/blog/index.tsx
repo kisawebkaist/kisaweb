@@ -19,15 +19,13 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import Lister from "../../components/lister";
+import Lister from "../../components/common/lister";
 import "../../components/css/blog.css";
-import QueryGuard from "../../components/query-guard";
+import QueryGuard from "../../components/common/query-guard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-regular-svg-icons";
 import { useNavigate } from "react-router-dom";
-import { render } from "@testing-library/react";
-import { arch } from "os";
-import { HighlightedLetter } from "../../core/components";
+import { HighlightedLetter } from "../../components/common/HighlightedLetter";
 
 // /**
 //  * @brief This can be used as a structure of blog data for api.

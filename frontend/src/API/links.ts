@@ -21,7 +21,7 @@ export default class LinkAPI {
   static allLinks(queryParams: Record<string, any>): Promise<LinkT[]> {
     return axios
       .get(
-        `${process.env.REACT_APP_API_ENDPOINT}/important_links/`,
+        `${process.env.REACT_APP_API_ENDPOINT}/important-links/`,
         queryParams
       )
       .then((resp) => resp.data);
@@ -29,7 +29,7 @@ export default class LinkAPI {
   static allCategories(queryParams: Record<string, any>): Promise<CategoryT[]> {
     return axios
       .get(
-        `${process.env.REACT_APP_API_ENDPOINT}/important_links/category/`,
+        `${process.env.REACT_APP_API_ENDPOINT}/important-links/category/`,
         queryParams
       )
       .then((resp) => resp.data);

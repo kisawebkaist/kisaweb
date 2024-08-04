@@ -1,4 +1,4 @@
-import Lister from "../../components/lister";
+import Lister from "../../components/common/lister";
 import React, { lazy, useEffect, useState } from "react";
 import Card from '@mui/material/Card';
 import { Box, Button, ButtonBase, CardActionArea, CardHeader, CardMedia, Dialog, DialogContent, DialogTitle, Divider, Grid, Icon, ImageList, ImageListItem, ImageListItemBar, Paper, Stack, Typography, useTheme } from "@mui/material";
@@ -13,10 +13,10 @@ import 'swiper/css/zoom';
 import 'swiper/css/effect-fade';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import { HighlightedLetter } from "../../core/components";
 import { redirect, useNavigate, useParams } from "react-router-dom";
-import QueryGuard from "../../components/query-guard";
-import QueryFallback from "../../components/QueryFallback";
+import QueryGuard from "../../components/common/query-guard";
+import QueryFallback from "../../components/common/QueryFallback";
+import { HighlightedLetter } from "../../components/common/HighlightedLetter";
 
 // const fakeCarouselData = ["facebook-logo.png", "kisaLogo.png", "https://qph.cf2.quoracdn.net/main-qimg-e9be1cf0430dfd81717b5450e7734d17-pjlq"]
 // const fakeImageData = [""]
