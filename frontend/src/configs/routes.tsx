@@ -13,6 +13,7 @@ const QueryFallback = React.lazy(
 const AboutUs = React.lazy(() => import("../pages/about-us"));
 const Blog = React.lazy(() => import("../pages/blog"));
 const SlugBlog = React.lazy(() => import("../pages/blog/slug"));
+const Event = React.lazy(() => import("../pages/event"));
 const Links = React.lazy(() => import("../pages/important-links"));
 const Shorten = React.lazy(() => import("../pages/bitly"));
 
@@ -29,7 +30,7 @@ export const tabRoutes: NavTabRoute[] = [
     path: "blog",
     children: [
       {
-        path: "",
+        index: true,
         element: <Blog />,
       },
       {
@@ -38,6 +39,11 @@ export const tabRoutes: NavTabRoute[] = [
       },
     ],
     tabName: "Blog",
+  },
+  {
+    path: "event",
+    element: <Event />,
+    tabName: "Event"
   },
   {
     path: "faq",
