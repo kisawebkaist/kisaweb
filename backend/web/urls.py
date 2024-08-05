@@ -40,6 +40,7 @@ urlpatterns = [
     path('api/about-us/', include('aboutus.urls')),
     path('api/faq/', include('faq.urls')),
     path('api/blog/', include('blog.urls')),
+    path('api/event/', include('events.urls')),
     path('api/sso/', include('sso.urls')),
     path('api/election/', include('election.urls')),
     path('api/multimedia/', include('multimedia.urls'))

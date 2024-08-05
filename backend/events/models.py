@@ -69,38 +69,22 @@ class Event(models.Model):
     """
     
     class Meta:
-        ordering = ['-id']
+        ordering = ['-event_start_datetime']
 
     title = models.CharField(max_length=100, default='')
     slug = models.SlugField(max_length=100, unique=True, blank=True)
 
-    default_location = 'TBA'
-    location = models.CharField(max_length=100, default=default_location, blank=True)
-
-    is_link = models.BooleanField(default=False, verbose_name='Event is online (i.e. has link)')
-    link = models.URLField(default='TBA', blank=True)
-
     event_start_datetime = models.DateTimeField()
     event_end_datetime = models.DateTimeField()
-    registration_start_datetime = models.DateTimeField(blank=True, null=True)
-    registration_end_datetime = models.DateTimeField(blank=True, null=True)
+    reg_start_datetime = models.DateTimeField(blank=True, null=True)
+    reg_end_datetime = models.DateTimeField(blank=True, null=True)
 
-    max_occupancy = models.PositiveSmallIntegerField(blank=True, null=True)
-    current_occupancy = models.PositiveSmallIntegerField(blank=True, default=0)
+    max_occupancy = models.PositiveIntegerField(blank=True, null=True)
     participants = models.ManyToManyField(User, blank=True)
     important_message = models.CharField(max_length=200, blank=True)
+    poster = models.ImageField(upload_to='events/img', blank=True, null=True)
 
-    description = HTMLField()
-    min_descr_truncate_num = 50
-    descr_truncate_num = models.PositiveSmallIntegerField(blank=True, default=min_descr_truncate_num)
-
-    default_image_size = 260
-    image = models.ImageField(upload_to='events/img', blank=True, null=True)
-    image_height = models.PositiveSmallIntegerField(blank=True, default=default_image_size)
-    image_width = models.PositiveSmallIntegerField(blank=True, default=default_image_size)
-
-    has_registration_form = models.BooleanField(default=False)
-    registration_form_src = models.CharField(max_length=255, blank=True)
+    description = models.JSONField()
 
     def __str__(self):
         return self.title
@@ -116,66 +100,66 @@ class Event(models.Model):
         self.slug = str(self.pk) + '-' + slugify(self.title)
         super().save(*args, **kwargs)
 
-    def image_tag(self, css_class='', tag_id=None, listview=False):
-        """
-        Creates the HTML image tag with the appropriate image src to show for the event instance. This method is implemented since ImageField can not have a default value. If :attr:`Event.image` is ``None``, then the default image stored in 'event/static/img' directory is used.
+    # def image_tag(self, css_class='', tag_id=None, listview=False):
+    #     """
+    #     Creates the HTML image tag with the appropriate image src to show for the event instance. This method is implemented since ImageField can not have a default value. If :attr:`Event.image` is ``None``, then the default image stored in 'event/static/img' directory is used.
 
-        Args:
-            css_class (str, default = empty string): Classes to add to the HTML img tag.
-            tag_id (str, default = ``None``): ID to add to the HTML img tag.
-            listview (bool, default = ``False``):
-                ``True`` if the image tag will be used in events listview (as opposed to detailview).
+    #     Args:
+    #         css_class (str, default = empty string): Classes to add to the HTML img tag.
+    #         tag_id (str, default = ``None``): ID to add to the HTML img tag.
+    #         listview (bool, default = ``False``):
+    #             ``True`` if the image tag will be used in events listview (as opposed to detailview).
 
-        Returns:
-            str: HTML img tag
-        """
-        tag_id_str = ''
-        if tag_id:
-            tag_id = tag_id + '_preview'
-            tag_id_str = f'id="{tag_id}"'
+    #     Returns:
+    #         str: HTML img tag
+    #     """
+    #     tag_id_str = ''
+    #     if tag_id:
+    #         tag_id = tag_id + '_preview'
+    #         tag_id_str = f'id="{tag_id}"'
 
-        width, height = self.image_width, self.image_height
-        if listview:
-            width_height_ratio = width / height
-            width = self.default_image_size
-            height = width / width_height_ratio
+    #     width, height = self.image_width, self.image_height
+    #     if listview:
+    #         width_height_ratio = width / height
+    #         width = self.default_image_size
+    #         height = width / width_height_ratio
 
-        if not self.image:
-            path = '/static/img/events-default-dev-dist.png'
-        else:
-            path = f'/media/{self.image}'
-        return mark_safe(f'<img src="{path}" class="{css_class}" {tag_id_str} alt="Event Image" width="{width}" height="{height}" />')
+    #     if not self.image:
+    #         path = '/static/img/events-default-dev-dist.png'
+    #     else:
+    #         path = f'/media/{self.image}'
+    #     return mark_safe(f'<img src="{path}" class="{css_class}" {tag_id_str} alt="Event Image" width="{width}" height="{height}" />')
 
-    def modify_registration(self, registration_type, user):
-        """
-        Registers or Deregisters a user for an event. The database values for fields :attr:`Event.participants` and :attr:`Event.current_occupancy` are modified.
+    # def modify_registration(self, registration_type, user):
+    #     """
+    #     Registers or Deregisters a user for an event. The database values for fields :attr:`Event.participants` and :attr:`Event.current_occupancy` are modified.
 
-        Args:
-            registration_type (str): Takes the values ``'register'`` or ``'deregister'`` depending on the request.
-            user (:class:`User`): User reqesting to be (de)registered.
+    #     Args:
+    #         registration_type (str): Takes the values ``'register'`` or ``'deregister'`` depending on the request.
+    #         user (:class:`User`): User reqesting to be (de)registered.
 
-        Returns:
-            str: ``'Full'`` if :attr:`Event.max_occupancy` = :attr:`Event.current_occupancy`.
-        """
-        if registration_type=='register' and (not self.max_occupancy or self.current_occupancy < self.max_occupancy):
-            self.participants.add(user)
-            change = 1
-        elif registration_type=='deregister' and self.current_occupancy > 0:
-            self.participants.remove(user)
-            change = -1
-        else:
-            return 'Full'
+    #     Returns:
+    #         str: ``'Full'`` if :attr:`Event.max_occupancy` = :attr:`Event.current_occupancy`.
+    #     """
+    #     if registration_type=='register' and (not self.max_occupancy or self.current_occupancy < self.max_occupancy):
+    #         self.participants.add(user)
+    #         change = 1
+    #     elif registration_type=='deregister' and self.current_occupancy > 0:
+    #         self.participants.remove(user)
+    #         change = -1
+    #     else:
+    #         return 'Full'
 
-        self.current_occupancy = models.F('current_occupancy') + change
-        self.save(update_fields=['current_occupancy'])
+    #     self.current_occupancy = models.F('current_occupancy') + change
+    #     self.save(update_fields=['current_occupancy'])
 
-    def modify_descr_truncate_num(self, num):
-        """Modifies the database field value of :attr:`Event.descr_truncate_num`. If the new value is less than :attr:`Event.min_descr_truncate_num`, then the value is set to :attr:`Event.min_descr_truncate_num`.
+    # def modify_descr_truncate_num(self, num):
+    #     """Modifies the database field value of :attr:`Event.descr_truncate_num`. If the new value is less than :attr:`Event.min_descr_truncate_num`, then the value is set to :attr:`Event.min_descr_truncate_num`.
 
-        Args:
-            num (int): The new value for the database field.
-        """
-        # if the below logic is changed, then change might be needed in 'event_truncation.js'
-        self.descr_truncate_num = num if num >= self.min_descr_truncate_num else self.min_descr_truncate_num
-        self.save(update_fields=['descr_truncate_num'])
+    #     Args:
+    #         num (int): The new value for the database field.
+    #     """
+    #     # if the below logic is changed, then change might be needed in 'event_truncation.js'
+    #     self.descr_truncate_num = num if num >= self.min_descr_truncate_num else self.min_descr_truncate_num
+    #     self.save(update_fields=['descr_truncate_num'])
 
