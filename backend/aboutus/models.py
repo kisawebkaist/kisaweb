@@ -4,13 +4,15 @@ from django.utils.html import mark_safe
 from adminsortable.models import SortableMixin
 from django.utils.html import mark_safe
 
+from core.utils import DraftJSEditorField
+
 class BaseContent(SortableMixin):
 
     class Meta:
         ordering = ['the_order']
 
     title     = models.CharField(max_length = 100, null = True)
-    desc      = models.JSONField(default = dict)
+    desc      = DraftJSEditorField(default = dict)
     image     = models.ImageField(null=True, blank=True)
     the_order = models.PositiveIntegerField(default=0, editable=False, db_index=True)
 

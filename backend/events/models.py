@@ -6,6 +6,7 @@ from django.utils.text import slugify
 
 from tinymce.models import HTMLField
 
+from core.utils import DraftJSEditorField
 from web.settings import BASE_DIR
 from sso.models import User
 
@@ -84,7 +85,7 @@ class Event(models.Model):
     important_message = models.CharField(max_length=200, blank=True)
     poster = models.ImageField(upload_to='events/img', blank=True, null=True)
 
-    description = models.JSONField()
+    description = DraftJSEditorField()
 
     def __str__(self):
         return self.title

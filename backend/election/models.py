@@ -9,7 +9,7 @@ from django.utils.translation import gettext as _
 from rest_framework.exceptions import ParseError
 
 from sso.models import User
-from core.utils import housekeeping_signal
+from core.utils import housekeeping_signal, DraftJSEditorField
 
 ELECTION_MEDIA_UPLOAD_URL = 'election/img'
 
@@ -23,8 +23,8 @@ class Election(models.Model):
 
     start_datetime = models.DateTimeField(default=datetime.datetime.now, blank=True)
     end_datetime = models.DateTimeField()
-    intro_msg = models.JSONField(default=dict, blank=True)
-    instructions = models.JSONField(default=dict, blank=True)
+    intro_msg = DraftJSEditorField(default=dict, blank=True)
+    instructions = DraftJSEditorField(default=dict, blank=True)
     image = models.ImageField(upload_to=ELECTION_MEDIA_UPLOAD_URL, blank=True, null=True)
     debate_url = models.CharField(max_length=512, blank=True, null=True)
     slug = models.SlugField(max_length=50, blank=True, help_text="You can leave this blank.") # the slug will usually be the same as str(self)

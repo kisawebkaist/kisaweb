@@ -7,6 +7,7 @@ from django.utils.text import slugify
 from jsonschema import ValidationError as JSONValidationError
 from jsonschema import Draft7Validator
 
+from core.utils import DraftJSEditorField
 from tinymce.models import HTMLField
 
 # Validators
@@ -64,7 +65,7 @@ class Tag(models.Model):
 class Content(models.Model):
     title = models.CharField(max_length=200, blank=False)
     content = HTMLField()
-    new_content = models.JSONField(default = dict)
+    new_content = DraftJSEditorField(default = dict)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     slug = models.SlugField(

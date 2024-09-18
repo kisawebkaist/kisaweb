@@ -1,12 +1,17 @@
 import urllib.parse, string, secrets
 
+from django.core.validators import URLValidator
+from django.core.exceptions import ValidationError
+from django.db import models
 from django.dispatch import Signal
 from django.shortcuts import _get_queryset
+
 from rest_framework.authentication import SessionAuthentication as DRFSessionAuthetication
 from rest_framework.exceptions import NotFound
 
 URLSAFE_CHARACTERS = string.ascii_letters + string.digits + '-_.~'
 """Reference: RFC 3986"""
+ALLOWED_URL_SCHEMES = ['http', 'https']
 
 class StrictCSRFSessionAuthentication(DRFSessionAuthetication):
     """
@@ -44,6 +49,18 @@ def get_object_or_404(klass, *args, **kwargs):
         return queryset.get(*args, **kwargs)
     except queryset.model.DoesNotExist:
         raise NotFound
+
+
+def validate_draftjs(value):
+    """validate the draftjs input"""
+    validate = URLValidator(schemes=ALLOWED_URL_SCHEMES)
+    for obj in value['entityMap'].values():
+        if obj['type'] == "LINK":
+            validate(obj['data']['url'])
+
+class DraftJSEditorField(models.JSONField):
+    default_validators = [validate_draftjs]
+
 
 housekeeping_signal = Signal()
 """This signal will be sent frequently by cron to do some housekeeping"""
