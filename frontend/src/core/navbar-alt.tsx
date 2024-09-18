@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, redirect, useNavigate } from "react-router-dom";
 import {
   AppBar,
   Avatar,
@@ -41,7 +41,7 @@ import {
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import CollapsibleIconButton from "../components/common/CollapsibleIconButton";
-import { AppContext } from "./AppContext";
+import { useAuth } from "./AuthContext";
 import ShapeShifter from "../components/common/ShapeShifter";
 import TooltipWithDisable from "../components/common/TooltipWithDisable";
 
@@ -52,22 +52,39 @@ export type NavbarP = {
   setDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const SettingsDialog = (user: UserInfo) => {
+const AuthManager = () => {
   const [open, setOpen] = useState<boolean>(false);
   const toggleOpen = () => setOpen(!open);
+  const authContext = useAuth();
+  const navigate = useNavigate();
+  const [dialogContent, setDialogContent] = useState<React.ReactNode>();
+
+  if (!authContext.user.is_authenticated) {
+    return (
+      <CollapsibleIconButton
+        color="inherit"
+        startIcon={<FontAwesomeIcon icon={faRightToBracket} />}
+        onClick={() => AuthAPI.login("/").then(redirect => navigate(redirect))}
+        breakpoint="md"
+        tooltipText={"Login"}
+        tooltipEnabled={true}>
+        LOGIN
+      </CollapsibleIconButton>
+    )
+  }
 
   const nameAvatar = (name: string) => (
     <Avatar>{name.length === 0 ? "?" : name[0]}</Avatar>
   );
-  const accountSettingsContent = [
+  const accountSettingsDialogContent = (
     <Card>
       <CardHeader
-        avatar={nameAvatar(user.name)}
-        title={user.name}
-        subheader={user.email}
+        avatar={nameAvatar(authContext.user.data.name)}
+        title={authContext.user.data.name}
+        subheader={authContext.user.data.email}
         action={
           <Tooltip title="Personal data usage notice">
-            <IconButton onClick={() => setDialogContent(dataCollectionInfo)}>
+            <IconButton onClick={() => setDialogContent(dataCollectionInfoDialogContent)}>
               <FontAwesomeIcon icon={faShield} />
             </IconButton>
           </Tooltip>
@@ -77,19 +94,16 @@ const SettingsDialog = (user: UserInfo) => {
       <CardActions>
         <Button
           color="inherit"
-          onClick={() =>
-            AuthAPI.logout("/").then(
-              (redirect) => (window.location.href = redirect)
-            )
-          }
+          onClick={() => AuthAPI.logout("/").then(redirect => navigate(redirect))}
         >
           <FontAwesomeIcon icon={faRightFromBracket} />
           Logout
         </Button>
       </CardActions>
-    </Card>,
-  ];
-  const dataCollectionInfo = [
+    </Card>
+    );
+
+  const dataCollectionInfoDialogContent = (
     <Card>
       <CardHeader
         title="Personal Information Usage Disclosure"
@@ -97,22 +111,18 @@ const SettingsDialog = (user: UserInfo) => {
       />
       {personalInfoUsage.statement}
       <CardActions>
-        <Button onClick={() => setDialogContent(accountSettingsContent)}>
+        <Button onClick={() => setDialogContent(accountSettingsDialogContent)}>
           Back
         </Button>
         <Button color="secondary">delete my account</Button>
       </CardActions>
-    </Card>,
-  ];
-
-  const [dialogContent, setDialogContent] = useState<React.ReactElement[]>(
-    accountSettingsContent
+    </Card>
   );
 
   return (
     <React.Fragment>
       <Tooltip title="Account Settings">
-        <IconButton onClick={toggleOpen}>{nameAvatar(user.name)}</IconButton>
+        <IconButton onClick={toggleOpen}>{nameAvatar(authContext.user.data.name)}</IconButton>
       </Tooltip>
       <Dialog open={open} onClose={() => setOpen(false)}>
         {dialogContent}
@@ -136,8 +146,6 @@ const Navbar = ({
   drawerOpen,
   setDrawerOpen,
 }: NavbarP) => {
-  const appContext = useContext(AppContext);
-
   const navMenuButton = useCallback((drawerOpen: boolean) => {
     const handleOnClick = (event: React.SyntheticEvent) =>
       setDrawerOpen(!drawerOpen);
@@ -170,31 +178,18 @@ const Navbar = ({
         value={tabRoute.path}
         component={Link}
         to={tabRoute.path}
+        key={tabRoute.path}
       />
     ))}
   </Tabs>
   );
 
   return (
-    <AppBar position="sticky" sx={{ height: "var(--appbar-height)" }}>
+    <AppBar position="sticky" sx={{ height: "var(--AppBar-height)" }}>
       <Toolbar sx={{ justifyContent: "space-between" }}>
         <ShapeShifter down={navMenuButton(drawerOpen)} up={KISAIcon} breakpoint="md" />
         <ShapeShifter down={KISAIcon} up={tabs} breakpoint="md" />
-        {
-          appContext.user.is_authenticated?
-          <SettingsDialog {...appContext.user.data} />:
-          (
-            <CollapsibleIconButton
-              color="inherit"
-              startIcon={<FontAwesomeIcon icon={faRightToBracket} />}
-              onClick={() => AuthAPI.login("/").then((redirect) => (window.location.href = redirect))}
-              breakpoint="md"
-              tooltipText={"Login"}
-              tooltipEnabled={true}>
-              LOGIN
-            </CollapsibleIconButton>
-          )
-        }
+        <AuthManager/>
       </Toolbar>
     </AppBar>
   );

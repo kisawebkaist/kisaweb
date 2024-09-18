@@ -1,29 +1,87 @@
-import React, { Reducer, useEffect, useReducer, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import Footer from "./footer";
 import Navbar from "./navbar-alt";
 
-import { AuthAPI } from "../API/sso";
+import { AuthAPI, User } from "../API/sso";
 import { tabRoutes } from "../configs/routes";
-import { Drawer, Stack, Tab, Tabs, useColorScheme, useMediaQuery } from "@mui/material";
-import AppContext, { AppContextAction, AppContextT, defaultAppContext, DispatcherUpdate, UserUpdate } from "./AppContext";
+import { Drawer, Snackbar, Stack, Tab, Tabs, useColorScheme, useMediaQuery } from "@mui/material";
+import { AuthContext } from "./AuthContext";
 import { footer } from "../configs/footer";
+import NotificationContext, { Notification } from "./NotificationContext";
 
 const Main = () => {
   const urlPathSplit = useLocation().pathname.split("/");
   const [currentTab, setCurrentTab] = React.useState<string>(
     urlPathSplit[1] === "" ? tabRoutes[0].path : urlPathSplit[1]
   );
-  const [appContext, dispatch] = useReducer<Reducer<AppContextT, AppContextAction>>((prev, action) => action.dispatch(prev), defaultAppContext);
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
-  const {setColorScheme} = useColorScheme();
+
+  const { setColorScheme } = useColorScheme();
   const prefersDark = useMediaQuery("(prefers-color-scheme: dark)");
 
+  // contexts
+  const [authContextUser, setAuthContextUser] = useState<User>({
+    is_authenticated: false,
+    data: null
+  });
+  const authContext = {
+    user: authContextUser,
+    updateUser: setAuthContextUser
+  }
+
+  const [notificationContextData, setNotificationContextData] = useState<Notification>({
+    message: "",
+    anchorOrigin: {horizontal: "left", vertical: "bottom"},
+    open: false,
+    autoHideDuration: 3000,
+    onClose: (event: React.SyntheticEvent | Event, reason: string) => {}
+  })
+  const notificationContext = {
+    notification: notificationContextData,
+    updateNotification: setNotificationContextData,
+    showNotification: (message: String) => {
+      setNotificationContextData({
+        message: message,
+        anchorOrigin: {
+          vertical: "bottom",
+          horizontal: "left"
+        },
+        open: true,
+        autoHideDuration: 3000,
+        onClose: (event: React.SyntheticEvent | Event, reason: string) => {
+          setNotificationContextData({
+            message: "",
+            anchorOrigin: {
+              vertical: "bottom",
+              horizontal: "left",
+            },
+            open: false,
+            autoHideDuration: 3000,
+            onClose: (event, reason) => {
+              setNotificationContextData({
+                message: message,
+                anchorOrigin: {
+                  vertical: "bottom",
+                  horizontal: "left"
+                },
+                open: false,
+                autoHideDuration: 3000,
+                onClose: (event, reason) => {}
+              })
+            }
+          })
+        }
+      })
+    }
+  };
+
+
   useEffect(() => {
-    dispatch(new DispatcherUpdate(dispatch));
-    AuthAPI.userinfo().then((user) => dispatch(new UserUpdate(user)));
-    setColorScheme(prefersDark? 'dark': 'light');
+    AuthAPI.userinfo().then(setAuthContextUser);
+    setColorScheme(prefersDark ? 'dark' : 'light');
   }, [prefersDark, setColorScheme])
+
 
   const mainStyles = React.useMemo(() => {
     return [
@@ -50,49 +108,59 @@ const Main = () => {
   }, [])
 
   return (
-    <AppContext.Provider value={appContext} >
+    <AuthContext.Provider value={authContext} >
+      <NotificationContext.Provider value={notificationContext}>
       <Stack direction="column" className={backgroundStyles}>
-      <Navbar
-        currentTab={currentTab}
-        setCurrentTab={setCurrentTab}
-        drawerOpen={drawerOpen}
-        setDrawerOpen={setDrawerOpen}
-      />
-      <Drawer
-        open={drawerOpen}
-        PaperProps={{
-          sx: { marginTop: "var(--appbar-height)" },
-        }}
-        sx={{ flexShrink: 0 }}
-        onClose={() => setDrawerOpen(false)}
-      >
-         <Tabs
-          variant="scrollable"
-          orientation={"vertical"}
-          scrollButtons="auto"
-          value={currentTab}
-          onChange={(_, value) => setCurrentTab(value)}
+        <Navbar
+          currentTab={currentTab}
+          setCurrentTab={setCurrentTab}
+          drawerOpen={drawerOpen}
+          setDrawerOpen={setDrawerOpen}
+        />
+        <Drawer
+          open={drawerOpen}
+          PaperProps={{
+            sx: { marginTop: "var(--AppBar-height)" },
+          }}
+          sx={{ flexShrink: 0 }}
+          onClose={() => setDrawerOpen(false)}
         >
-          {tabRoutes.map((tabRoute) => 
-            <Tab
-              label={tabRoute.tabName}
-              value={tabRoute.path}
-              component={Link}
-              to={tabRoute.path}
+          <Tabs
+            variant="scrollable"
+            orientation={"vertical"}
+            scrollButtons="auto"
+            value={currentTab}
+            onChange={(_, value) => setCurrentTab(value)}
+          >
+            {tabRoutes.map((tabRoute) =>
+              <Tab
+                label={tabRoute.tabName}
+                value={tabRoute.path}
+                component={Link}
+                to={tabRoute.path}
+                key={tabRoute.path}
+              />
+            )}
+          </Tabs>
+        </Drawer>
+        <Stack
+          className={mainStyles}
+          direction="column"
+          component="main"
+        >
+          <Outlet />
+        </Stack>
+        <Footer data={footer} />
+        <Snackbar
+                anchorOrigin={notificationContextData.anchorOrigin}
+                open={notificationContextData.open}
+                message={notificationContextData.message}
+                autoHideDuration={notificationContextData.autoHideDuration}
+                onClose={notificationContextData.onClose}
             />
-          )}
-        </Tabs>
-      </Drawer>
-      <Stack
-        className={mainStyles}
-        direction="column"
-        component="main"
-      >
-        <Outlet />
       </Stack>
-      <Footer data={footer} />
-    </Stack>
-    </AppContext.Provider>
+      </NotificationContext.Provider>
+    </AuthContext.Provider>
   );
 };
 

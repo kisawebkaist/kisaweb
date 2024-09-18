@@ -5,7 +5,7 @@ import AboutUsAPI, {
   InternalBoardMemberT,
   MemberT,
 } from "../../API/about-us";
-import QueryGuard from "../../components/common/query-guard";
+import QueryGuard from "../../components/common/QueryGuard";
 import QueryFallback from "../../components/common/QueryFallback";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { Link } from "react-router-dom";

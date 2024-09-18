@@ -2,11 +2,11 @@ import { CategoryT, LinkT } from "../../API/links";
 import LinkHeader from "../../components/links/LinkHeader";
 import LinkEntity from "../../components/links/LinkEntity";
 import { LinkCategoryDropdown, LinkCategorySidePanel, LinkSearch } from "../../components/links/LinkSearch";
-import QueryGuard from "../../components/common/query-guard";
+import QueryGuard from "../../components/common/QueryGuard";
 import React from "react";
 import { Stack, Typography } from "@mui/material";
 import { Container, Box } from "@mui/system";
-import Lister from "../../components/common/lister";
+import Lister from "../../components/common/Lister";
 import QueryFallback from "../../components/common/QueryFallback";
 import LinkAPI from "../../API/links";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -36,7 +36,7 @@ const ImportantLinks = ({ links, categories }: LinksP) => {
 
   const linkContents = React.useMemo(() => {
     if (filteredLinks.length !== 0)
-      return <Lister array={filteredLinks} render={LinkEntity} props={{}} />;
+      return <Lister array={filteredLinks} render={LinkEntity} props={{}} getKey={link => link.id.toString()} />;
     return (
       <Stack className="h-80 gap-y-4">
         <FontAwesomeIcon icon={faLinkSlash} />
@@ -51,13 +51,13 @@ const ImportantLinks = ({ links, categories }: LinksP) => {
     <Container maxWidth="md">
       <LinkHeader />
       <Stack>
-        <ShapeShifter breakpoint="sm" up={<></>} down={
+        <ShapeShifter breakpoint="sm" up={null} down={
           <LinkCategoryDropdown categories={categories} activeCategory={activeCategory} setActiveCategory={setActiveCategory} />
         } />
         <LinkSearch onSearch={setSearchText} />
       </Stack>
       <Stack direction="row" justifyContent="space-between" gap={2}>
-        <ShapeShifter breakpoint="sm" down={<></>} up={
+        <ShapeShifter breakpoint="sm" down={null} up={
           <LinkCategorySidePanel categories={categories} activeCategory={activeCategory} setActiveCategory={setActiveCategory} />
         } />
         {/* Questions */}
@@ -80,7 +80,6 @@ const LinksWithGuard = () => {
       categories: await LinkAPI.allCategories(args.categoryParam)
     };
   }
-  // QueryGuard memorization is not working when switching tabs prolly due to being rerendered from scratch
   return (
     <QueryGuard
       render={ImportantLinks}

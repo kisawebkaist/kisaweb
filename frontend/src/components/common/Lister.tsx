@@ -7,9 +7,10 @@ type ListerChildP<T, U> = {
 } & U
 
 type ListerP<T, U> = {
-  array : T[]
-  render : RenderElementTypeT<ListerChildP<T, U>>,
-  props : U
+  array: T[],
+  render: RenderElementTypeT<ListerChildP<T, U>>,
+  props: U,
+  getKey?: (value: T) => string,
 }
 
 function genRandomString(length : number) {
@@ -22,20 +23,17 @@ function genRandomString(length : number) {
    return result;
 }
 
-const Lister = <T, U>({array, render : Component, props} : ListerP<T, U>) => {
-  const random = React.useMemo(() => {
-    return genRandomString(10)
-  }, [])
+const Lister = <T, U>({array, render : Component, props, getKey } : ListerP<T, U>) => {
   const elements = React.useMemo(() => {
     return array.map((data, id) => {
       const renderProps = {
-        data, id, ...props, key : random + id
+        data, id, ...props, key : getKey? getKey(data) : id
       } as ( React.PropsWithRef<ListerChildP<T, U>> & ListerChildP<T, U> )
       return (
         <Component {...renderProps}/>
       )
     })
-  }, [ props, array, Component ])
+  }, [array, props, getKey, Component])
   return (
     <>{elements}</>
   )

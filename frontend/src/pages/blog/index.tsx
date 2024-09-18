@@ -1,29 +1,22 @@
-import React, { useState } from "react";
+import React from "react";
 import BlogAPI, { PartialBlogAPI, TagT } from "../../API/blog";
 // import Card from "@mui/material/Card";
 // import CardContent from "@mui/material/CardContent";
 import {
-  Box,
   Button,
   Card,
   CardActionArea,
   CardContent,
   CardMedia,
   Chip,
-  Container,
   Divider,
   Grid,
-  Icon,
-  Link,
-  Paper,
   Stack,
   Typography,
 } from "@mui/material";
-import Lister from "../../components/common/lister";
+import Lister from "../../components/common/Lister";
 import "../../components/css/blog.css";
-import QueryGuard from "../../components/common/query-guard";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faImage } from "@fortawesome/free-regular-svg-icons";
+import QueryGuard from "../../components/common/QueryGuard";
 import { useNavigate } from "react-router-dom";
 import { HighlightedLetter } from "../../components/common/HighlightedLetter";
 
@@ -113,9 +106,6 @@ function sortBlogsByDateModified(blogs: PartialBlogAPI[]) {
 
 const BlogCard = ({ data: blog }: { data: PartialBlogAPI }) => {
   const navigate = useNavigate();
-  const renderBlogTagChip = (tag_name: string) => (
-    <Chip label={tag_name} />
-  );
 
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
@@ -127,11 +117,11 @@ const BlogCard = ({ data: blog }: { data: PartialBlogAPI }) => {
             image="/kisaLogo.png"
           />
           <CardContent>
-          <Stack rowGap={1}>
-            <Typography variant="caption">
-              {new Date(blog.data.modified).toDateString()}
-            </Typography>
-            <Typography
+            <Stack rowGap={1}>
+              <Typography variant="caption">
+                {new Date(blog.data.modified).toDateString()}
+              </Typography>
+              <Typography
                 variant="h2"
                 fontSize="large"
                 fontWeight="bold"
@@ -139,12 +129,17 @@ const BlogCard = ({ data: blog }: { data: PartialBlogAPI }) => {
                 {blog.data.title}
               </Typography>
               <Typography fontStyle="italic">
-              {blog.data.description}
-            </Typography>
-            <Stack direction="row" gap={1}>
-              {blog.data.tags.map((tag=>tag.tag_name)).map(renderBlogTagChip)}
+                {blog.data.description}
+              </Typography>
+              <Stack direction="row" gap={1}>
+                {
+                  blog.data.tags
+                    .map((tag => tag.tag_name))
+                    .map((tag_name: string) => (
+                      <Chip label={tag_name} key={tag_name} />
+                    ))}
+              </Stack>
             </Stack>
-          </Stack>
           </CardContent>
         </CardActionArea>
       </Card>
@@ -205,61 +200,68 @@ const Tag = ({ data: tagName, id, onClick }: TagP) => {
   );
 };
 
+const LastestRelease = ({ blogs }: { blogs: PartialBlogAPI[] }) => {
+  const now = new Date();
+  const lastMonth = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+  const toRender = blogs.filter(blog => new Date(blog.data.modified) >= lastMonth);
+  if (toRender.length === 0) {
+    return null;
+  }
+
+  return (
+    <>
+      <Typography variant="h2" color="main">Latest Release</Typography>
+      <Grid container spacing={4} className="p-4">
+        <Lister array={toRender} render={BlogCard} props={undefined} getKey={blog => blog.data.slug} />
+      </Grid>
+    </>
+  );
+}
+
 type BlogP = {
   blogs: PartialBlogAPI[];
   tags: TagT[];
 };
 
+const BlogCardsCategorizedByYear = ({ blogs }: { blogs: PartialBlogAPI[] }) => {
+  let yearArchives: JSX.Element[] = [];
+  let currentYear = new Date(blogs[0].data.modified).getFullYear();
+  let currentYearArchive: JSX.Element[] = [];
+
+  function archiveCurrentYear() {
+    if (currentYearArchive.length !== 0) {
+      yearArchives.push(<Typography variant="h2" key={currentYear + "-title"}>{currentYear}</Typography>);
+      yearArchives.push(
+        <Grid container spacing={4} className="p-4" key={currentYear}>
+          {currentYearArchive}
+        </Grid>
+      );
+      yearArchives.push(<Divider key={currentYear + "-divider"} />);
+    }
+  }
+
+  for (let blog of blogs) {
+    let year = new Date(blog.data.modified).getFullYear();
+    if (year !== currentYear) {
+      archiveCurrentYear();
+      currentYear = year;
+      currentYearArchive = [];
+    }
+    currentYearArchive.push(<BlogCard data={blog} key={blog.data.slug} />);
+  }
+  archiveCurrentYear();
+  return (
+    <>
+      <Typography variant="h2" textAlign="center">All blogs</Typography>
+      <Divider />
+      {yearArchives}
+    </>
+  );
+}
+
 const Blog = ({ blogs, tags }: BlogP) => {
   // const tagNames = React.useMemo(() => tags.map((tag) => tag.tag_name), [tags]);
   sortBlogsByDateModified(blogs);
-
-  function renderLastestRelease(blogs: PartialBlogAPI[]) {
-    const current = new Date();
-    const lastMonth = new Date(current.getTime()-30*24*60*60*1000);
-    const toRender = blogs.filter(blog => new Date(blog.data.modified) >= lastMonth);
-
-    return ([
-      <Typography variant="h2" color="main">Latest Release</Typography>,
-      <Grid container spacing={4} className="p-4">
-        <Lister array={toRender} render={BlogCard} props={undefined} />
-      </Grid>,
-      <Divider/>
-    ]);
-  }
-  
-  function renderBlogCards(blogs: PartialBlogAPI[]) {
-    let yearArchives: JSX.Element[] = [];
-    let currentYear = new Date(blogs[0].data.modified).getFullYear();
-    let currentYearArchive: JSX.Element[] = [];
-
-    function archiveCurrentYear() {
-      if (currentYearArchive.length !== 0) {
-        yearArchives.push(<Typography variant="h2">{currentYear}</Typography>);
-        yearArchives.push(
-          <Grid container spacing={4} className="p-4">
-            {currentYearArchive}
-          </Grid>
-        );
-        yearArchives.push(<Divider/>);
-      }
-    }
-
-    if (blogs.length > 0) {
-      for (let blog of blogs) {
-        let year = new Date(blog.data.modified).getFullYear();
-        if (year !== currentYear) {
-          archiveCurrentYear();
-          currentYear = year;
-          currentYearArchive = [];
-        } else {
-          currentYearArchive.push(<BlogCard data={blog} />);
-        }
-      }
-      archiveCurrentYear();
-    }
-    return yearArchives;
-  }
 
   /*
     the idea about tag-filtering is good but there are some problems
@@ -289,10 +291,8 @@ const Blog = ({ blogs, tags }: BlogP) => {
         <Typography variant="fancy_h1" textAlign="center"><HighlightedLetter letter="KISA" /> Blog</Typography>
         <Typography variant="subtitle1">Sharing is Caring</Typography>
       </Stack>
-      {renderLastestRelease(blogs)}
-      <Typography variant="h2" textAlign="center">All blogs</Typography>
-      <Divider/>
-      {renderBlogCards(blogs)}
+      <LastestRelease blogs={blogs} />
+      <BlogCardsCategorizedByYear blogs={blogs} />
     </Stack>
   );
 };

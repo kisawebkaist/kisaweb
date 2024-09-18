@@ -1,4 +1,4 @@
-import Lister from "../../components/common/lister";
+import Lister from "../../components/common/Lister";
 import React, { lazy, useEffect, useState } from "react";
 import Card from '@mui/material/Card';
 import { Box, Button, ButtonBase, CardActionArea, CardHeader, CardMedia, Dialog, DialogContent, DialogTitle, Divider, Grid, Icon, ImageList, ImageListItem, ImageListItemBar, Paper, Stack, Typography, useTheme } from "@mui/material";
@@ -13,8 +13,8 @@ import 'swiper/css/zoom';
 import 'swiper/css/effect-fade';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import { redirect, useNavigate, useParams } from "react-router-dom";
-import QueryGuard from "../../components/common/query-guard";
+import { Navigate, redirect, useNavigate, useParams } from "react-router-dom";
+import QueryGuard from "../../components/common/QueryGuard";
 import QueryFallback from "../../components/common/QueryFallback";
 import { HighlightedLetter } from "../../components/common/HighlightedLetter";
 
@@ -145,7 +145,7 @@ type PreviewCardProps = {
 }
 
 const PreviewCard = ({ title, slug, image }: PreviewCardProps) => (
-    <SwiperSlide>
+    <SwiperSlide key={slug}>
         <Card>
             <CardActionArea
                 href={"/multimedia/"+slug}
@@ -170,9 +170,10 @@ const getIntervalDateStampBetween = (x: Date, y:Date) => (x.getDate() === y.getD
 
 const AlbumCover = ({ title, images, slug }: MultimediaT) => {
     const navigate = useNavigate();
-    
+    // this looks bad
+
     return (
-        <Grid item xs={12} sm={6} md={4} lg={3}>
+        <Grid item xs={12} sm={6} md={4} lg={3} key={slug}>
             <ButtonBase component={Paper} onClick={()=>{navigate("./"+slug)}} className="cover">
             <Box sx={{padding: "5% 0 5% 30px"}} width="100%" height="100%">
                 <Stack paddingRight="5%" textAlign="right" sx={{backgroundColor: "primary.main"}}>
@@ -199,7 +200,7 @@ export const Multimedia = ({ data }: {data: MultimediaT[]}) => {
     const aspectRatio = window.innerWidth / window.innerHeight;
 
     if (index === -1)
-        redirect("/multimedia/");
+        return <Navigate to={"/multimedia"} />
 
     type ImageGroupedByDate = {
         date: Date;
@@ -229,7 +230,7 @@ export const Multimedia = ({ data }: {data: MultimediaT[]}) => {
     }
 
     const ImageGroupByDate = ({date, startIndex, images}: ImageGroupedByDate) => (
-        <Stack>
+        <Stack key={date.toDateString()}>
             <Typography variant="h3">{date.toDateString()}</Typography>
             <ImageList variant="masonry">
                 {
@@ -305,7 +306,7 @@ export const MultimediaHome = ({data}: {data: MultimediaT[]}) => {
     return (
         <Stack gap={2}>
             <Stack>
-                <Typography variant="fancy_h1" textAlign="center"><HighlightedLetter letter="Memories"/></Typography>
+                <Typography variant="fancy_h1" textAlign="center">Multimedia</Typography>
                 <Typography variant="subtitle1" textAlign="center">Happy times come and go, but the memories stay forever...</Typography>
             </Stack>
             <Swiper

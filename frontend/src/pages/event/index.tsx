@@ -1,11 +1,11 @@
-import { Button, Card, CardActionArea, CardHeader, CardMedia, Dialog, DialogActions, DialogContent, DialogContentText, Divider, Grid, Stack, Typography } from "@mui/material";
+import { Button, Card, CardActionArea, CardHeader, CardMedia, Dialog, DialogActions, DialogContent, DialogContentText, Divider, Grid, Snackbar, Stack, Typography } from "@mui/material";
 import { EventAPI, EventT_Partial } from "../../API/events";
-import Lister from "../../components/common/lister";
-import { useLocation } from "react-router-dom";
-import HighlightedLetter from "../../components/common/HighlightedLetter";
-import QueryGuard from "../../components/common/query-guard";
-import { useCallback, useEffect, useRef, useState } from "react";
+import Lister from "../../components/common/Lister";
+import { useLocation, useNavigate } from "react-router-dom";
+import QueryGuard from "../../components/common/QueryGuard";
+import { useEffect, useRef, useState } from "react";
 import TextEditor from "@jowillianto/draftjs-wysiwyg/dist";
+import { useNotification } from "../../core/NotificationContext";
 
 function getSemesterFromDate(date: Date) {
     let month = date.getMonth();
@@ -24,34 +24,51 @@ type EventP = {
 }
 
 export const Event = ({ events }: EventP) => {
-    const [dialogOpen, setDialogOpen] = useState<boolean>(false);
-    const [slug, setSlug] = useState<string>(useLocation().hash as string);
+    const location = useLocation();
+    const navigate = useNavigate();
+    const notification = useNotification();
+    const [slug, setSlug] = useState<string>((location.hash as string).replace("#", ""));
     const dialogInner = useRef(<></>);
+
+    const onCopyLink = () => {
+        navigator.clipboard.writeText(window.location.protocol+"//"+window.location.host+location.pathname+"#"+slug);
+        notification.showNotification("Link copied to clipboard!");
+    }
 
     useEffect(() => {
         if (slug !== "") {
             EventAPI.getEvent(slug)
-                .then(event => {
-                    setDialogOpen(true);
-                    dialogInner.current = (
-                        <DialogContent>
-                            <Stack>
-                                <Typography variant="h3" textAlign="center">
-                                    {event.title}
-                                </Typography>
-                                <TextEditor
-                                    defaultValue={event.description}
-                                    editorBehaviour={{ readOnly: true }}
-                                />
-                            </Stack>
-                        </DialogContent>
-                    );
-                })
-                .catch(_ => setSlug(""))
+                .then(
+                    event => {
+                        dialogInner.current = (
+                            <DialogContent>
+                                <Stack>
+                                    <Typography variant="h3" textAlign="center">
+                                        {event.title}
+                                    </Typography>
+                                    <TextEditor
+                                        defaultValue={event.description}
+                                        editorBehaviour={{ readOnly: true }}
+                                    />
+                                </Stack>
+                            </DialogContent>
+                        );
+                    },
+                    error => {
+                        console.error(error);
+                        setSlug("");
+                    }
+                )
+                .then(
+                    () => navigate("#" + slug)
+                )
+            return;
         }
-    }, [slug])
+        navigate("");
+    }, [navigate, slug])
 
-    const EventCard = useCallback(({ data }: { data: EventT_Partial }) => {
+    const EventCard = ({ data }: { data: EventT_Partial }) => {
+
         return (
             <Grid item xs={12} md={6} lg={4}>
                 <Card>
@@ -61,81 +78,90 @@ export const Event = ({ events }: EventP) => {
                         <CardMedia
                             component="img"
                             alt={"Poster for " + data.title}
-                            image={"https://localhost:8001/media/events/img/zoneoutnight_npeZANa.jpg"}
+                            image={data.poster}
                         />
                         <CardHeader title={data.important_message} />
                     </CardActionArea>
                 </Card>
             </Grid>
         )
-    }, []);
+    };
 
-    const UpcomingEvents = useCallback(({ events }: EventP) => {
+    const UpcomingEvents = ({ events }: EventP) => {
         const now = new Date();
         const toRender = events.filter(event => new Date(event.event_start_datetime) >= now);
+        if (toRender.length === 0) {
+            return null;
+        }
 
         return (
-            <Grid container spacing={4} className="p-4">
-                <Lister array={toRender} render={EventCard} props={undefined} />
-            </Grid>
+            <>
+                <Typography variant="h2" color="main">Upcoming Events</Typography>
+                <Grid container spacing={4} className="p-4">
+                    <Lister array={toRender} render={EventCard} props={undefined} />
+                </Grid>
+            </>
         )
-    }, [EventCard]);
+    };
 
-    const renderEventCards = useCallback((events: EventT_Partial[]) => {
+    const EventCardsCategorizedBySemester = ({ events }: {events: EventT_Partial[]}) => {
         let semesterArchives: JSX.Element[] = [];
         let currentSemester = getSemesterFromDate(new Date());
         let currentSemesterArchive: JSX.Element[] = [];
 
         function archiveCurrentSemester() {
             if (currentSemesterArchive.length !== 0) {
-                semesterArchives.push(<Typography variant="h2">{currentSemester}</Typography>)
+                semesterArchives.push(<Typography variant="h2" key={currentSemester+"-title"}>{currentSemester}</Typography>)
                 semesterArchives.push(
-                    <Grid container spacing={4} className="p-4">
+                    <Grid container spacing={4} className="p-4" key={currentSemester}>
                         {currentSemesterArchive}
                     </Grid>
                 );
-                semesterArchives.push(<Divider />);
+                semesterArchives.push(<Divider key={currentSemester+"-divider"}/>);
             }
         }
-
-        if (events.length > 0) {
-            for (let event of events) {
-                let semester = getSemesterFromDate(new Date(event.event_start_datetime));
-                if (semester !== currentSemester) {
-                    archiveCurrentSemester();
-                    currentSemester = semester;
-                    currentSemesterArchive = [];
-                } else {
-                    currentSemesterArchive.push(<EventCard data={event} />);
-                }
+        
+        for (let event of events) {
+            let semester = getSemesterFromDate(new Date(event.event_start_datetime));
+            if (semester !== currentSemester) {
+                archiveCurrentSemester();
+                currentSemester = semester;
+                currentSemesterArchive = [];
             }
-            archiveCurrentSemester();
+            currentSemesterArchive.push(<EventCard data={event} key={event.slug}/>);
         }
-        return semesterArchives;
-    }, [EventCard]);
+        archiveCurrentSemester();
+        return (
+            <>
+                <Typography variant="h2" textAlign="center">All events</Typography>
+                <Divider />
+                {semesterArchives}
+            </>
+        )
+    }
 
     return (
         <Stack>
-            <Dialog open={dialogOpen} onClose={() => { setDialogOpen(false); setSlug("") }}>
+            <Dialog open={slug !== ""} onClose={() => setSlug("")}>
                 {dialogInner.current}
                 <DialogActions>
+                    <Button onClick={() => setSlug("")}>
+                        Cancel
+                    </Button>
+                    <Button onClick={onCopyLink}>
+                        Copy Link
+                    </Button>
                     <Button>
                         Register
                     </Button>
                 </DialogActions>
             </Dialog>
             <Stack textAlign="center">
-                <Typography variant="fancy_h1" textAlign="center"><HighlightedLetter letter={"Events"} /></Typography>
-                <Typography variant="subtitle1">Live while we're young</Typography>
+                <Typography variant="fancy_h1" textAlign="center">Events</Typography>
+                <Typography variant="subtitle1">Lorem ipsum</Typography>
             </Stack>
-            <Typography variant="h2">
-                Upcoming Events
-            </Typography>
             <UpcomingEvents events={events} />
-            <Divider />
-            <Typography variant="h2" textAlign="center">All events</Typography>
-            <Divider />
-            {renderEventCards(events)}
+            <EventCardsCategorizedBySemester events={events} />
         </Stack>
     )
 };

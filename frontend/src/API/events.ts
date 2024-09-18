@@ -23,11 +23,11 @@ export type TagT = { tag_name: string };
 
 export class EventAPI {
     static async allEvents(queryParams: Record<string, any>): Promise<EventT_Partial[]> {
-        const resp = await axios.get(`/api/event/`, queryParams);
+        const resp = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/event/`, queryParams);
         return resp.data;
     }
     static async getEvent(slug: string): Promise<EventT_Complete> {
-        const resp = await axios.get(`/api/event/${slug}`);
+        const resp = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/event/${slug}`);
         return resp.data;
     }
 }

@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import QueryGuard from "../../../components/common/query-guard";
+import QueryGuard from "../../../components/common/QueryGuard";
 import BlogAPI, { CompleteBlogAPI } from "../../../API/blog";
 import TextEditor from "@jowillianto/draftjs-wysiwyg/dist";
 import { Box, Divider, Stack, Typography } from "@mui/material";
@@ -25,12 +25,15 @@ const BlogEntry = ({ blog }: BlogEntryP) => {
         orientation="horizontal"
         flexItem
         className="w-[98%] border-4 border-dashed rounded-xl"
+        color="inherit"
       />
       <Box maxWidth="90%">
-        <TextEditor
-          defaultValue={content}
-          editorBehaviour={{ readOnly: true }}
-        />
+        <Typography>
+          <TextEditor
+            defaultValue={content}
+            editorBehaviour={{ readOnly: true }}
+          />
+        </Typography>
       </Box>
     </Stack>
   );
