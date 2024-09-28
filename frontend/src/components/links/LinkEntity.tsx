@@ -57,7 +57,7 @@ const LinkEntity = ({ data }: EntityEntry) => {
           </Typography>
           {
             !isOpen &&
-            <IconButton href={data.url}>
+            <IconButton href={data.url} target="_blank">
               <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
             </IconButton>
           }
@@ -77,7 +77,7 @@ const LinkEntity = ({ data }: EntityEntry) => {
       <Typography variant="subtitle1" color="grey">
             {data.url}
           </Typography>
-        <IconButton href={data.url}>
+        <IconButton href={data.url} target="_blank">
           <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
         </IconButton>
       </AccordionActions>

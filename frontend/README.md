@@ -39,6 +39,21 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
+## Directory Structure
+
+ - **App.tsx** - the entry point for our application
+ - **core**
+    - **Main.tsx** - the entry point for all sub-apps which provides pages
+    - other components related to **Main** and above
+ - **configs**
+    - includes configuration files for **App**
+ - **API**
+    - includes files which provides interface to backend
+ - **pages**
+    - includes files which corresponds to a page
+ - **components**
+    - includes files which provides the components required for **pages**
+
 ## Learn More
 
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).

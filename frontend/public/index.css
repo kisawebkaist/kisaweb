@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Satisfy&display=swap'); 
 
 :root {
-  --appbar-height: 75px;
+  --AppBar-height: 75px;
 }
 
 html {
