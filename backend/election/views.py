@@ -97,4 +97,19 @@ def vote(request):
             return Response({})
     
     raise MethodNotAllowed(request.method)
-    
+
+# Check Election Period API
+class ElectionStatusAPIView(APIView):
+    def get(self, request):
+        try:
+            election = Election.current_or_error()
+            return Response({
+                "status": "ongoing",
+                "election": {
+                    "start_datetime": election.start_datetime,
+                    "end_datetime": election.end_datetime,
+                    "slug": election.slug
+                }
+            })
+        except ParseError:
+            return Response({"status": "none"})

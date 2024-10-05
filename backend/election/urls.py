@@ -11,5 +11,6 @@ router.register(r'result', views.ElectionResultViewSet, 'election-result')
 urlpatterns = [
     path('vote/', views.vote, name='vote'),
     path('<slug:election_slug>/<slug:slug>/', views.CandidateAPIView.as_view(), name='candidate'),
+    path('api/election/status', views.ElectionStatusAPIView, name='election-status'),
 ]
 urlpatterns += router.urls

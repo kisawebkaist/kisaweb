@@ -16,6 +16,7 @@ const SlugBlog = React.lazy(() => import("../pages/blog/slug"));
 const Event = React.lazy(() => import("../pages/event"));
 const Links = React.lazy(() => import("../pages/important-links"));
 const Shorten = React.lazy(() => import("../pages/bitly"));
+const Election = React.lazy(() => import("../pages/election"));
 
 /**
  * @brief refer to https://reactrouter.com/en/main/hooks/use-routes
@@ -73,6 +74,11 @@ export const tabRoutes: NavTabRoute[] = [
     path: "alumni",
     element: <Alumni />,
     tabName: "Alumni"
+  },
+  {
+    path: "election",
+    element: <Election />,
+    tabName: "election",
   },
 ]
 
