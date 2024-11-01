@@ -1,7 +1,7 @@
 import axios from "axios";
-import {
-    RawDraftContentState,
-} from "draft-js";
+// import {
+//     RawDraftContentState,
+// } from "draft-js";
 
 export type EventT_Complete = {
     title: string;
@@ -15,7 +15,7 @@ export type EventT_Complete = {
     important_message: string;
     poster: string;
 
-    description: RawDraftContentState;
+    // description: RawDraftContentState;
 };
 
 export type EventT_Partial = Omit<EventT_Complete, "description">;

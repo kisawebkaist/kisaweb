@@ -1,16 +1,16 @@
 import axios from "axios";
-import {
-  convertFromHTML,
-  ContentState,
-  convertToRaw,
-  RawDraftContentState,
-} from "draft-js";
+// import {
+//   convertFromHTML,
+//   ContentState,
+//   convertToRaw,
+//   RawDraftContentState,
+// } from "draft-js";
 
 type BlogT_Complete = {
   title: string;
   description: string;
   content: string;
-  new_content: RawDraftContentState;
+  // new_content: RawDraftContentState;
   created: string;
   modified: string;
   slug: string;
@@ -21,29 +21,32 @@ export type TagT = { tag_name: string };
 
 export class CompleteBlogAPI {
   data: BlogT_Complete;
-  content?: RawDraftContentState;
+  // content?: RawDraftContentState;
   constructor(blog: BlogT_Complete) {
     this.data = blog;
-    this.content = undefined;
+    // this.content = undefined;
   }
-  get_content(): RawDraftContentState {
-    if (this.content === undefined && this.data.content.length === 0) {
-      this.content = this.data.new_content;
-    } else if (this.content === undefined) {
-      const blocks = convertFromHTML(this.data.content);
-      const contentState = ContentState.createFromBlockArray(
-        blocks.contentBlocks,
-        blocks.entityMap
-      );
-      const rawState = convertToRaw(contentState);
-      this.content = rawState;
-      axios.post(
-        `${process.env.REACT_APP_API_ENDPOINT}/blog/${this.data.slug}`,
-        { new_content: rawState }
-      );
-    }
-    return this.content;
+  get_content() {
+    return this.data.content;
   }
+  // get_content(): RawDraftContentState {
+  //   if (this.content === undefined && this.data.content.length === 0) {
+  //     this.content = this.data.new_content;
+  //   } else if (this.content === undefined) {
+  //     const blocks = convertFromHTML(this.data.content);
+  //     const contentState = ContentState.createFromBlockArray(
+  //       blocks.contentBlocks,
+  //       blocks.entityMap
+  //     );
+  //     const rawState = convertToRaw(contentState);
+  //     this.content = rawState;
+  //     axios.post(
+  //       `${process.env.REACT_APP_API_ENDPOINT}/blog/${this.data.slug}`,
+  //       { new_content: rawState }
+  //     );
+  //   }
+  //   return this.content;
+  // }
 }
 
 export class PartialBlogAPI {

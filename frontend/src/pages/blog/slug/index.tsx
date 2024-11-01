@@ -2,7 +2,7 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import QueryGuard from "../../../components/common/QueryGuard";
 import BlogAPI, { CompleteBlogAPI } from "../../../API/blog";
-import TextEditor from "@jowillianto/draftjs-wysiwyg/dist";
+// import TextEditor from "@jowillianto/draftjs-wysiwyg/dist";
 import { Box, Divider, Stack, Typography } from "@mui/material";
 
 type BlogEntryP = {
@@ -29,10 +29,10 @@ const BlogEntry = ({ blog }: BlogEntryP) => {
       />
       <Box maxWidth="90%">
         <Typography>
-          <TextEditor
+          {/* <TextEditor
             defaultValue={content}
             editorBehaviour={{ readOnly: true }}
-          />
+          /> */}
         </Typography>
       </Box>
     </Stack>

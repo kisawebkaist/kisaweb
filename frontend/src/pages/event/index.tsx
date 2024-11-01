@@ -4,7 +4,7 @@ import Lister from "../../components/common/Lister";
 import { useLocation, useNavigate } from "react-router-dom";
 import QueryGuard from "../../components/common/QueryGuard";
 import { useEffect, useRef, useState } from "react";
-import TextEditor from "@jowillianto/draftjs-wysiwyg/dist";
+// import TextEditor from "@jowillianto/draftjs-wysiwyg/dist";
 import { useNotification } from "../../core/NotificationContext";
 
 function getSemesterFromDate(date: Date) {
@@ -46,10 +46,10 @@ export const Event = ({ events }: EventP) => {
                                     <Typography variant="h3" textAlign="center">
                                         {event.title}
                                     </Typography>
-                                    <TextEditor
+                                    { /* <TextEditor
                                         defaultValue={event.description}
                                         editorBehaviour={{ readOnly: true }}
-                                    />
+                                    /> */ }
                                 </Stack>
                             </DialogContent>
                         );

@@ -11,7 +11,6 @@
     "@fortawesome/free-regular-svg-icons": "^6.5.2",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
-    "@jowillianto/draftjs-wysiwyg": "github:jowillianto/draftjs-wysiwyg#stable",
     "@mui/material": "^5.15.21",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
