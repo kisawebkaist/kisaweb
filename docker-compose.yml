@@ -8,72 +8,74 @@ services:
       - POSTGRES_PASSWORD=ilovekisa
     volumes:
       - ./data/db:/var/lib/postgresql/data
-  backend:
-    build:
-      dockerfile: dockerfile.backend
-      context: ./backend
-      target: dev
-    command: python manage.py runserver 0.0.0.0:8000
-    volumes:
-      - ./backend:/app
-    depends_on:
-      - db
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 5s
-        window: 10s
-    environment:
-      - SECRET_KEY=dVtGYO19KLsw8lY3kuAU3Qn2kSw6j1BqNrwOVMa92qWgu949jN
-      - PRIVATE_KEY=-----BEGIN RSA PRIVATE KEY-----\nMIICWgIBAAKBgGAD0Xqs1D1mqbkTSPaEzSJCUiR4Bt7LKsiC3OYh5Y8vCyC0cTSk\ncWwhW5oTZ5ZQ8ZYP4Ddz4Fnd8AG6s3Yjryr4ODS4LjPHVIGtw3tCaFTM832+YVAv\nc8ezPdcGth5at2n7MZrv9Kf/xcsPXOGZTxkhwKhNjsmNtPywE8GlFMbrAgMBAAEC\ngYBDMWjgGSNO9RHB26UsIDQOzar+qqDkOfpu6GX/B6nHUnzPHng7Bvn5Wj7ozLup\njmwDQIkBRa60NYVJMId3HfHvnCsaSZFLZNDJcUhG1iUzDBQJL0n0xGR6jHPkTXFe\nX8JpcwuuCBBcLZJZqdjI7KuLwITMHSDEBWnCesikbJcCwQJBAKodqLI9dxqh8T7k\noOIeOA+MRAN4Qnhi9f5K51/8AEoKjMhv/FqPf53zZdVjpdbd05NzYsmRQ+grCiZ8\n8ryOjw8CQQCQfRs/E8M0YIAUCQFpjhGRvKnWT2wIdmmRrmNuV6J1DXGB8YblbHUQ\nbR/9XWBYXWX/GBuTMKTqGEJxPEE8xEplAkAetmwWgfJW5JXhfPVu3XXRmMlOtw+J\nHJS87FkJgz2qIG16Yn10/CNWKPNhqzPtru7b2CElswxHhj225SgN0s8RAkBER3qq\nsjIa/EdKMH9EXGidECTKK7oHvb1hpKFEMZGJ8xJir7ppjHk9i/QEDS5MU8axZ7kQ\nM3qbTV+Il0rU5oWpAkBrnbZWaT8eluZ2r7n0XLIp/R6o9udszBYoqqDJ6tWGh63T\nUgpye80iEYN2MD4KnG0qNSr94snBOpsd4GwtyP7U\n-----END RSA PRIVATE KEY-----
-      - PUBLIC_KEY=-----BEGIN PUBLIC KEY-----\nMIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgGAD0Xqs1D1mqbkTSPaEzSJCUiR4\nBt7LKsiC3OYh5Y8vCyC0cTSkcWwhW5oTZ5ZQ8ZYP4Ddz4Fnd8AG6s3Yjryr4ODS4\nLjPHVIGtw3tCaFTM832+YVAvc8ezPdcGth5at2n7MZrv9Kf/xcsPXOGZTxkhwKhN\njsmNtPywE8GlFMbrAgMBAAE=\n-----END PUBLIC KEY-----
-      - DB_USER=kisaweb
-      - DB_NAME=kisaweb
-      - DB_PASSWORD=ilovekisa
-      - DB_PORT=5432
-      - DB_HOST=db
-      - KSSO_SECRET_KEY=ucT83TdDq/kUERb+mV9t3viFpD5KcVWshN+XKsiVEk+9VcOK3g6zgWM1erc9h2r0hd6pZmsO2XuKZO3JGyrZdg==
-      - SMTP_SERVER=example.com
-      - SMTP_USERNAME=admin
-      - SMTP_PASSWORD=password123
-      - ALLOWED_HOSTS=localhost
-      - CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:81
+  # backend:
+  #   build:
+  #     dockerfile: dockerfile.backend
+  #     context: ./backend
+  #     target: dev
+  #   command: python manage.py runserver 0.0.0.0:8000
+  #   volumes:
+  #     - ./backend:/app
+  #   depends_on:
+  #     - db
+  #   deploy:
+  #     restart_policy:
+  #       condition: on-failure
+  #       delay: 5s
+  #       window: 10s
+  #   environment:
+  #     - SECRET_KEY=dVtGYO19KLsw8lY3kuAU3Qn2kSw6j1BqNrwOVMa92qWgu949jN
+  #     - PRIVATE_KEY=-----BEGIN RSA PRIVATE KEY-----\nMIICWgIBAAKBgGAD0Xqs1D1mqbkTSPaEzSJCUiR4Bt7LKsiC3OYh5Y8vCyC0cTSk\ncWwhW5oTZ5ZQ8ZYP4Ddz4Fnd8AG6s3Yjryr4ODS4LjPHVIGtw3tCaFTM832+YVAv\nc8ezPdcGth5at2n7MZrv9Kf/xcsPXOGZTxkhwKhNjsmNtPywE8GlFMbrAgMBAAEC\ngYBDMWjgGSNO9RHB26UsIDQOzar+qqDkOfpu6GX/B6nHUnzPHng7Bvn5Wj7ozLup\njmwDQIkBRa60NYVJMId3HfHvnCsaSZFLZNDJcUhG1iUzDBQJL0n0xGR6jHPkTXFe\nX8JpcwuuCBBcLZJZqdjI7KuLwITMHSDEBWnCesikbJcCwQJBAKodqLI9dxqh8T7k\noOIeOA+MRAN4Qnhi9f5K51/8AEoKjMhv/FqPf53zZdVjpdbd05NzYsmRQ+grCiZ8\n8ryOjw8CQQCQfRs/E8M0YIAUCQFpjhGRvKnWT2wIdmmRrmNuV6J1DXGB8YblbHUQ\nbR/9XWBYXWX/GBuTMKTqGEJxPEE8xEplAkAetmwWgfJW5JXhfPVu3XXRmMlOtw+J\nHJS87FkJgz2qIG16Yn10/CNWKPNhqzPtru7b2CElswxHhj225SgN0s8RAkBER3qq\nsjIa/EdKMH9EXGidECTKK7oHvb1hpKFEMZGJ8xJir7ppjHk9i/QEDS5MU8axZ7kQ\nM3qbTV+Il0rU5oWpAkBrnbZWaT8eluZ2r7n0XLIp/R6o9udszBYoqqDJ6tWGh63T\nUgpye80iEYN2MD4KnG0qNSr94snBOpsd4GwtyP7U\n-----END RSA PRIVATE KEY-----
+  #     - PUBLIC_KEY=-----BEGIN PUBLIC KEY-----\nMIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgGAD0Xqs1D1mqbkTSPaEzSJCUiR4\nBt7LKsiC3OYh5Y8vCyC0cTSkcWwhW5oTZ5ZQ8ZYP4Ddz4Fnd8AG6s3Yjryr4ODS4\nLjPHVIGtw3tCaFTM832+YVAvc8ezPdcGth5at2n7MZrv9Kf/xcsPXOGZTxkhwKhN\njsmNtPywE8GlFMbrAgMBAAE=\n-----END PUBLIC KEY-----
+  #     - DB_USER=kisaweb
+  #     - DB_NAME=kisaweb
+  #     - DB_PASSWORD=ilovekisa
+  #     - DB_PORT=5432
+  #     - DB_HOST=db
+  #     - KSSO_SECRET_KEY=ucT83TdDq/kUERb+mV9t3viFpD5KcVWshN+XKsiVEk+9VcOK3g6zgWM1erc9h2r0hd6pZmsO2XuKZO3JGyrZdg==
+  #     - SMTP_SERVER=example.com
+  #     - SMTP_USERNAME=admin
+  #     - SMTP_PASSWORD=password123
+  #     - ALLOWED_HOSTS=localhost
+  #     - CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:81
 
-  frontend:
-    build:
-      dockerfile: dockerfile.frontend
-      context: ./frontend
-      target: dev
-    command: npm start
-    ports:
-      - 80:3000
-      - 3000:3000
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
-    environment:
-      - REACT_APP_PUBLIC_KEY=-----BEGIN PUBLIC KEY-----\nMIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgGAD0Xqs1D1mqbkTSPaEzSJCUiR4\nBt7LKsiC3OYh5Y8vCyC0cTSkcWwhW5oTZ5ZQ8ZYP4Ddz4Fnd8AG6s3Yjryr4ODS4\nLjPHVIGtw3tCaFTM832+YVAvc8ezPdcGth5at2n7MZrv9Kf/xcsPXOGZTxkhwKhN\njsmNtPywE8GlFMbrAgMBAAE=\n-----END PUBLIC KEY-----
-      - REACT_APP_API_ENDPOINT=https://kisa.kaist.ac.kr:8080/api
-  nginx:
-    build:
-      dockerfile: dockerfile
-      context: ./install/nginx
-      target: dev
-    volumes:
-      - ./backend/static:/app/static
-      - ./backend/media:/app/media
-    ports:
-      - 81:8081
-      - 8001:8080
-      - 3000:8081
-    depends_on:
-      - frontend
-      - backend
-    environment:
-      - BACKEND_ENDPOINT=backend
-      - BACKEND_PORT=8000
-      - BACKEND_LISTEN_PORT=8080
-      - FRONTEND_ENDPOINT=frontend
-      - FRONTEND_PORT=3000
-      - FRONTEND_LISTEN_PORT=8081
-      - NGINX_HOST=localhost
+  # frontend:
+  #   build:
+  #     dockerfile: dockerfile.frontend
+  #     context: ./frontend
+  #     target: dev
+  #   command: npm start
+  #   ports:
+  #     - 80:3000
+  #     - 3000:3000
+  #   volumes:
+  #     - ./frontend:/app
+  #     - /app/node_modules
+  #   environment:
+  #     - REACT_APP_PUBLIC_KEY=-----BEGIN PUBLIC KEY-----\nMIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgGAD0Xqs1D1mqbkTSPaEzSJCUiR4\nBt7LKsiC3OYh5Y8vCyC0cTSkcWwhW5oTZ5ZQ8ZYP4Ddz4Fnd8AG6s3Yjryr4ODS4\nLjPHVIGtw3tCaFTM832+YVAvc8ezPdcGth5at2n7MZrv9Kf/xcsPXOGZTxkhwKhN\njsmNtPywE8GlFMbrAgMBAAE=\n-----END PUBLIC KEY-----
+  #     - REACT_APP_API_ENDPOINT=https://kisa.kaist.ac.kr:8080/api
+  
+  
+  # nginx:
+  #   build:
+  #     dockerfile: dockerfile
+  #     context: ./install/nginx
+  #     target: dev
+  #   volumes:
+  #     - ./backend/static:/app/static
+  #     - ./backend/media:/app/media
+  #   ports:
+  #     - 81:8081
+  #     - 8001:8080
+  #     - 3000:8081
+  #   depends_on:
+  #     - frontend
+  #     - backend
+  #   environment:
+  #     - BACKEND_ENDPOINT=backend
+  #     - BACKEND_PORT=8000
+  #     - BACKEND_LISTEN_PORT=8080
+  #     - FRONTEND_ENDPOINT=frontend
+  #     - FRONTEND_PORT=3000
+  #     - FRONTEND_LISTEN_PORT=8081
+  #     - NGINX_HOST=localhost
