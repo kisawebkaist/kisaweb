@@ -16,18 +16,10 @@ interface ChartMemberProps extends React.PropsWithChildren {
 
 export function ChartMember(props: ChartMemberProps) {
   return (
-    <Stack
-      direction="column"
-      justifyContent="center"
-      alignItems="center"
-      gap={1}
-      m={1}
-    >
       <Card
         variant="outlined"
         sx={{
           border: "none",
-          width: 275,
         }}
       >
         <CardActionArea>
@@ -41,72 +33,36 @@ export function ChartMember(props: ChartMemberProps) {
               src={props.chartMember?.image || "https://i.insider.com/602ee9ced3ad27001837f2ac?width=700"}
               alt={props.chartMember?.name || "Rick Astley"}
               sx={{
-                width: 96,
-                height: 96,
-                zIndex: 10,
+                width: "75%",
+                height: "75%",
+                maxWidth: "16vw",
+                maxHeight: "16vw",
+                top: "1vw"
               }}
             />
           </Box>
           <CardContent
-            sx={{
-              backgroundColor: "#324B79",
-              p: 3,
-              position: "relative",
-              top: -20,
-              zIndex: 0,
-              borderRadius: 2,
-              height: 100,
+            sx={(theme) => ({
+              p: "2vw",
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
               alignItems: "center",
-            }}
+              backgroundColor: theme.palette.primary.main,
+            })}
           >
-            <Box
-              sx={{
-                height: 70,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Typography
-                textAlign="center"
-                variant="h3"
-                color="white"
-                textTransform="uppercase"
-                fontWeight="bold"
-              >
-                {props.chartMember?.name || "Rick Astley"}
-              </Typography>
-            </Box>
-            <Box
-              sx={{
-                backgroundColor: "#74B9FF",
-                px: 1,
-                borderRadius: 2,
-              }}
-            >
               <Typography
                 textAlign="center"
                 variant="h4"
-                textTransform="uppercase"
-                fontWeight="bold"
+                sx={(theme)=> ({
+                  backgroundColor: theme.palette.background.paper,
+                  px: "1vw"
+                })}
               >
-                {props.chartMember?.position || "Rick Roller"}
+                {"Rick Roller"}
               </Typography>
-            </Box>
           </CardContent>
         </CardActionArea>
       </Card>
-      {props.children ? (
-        <Stack direction="row" gap={5}>
-          {props.children}
-        </Stack>
-      ) : (
-        <></>
-      )}
-    </Stack>
   );
 }

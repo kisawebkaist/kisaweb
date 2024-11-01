@@ -1,8 +1,8 @@
 import React from "react";
 import { DivisionT, InternalBoardMemberT, MemberT } from "../../API/about-us";
-import { ChartDivision } from "./ChartDivision";
 import { ChartMember } from "./ChartMember";
-import { Box, Stack } from "@mui/material";
+import { Card, Grid, Typography } from "@mui/material";
+import Divisions from "./Divisions";
 
 interface ChartProps {
   divisions: DivisionT[];
@@ -34,32 +34,51 @@ export function Chart(props: ChartProps) {
   );
 
   return (
-    <Box my={2}>
-      {/* Internal board */}
-      <ChartMember chartMember={president}>
-        <ChartMember chartMember={vicePresident} />
+      <Grid 
+        container
+        spacing={"2vw"}
+        maxWidth="800px"
+      >
+        <Grid item xs={12}>
+          <ChartMember chartMember={president}/>
+        </Grid>
+        <Grid item xs={6}>
+          <ChartMember chartMember={vicePresident} />
+        </Grid>
+        <Grid item xs={6}>
         <ChartMember chartMember={secretary} />
-      </ChartMember>
-
-      {/* Divisions */}
-      <Stack direction="row" justifyContent="space-around">
-        {props.divisions.map((division, index) => {
-          const head = props.members.find(
-            (member) => member.id === division.head_member_id
-          )!;
-          const members = props.members.filter(
-            (member) => member.division === division.id
-          );
-          return (
-            <ChartDivision
-              key={index}
-              division={division}
-              headMember={{ ...head }}
-              members={members}
-            />
-          );
-        })}
-      </Stack>
-    </Box>
+        </Grid>
+        <Grid item xs={12}>
+          <Card
+            variant="outlined"
+            sx={{
+              border: "none",
+              p: "2vw"
+            }}
+          >
+            <Typography variant="h3" textAlign="center">
+              Divisions
+            </Typography>
+            <Divisions divisions={[
+              {
+                name: "Welfare",
+                head: {
+                  name: "Ahmed",
+                  image: "",
+                },
+                members: ["Alex", "Bob", "Cindy", "Daisy"]
+              },
+              {
+                name: "Web",
+                head: {
+                  name: "John",
+                  image: "",
+                },
+                members: ["Alex", "Bob", "Cindy", "Daisy", "Euler"]
+              }
+            ]}/>
+          </Card>
+        </Grid>
+      </Grid>
   );
 }
