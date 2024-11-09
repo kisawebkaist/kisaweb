@@ -76,11 +76,7 @@ const Faq = ({ faqs, categories }: FaqP) => {
       <FaqHeader />
       {/* Search */}
       <FaqSearch onSearch={setSearchText} />
-      <Stack
-        direction = "row"
-        justifyContent="space-between"
-        gap={5}
-      >
+      <div className="flex flex-col md:flex-row justify-between gap-5">
         {/* Categories */}
         <Box component="nav">
           <List>
@@ -95,12 +91,12 @@ const Faq = ({ faqs, categories }: FaqP) => {
           </List>
         </Box>
         {/* Questions */}
-        <Box component="main" className="w-2/3">
+        <Box component="main" className="w-100">
           <Stack direction="column" gap={1}>
             {qnaContents}
           </Stack>
         </Box>
-      </Stack>
+      </div>
     </Container>
   );
 };

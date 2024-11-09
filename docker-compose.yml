@@ -65,7 +65,6 @@ services:
     ports:
       - 81:8081
       - 8001:8080
-      - 3000:8081
     depends_on:
       - frontend
       - backend
