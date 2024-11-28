@@ -68,7 +68,7 @@ class Event(models.Model):
     """
     
     class Meta:
-        ordering = ['-id']
+        ordering = ['-event_end_datetime']
 
     title = models.CharField(max_length=100, default='')
     slug = models.SlugField(max_length=100, unique=True, blank=True)

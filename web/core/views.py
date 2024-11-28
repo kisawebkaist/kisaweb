@@ -10,7 +10,7 @@ def homepage(request):
         return redirect('important_links')
     else:
         num_shown_events = 6
-        events = Event.objects.all().order_by("-id")
+        events = Event.objects.all().order_by("-event_end_datetime")
         latest_events = events[: min(num_shown_events, len(events))]
         division_list = DivisionContent.objects.all()
         colors = ['red', 'green', 'orange', 'blue', 'black', 'purple']

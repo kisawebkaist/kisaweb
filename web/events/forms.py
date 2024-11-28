@@ -51,7 +51,25 @@ class EventForm(forms.ModelForm):
 
     class Meta:
         model = Event
-        fields = '__all__'
+        fields = [
+            'title',
+            'location',
+            'link',
+            'is_link',
+            'event_start_datetime',
+            'event_end_datetime',
+            'registration_start_datetime',
+            'registration_end_datetime',
+            'max_occupancy',
+            'current_occupancy',
+            'important_message',
+            'description',
+            'image',
+            'image_height',
+            'image_width',
+            'has_registration_form',
+            'registration_form_src'
+        ]
         labels = {
             'max_occupancy': 'Max Occupancy (leave empty if no limit)',
         }
@@ -63,8 +81,10 @@ class EventForm(forms.ModelForm):
             if field.widget.__class__ == forms.DateTimeInput:
                 if 'class' in field.widget.attrs:
                     field.widget.attrs['class'] += 'datetimepicker'
+                    field.widget.attrs['data-format'] = '%Y-%m-%d %H:%M:%S'
+                    field.widget.attrs['input-type'] = 'datetime-local'
                 else:
-                    field.widget.attrs.update({'class': 'datetimepicker'})
+                    field.widget.attrs.update({'class': 'datetimepicker', 'data-format': '%Y-%m-%d %H:%M:%S', 'input-type': 'datetime-local'})
 
         image_id = 'image'
         self.current_image = self.instance.image_tag(css_class='border border-dark rounded', tag_id=image_id)

@@ -104,6 +104,7 @@ const getChartOptions = (chosenOption) => {
         all_votes = 0;
         all_votes += electionFilters['KISA Votes'].reduce((a, b) => a + b, 0);
         all_votes += electionFilters['Non-KISA Votes'].reduce((a, b) => a + b, 0);
+        all_votes += electionFilters['KISA (in-debate) Votes'].reduce((a, b) => a + b, 0);
         $(electionTotalVotes).text(all_votes);
     }
     else {

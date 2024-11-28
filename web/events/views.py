@@ -1,5 +1,6 @@
 from django.shortcuts import render, HttpResponse
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.mixins import UserPassesTestMixin, PermissionRequiredMixin
 from django.views.decorators.http import require_http_methods
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
@@ -28,6 +29,7 @@ class EventList(ListView):
 
 @login_required
 @require_http_methods(['POST'])
+@permission_required("events.change_event")
 def modify_registration(request, pk):
     event = Event.objects.get(pk=pk)
     registration_type = request.POST.get('type')
@@ -44,11 +46,11 @@ def modify_registration(request, pk):
     return HttpResponse('Success')
 
 @method_decorator(login_required, name='dispatch')
-
-class EventCreate(CreateView):
+class EventCreate(PermissionRequiredMixin, CreateView):
     model = Event
     form_class = EventForm
     cancel_url = reverse_lazy('events')
+    permission_required = ["events.add_event"]
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
@@ -64,11 +66,12 @@ class EventCreate(CreateView):
             return super().post(request, *args, **kwargs)
 
 @method_decorator(login_required, name='dispatch')
-class EventUpdate(UpdateView):
+class EventUpdate(PermissionRequiredMixin, UpdateView):
     model = Event
     form_class = EventForm
     default_cancel_url = reverse_lazy('events')
-
+    permission_required = ["events.change_event"]
+    
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
         form.helper.layout[-1][0].append(HTML(
@@ -95,6 +98,7 @@ class EventUpdate(UpdateView):
 
 @login_required
 @require_http_methods(['POST'])
+@permission_required('events.delete_event')
 def delete_event(request, slug):
     event = Event.objects.get(slug=slug)
     event.delete()
@@ -103,6 +107,7 @@ def delete_event(request, slug):
 
 @login_required
 @require_http_methods(['POST'])
+@permission_required('events.change_event')
 def modify_descr_truncate_num(request, pk):
     event = Event.objects.get(pk=pk)
     event.modify_descr_truncate_num(int(request.POST.get('num')))
@@ -111,6 +116,7 @@ def modify_descr_truncate_num(request, pk):
 
 @login_required
 @require_http_methods(['POST'])
+@permission_required('events.change_event')
 def modify_truncated_descr(request, pk):
     event = Event.objects.get(pk=pk)
     length = int(request.POST.get('num'))

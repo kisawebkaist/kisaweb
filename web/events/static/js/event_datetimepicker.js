@@ -1,4 +1,7 @@
 // Script used in event_form.html
+$('.datetimepicker').datetimepicker({
+    format: 'YYYY-MM-DD HH:mm:ss',
+});
 
 $('#id_event_start_datetime').on('dp.change', function(e) {
     // Event end datetime >= Event start datetime

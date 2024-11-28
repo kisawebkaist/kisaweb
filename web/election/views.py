@@ -4,6 +4,7 @@ from django.views.decorators.http import require_http_methods
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.core.exceptions import BadRequest
 from django.utils import timezone, dateformat
 from election.expression_parser import evaluate
 
@@ -180,6 +181,9 @@ def vote(request, name):
         'voted_candidate': Candidate.objects.get(name=name.replace('-', ' ')),
         'voted_election': Election.objects.latest('start_datetime'),
     }
+
+    if not params['voted_candidate'] in params['voted_election'].candidates.all():
+        raise BadRequest()
 
     if not params['user'].has_perm('election.voting_exception'):
         
