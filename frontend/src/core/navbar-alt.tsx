@@ -64,7 +64,7 @@ const AuthManager = () => {
       <CollapsibleIconButton
         color="inherit"
         startIcon={<FontAwesomeIcon icon={faRightToBracket} />}
-        onClick={() => AuthAPI.login("/").then(redirect => navigate(redirect))}
+        onClick={AuthAPI.login}
         breakpoint="md"
         tooltipText={"Login"}
         tooltipEnabled={true}>
@@ -79,8 +79,8 @@ const AuthManager = () => {
   const accountSettingsDialogContent = (
     <Card>
       <CardHeader
-        avatar={nameAvatar(authContext.user.data.name)}
-        title={authContext.user.data.name}
+        avatar={nameAvatar(authContext.user.data.english_name)}
+        title={authContext.user.data.english_name}
         subheader={authContext.user.data.email}
         action={
           <Tooltip title="Personal data usage notice">
@@ -122,7 +122,7 @@ const AuthManager = () => {
   return (
     <React.Fragment>
       <Tooltip title="Account Settings">
-        <IconButton onClick={toggleOpen}>{nameAvatar(authContext.user.data.name)}</IconButton>
+        <IconButton onClick={toggleOpen}>{nameAvatar(authContext.user.data.english_name)}</IconButton>
       </Tooltip>
       <Dialog open={open} onClose={() => setOpen(false)}>
         {dialogContent}

@@ -29,7 +29,6 @@ urlpatterns = [
     path('admin/', site.urls),
     path('events/', include('events.urls')),
     path('docs/', include('docs.urls')),
-    path('important-links/', include('important_links.urls')),
     path('alumni/', include('alumni.urls')),
     path(f'{settings.URL_SHORTENER_PREFIX}/', include('url_shortener.urls')),
     path('tinymce/', include('tinymce.urls')),
@@ -43,11 +42,6 @@ urlpatterns = [
     path('api/event/', include('events.urls')),
     path('api/sso/', include('sso.urls')),
     path('api/election/', include('election.urls')),
-    path('api/multimedia/', include('multimedia.urls'))
+    path('api/multimedia/', include('multimedia.urls')),
+    path('api/important-links/', include('important_links.urls')),
 ]
-
-# Add static file urls
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-
-# Add media file urls
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

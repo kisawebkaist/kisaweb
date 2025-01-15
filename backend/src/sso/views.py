@@ -1,4 +1,4 @@
-import base64, datetime, json, logging, urllib.parse, pyotp
+import base64, datetime, time, json, logging, urllib.parse, pyotp, requests, secrets
 
 from corsheaders.signals import check_request_enabled
 
@@ -10,7 +10,9 @@ from django.core.signing import BadSignature, SignatureExpired
 from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.utils.crypto import constant_time_compare
 from django.utils.translation import gettext as _
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 from rest_framework.decorators import api_view, parser_classes, authentication_classes, permission_classes, throttle_classes
 from rest_framework.exceptions import PermissionDenied, ParseError, ValidationError, Throttled
@@ -28,115 +30,93 @@ from .permissions import IsKISA, IsVerified
 from core.utils import ensure_relative_url, get_random_urlsafe_string, CSRFExemptSessionAuthentication
 from core.throttling import EMAILOTPRateThrottle
 
-KSSO_LOGIN_URL = settings.KSSO_LOGIN_URL
-KSSO_LOGOUT_URL = settings.KSSO_LOGOUT_URL
-KSSO_CLIENT_ID = settings.KSSO_CLIENT_ID
-KSSO_ORIGIN = settings.KSSO_ORIGIN
-KSSO_SA_AES_ID_SECRET = settings.KSSO_SA_AES_ID_SECRET
 MAIL_OTP_BASE_SESSION_KEY = "_mail_otp_" 
 
 logger = logging.getLogger(__name__)
 email_validator = EmailValidator()
 
-#TODO: throttle any request that triggers "send-mail"
-
-def decrypt(data, state):
-    try:
-        BS = AES.block_size 
-        key = (KSSO_SA_AES_ID_SECRET+str(state))[80:96].encode("utf8") # 128 bit
-        cipher = AES.new(key, AES.MODE_CBC, IV=key)
-        deciphed = cipher.decrypt(base64.b64decode(data))   
-        deciphed = unpad(deciphed, BS).decode('utf-8')
-        return deciphed
-    except ValueError:
-        raise ParseError()
-
+# check https://datatracker.ietf.org/doc/html/rfc6749#section-10, https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics 
+    
 @api_view(['POST'])
-def login_view(request):
-    next = ensure_relative_url(str(request.data.get('next', '/')))
+@ensure_csrf_cookie
+def login_init_view(request):
+    """
+    Nonce
+        - check https://openid.net/specs/openid-authentication-2_0.html#verify_nonce
+        - nonce binds the authorization request to the info response preventing the replay attacks
 
+    State
+        - check https://datatracker.ietf.org/doc/html/rfc6749#section-10.12
+        - state prevents the attacker from abusing the redirection uri
+    """
     if request.user.is_authenticated:
-        return Response({"redirect": next})
+        return Response({
+            'is_authenticated': True,
+            'data': None
+        })
+    
+    nonce = base64.urlsafe_b64encode(int(time.time()).to_bytes(8, byteorder='big') + secrets.token_bytes(16)).decode()
+    state = base64.urlsafe_b64encode(secrets.token_bytes(16)).decode()
 
-    if request.session.get('state') is None:
-        state = get_random_urlsafe_string(8)
-        request.session['state'] = state
-        request.session['next'] = next
-    else:
-        state = request.session['state']
-
-    data = {
-        'client_id': KSSO_CLIENT_ID,
-        'redirect_url': request.build_absolute_uri(reverse('login-response')),
-        'state': state,
-    }
-    response = Response({"redirect": f"{KSSO_LOGIN_URL}?{urllib.parse.urlencode(data)}"})
-    response.set_signed_cookie('login_nonce', state, salt='login_nonce', samesite='None', secure=True, path=reverse('login-response'))
-    return response
-
-def cors_allow_login_response(sender, request, **kwargs):
-    """
-    In login_response view, a cross-site POST request is sent from SSO website. This allows CORS for that.
-    """
-    request_origin = request.headers.get("origin", None)
-    return request.resolver_match is not None and request.resolver_match.url_name == 'login-response' and (request_origin == KSSO_ORIGIN or (request_origin == "null" and settings.DEBUG))
-
-check_request_enabled.connect(cors_allow_login_response)
+    request.session['login_nonce'] = nonce
+    request.session['login_state'] = state
+ 
+    return Response({
+        'is_authenticated': False,
+        'data': {
+            'payload': {
+                'response_type': 'code',
+                'scope': 'openid',
+                'client_id': settings.KSSO_CLIENT_ID,
+                'redirect_uri': settings.KSSO_REDIRECT_URI,
+                'state': state,
+                'nonce': nonce,
+            },
+            'auth_uri': settings.KSSO_AUTH_REQUEST_URI
+        }
+    })
+    
 
 @api_view(['POST'])
 @parser_classes([FormParser])
 @authentication_classes([CSRFExemptSessionAuthentication])
-def login_response_view(request):
-    """
-    This POST request is supposed to be sent by SSO website and contains encrypted user information.
-    This view is csrf_exempted but we will enforce strict origin-checking manually.
-    We need to allow CORS from sso website with credentials and set sessionid cookie to samesite=None.
-    """
+def login_view(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect('/')
     
-    raw_result = str(request.data.get('result', ''))
-    success = request.data.get('success')
-    origin = request.META.get('HTTP_ORIGIN')
-    next = request.session.pop('next', '/')
+    code = request.data['code']
+    agent_state = request.data['state']
+    
+    # to avoid brute-force attacks
+    state = request.session.pop('login_state', '')
+    nonce = request.session.pop('login_nonce', '')
 
-    if not bool(success) or raw_result == "" or (not 'state' in request.session):
-        raise ParseError()
+    # if the 'Origin' header exists, it must be from the sso website
+    print(request.headers)
+    print(request.headers.get('Origin', 'https://sso.kaist.ac.kr'))
+    if request.headers.get('Origin', 'https://sso.kaist.ac.kr') != 'https://sso.kaist.ac.kr':
+        raise PermissionDenied(detail=_('Invalid origin'))
     
-    try:
-        login_nonce = request.get_signed_cookie('login_nonce', salt='login_nonce', max_age=900) # 15 minutes
-    except KeyError|BadSignature|SignatureExpired:
-        raise ParseError()
+    print(state, agent_state)
+    if not constant_time_compare(state, agent_state):
+        raise PermissionDenied(detail=_('Invalid state'))
     
-    if login_nonce != request.session['state']:
-        raise ParseError()
 
-    if not (origin == KSSO_ORIGIN or (settings.DEBUG and origin == "null")):
-        logger.info(f"Suspicious Operation: Invalid origin in login-response: (user-agent: {request.META.get('HTTP_USER_AGENT')}, origin: {origin})")
-        raise PermissionDenied(detail=_(f'CSRF Failed: Origin checking failed - {origin} does not match any trusted origins.'))
+    payload = {
+        'grant_type': 'authorization_code',
+        'code': code,
+        'redirect_uri': settings.KSSO_REDIRECT_URI,
+        'client_id': settings.KSSO_CLIENT_ID,
+        'client_secret': settings.KSSO_CLIENT_SECRET,
+    }
 
-    result = decrypt(raw_result, request.session['state'])
-    
-    try:
-        result = json.loads(result)
-        del request.session['state'] # delay the refresh of nonce as late as possible
-        user = User.from_info_json(result['dataMap']['USER_INFO'])
-        login(request, user)
-        request.session.pop(TOTP_SESSION_KEY, None)
-        # the errors in here might indicate just simple data corruption or secret-key leak
-    except KeyError as e:
-        logger.warning(f'Suspicious Operation: key error: %s', e)
-        raise ParseError()
-    except json.JSONDecodeError as e:
-        logger.warning(f'Suspicious Operation: json decoding failed: %s', e)
-        raise ParseError()
-    except DjangoValidationError as e:
-        logger.warning(f'Suspicious Operation: user model validation failed: %s', e)
-        raise ParseError()
-    
-    response = HttpResponseRedirect(next)
-    response.delete_cookie('login_nonce', path=reverse('login-response'))
-    return response
+    response = requests.post(settings.KSSO_INFO_REQUEST_URI, payload).json()
+    if not constant_time_compare(nonce, response['nonce']):
+        raise PermissionDenied(detail=_('Invalid nonce'))
+    user = User.from_info_json(response['userInfo'])
+    login(request, user)
+    request.session.pop(TOTP_SESSION_KEY, None)
+    return HttpResponseRedirect('https://kisa.kaist.ac.kr:8080/')
 
 @api_view(['POST'])
 @permission_classes([IsKISA])
@@ -262,25 +242,19 @@ def lost_totp_secret_response_view(request):
 
 @api_view(['POST'])
 def logout_view(request):
-    next = ensure_relative_url(str(request.data.get('next', '/')))
-    if not request.user.is_authenticated:
-        return Response({"redirect": next})
-    
-    logout(request)
-    
-    data = {
-        'client_id': KSSO_CLIENT_ID,
-        'redirect_url': request.build_absolute_uri(next),
-    }
-
-    return Response({"redirect": f"{KSSO_LOGOUT_URL}?{urllib.parse.urlencode(data)}"})
+    if request.user.is_authenticated:
+        logout(request)
+    return Response({
+        'is_authenticated': False,
+        'data': None
+    })
 
 @api_view(['GET'])
 def userinfo_view(request):
     data = dict()
     if request.user.is_authenticated: 
-        data['email'] = request.user.email
-        data['studentid'] = request.user.student_number
+        for (_, db_identifier) in User.KSSO_KEYS_AND_FIELDS:
+            data[db_identifier] = getattr(request.user, db_identifier, None)
     return Response({
         "is_authenticated": request.user.is_authenticated,
         "data": data

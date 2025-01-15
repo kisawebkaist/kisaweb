@@ -89,10 +89,9 @@ INSTALLED_APPS = [
     'url_shortener',
     'alumni',
 ]
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'sso.middleware.CustomSessionMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
     "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

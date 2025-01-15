@@ -1,15 +1,14 @@
-from django.contrib.sessions.models import Session
-import base64, json, logging, pyotp, datetime, secrets, time, math
+import logging, pyotp, datetime, secrets, math
 
 from django.conf import settings
 from django.core.mail import send_mail
 from django.contrib.sessions.backends.db import SessionStore as DBStore
-from django.contrib.sessions.base_session import AbstractBaseSession
 from django.contrib.sessions.management.commands import clearsessions
 
 from django.db import models, transaction
 from django.dispatch import receiver
 from django.contrib.auth.models import AbstractUser
+from django.utils import timezone
 from django.utils.crypto import constant_time_compare
 from django.utils.html import strip_tags
 from django.utils.translation import gettext_lazy as _
@@ -154,113 +153,84 @@ class User(AbstractUser):
     # these are all the fields KISA registered for
     KSSO_KEYS_AND_FIELDS = [
         ('kaist_uid', 'kaist_uid'),
-        ('ku_kname', 'korean_name'),
-        ('displayname', 'full_name'),
-        ('sn', 'first_name'),
-        ('givenname', 'last_name'),
-        ('ku_born_date', 'dob'),
-        ('c', 'nationality'),
-        ('ku_sex', 'sex'),
-        ('mail', 'kaist_email'),
-        ('ku_ch_mail', 'external_email'),
-        ('ku_employee_number', 'employee_number'),
-        ('ku_std_no', 'student_number'),
-        ('ku_acad_org', 'bachelors_department_code'),
-        ('ku_acad_name', 'bachelors_department_name'),
-        ('ku_campus', 'campus'),
-        ('title', 'title_english'),
-        ('ku_psft_user_status', 'student_status_english'),
-        ('ku_psft_user_status_kor', 'student_status_korean'),
-        ('ku_acad_prog_code', 'degree_code'),
-        ('ku_acad_prog', 'degree_name_korean'),
-        ('ku_acad_prog_eng', 'degree_name_english'),
-        ('employeeType', 'employee_type'),
-        ('ku_prog_effdt', 'student_admission_datetime'),
-        ('ku_stdnt_type_id', 'student_type_id'),
-        ('ku_stdnt_type_class', 'student_type_class'),
-        ('ku_category_id', 'student_category_id'),
-        ('ku_prog_start_date', 'student_enrollment_date'),
-        ('ku_prog_end_date', 'student_graduation_date'),
-        ('acad_ebs_org_id', 'student_department_id'),
-        ('uid', 'sso_id'),
-        ('acad_ebs_org_name_eng', 'student_department_name_english'),
-        ('acad_ebs_org_name_kor', 'student_department_name_korean'),
+        ('user_id', 'sso_id'),
+
+        ('user_eng_nm', 'english_name'), # english name
+        ('user_nm', 'full_name'), # full name
+        ('email', 'email'), # kaist mail
+        ('busn_phone', 'business_phone'), # business phone number
+        ('socps_cd', 'employeeType'), # employee type
+        ('kaist_org_id', 'organization_id'), # kaist organization id
+        ('campus_div_cd', 'campus'), # campus
+
+        ('std_dept_kor_nm', 'student_department_name_korean'),
+        ('std_dept_eng_nm', 'student_department_name_english'),
+        ('std_status_kor', 'student_status_korean'),
+        ('std_dept_id', 'student_department_id'),
+        ('std_no', 'student_number'),
+
+        ('emp_dept_kor_nm', 'employee_department_name_korean'),
+        ('emp_dept_eng_nm', 'employee_department_name_english'),
+        ('emp_status_kor', 'employee_status_korean'),
+        ('emp_dept_id', 'employee_department_id'),
+        ('emp_no', 'employee_number'),
     ]
 
     # kaist_uid is not student number (find below for another field named student_number)
-    kaist_uid = models.IntegerField(default = 0)  # kaist_uid
+    kaist_uid = models.IntegerField()  # kaist_uid
+    sso_id = models.CharField(max_length=500) # user_id
 
-    korean_name = models.CharField(max_length=100, blank=True, null=True)  # ku_kname
-    full_name = models.CharField(max_length=100)  # displayname
-    first_name = models.CharField(max_length=100)  # sn
-    last_name = models.CharField(max_length=100)  # givenname
+    english_name = models.CharField(max_length=500)  # user_eng_nm
+    full_name = models.CharField(max_length=500) # user_nm
+    business_phone = models.CharField(max_length=500, blank=True, null=True) # busn_phone
+    employee_type = models.CharField(max_length=10)  # socps_cd
+    organization_id = models.IntegerField() # kaist_org_id
+    campus = models.CharField(max_length=5) #  campus_div_cd
 
-    dob = models.DateField(blank=True, null=True)  # ku_born_date
-    nationality = models.CharField(max_length=100)  # c
-    sex = models.CharField(max_length=20, blank=True, null=True)  # ku_sex
+    student_department_name_korean = models.CharField(max_length=200, blank=True, null=True) # std_dept_kor_nm
+    student_department_name_english = models.CharField(max_length=200, blank=True, null=True) # std_dept_eng_nm
+    student_status_kor = models.CharField(max_length=100, blank=True, null=True) # std_status_kor
+    student_department_id = models.IntegerField(blank=True, null=True) # std_dept_id
+    student_number = models.IntegerField(blank=True, null=True) # std_no
 
-    kaist_email = models.EmailField(max_length=100, blank=True, null=True)  # mail
-    external_email = models.EmailField(max_length=100, blank=True, null=True)  # ku_ch_mail
-
-    employee_number = models.IntegerField(blank=True, null=True)  # ku_employee_number
-    student_number = models.IntegerField(blank=True, null=True)  # ku_std_no
-    bachelors_department_code = models.IntegerField(blank=True, null=True)  # ku_acad_org
-    bachelors_department_name = models.CharField(max_length=200, blank=True, null=True)  # ku_acad_name
-    campus = models.CharField(max_length=5, blank=True, null=True)  # ku_campus
-
-    title_english = models.CharField(max_length=100)  # title
-    student_status_english = models.CharField(max_length=100, blank=True, null=True)  # ku_psft_user_status
-    student_status_korean = models.CharField(max_length=100, blank=True, null=True)  # ku_psft_user_status_kor
-
-    degree_code = models.IntegerField(blank=True, null=True)  # ku_acad_prog_code
-    degree_name_korean = models.CharField(max_length=100, blank=True, null=True)  # ku_acad_prog
-    degree_name_english = models.CharField(max_length=100, blank=True, null=True)  # ku_acad_prog_eng
-
-    employee_type = models.CharField(max_length=10)  # employeeType
-    student_admission_datetime = models.DateTimeField(blank=True, null=True)  # ku_prog_effdt
-    student_type_id = models.IntegerField(blank=True, null=True)  # ku_stdnt_type_id
-    student_type_class = models.CharField(max_length=20, blank=True, null=True)  # ku_stdnt_type_class
-    student_category_id = models.CharField(max_length=20, blank=True, null=True)  # ku_category_id
-
-    student_enrollment_date = models.DateField(blank=True, null=True)  # ku_prog_start_date
-    student_graduation_date = models.DateField(blank=True, null=True)  # ku_prog_end_date
-
-    student_department_id = models.IntegerField(blank=True, null=True)  # acad_ebs_org_id
-    sso_id = models.CharField(max_length=100, blank=True, null=True)  # uid
-    student_department_name_english = models.CharField(max_length=100, blank=True, null=True)  # acad_ebs_org_name_eng
-    student_department_name_korean = models.CharField(max_length=100, blank=True, null=True)  # acad_ebs_org_name_kor
+    employee_department_name_korean = models.CharField(max_length=200, blank=True, null=True) # emp_dept_kor_nm
+    employee_department_name_english = models.CharField(max_length=200, blank=True, null=True) # emp_dept_eng_nm
+    employee_status_kor = models.CharField(max_length=100, blank=True, null=True) # emp_status_kor
+    employee_department_id = models.IntegerField(blank=True, null=True) # emp_dept_id
+    employee_number = models.IntegerField(blank=True, null=True) # emp_no
 
     kisa_division = models.IntegerField(choices=KISADivision.choices, default=KISADivision.NONE)
     totp_device = models.OneToOneField(TOTPDevice, on_delete=models.CASCADE)
-
-    def is_valid_kaist_account(self):
-        return self.kaist_uid != 0
 
     @classmethod
     def from_info_json(cls, user_info: dict):
         query = cls.objects.filter(kaist_uid=user_info['kaist_uid'])
         with transaction.atomic():
             if query.exists():
-                return query[0].update_from_info_json(user_info)
-            user = cls()
+                user = query[0]
+            else:
+                user = cls()
+                user.username = user_info['user_id'] + str(timezone.now()) # we don't have guarantee that 'user_id' will be unique
+                user.set_unusable_password()
+                user.totp_device = TOTPDevice()
+                user.totp_device.save()
+            
             for key, field in cls.KSSO_KEYS_AND_FIELDS:
                 if key in user_info:
                     setattr(user, field, user_info[key])
-            user.username = str(user.kaist_uid)
-            user.set_unusable_password()
-
-            user.totp_device = TOTPDevice()
-            user.totp_device.save()
-
-            # set the default mail to be the user's external mail or kaist mail
-            if user.external_email is not None and user.external_email != "":
-                user.email = user.external_email
-            elif user.kaist_email is not None and user.kaist_email != "":
-                user.email = user.kaist_email
 
             user.full_clean()
             user.save()
         return user
+    
+    def is_valid_kaist_account(self):
+        return self.kaist_uid != 0
+    
+    def get_full_name(self):
+        return self.full_name
+    
+    def get_short_name(self):
+        return self.full_name
 
     def get_info_json(self):
         info_json = dict()
@@ -270,16 +240,8 @@ class User(AbstractUser):
                 info_json[key] = str(info_json[key])
         return info_json
 
-    def update_from_info_json(self, user_info:dict):
-        for key, field in self.KSSO_KEYS_AND_FIELDS:
-            if key in user_info:
-                setattr(self, field, user_info[key])
-        self.full_clean()
-        self.save()
-        return self
-
     def is_kisa(self):
-        return self.kisa_division != 0
+        return self.kisa_division != KISADivision.NONE
 
     def is_verified(self, request):
         return TOTP_SESSION_KEY in request.session and bool(request.session[TOTP_SESSION_KEY])
