@@ -1,0 +1,201 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Backend Collect Static",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "windows": {
+                "args": [
+                    ".\\manage.py",
+                    "collectstatic"
+                ]
+            },
+            "args": [
+                "./manage.py",
+                "collectstatic"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/backend/src",
+                "env": {
+                    "ALLOWED_HOSTS": "",
+                    "API_ROOT": "/api/",
+                    "CORS_ALLOW_CREDENTIALS": "0",
+                    "CORS_ALLOWED_ORIGINS": "http://locahost",
+                    "DB_NAME": "kisaweb",
+                    "DB_USER": "kisaweb",
+                    "DB_PASSWORD": "ilovekisa",
+                    "DB_HOST": "localhost",
+                    "DB_PORT": "5432",
+                    "DEBUG": "1",
+                    "KSSO_CLIENT_SECRET": "",
+                    "SECRET_KEY": "",
+                    "SMTP_SERVER": "",
+                    "SMTP_USERNAME": "",
+                    "SMTP_PASSWORD": "",
+                    "DJANGO_SETTINGS_MODULE": "web.settings"
+                }
+            },
+            "problemMatcher": [
+                "$jshint-stylish"
+            ]
+        },
+        {
+            "label": "Frontend Build",
+            "type": "shell",
+            "command": "npm",
+            "args": [
+                "run",
+                "build"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/frontend",
+                "env": {
+                    "BUILD_PATH": "${workspaceFolder}/build",
+                    "REACT_APP_API_ENDPOINT": "/api",
+                    "REACT_APP_PUBLIC_KEY": "-----BEGIN PUBLIC KEY-----\nMIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgGAD0Xqs1D1mqbkTSPaEzSJCUiR4\nBt7LKsiC3OYh5Y8vCyC0cTSkcWwhW5oTZ5ZQ8ZYP4Ddz4Fnd8AG6s3Yjryr4ODS4\nLjPHVIGtw3tCaFTM832+YVAvc8ezPdcGth5at2n7MZrv9Kf/xcsPXOGZTxkhwKhN\njsmNtPywE8GlFMbrAgMBAAE=\n-----END PUBLIC KEY-----",
+                }
+            },
+            "problemMatcher": [
+                "$jshint-stylish"
+            ]
+        },
+        {
+            "label": "Build Static Files",
+            "dependsOrder": "sequence",
+            "dependsOn": ["Frontend Build", "Backend Collect Static"]
+        },
+        {
+            "label": "Run Database",
+            "type": "shell",
+            "command": "docker",
+            "args": [
+                "compose",
+                "up",
+                "-d",
+                "db"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Migrate Database",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "windows": {
+                "args": [
+                    ".\\manage.py",
+                    "migrate"
+                ]
+            },
+            "args": [
+                "./manage.py",
+                "migrate"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/backend/src",
+                "env": {
+                    "ALLOWED_HOSTS": "",
+                    "API_ROOT": "/api/",
+                    "CORS_ALLOW_CREDENTIALS": "0",
+                    "CORS_ALLOWED_ORIGINS": "http://localhost",
+                    "DB_NAME": "kisaweb",
+                    "DB_USER": "kisaweb",
+                    "DB_PASSWORD": "ilovekisa",
+                    "DB_HOST": "localhost",
+                    "DB_PORT": "5432",
+                    "DEBUG": "1",
+                    "KSSO_CLIENT_SECRET": "",
+                    "SECRET_KEY": "",
+                    "SMTP_SERVER": "",
+                    "SMTP_USERNAME": "",
+                    "SMTP_PASSWORD": "",
+                    "DJANGO_SETTINGS_MODULE": "web.settings"
+                }
+            },
+            "dependsOn":[
+                "Run Database"
+            ]
+        },
+        {
+            "label": "Migrate Database",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "windows": {
+                "args": [
+                    ".\\manage.py",
+                    "migrate"
+                ]
+            },
+            "args": [
+                "./manage.py",
+                "migrate"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/backend/src",
+                "env": {
+                    "ALLOWED_HOSTS": "",
+                    "API_ROOT": "/api/",
+                    "CORS_ALLOW_CREDENTIALS": "0",
+                    "CORS_ALLOWED_ORIGINS": "http://localhost",
+                    "DB_NAME": "kisaweb",
+                    "DB_USER": "kisaweb",
+                    "DB_PASSWORD": "ilovekisa",
+                    "DB_HOST": "localhost",
+                    "DB_PORT": "5432",
+                    "DEBUG": "1",
+                    "KSSO_CLIENT_SECRET": "",
+                    "SECRET_KEY": "",
+                    "SMTP_SERVER": "",
+                    "SMTP_USERNAME": "",
+                    "SMTP_PASSWORD": "",
+                    "DJANGO_SETTINGS_MODULE": "web.settings"
+                }
+            },
+            "dependsOn":[
+                "Run Database"
+            ]
+        },
+        {
+            "label": "Make Migrations",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "windows": {
+                "args": [
+                    ".\\manage.py",
+                    "makemigrations"
+                ]
+            },
+            "args": [
+                "./manage.py",
+                "makemigrations"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/backend/src",
+                "env": {
+                    "ALLOWED_HOSTS": "",
+                    "API_ROOT": "/api/",
+                    "CORS_ALLOW_CREDENTIALS": "0",
+                    "CORS_ALLOWED_ORIGINS": "http://localhost",
+                    "DB_NAME": "kisaweb",
+                    "DB_USER": "kisaweb",
+                    "DB_PASSWORD": "ilovekisa",
+                    "DB_HOST": "localhost",
+                    "DB_PORT": "5432",
+                    "DEBUG": "1",
+                    "KSSO_CLIENT_SECRET": "",
+                    "SECRET_KEY": "",
+                    "SMTP_SERVER": "",
+                    "SMTP_USERNAME": "",
+                    "SMTP_PASSWORD": "",
+                    "DJANGO_SETTINGS_MODULE": "web.settings"
+                }
+            },
+            "dependsOn":[
+                "Run Database"
+            ]
+        }
+    ]
+  }
+  
