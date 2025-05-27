@@ -1,4 +1,4 @@
-import urllib.parse, string, secrets
+import json, urllib.parse, string, secrets
 
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
@@ -8,6 +8,7 @@ from django.shortcuts import _get_queryset
 
 from rest_framework.authentication import SessionAuthentication as DRFSessionAuthetication
 from rest_framework.exceptions import NotFound
+from rest_framework.parsers import MultiPartParser, DataAndFiles
 
 URLSAFE_CHARACTERS = string.ascii_letters + string.digits + '-_.~'
 """Reference: RFC 3986"""

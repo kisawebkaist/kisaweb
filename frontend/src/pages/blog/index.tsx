@@ -15,7 +15,7 @@ import {
   Typography,
 } from "@mui/material";
 import Lister from "../../components/common/Lister";
-import "../../components/css/blog.css";
+import "../../css/blog.css";
 import QueryGuard from "../../components/common/QueryGuard";
 import { useNavigate } from "react-router-dom";
 import { HighlightedLetter } from "../../components/common/HighlightedLetter";
@@ -108,7 +108,7 @@ const BlogCard = ({ data: blog }: { data: PartialBlogAPI }) => {
   const navigate = useNavigate();
 
   return (
-    <Grid item xs={12} sm={6} md={4} lg={3}>
+    <Grid size={{xs: 12, sm: 6, md: 4, lg:3}}>
       <Card>
         <CardActionArea onClick={() => navigate(`./${blog.data.slug}`)}>
           <CardMedia

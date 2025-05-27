@@ -1,6 +1,5 @@
 from django.contrib import admin
 
-from core.admin import register, site
 from .models import FAQ
 from .models import Category
 
@@ -9,5 +8,5 @@ from .models import Category
 class FAQAdmin(admin.ModelAdmin):
     list_display = ['short_question']
 
-site.register(FAQ, FAQAdmin)
-site.register(Category)
+admin.site.register(FAQ, FAQAdmin)
+admin.site.register(Category)

@@ -1,19 +1,15 @@
-from rest_framework.routers import DefaultRouter
+from django.urls import path
+from rest_framework.routers import SimpleRouter
 from . import views
 
-# urlpatterns = [
-#     path('', views.aboutus, name='aboutus'),
-# ]
+urlpatterns = [
+    path('member-list/', views.CurrentKISAMemberListView.as_view(), name='aboutus-member-list'),
+    path('me/', views.MyKISAMemberView.as_view(), name='aboutus-me'),
+]
 
-router = DefaultRouter()
+router = SimpleRouter()
 router.register(
-    r'members', views.MemberViewset, basename = 'aboutus-members'
+    r'divisions', views.KISADivisionContentViewset, basename = 'aboutus-divisions'
 )
-router.register(
-    r'internal-members', views.InternalBoardMemberViewset,
-    basename = 'aboutus-internal-members'
-)
-router.register(
-    r'divisions', views.DivisionViewset, basename = 'aboutus-divisions'
-)
-urlpatterns = router.urls
+
+urlpatterns += router.urls

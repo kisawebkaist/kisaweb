@@ -38,7 +38,7 @@ export class CompleteBlogAPI {
       const rawState = convertToRaw(contentState);
       this.content = rawState;
       axios.post(
-        `${process.env.REACT_APP_API_ENDPOINT}/blog/${this.data.slug}`,
+        `${process.env.REACT_APP_API_ENDPOINT}/blog/content/${this.data.slug}`,
         { new_content: rawState }
       );
     }

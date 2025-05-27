@@ -3,6 +3,7 @@ from django.core.validators import RegexValidator
 from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
+from django.utils.translation import gettext_lazy as _
 
 from jsonschema import ValidationError as JSONValidationError
 from jsonschema import Draft7Validator
@@ -106,6 +107,58 @@ class Category(models.Model):
 
 
 # End of Abstract Classes
+class Semester(models.Model):
+    class Season(models.IntegerChoices):
+        """
+        Seasons according to the KAIST academic calendar
+        """
+        SPRING = 0, _("Spring")
+        SUMMER = 1, _("Summer")
+        FALL = 2, _("Fall")
+        WINTER = 3, _("Winter")
+
+    year = models.IntegerField()
+    season = models.IntegerField(choices=Season.choices)
+
+    class Meta:
+        ordering = ['-year', '-season']
+
+    @staticmethod
+    def get_current_season():
+        currentMonth = timezone.now().month
+        if (currentMonth < 3):
+            return Semester.Season.WINTER
+        if (currentMonth < 6):
+            return Semester.Season.SPRING
+        if (currentMonth < 9):
+            return Semester.Season.SUMMER
+        if (currentMonth < 12):
+            return Semester.Season.FALL
+        
+        return Semester.Season.WINTER
+    
+    @staticmethod
+    def get_current_year():
+        return timezone.now().year
+    
+    @staticmethod
+    def get_latest_semester():
+        """
+        fetch the latest semester from the database
+        """
+        return Semester.objects.first()
+    
+    @staticmethod
+    def get_latest_nonbreak_semester():
+        """
+        fetch the latest non-break(i.e. spring/fall) from the database
+        """
+        return Semester.objects.filter(
+            models.Q(season=Semester.Season.SPRING) | models.Q(season=Semester.Season.FALL)
+        ).first()
+    
+    def __str__(self) -> str:
+        return str(self.year) + Semester.Season(self.season).label
 
 
 class EmptyQueryset(models.Model):

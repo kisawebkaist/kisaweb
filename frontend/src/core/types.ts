@@ -52,3 +52,60 @@ export interface NavTabRoute extends NonIndexRouteObject {
   path: string;
   tabName: string;
 }
+
+export enum Season {
+  SPRING = 0,
+  SUMMER,
+  FALL,
+  WINTER,
+};
+
+export class Semester {
+  season: Season;
+  year: number;
+  
+  static currentSemester = Semester.getCurrentSemester();
+
+  constructor(year: number, season: Season) {
+    this.season = season;
+    this.year = year;
+  }
+
+  static equal(a: Semester, b: Semester) {
+    return a.season === b.season && a.year === b.year;
+  }
+
+  static getCurrentSeason() {
+    let month = new Date(Date.now()).getMonth();
+    if (month < 3)
+      return Season.WINTER;
+    else if (month < 6)
+      return Season.SPRING;
+    else if (month < 9)
+      return Season.SUMMER;
+    else if (month < 12)
+      return Season.FALL
+    return Season.WINTER;
+  }
+
+  static getCurrentSemester() {
+    let year = new Date(Date.now()).getFullYear();
+    let season = Semester.getCurrentSeason()
+
+    return new Semester(year, season);
+  }
+
+  static getLastAcademicSemeseter(semesters: Semester[]) {
+    return semesters.reduce(
+      (acc, curr) => {
+        if (acc.year < curr.year)
+          return curr;
+        if (acc.year > curr.year)
+          return acc;
+        if (acc.season < curr.season)
+          return curr;
+        return acc;
+      }
+    );
+  }
+};

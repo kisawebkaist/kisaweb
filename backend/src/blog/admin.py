@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib import admin
 
-from core.admin import register
+from web.admin import register
 from .models import Post, PostTag
 from django_draftjs import EditorWidget
 

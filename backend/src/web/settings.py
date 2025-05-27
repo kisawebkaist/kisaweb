@@ -57,7 +57,7 @@ API_ROOT = os.environ['API_ROOT']
 
 # Django top-level
 INSTALLED_APPS = [
-    'django.contrib.admin.apps.SimpleAdminConfig',
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -76,6 +76,7 @@ INSTALLED_APPS = [
     # 'adminsortable',
     "django_pagination_bootstrap", #pagination for multimedia page,
     'django_draftjs',
+    'django_filters',
 
     'core',
     'sso',
@@ -88,6 +89,7 @@ INSTALLED_APPS = [
     'important_links',
     'url_shortener',
     'alumni',
+    'file_uploader'
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -125,6 +127,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'web.wsgi.application'
 ROOT_URLCONF = 'web.urls'
 AUTH_USER_MODEL = 'sso.User'
+# FORCE_SCRIPT_NAME = API_ROOT
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
@@ -148,6 +151,10 @@ DEFAULT_AUTO_FIELD  = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'core.utils.StrictCSRFSessionAuthentication',
+    ],
+
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
     ],
 
     'DEFAULT_PARSER_CLASSES': [
@@ -248,6 +255,10 @@ DOCS_ACCESS = 'staff'
 
 
 ## Application-specific
+
+# file_uploader
+TEMP_FILES_ROOT = 'user-temp/'
+TEMP_FILES_MAX_COUNT_PER_USER = 5
 
 # sso
 KSSO_CLIENT_ID = 'kaist-kisa'

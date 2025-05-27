@@ -46,5 +46,5 @@ export class AuthAPI {
         );
     }
     static logout = (next: string): Promise<string> => axios.post(`${process.env.REACT_APP_API_ENDPOINT}/sso/logout/`, {next: next}).then(r => r.data['redirect']);
-    static userinfo = (): Promise<User> => axios.get(`${process.env.REACT_APP_API_ENDPOINT}/sso/userinfo/`).then(r => r.data);
+    static getUserInfo = (): Promise<User> => axios.get(`${process.env.REACT_APP_API_ENDPOINT}/sso/userinfo/`).then(r => r.data);
 }

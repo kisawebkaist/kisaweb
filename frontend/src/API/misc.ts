@@ -1,7 +1,7 @@
  import axios from "axios";
 
 export default class MiscAPI {
-  static query = <T> (path: string,fallback: () => T): Promise<T> => axios.get(`${process.env.REACT_APP_API_ENDPOINT}/misc/${path}`).then((res)=>res.data, fallback);
+  static getCurrentSemester = <T> (path: string,fallback: () => T): Promise<T> => axios.get(`${process.env.REACT_APP_API_ENDPOINT}/misc/${path}`).then((res)=>res.data, fallback);
 }
 
 class MetaDatabase{

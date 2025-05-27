@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib import admin
 
-from core.admin import register, site
+from web.admin import register, admin_site
 from .models import *
 
 from django_draftjs import EditorWidget

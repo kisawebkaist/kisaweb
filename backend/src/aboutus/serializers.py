@@ -1,39 +1,46 @@
 import rest_framework.serializers as serializer
-from .models import \
-    DivisionContent, \
-    Member, \
-    InternalBoardMember
 
-class DivisionSerializer(serializer.ModelSerializer):
+from core.serializers import SemesterSerailizer
+from .models import *
+
+class KISADivisionContentSerializer(serializer.ModelSerializer):
     class Meta:
-        model = DivisionContent
+        model = KISADivisionContent
         fields = [
-            'division_name', 'id'
+            'division', 
+            'content',
         ]
 
-class MemberSerializer(serializer.ModelSerializer):
-    division = serializer.PrimaryKeyRelatedField(read_only = True)
+    
+class KISARoleSerializer(serializer.ModelSerializer):
+    semester = SemesterSerailizer
     class Meta:
-        model = Member
+        model = KISARole
+        fields = [
+            'semester', 
+            'division', 
+            'is_head',
+        ]
+
+class KISAMemberSerializer(serializer.ModelSerializer):
+    name = serializer.SerializerMethodField()
+    department = serializer.SerializerMethodField()
+    exp = serializer.SerializerMethodField()
+    class Meta:
+        model = KISAMember
         fields = [
             'name',
+            'department',
+            'exp',
             'image',
-            'year',
-            'semester',
             'sns_link',
-            'division'
         ]
-
-class InternalBoardMemberSerializer(serializer.ModelSerializer):
-    division = serializer.PrimaryKeyRelatedField(read_only = True)
-    class Meta:
-        model = InternalBoardMember
-        fields = [
-            'name',
-            'image',
-            'year',
-            'semester',
-            'sns_link',
-            'position',
-            'division'
-        ]
+    
+    def get_name(self, obj):
+        return obj.user.get_full_name()
+    
+    def get_department(self, obj):
+        return obj.user.student_department_name_english or obj.user.student_department_name_english or ''
+    
+    def get_exp(self, obj):
+        return KISARoleSerializer(KISARole.objects.filter(members=obj).all(), many=True).data

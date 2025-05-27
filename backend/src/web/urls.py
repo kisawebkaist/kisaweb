@@ -18,15 +18,13 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
-from core.admin import site
-
-admin.autodiscover()
+from .admin import admin_site
 
 urlpatterns = [
     # path('grappelli/', include('grappelli.urls')), # grappelli URLS
     # path('jet/', include('jet.urls', 'jet')),  # Django JET URLS
     # path('jet/dashboard/', include('jet.dashboard.urls', 'jet-dashboard')),  # Django JET dashboard URLS
-    path('admin/', site.urls),
+    path('api/admin/', admin_site.urls),
     path('events/', include('events.urls')),
     path('docs/', include('docs.urls')),
     path('alumni/', include('alumni.urls')),
@@ -44,4 +42,5 @@ urlpatterns = [
     path('api/election/', include('election.urls')),
     path('api/multimedia/', include('multimedia.urls')),
     path('api/important-links/', include('important_links.urls')),
+    path('api/file_uploader/', include('file_uploader.urls'))
 ]

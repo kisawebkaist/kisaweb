@@ -1,26 +1,30 @@
 import React from "react";
-import { Chart } from "../../components/about-us/Chart";
-import AboutUsAPI, {
-  DivisionT,
-  InternalBoardMemberT,
-  MemberT,
-} from "../../API/about-us";
 import QueryGuard from "../../components/common/QueryGuard";
 import QueryFallback from "../../components/common/QueryFallback";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import { HighlightedLetter } from "../../components/common/HighlightedLetter";
+import AboutUsAPI, { getKISADivisionName, KISADivision, KISADivisionContent, KISAMember } from "../../API/about-us";
+import { Editor } from "draft-js";
+import TextEditor from "@jowillianto/draftjs-wysiwyg/dist";
+import { Chart } from "./Chart";
 
-interface AboutUsP {
-  divisions: DivisionT[];
-  members: MemberT[];
-  internalBoardMembers: InternalBoardMemberT[];
+interface AboutUsProps{
+  divisions: KISADivisionContent[];
+  members: KISAMember[];
 }
 
-const constitutionLink =
-  "https://www.researchgate.net/profile/Martin-Monperrus/publication/359971198_Exhaustive_Survey_of_Rickrolling_in_Academic_Literature/links/63d2405bd9fb5967c206fdf0/Exhaustive-Survey-of-Rickrolling-in-Academic-Literature.pdf?_tp=eyJjb250ZXh0Ijp7ImZpcnN0UGFnZSI6InB1YmxpY2F0aW9uIiwicGFnZSI6InB1YmxpY2F0aW9uIn19";
+const CONSTITUTION_LINK = "/KISAConstitution.pdf";
 
-const AboutUs = (props: AboutUsP) => {
+const AboutUs = (props: AboutUsProps) => {
+  const DivisionDescription = (division: KISADivisionContent) => {
+    return (
+      <li>
+        <Typography variant="h3">{getKISADivisionName(division.division)}</Typography>
+        <TextEditor defaultValue={division.content} editorBehaviour={{readOnly: true}}/>
+      </li>
+    );
+  }
   return (
     <>
       {/* Hero */}
@@ -61,33 +65,17 @@ const AboutUs = (props: AboutUsP) => {
         >
           {/* Chart */}
           <Chart
-            divisions={props.divisions}
             members={props.members}
-            internalBoardMembers={props.internalBoardMembers}
           />
         </Box>
         <Typography>
-        Want more detail about KISA? We got you covered. Here's our <Link to={"/"}>constitution</Link>.
+          Want more detail about KISA? We got you covered. Here's our <Link to={CONSTITUTION_LINK}>constitution</Link>.
         </Typography>
         <Typography variant="h2">Divisions</Typography>
-        <Typography component={"div"}>
+        <Typography component="div">
           As we work on different aspects to improve the life of international students in KAIST, currently, there are 5 divisions in KISA.
           <ul>
-            <li>
-              Welfare division 🫰 - 
-            </li>
-            <li>
-              Events division 🎉 - 
-            </li>
-            <li>
-              Promotions and Public Relations division 🎥 -
-            </li>
-            <li>
-              Web division 🖥️ - 
-            </li>
-            <li>
-              Finance division 💰 - 
-            </li>
+            {props.divisions.map(DivisionDescription)}
           </ul>
         </Typography>
       </Stack>
@@ -98,7 +86,7 @@ const AboutUs = (props: AboutUsP) => {
           justifyContent: "center",
           alignItems: "center",
           p: 2,
-        }}
+        }} 
       >
         {/* <Button
           variant="contained"
@@ -114,15 +102,13 @@ const AboutUs = (props: AboutUsP) => {
 };
 
 const AboutUsWithGuard = () => {
-  const query = React.useCallback<(params: undefined) => Promise<AboutUsP>>(
+  const query = React.useCallback<(params: undefined) => Promise<AboutUsProps>>(
     async (params: undefined) => {
-      const divisions = await AboutUsAPI.divisions();
-      const members = await AboutUsAPI.members();
-      const internalBoardMembers = await AboutUsAPI.internalMembers();
+      const divisions = await AboutUsAPI.getDivisionContentList();
+      const members = await AboutUsAPI.getMemberList();
       return {
         divisions,
         members,
-        internalBoardMembers,
       };
     },
     []

@@ -12,7 +12,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@jowillianto/draftjs-wysiwyg": "github:jowillianto/draftjs-wysiwyg#stable",
-    "@mui/material": "^5.15.21",
+    "@mui/material": "^7.0.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -21,13 +21,14 @@
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.2.6",
     "axios": "^1.5.0",
+    "draft-js": "^0.11.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.15.0",
     "react-scripts": "5.0.1",
     "styled-components": "^5.3.11",
     "swiper": "^11.1.4",
-    "typescript": "^4.9.5",
+    "typescript": "^5.0",
     "web-vitals": "^2.1.4"
   },
   "compilerOptions": {
@@ -59,5 +60,8 @@
   },
   "devDependencies": {
     "tailwindcss": "^3.4.4"
+  },
+  "overrides": {
+    "typescript": "^5.0"
   }
 }

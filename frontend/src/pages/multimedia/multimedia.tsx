@@ -5,7 +5,7 @@ import { Box, Button, ButtonBase, CardActionArea, CardHeader, CardMedia, Dialog,
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, EffectFade, Keyboard, Navigation, Pagination, Zoom } from 'swiper/modules';
-import "../../components/css/multimedia.css"
+import "../../css/multimedia.css"
 import MultimediaAPI, { MultimediaImageT, MultimediaT } from "../../API/multimedia";
 
 import 'swiper/css';
@@ -173,7 +173,7 @@ const AlbumCover = ({ title, images, slug }: MultimediaT) => {
     // this looks bad
 
     return (
-        <Grid item xs={12} sm={6} md={4} lg={3} key={slug}>
+        <Grid size={{xs: 12, sm:6, md: 4, lg:3}} key={slug}>
             <ButtonBase component={Paper} onClick={()=>{navigate("./"+slug)}} className="cover">
             <Box sx={{padding: "5% 0 5% 30px"}} width="100%" height="100%">
                 <Stack paddingRight="5%" textAlign="right" sx={{backgroundColor: "primary.main"}}>

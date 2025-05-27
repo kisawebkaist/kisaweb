@@ -1,54 +1,36 @@
-from django.shortcuts import render
-from django.db.models import F
-from datetime import datetime
-from django.conf import settings
-from .models import \
-    MainContent, \
-    Member, \
-    InternalBoardMember, \
-    DivisionContent,  \
-    ConstitutionPDF
+from django.shortcuts import get_object_or_404
 
-def aboutus(request):
-    current_date = datetime.today()
-    year, semester = current_date.year, ('Fall' if current_date.month > 6 else 'Spring')
-    if settings.CURRENT_SETTINGS == 1:
-        request_scheme = request.build_absolute_uri().split('://', 1)[0]
-    else:
-        request_scheme = "https"
-    internal_board_members = InternalBoardMember.objects.filter(year=year, semester=semester)
-    members = Member.objects.filter(year=year, semester=semester)
-    constitution     = ConstitutionPDF.objects.annotate(
-        pdf_url = F('constitution_file')
-    ).values(
-        'title', 'desc', 'pdf_url'
-    ).all()
-    request_scheme = request.build_absolute_uri().split('://', 1)[0]
-    context = {
-        'main_contents'             : MainContent.objects.all(),
-        'division_descriptions'     : DivisionContent.objects.all(),
-        'internal_board_members'    : internal_board_members,
-        'members'                   : members,
-        'constitution'              : constitution,
-        'request_scheme'            : request_scheme
-    }
-    return render(request, 'aboutus/aboutus.html', context)
+from rest_framework import generics, viewsets, parsers, permissions
 
-from .serializers import \
-    DivisionSerializer, \
-    InternalBoardMemberSerializer, \
-    MemberSerializer
-from rest_framework.viewsets import \
-    ReadOnlyModelViewSet
+from core.models import Semester
+from .serializers import *
 
-class MemberViewset(ReadOnlyModelViewSet):
-    serializer_class = MemberSerializer
-    queryset = Member.objects.all()
+class CurrentKISAMemberListView(generics.ListAPIView):
+    serializer_class = KISAMemberSerializer
+    
+    def get_queryset(self):
+        semester = Semester.get_latest_nonbreak_semester()
+        if semester is None:
+            raise Exception("Latest non-break semester can't be None")
+        queryset = KISAMember.objects.filter(kisarole__semester=semester).distinct()
+        
+        division = self.request.query_params.get('division')
+        is_head = self.request.query_params.get('is_head')
+        if division is not None:
+            queryset = queryset.filter(kisarole__division=int(division))
+        if is_head is not None:
+            queryset = queryset.filter(kisarole__is_head=(is_head.lower()=='true'))
+        
+        return queryset
+    
+class KISADivisionContentViewset(viewsets.ReadOnlyModelViewSet):
+    serializer_class = KISADivisionContentSerializer
+    queryset = KISADivisionContent.objects.all()
 
-class DivisionViewset(ReadOnlyModelViewSet):
-    serializer_class = DivisionSerializer
-    queryset = DivisionContent.objects.all()
+class MyKISAMemberView(generics.RetrieveUpdateAPIView):
+    serializer_class = KISAMemberSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    parser_classes = [parsers.MultiPartParser, parsers.FormParser]
 
-class InternalBoardMemberViewset(ReadOnlyModelViewSet):
-    serializer_class = InternalBoardMemberSerializer
-    queryset = InternalBoardMember.objects.all()
+    def get_object(self):
+        return get_object_or_404(KISAMember, user=self.request.user)

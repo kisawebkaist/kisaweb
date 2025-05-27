@@ -30,7 +30,7 @@ import React, { useCallback, useContext, useState } from "react";
 import { AuthAPI, User, UserInfo } from "../API/sso";
 import { tabRoutes } from "../configs/routes";
 
-import "../components/css/navbar.css";
+import "../css/navbar.css";
 import { personalInfoUsage } from "./personalInfoUsage";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -41,7 +41,7 @@ import {
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import CollapsibleIconButton from "../components/common/CollapsibleIconButton";
-import { useAuth } from "./AuthContext";
+import { useAuth } from "./AuthProvider";
 import ShapeShifter from "../components/common/ShapeShifter";
 import TooltipWithDisable from "../components/common/TooltipWithDisable";
 

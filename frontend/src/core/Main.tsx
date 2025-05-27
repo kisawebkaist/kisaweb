@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
-import Footer from "./footer";
-import Navbar from "./navbar-alt";
+import Footer from "./Footer";
+import Navbar from "./Navbar";
 
-import { AuthAPI, User } from "../API/sso";
 import { tabRoutes } from "../configs/routes";
-import { Drawer, Snackbar, Stack, Tab, Tabs, useColorScheme, useMediaQuery } from "@mui/material";
-import { AuthContext } from "./AuthContext";
+import { Drawer, Stack, Tab, Tabs, useColorScheme, useMediaQuery } from "@mui/material";
+import { AuthProvider } from "./AuthProvider";
 import { footer } from "../configs/footer";
-import NotificationContext, { Notification } from "./NotificationContext";
+import { NotificationProvider } from "./NotificationProvider";
+import DialogProvider from "./PopupProvider";
 
 const Main = () => {
   const urlPathSplit = useLocation().pathname.split("/");
@@ -20,68 +20,9 @@ const Main = () => {
   const { setColorScheme } = useColorScheme();
   const prefersDark = useMediaQuery("(prefers-color-scheme: dark)");
 
-  // contexts
-  const [authContextUser, setAuthContextUser] = useState<User>({
-    is_authenticated: false,
-    data: null
-  });
-  const authContext = {
-    user: authContextUser,
-    updateUser: setAuthContextUser
-  }
-
-  const [notificationContextData, setNotificationContextData] = useState<Notification>({
-    message: "",
-    anchorOrigin: {horizontal: "left", vertical: "bottom"},
-    open: false,
-    autoHideDuration: 3000,
-    onClose: (event: React.SyntheticEvent | Event, reason: string) => {}
-  })
-  const notificationContext = {
-    notification: notificationContextData,
-    updateNotification: setNotificationContextData,
-    showNotification: (message: String) => {
-      setNotificationContextData({
-        message: message,
-        anchorOrigin: {
-          vertical: "bottom",
-          horizontal: "left"
-        },
-        open: true,
-        autoHideDuration: 3000,
-        onClose: (event: React.SyntheticEvent | Event, reason: string) => {
-          setNotificationContextData({
-            message: "",
-            anchorOrigin: {
-              vertical: "bottom",
-              horizontal: "left",
-            },
-            open: false,
-            autoHideDuration: 3000,
-            onClose: (event, reason) => {
-              setNotificationContextData({
-                message: message,
-                anchorOrigin: {
-                  vertical: "bottom",
-                  horizontal: "left"
-                },
-                open: false,
-                autoHideDuration: 3000,
-                onClose: (event, reason) => {}
-              })
-            }
-          })
-        }
-      })
-    }
-  };
-
-
   useEffect(() => {
-    AuthAPI.userinfo().then(setAuthContextUser);
     setColorScheme(prefersDark ? 'dark' : 'light');
   }, [prefersDark, setColorScheme])
-
 
   const mainStyles = React.useMemo(() => {
     return [
@@ -108,59 +49,54 @@ const Main = () => {
   }, [])
 
   return (
-    <AuthContext.Provider value={authContext} >
-      <NotificationContext.Provider value={notificationContext}>
-      <Stack direction="column" className={backgroundStyles}>
-        <Navbar
-          currentTab={currentTab}
-          setCurrentTab={setCurrentTab}
-          drawerOpen={drawerOpen}
-          setDrawerOpen={setDrawerOpen}
-        />
-        <Drawer
-          open={drawerOpen}
-          PaperProps={{
-            sx: { marginTop: "var(--AppBar-height)" },
-          }}
-          sx={{ flexShrink: 0 }}
-          onClose={() => setDrawerOpen(false)}
-        >
-          <Tabs
-            variant="scrollable"
-            orientation={"vertical"}
-            scrollButtons="auto"
-            value={currentTab}
-            onChange={(_, value) => setCurrentTab(value)}
-          >
-            {tabRoutes.map((tabRoute) =>
-              <Tab
-                label={tabRoute.tabName}
-                value={tabRoute.path}
-                component={Link}
-                to={tabRoute.path}
-                key={tabRoute.path}
-              />
-            )}
-          </Tabs>
-        </Drawer>
-        <Stack
-          className={mainStyles}
-          direction="column"
-          component="main"
-        >
-          <Outlet />
-        </Stack>
-        <Footer data={footer} />
-        <Snackbar
-                anchorOrigin={notificationContextData.anchorOrigin}
-                open={notificationContextData.open}
-                message={notificationContextData.message}
-                autoHideDuration={notificationContextData.autoHideDuration}
-                onClose={notificationContextData.onClose}
+    <AuthProvider>
+      <NotificationProvider>
+        <DialogProvider>
+          <Stack direction="column" className={backgroundStyles}>
+            <Navbar
+              currentTab={currentTab}
+              setCurrentTab={setCurrentTab}
+              drawerOpen={drawerOpen}
+              setDrawerOpen={setDrawerOpen}
             />
-      </Stack>
-      </NotificationContext.Provider>
-    </AuthContext.Provider>
+          <Drawer
+            open={drawerOpen}
+            PaperProps={{
+              sx: { marginTop: "var(--AppBar-height)" },
+            }}
+            sx={{ flexShrink: 0 }}
+            onClose={() => setDrawerOpen(false)}
+          >
+            <Tabs
+              variant="scrollable"
+              orientation={"vertical"}
+              scrollButtons="auto"
+              value={currentTab}
+              onChange={(_, value) => setCurrentTab(value)}
+            >
+              {tabRoutes.map((tabRoute) =>
+                <Tab
+                  label={tabRoute.tabName}
+                  value={tabRoute.path}
+                  component={Link}
+                  to={tabRoute.path}
+                  key={tabRoute.path}
+                />
+              )}
+            </Tabs>
+          </Drawer>
+          <Stack
+            className={mainStyles}
+            direction="column"
+            component="main"
+          >
+            <Outlet />
+          </Stack>
+          <Footer data={footer} />
+        </Stack>
+        </DialogProvider>
+      </NotificationProvider>
+    </AuthProvider>
   );
 };
 

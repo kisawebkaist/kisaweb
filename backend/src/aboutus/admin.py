@@ -2,45 +2,21 @@ from django.contrib import admin
 from django import forms
 from django_draftjs import EditorWidget
 
-from core.admin import register
-from .models import MainContent, Member, DivisionContent, InternalBoardMember, ConstitutionPDF
+from web.admin import register, admin_site
+from .models import *
 
-class BaseContentAdmin(admin.ModelAdmin):
-  exclude = ['the_order']
+admin_site.register(KISAMember)
 
-@register(Member)
-class MemberAdmin(admin.ModelAdmin):
-  ordering = ['-year', 'semester', 'division', 'name']
+@register(KISARole)
+class KISARoleAdmin(admin.ModelAdmin):
+  exclude = ['-semester', '-division', '-is_head']
 
-@register(InternalBoardMember)
-class InternalBoardAdmin(admin.ModelAdmin):
-  exclude = ['the_order']
-
-@register(DivisionContent)
+@register(KISADivisionContent)
 class DivisionContentAdmin(admin.ModelAdmin):
   class Form(forms.ModelForm):
-    desc = forms.JSONField(widget = EditorWidget())
+    content = forms.JSONField(widget = EditorWidget())
     class Meta: 
-      model = DivisionContent
-      fields = [
-        'division_name', 
-        'desc',
-        'image'
-      ]
+      model = KISADivisionContent
+      fields = '__all__'
   form = Form
-
-@admin.register(MainContent)
-class MainContentAdmin(admin.ModelAdmin):
-  class Form(forms.ModelForm):
-    desc = forms.JSONField(widget = EditorWidget())
-    class Meta: 
-      model = MainContent
-      fields = [
-        'title', 
-        'desc',
-        'image'
-      ]
-  form = Form
-
-admin.site.register(ConstitutionPDF)
 

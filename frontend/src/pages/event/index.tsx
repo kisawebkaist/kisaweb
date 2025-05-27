@@ -1,11 +1,12 @@
 import { Button, Card, CardActionArea, CardHeader, CardMedia, Dialog, DialogActions, DialogContent, DialogContentText, Divider, Grid, Snackbar, Stack, Typography } from "@mui/material";
-import { EventAPI, EventT_Partial } from "../../API/events";
+import { EventAPI, EventT_Complete, EventT_Partial } from "../../API/events";
 import Lister from "../../components/common/Lister";
 import { useLocation, useNavigate } from "react-router-dom";
 import QueryGuard from "../../components/common/QueryGuard";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import TextEditor from "@jowillianto/draftjs-wysiwyg/dist";
-import { useNotification } from "../../core/NotificationContext";
+import { useNotification } from "../../core/NotificationProvider";
+import { usePopup } from "../../core/PopupProvider";
 
 function getSemesterFromDate(date: Date) {
     let month = date.getMonth();
@@ -24,53 +25,67 @@ type EventP = {
 }
 
 export const Event = ({ events }: EventP) => {
-    const location = useLocation();
-    const navigate = useNavigate();
     const notification = useNotification();
-    const [slug, setSlug] = useState<string>((location.hash as string).replace("#", ""));
-    const dialogInner = useRef(<></>);
-
-    const onCopyLink = () => {
-        navigator.clipboard.writeText(window.location.protocol+"//"+window.location.host+location.pathname+"#"+slug);
-        notification.showNotification("Link copied to clipboard!");
-    }
+    const dialog = usePopup();
+    const [slug, setSlug] = useState<string>((window.location.hash as string).replace("#", ""));
 
     useEffect(() => {
         if (slug !== "") {
             EventAPI.getEvent(slug)
                 .then(
                     event => {
-                        dialogInner.current = (
-                            <DialogContent>
-                                <Stack>
-                                    <Typography variant="h3" textAlign="center">
-                                        {event.title}
-                                    </Typography>
-                                    <TextEditor
-                                        defaultValue={event.description}
-                                        editorBehaviour={{ readOnly: true }}
-                                    />
-                                </Stack>
-                            </DialogContent>
-                        );
+                        const dialogProps = {
+                            children: (
+                                <>
+                                    <DialogContent>
+                                        <Stack>
+                                            <Typography variant="h3" textAlign="center">
+                                                {event.title}
+                                            </Typography>
+                                            <TextEditor
+                                                defaultValue={event.description}
+                                                editorBehaviour={{ readOnly: true }}
+                                            />
+                                        </Stack>
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button onClick={() => {
+                                            setSlug("");
+                                            dialog.setDialogProps({});}}>
+                                            Cancel
+                                        </Button>
+                                        <Button onClick={() => {
+                                            navigator.clipboard.writeText(window.location.origin + window.location.pathname + "#" + slug);
+                                            notification.showNotification("Link copied to clipboard!");
+                                        }}>
+                                            Copy Link
+                                        </Button>
+                                        <Button>
+                                            Register
+                                        </Button>
+                                    </DialogActions>
+                                </>
+                            ),
+                            onClose: (event: object, reason: string) => {
+                                setSlug("");
+                                dialog.setDialogProps({onClose: ()=>{}});
+                            },
+                        }
+                        dialog.setDialogProps(dialogProps);
+                        dialog.show();
                     },
                     error => {
                         console.error(error);
                         setSlug("");
                     }
                 )
-                .then(
-                    () => navigate("#" + slug)
-                )
-            return;
         }
-        navigate("");
-    }, [navigate, slug])
+    }, [dialog, notification, slug])
 
     const EventCard = ({ data }: { data: EventT_Partial }) => {
 
         return (
-            <Grid item xs={12} md={6} lg={4}>
+            <Grid size={{xs: 12, md: 6, lg: 4}}>
                 <Card>
                     <CardActionArea
                         onClick={() => setSlug(data.slug)}
@@ -142,20 +157,6 @@ export const Event = ({ events }: EventP) => {
 
     return (
         <Stack>
-            <Dialog open={slug !== ""} onClose={() => setSlug("")}>
-                {dialogInner.current}
-                <DialogActions>
-                    <Button onClick={() => setSlug("")}>
-                        Cancel
-                    </Button>
-                    <Button onClick={onCopyLink}>
-                        Copy Link
-                    </Button>
-                    <Button>
-                        Register
-                    </Button>
-                </DialogActions>
-            </Dialog>
             <Stack textAlign="center">
                 <Typography variant="fancy_h1" textAlign="center">Events</Typography>
                 <Typography variant="subtitle1">Lorem ipsum</Typography>

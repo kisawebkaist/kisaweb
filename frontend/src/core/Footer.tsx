@@ -2,7 +2,7 @@
 // import InstagramIcon from '@mui/icons-material/Instagram';
 // import YouTubeIcon from '@mui/icons-material/YouTube';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import "../components/css/footer.css";
+import "../css/footer.css";
 import { FooterT } from "./types";
 import { Box, IconButton, Typography, Stack, useTheme, Paper } from "@mui/material";
 import { Link } from "react-router-dom";

@@ -7,8 +7,7 @@ import {
   CircularProgress,
   Container,
 } from "@mui/material";
-import { Experimental_CssVarsProvider as CssVarsProvider, StyledEngineProvider } from '@mui/material/styles';
-
+import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import axios from "axios";
 
 import routes from "./configs/routes";
@@ -28,9 +27,9 @@ const App = () => {
   return (
     <React.Suspense fallback={loadingFallBack}>
       <StyledEngineProvider injectFirst>
-        <CssVarsProvider theme={theme}>
+        <ThemeProvider theme={theme}>
           <RouterProvider router={router} />
-        </CssVarsProvider>
+        </ThemeProvider>
       </StyledEngineProvider>
     </React.Suspense>
   );

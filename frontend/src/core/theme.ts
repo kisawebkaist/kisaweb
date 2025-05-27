@@ -1,5 +1,5 @@
 import type {} from '@mui/material/themeCssVarsAugmentation';
-import { experimental_extendTheme as extendTheme } from '@mui/material/styles';
+import { extendTheme } from '@mui/material/styles';
 
 // Update the Typography's variant prop options
 declare module '@mui/material/Typography' {
