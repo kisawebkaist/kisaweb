@@ -1,9 +1,10 @@
 import Lister from "../../components/common/Lister";
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import Card from '@mui/material/Card';
 import { Button } from "@mui/material";
 import CardContent from '@mui/material/CardContent';
 import "../../components/css/alumni.css"
+import axios from "axios";
 
 /**
  * @brief This can be used as a structure of alumni api data.
@@ -67,7 +68,7 @@ const CardComponent = ({ data }: { data: AlumniDataT }) => {
         >
             <CardContent className="cardContent">
                 <span className="date">{data.workPeriod}</span>
-                <img src={data.picture} />
+                <img src={data.picture} alt={data.name}/>
                 <span className="headline">{data.name}</span>
                 <span className="tag">{data.headYear}</span>
             </CardContent>
@@ -102,9 +103,28 @@ const filteredContent = (category: string, alumniData: AlumniDataT[]): AlumniDat
 
 
 const Alumni = () => {
+    const [alumniData, setAlumniData] = useState<AlumniDataT[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
-    const relatedContent = filteredContent(selectedCategory, fakeAlumniData);
+    useEffect(() => {
+        axios.get(`${process.env.REACT_APP_API_ENDPOINT}/alumni/`)
+            .then((response) => {
+                // Convert API data into shape your frontend expects
+                const processed = response.data.map((alum: any): AlumniDataT => ({
+                    name: alum.name,
+                    division: alum.worked_positions.map((pos: any) => pos.name).join(', '),
+                    headYear: alum.separated_year.toString(),
+                    workPeriod: `${alum.joined_season} ${alum.joined_year} - ${alum.separated_season ?? alum.joined_season} ${alum.separated_year}`,
+                    picture: alum.current_contact || "https://your-default-fallback.png"
+                }));
+                setAlumniData(processed);
+            })
+            .catch((err) => {
+                console.error("Failed to fetch alumni:", err);
+            });
+    }, []);
+
+    const relatedContent = filteredContent(selectedCategory, alumniData);
     return (
         <>
         <center>
