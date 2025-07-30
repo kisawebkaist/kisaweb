@@ -14,10 +14,10 @@ from django import forms
 from django.core.validators import FileExtensionValidator, get_available_image_extensions
 from PIL import Image
 
-from core.admin import register, site
+from core.admin import register, admin_site
 from .models import *
 
-site.register(model.MultimediaImage)
+admin_site.register(model.MultimediaImage)
 
 zip_file_extension_validator = FileExtensionValidator(["zip"])
 pil_image_extensions_checkers = [lambda filename, ext=ext: filename.endswith(ext) for ext in get_available_image_extensions()]

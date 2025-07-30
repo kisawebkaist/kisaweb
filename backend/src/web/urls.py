@@ -42,5 +42,5 @@ urlpatterns = [
     path('api/election/', include('election.urls')),
     path('api/multimedia/', include('multimedia.urls')),
     path('api/important-links/', include('important_links.urls')),
-    path('api/file_uploader/', include('file_uploader.urls'))
+    #path('api/file_uploader/', include('file_uploader.urls'))
 ]

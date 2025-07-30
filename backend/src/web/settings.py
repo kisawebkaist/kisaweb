@@ -49,6 +49,10 @@ from django.conf.global_settings import DATETIME_INPUT_FORMATS
 # Try to load dotenv file
 if 'DOTENV_FILE' in os.environ:
     load_dotenv(os.environ['DOTENV_FILE'])
+else:
+    fallback_path = os.path.join(os.path.dirname(__file__), '.env')
+    load_dotenv(fallback_path)
+    print("Using local env instead\n")
 
 
 # Project top-level

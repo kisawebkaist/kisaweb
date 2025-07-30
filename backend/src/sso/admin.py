@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.utils.translation import gettext_lazy as _
 
 from election.models import DebateAttendance, Election
-from core.admin import register, site
+from core.admin import register, admin_site
 from .models import *
 
 class KISADivisionFilter(admin.SimpleListFilter):
