@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import alumni_view
+from .views import alumni_api_view
 
 urlpatterns = [
-    path('', alumni_view, name='alumni')
+    path('', alumni_api_view, name='alumni')
 ]

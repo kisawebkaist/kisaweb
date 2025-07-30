@@ -1,11 +1,10 @@
-from django.shortcuts import render
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 from .models import Alumni
-# Create your views here.
+from .serializers import AlumniSerializer
 
-
-def alumni_view(request):
+@api_view(['GET'])
+def alumni_api_view(request):
     alumni_people = Alumni.objects.order_by('-separated_year')
-    context = {
-        'people': alumni_people
-    }
-    return render(request,'alumni_people.html',context)
+    serializer = AlumniSerializer(alumni_people, many=True)
+    return Response(serializer.data)
