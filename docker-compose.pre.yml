@@ -34,7 +34,7 @@ services:
       - CORS_ALLOWED_ORIGINS=https://localhost:81,https://kisa.kaist.ac.kr:8080
       - DB_HOST=db
       - DB_PORT=5432
-      - DEBUG=1
+      - DEBUG=0
       - SMTP_SERVER=example.com
       - SMTP_USERNAME=admin
       - SMTP_PASSWORD=password123

@@ -26,15 +26,16 @@ const AboutUs = (props: AboutUsProps) => {
     );
   }
   return (
-    <>
+    <Stack>
       {/* Hero */}
-      <Stack py={3} px={5}>
+      <Stack>
         <Typography variant="fancy_h1" textAlign="center">
           About <HighlightedLetter letter="Us" />
         </Typography>
-        <Typography textAlign="center" py={2}>
-          Some quote
+        <Typography textAlign="center">
+          We are KISA.
         </Typography>
+
         <Stack>
           <Typography variant="h2">What is KISA?</Typography>
           <img src="https://kisa.kaist.ac.kr/static/img/members.png" alt="KISA Members" width="100%"/>
@@ -55,6 +56,7 @@ const AboutUs = (props: AboutUsProps) => {
             Briefly explain the role of three people in the chart.
           </Typography>
         </Stack>
+        
         {/* Organizational chart */}
         <Box 
           px={"2vw"}
@@ -72,7 +74,7 @@ const AboutUs = (props: AboutUsProps) => {
           Want more detail about KISA? We got you covered. Here's our <Link to={CONSTITUTION_LINK}>constitution</Link>.
         </Typography>
         <Typography variant="h2">Divisions</Typography>
-        <Typography component="div">
+        <Typography>
           As we work on different aspects to improve the life of international students in KAIST, currently, there are 5 divisions in KISA.
           <ul>
             {props.divisions.map(DivisionDescription)}
@@ -97,7 +99,7 @@ const AboutUs = (props: AboutUsProps) => {
         </Button> */}
       </Box>
       
-    </>
+    </Stack>
   );
 };
 

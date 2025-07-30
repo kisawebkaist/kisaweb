@@ -89,6 +89,7 @@ const Main = () => {
             className={mainStyles}
             direction="column"
             component="main"
+            sx={{p: 4}}
           >
             <Outlet />
           </Stack>

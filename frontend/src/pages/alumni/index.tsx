@@ -1,7 +1,7 @@
 import Lister from "../../components/common/Lister";
 import { useEffect, useState } from "react";
 import Card from '@mui/material/Card';
-import { Button } from "@mui/material";
+import { Button, Chip, Grid, Stack, Typography } from "@mui/material";
 import CardContent from '@mui/material/CardContent';
 import "../../components/css/alumni.css"
 import axios from "axios";
@@ -52,40 +52,27 @@ const fakeAlumniData: AlumniDataT[] = [
 const allDivision = ["All", "President", "Welfare Division", "Events Division", "Promotions And Public Relations Division", "Web Division", "Finance Division"]
 
 const CardComponent = ({ data }: { data: AlumniDataT }) => {
-    const [hover, setHover] = useState(false);
-
     const cardStyle = {
-        boxShadow: hover
-            ? 'rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px'
-            : '0 4px 8px 0 rgba(0, 0, 0, 0.2)',
         transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-        transform: hover ? 'scale(1.05)' : 'scale(1)'
     };
     return (
-    <Card className="card" style={cardStyle}
-        onMouseEnter={() => setHover(true)}
-            onMouseLeave={() => setHover(false)}
-        >
+    <Card className="card" style={cardStyle}>
             <CardContent className="cardContent">
                 <span className="date">{data.workPeriod}</span>
-                <img src={data.picture} alt={data.name}/>
+                <img src={data.picture} alt={data.name + "'s Photo"}/>
                 <span className="headline">{data.name}</span>
                 <span className="tag">{data.headYear}</span>
             </CardContent>
-        </Card>
+    </Card>
     );
 }
 
 const DivisionRender = ({ data }: { data: AlumniDataT[] }) => {
     return (
         <>
-        <div className ="cardContainer">
-            <Lister
-                array = {data}
-                render={CardComponent}
-                props={{}}
-            />
-        </div>
+        <Grid container>
+            data.map()
+        </Grid>
         </>
     );
 }
@@ -126,19 +113,16 @@ const Alumni = () => {
 
     const relatedContent = filteredContent(selectedCategory, alumniData);
     return (
-        <>
-        <center>
-            <h2>Alumni</h2>
+        <Stack>
+            <Typography variant="fancy_h1">Alumni</Typography>
             <div className="buttonStyle">
                 {allDivision.map((tag) => (
-                    <Button
+                    <Chip
                         className={selectedCategory === tag ? 'activeButton' : ''}
-                        onClick={() => setSelectedCategory(tag)}>
-                        {tag}
-                    </Button>
+                        onClick={() => setSelectedCategory(tag)}
+                        label={tag}/>
                 ))}
             </div>
-        </center>
        <div>
                 <Lister
                     array={[relatedContent]}
@@ -146,7 +130,7 @@ const Alumni = () => {
                     props={{}}
                 />
         </div>
-        </>
+        </Stack>
     )
 }
 

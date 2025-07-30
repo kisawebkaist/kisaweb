@@ -25,7 +25,7 @@ from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
 
 from . import TOTP_SESSION_KEY
-from .models import User, MailOTPSession
+from .models import User, MailOTPSession, TOTPUsedToken
 from .permissions import IsKISA, IsVerified
 from core.utils import ensure_relative_url, get_random_urlsafe_string, CSRFExemptSessionAuthentication
 from core.throttling import EMAILOTPRateThrottle
@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 email_validator = EmailValidator()
 
 # check https://datatracker.ietf.org/doc/html/rfc6749#section-10, https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics 
-    
+# to-do naive datetimes in twofa
 @api_view(['POST'])
 @ensure_csrf_cookie
 def login_init_view(request):
@@ -92,12 +92,9 @@ def login_view(request):
     nonce = request.session.pop('login_nonce', '')
 
     # if the 'Origin' header exists, it must be from the sso website
-    print(request.headers)
-    print(request.headers.get('Origin', 'https://sso.kaist.ac.kr'))
     if request.headers.get('Origin', 'https://sso.kaist.ac.kr') != 'https://sso.kaist.ac.kr':
         raise PermissionDenied(detail=_('Invalid origin'))
     
-    print(state, agent_state)
     if not constant_time_compare(state, agent_state):
         raise PermissionDenied(detail=_('Invalid state'))
     
@@ -121,6 +118,8 @@ def login_view(request):
 @api_view(['POST'])
 @permission_classes([IsKISA])
 def check_totp_view(request):
+    TOTPUsedToken.clear_expired()
+
     if request.user.totp_device.verify(str(request.data.get('token', ''))):
         request.session.cycle_key()
         request.session[TOTP_SESSION_KEY] = True
@@ -146,6 +145,8 @@ def change_totp_secret(request):
 @permission_classes([IsVerified])
 @throttle_classes([EMAILOTPRateThrottle])
 def change_email_view(request):
+    MailOTPSession.clear_expired()
+
     if MAIL_OTP_BASE_SESSION_KEY+'change_mail_cooldown' in request.session and datetime.datetime.fromtimestamp(request.session[MAIL_OTP_BASE_SESSION_KEY+'change_mail_cooldown']) > datetime.datetime.now():
         raise Throttled()
     request.session[MAIL_OTP_BASE_SESSION_KEY+'change_mail_cooldown'] = (datetime.datetime.now() + datetime.timedelta(minutes=2)).timestamp()
@@ -193,6 +194,8 @@ def change_email_response_view(request):
 @permission_classes([IsAuthenticated])
 @throttle_classes([EMAILOTPRateThrottle])
 def lost_totp_secret_view(request):
+    MailOTPSession.clear_expired()
+
     if not request.user.totp_device.is_active:
         raise ParseError()
     

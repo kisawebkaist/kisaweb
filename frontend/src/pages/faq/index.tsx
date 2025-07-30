@@ -5,7 +5,7 @@ import FaqHeader from "./FaqHeader";
 import FaqQuestion from "./FaqQuestion";
 import FaqSearch from "./FaqSearch";
 import { Typography, Stack, List } from "@mui/material";
-import { Container, Box } from "@mui/system";
+import { Container, Box, Grid } from "@mui/system";
 import Lister from "../../components/common/Lister";
 import QueryFallback from "../../components/common/QueryFallback";
 import QueryGuard from "../../components/common/QueryGuard";
@@ -57,9 +57,9 @@ const Faq = ({ faqs, categories }: FaqP) => {
     if (filteredFaqs.length !== 0)
       return <Lister array={filteredFaqs} render={FaqQuestion} props={{}} />
     return (
-      <Stack className = 'h-80 opacity-50' justifyContent="center" direction = "column">
-        <FontAwesomeIcon icon = {faComment} className="mb-4 text-5xl" />
-        <Typography variant="body2" textAlign="center" className = "text-5xl">
+      <Stack justifyContent="center" direction = "column">
+        <FontAwesomeIcon icon = {faComment} />
+        <Typography variant="body2" textAlign="center">
           No Questions Yet
         </Typography>
       </Stack>
@@ -71,14 +71,14 @@ const Faq = ({ faqs, categories }: FaqP) => {
     return activeCategory === category.id;
   };
   return (
-    <Container className="">
+    <Container>
       {/* Header */}
       <FaqHeader />
       {/* Search */}
       <FaqSearch onSearch={setSearchText} />
-      <div className="flex flex-col md:flex-row justify-between gap-5">
+      <Grid container>
         {/* Categories */}
-        <Box component="nav">
+        <Grid component="nav" size={2}>
           <List>
             <Lister
               array={[generalCategory, ...categories]}
@@ -89,14 +89,14 @@ const Faq = ({ faqs, categories }: FaqP) => {
               }}
             />
           </List>
-        </Box>
+        </Grid>
         {/* Questions */}
-        <Box component="main" className="w-100">
+        <Grid component="main" size={10}>
           <Stack direction="column" gap={1}>
             {qnaContents}
           </Stack>
-        </Box>
-      </div>
+        </Grid>
+      </Grid>
     </Container>
   );
 };

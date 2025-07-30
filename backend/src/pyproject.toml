@@ -62,7 +62,7 @@ six = "^1.16.0"
 zipp = "^3.17.0"
 psycopg2-binary = "^2.9.9"
 pyotp = "^2.9.0"
-django-draftjs = {file = "../../"}
+django-draftjs = {url = "https://github.com/jowillianto/draftjs-wysiwyg/releases/download/build-26-03-2024/django_draftjs-0.0.2-py3-none-any.whl"}
 
 
 [build-system]

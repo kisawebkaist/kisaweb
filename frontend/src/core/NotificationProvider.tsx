@@ -1,5 +1,5 @@
 import { Snackbar, SnackbarProps } from "@mui/material";
-import React, { createContext, Ref, useContext, useEffect, useRef, useState } from "react";
+import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 
 export type NotificationContextT = {
     setNotificationData: (noti: Notification) => void;

@@ -19,6 +19,7 @@ import "../../components/css/blog.css";
 import QueryGuard from "../../components/common/QueryGuard";
 import { useNavigate } from "react-router-dom";
 import { HighlightedLetter } from "../../components/common/HighlightedLetter";
+import QueryFallback from "../../components/common/QueryFallback";
 
 // /**
 //  * @brief This can be used as a structure of blog data for api.
@@ -263,30 +264,8 @@ const Blog = ({ blogs, tags }: BlogP) => {
   // const tagNames = React.useMemo(() => tags.map((tag) => tag.tag_name), [tags]);
   sortBlogsByDateModified(blogs);
 
-  /*
-    the idea about tag-filtering is good but there are some problems
-    - tags are not categories, i.e. they are not mutually exclusive (so we might need some kind of checkbox list)
-    - there can be a lot of tags, i mean "a lot" and how would we implement it for mobile?
-  */
   return (
     <Stack>
-      {/* <Stack direction="column" alignItems="center">
-        <Typography variant="h4" className="my-4">
-          Tags
-        </Typography>
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="center"
-          className="overflow-auto max-width-2/3 gap-x-4"
-        >
-          <Lister
-            array={tagNames}
-            props={{ onClick: setSelectedCategory }}
-            render={Tag}
-          />
-        </Stack>
-      </Stack> */}
       <Stack textAlign="center">
         <Typography variant="fancy_h1" textAlign="center"><HighlightedLetter letter="KISA" /> Blog</Typography>
         <Typography variant="subtitle1">Sharing is Caring</Typography>
@@ -298,15 +277,12 @@ const Blog = ({ blogs, tags }: BlogP) => {
 };
 
 const BlogGuard = () => {
-  const blogAndCategoryQuery = React.useCallback(() => {
-    return Promise.all([BlogAPI.allBlogs({}), BlogAPI.allTags({})]).then(
-      ([blogs, tags]) => {
-        return {
-          blogs,
-          tags,
-        };
-      }
-    );
+  const blogAndCategoryQuery = React.useCallback(async () => {
+    const [blogs, tags] = await Promise.all([BlogAPI.allBlogs({}), BlogAPI.allTags({})]);
+    return {
+      blogs,
+      tags,
+    };
   }, []);
   return (
     <QueryGuard
@@ -314,6 +290,7 @@ const BlogGuard = () => {
       args={{}}
       render={Blog}
       props={{}}
+      fallback={QueryFallback()}
     />
   );
 };

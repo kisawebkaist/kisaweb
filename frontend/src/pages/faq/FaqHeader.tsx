@@ -11,7 +11,7 @@ const FaqHeader = () => {
         sked <HighlightedLetter letter="Q" />
         uestions
       </Typography>
-      <Typography variant="subtitle1" color="#969696">
+      <Typography variant="subtitle1">
         Can't find the answer you are looking? You can{" "}
         <Link href="/about-us">
           contact us

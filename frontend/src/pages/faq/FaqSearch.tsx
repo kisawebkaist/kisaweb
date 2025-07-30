@@ -18,17 +18,14 @@ const FaqSearch = ({ onSearch }: FaqSearchProps) => {
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           onSearch(e.target.value)
         }
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton>
-                <FontAwesomeIcon
-                  icon={faSearch}
-                  className="transition-colors hover:text-black cursor-pointer"
-                />
-              </IconButton>
-            </InputAdornment>
-          ),
+        slotProps={{
+          input: {
+            endAdornment: (
+              <InputAdornment position="end">
+                <FontAwesomeIcon icon={faSearch}/>
+              </InputAdornment>
+            ),
+          }
         }}
       />
     </Box>

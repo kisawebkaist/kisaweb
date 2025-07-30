@@ -3,6 +3,7 @@ from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.utils.translation import gettext_lazy as _
 
 from election.models import DebateAttendance, Election
+from web.admin import register, admin_site
 from core.admin import register, admin_site
 from .models import *
 
@@ -31,8 +32,8 @@ def create_debate_attendance(modeladmin, request, queryset):
 
 @register(User)
 class UserAdmin(DjangoUserAdmin):
-    list_display = ["name", "email", "is_staff", "kisa_division"]
-    list_filter = ["is_staff", "is_superuser", KISADivisionFilter, "groups"]
+    list_display = ["name", "email", "is_staff"]
+    list_filter = ["is_staff", "is_superuser", "groups"]
     fieldsets = (
         (None, {"fields": ("username", "password", "totp_device")}),
         (_("Personal info"), {"fields": ("first_name", "last_name", "email", "kisa_division", "student_number")}),
@@ -58,11 +59,3 @@ class UserAdmin(DjangoUserAdmin):
     def name(self, obj):
         return f"{obj.last_name},{obj.first_name} ({obj.username})"
     
-
-@register(MailOTPSession)
-class MailOTPSessionAdmin(admin.ModelAdmin):
-    pass
-
-@register(TOTPDevice)
-class TOTPDeviceAdmin(admin.ModelAdmin):
-    pass
