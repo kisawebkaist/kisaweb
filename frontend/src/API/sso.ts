@@ -26,7 +26,13 @@ export interface AuthenticatedUser extends BaseUser {
 export type User = AuthenticatedUser | AnonymousUser;
 export class AuthAPI {
     static login = () => {
-        axios.post(`${process.env.REACT_APP_API_ENDPOINT}/sso/login-init`, {}).then(
+        axios.post(`${process.env.REACT_APP_API_ENDPOINT}/sso/login-init`, {}, {
+        withCredentials: true,
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken') || '',
+        },
+        })
+        .then(
             r => {
                 if (!r.data['is_authenticated']) {
                     let form = document.createElement('form');
@@ -45,6 +51,21 @@ export class AuthAPI {
             }
         );
     }
-    static logout = (next: string): Promise<string> => axios.post(`${process.env.REACT_APP_API_ENDPOINT}/sso/logout/`, {next: next}).then(r => r.data['redirect']);
-    static getUserInfo = (): Promise<User> => axios.get(`${process.env.REACT_APP_API_ENDPOINT}/sso/userinfo/`).then(r => r.data);
+    static logout = (next: string): Promise<string> => axios.post(`${process.env.REACT_APP_API_ENDPOINT}/sso/logout/`, {next: next}, {
+    withCredentials: true,
+    headers: {
+        'X-CSRFToken': getCookie('csrftoken') || '',
+    },
+    }).then(r => r.data['redirect']);
+    static getUserInfo = (): Promise<User> => axios.get(`${process.env.REACT_APP_API_ENDPOINT}/sso/userinfo/`, {
+        withCredentials: true
+    }).then(r => r.data);
+}
+
+function getCookie(name: string): string | null {
+  const cookieValue = document.cookie
+    .split('; ')
+    .find(row => row.startsWith(name + '='))
+    ?.split('=')[1];
+  return cookieValue || null;
 }

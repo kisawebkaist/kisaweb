@@ -15,7 +15,7 @@ import {
   Typography,
 } from "@mui/material";
 import Lister from "../../components/common/Lister";
-import "../../css/blog.css";
+import "../../components/css/blog.css";
 import QueryGuard from "../../components/common/QueryGuard";
 import { useNavigate } from "react-router-dom";
 import { HighlightedLetter } from "../../components/common/HighlightedLetter";

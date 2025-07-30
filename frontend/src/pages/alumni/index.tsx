@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Card from '@mui/material/Card';
 import { Button } from "@mui/material";
 import CardContent from '@mui/material/CardContent';
-import "../../css/alumni.css"
+import "../../components/css/alumni.css"
 
 /**
  * @brief This can be used as a structure of alumni api data.

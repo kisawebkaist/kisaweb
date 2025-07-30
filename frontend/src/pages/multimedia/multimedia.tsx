@@ -5,7 +5,7 @@ import { Box, Button, ButtonBase, CardActionArea, CardHeader, CardMedia, Dialog,
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, EffectFade, Keyboard, Navigation, Pagination, Zoom } from 'swiper/modules';
-import "../../css/multimedia.css"
+import "../../components/css/multimedia.css"
 import MultimediaAPI, { MultimediaImageT, MultimediaT } from "../../API/multimedia";
 
 import 'swiper/css';

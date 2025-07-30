@@ -49,7 +49,12 @@ services:
       - shared_django_tmp:/tmp/django
       - ./install/nginx/templates:/etc/nginx/templates:ro
     ports:
-      - 81:443
+      - 81:8081
+      - 8001:8080
+      - 3001:8081
+    depends_on:
+      - frontend
+      - backend
     environment:
       - BACKEND_ENDPOINT=backend
       - BACKEND_PORT=8000

@@ -30,7 +30,7 @@ import React, { useCallback, useContext, useState } from "react";
 import { AuthAPI, User, UserInfo } from "../API/sso";
 import { tabRoutes } from "../configs/routes";
 
-import "../css/navbar.css";
+import "../components/css/navbar.css";
 import { personalInfoUsage } from "./personalInfoUsage";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
