@@ -9,4 +9,7 @@ urlpatterns = [
     path('login-error/', views.login_error_view, name='login-error'),
     path('logout/', views.logout_view, name='logout'),
     path('logout-response/', views.logout_response_view, name='logout-response'),
+    
+    path('passni/login-init/', views.passni_login_init_view, name='passni-login-init'),
+    path('passni/callback/', views.passni_callback_view, name='passni-callback'),
 ]

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Redirecting to Pass-Ni SSO...</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+      .container {
+        text-align: center;
+      }
+      .spinner {
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top: 4px solid white;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 20px auto;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      h2 {
+        margin: 0;
+        font-weight: 300;
+      }
+      p {
+        margin: 10px 0 0 0;
+        opacity: 0.8;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="spinner"></div>
+      <h2>Redirecting to Pass-Ni Authentication...</h2>
+      <p>Please wait while we redirect you to the login page.</p>
+    </div>
+
+    <!-- Auto-submit form (similar to JSP example) -->
+    <form
+      name="passniLoginForm"
+      id="passniLoginForm"
+      method="post"
+      action="{{ auth_url }}"
+      style="display: none"
+    >
+      {% for key, value in auth_params.items %}
+      <input type="hidden" name="{{ key }}" value="{{ value }}" />
+      {% endfor %}
+    </form>
+
+    <script>
+      // Auto-submit the form after a brief delay
+      window.addEventListener("DOMContentLoaded", function () {
+        setTimeout(function () {
+          document.getElementById("passniLoginForm").submit();
+        }, 500);
+      });
+    </script>
+  </body>
+</html>

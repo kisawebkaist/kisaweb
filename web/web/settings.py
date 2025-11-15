@@ -126,7 +126,8 @@ TEMPLATES = [
                 'core.context_processors.navbar',
                 'core.context_processors.empty_queryset',
                 'core.context_processors.login_type',
-                'sso.context_processors.login_error'
+                'sso.context_processors.login_error',
+                'sso.context_processors.passni_settings',
             ],
         },
     },
@@ -237,6 +238,20 @@ LOGIN_PROD = PROD_SETTINGS
 
 KISA_AUTH_METHOD = CURRENT_SETTINGS
 ## --------- ##
+
+
+## -- Pass-Ni / External SSO Provider settings -- ##
+# These values MUST be set in the environment for the provider integration to work.
+PASSNI_AUTH_URL = os.environ.get('PASSNI_AUTH_URL')  # Authorization endpoint (where we redirect the user)
+PASSNI_TOKEN_URL = os.environ.get('PASSNI_TOKEN_URL')  # Token / userinfo endpoint where we exchange code
+PASSNI_CLIENT_ID = os.environ.get('PASSNI_CLIENT_ID')
+PASSNI_CLIENT_SECRET = os.environ.get('PASSNI_CLIENT_SECRET')
+# Session keys for state and nonce
+PASSNI_STATE_SESSION_KEY = os.environ.get('PASSNI_STATE_SESSION_KEY', 'passni_state')
+PASSNI_NONCE_SESSION_KEY = os.environ.get('PASSNI_NONCE_SESSION_KEY', 'passni_nonce')
+
+PASSNI_ENABLED = bool(int(os.environ.get('PASSNI_ENABLED', '0')))
+## -------------------------------------------- ##
 
 
 ## -- django-maintenance-mode settings -- ##

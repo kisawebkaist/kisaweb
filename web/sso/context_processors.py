@@ -3,6 +3,7 @@ import yaml
 import os
 from .models import LoginError
 from web.settings import BASE_DIR
+from django.conf import settings
 
 def login_error(request):
     if LoginError.objects.all().exists():
@@ -14,3 +15,9 @@ def login_error(request):
             fields = next((d for d in parsed if d['model']=='sso.models.LoginError'))['fields']
             login_error_object = LoginError.objects.create(**fields)
     return {'login_error': login_error_object}
+
+
+def passni_settings(request):
+    return {
+        'PASSNI_ENABLED': getattr(settings, 'PASSNI_ENABLED', False)
+    }
