@@ -31,7 +31,7 @@ def footer(request):
     if Footer.objects.all().exists():
         footer_ = Footer.objects.all()[0]
     else:
-        f = open('data/required.yaml')
+        f = open('web/data/required.yaml')
         parsed = yaml.safe_load(f)
         data = next((d for d in parsed if d['model']=='core.models.Footer'))['fields']
         footer_ = Footer.objects.create(**data)
@@ -51,7 +51,7 @@ def navbar(request):
     if Navbar.objects.all().exists():
         navbar_ = Navbar.objects.all()[0]
     else:
-        f = open('data/required.yaml')
+        f = open('web/data/required.yaml')
         parsed = yaml.safe_load(f)
         data = next((d for d in parsed if d['model']=='core.models.Navbar'))['fields']
         navbar_ = Navbar.objects.create(**data)
