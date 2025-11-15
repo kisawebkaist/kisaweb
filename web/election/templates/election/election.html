@@ -63,6 +63,18 @@
           </div>
         </div>
       </div>
+      <!-- Confirmation: Non-Korean Passport -->
+      {% if user.is_authenticated and not has_voted and is_open %}
+      <div class="card mb-4 shadow">
+        <div class="card-body">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="non-korean-confirmation">
+            <label class="form-check-label" for="non-korean-confirmation">I confirm that I have a non-korean passport</label>
+          </div>
+          <small class="form-text text-muted">You must confirm that you have a non-Korean passport before voting.</small>
+        </div>
+      </div>
+      {% endif %}
       <!-- "Debate" Heading -->
       <div class="row justify-content-center">
         <div class="section-heading">Debate</div>
@@ -138,18 +150,18 @@
                     {% if election.candidates.all|length > 1 %}
                     <!-- Voting Button -->
                       {% if is_live %}
-                      <button type="button" class="btn btn-success" data-toggle="modal" data-target="#AlertVote{{ url_name }}">Vote</button>
+                        <button type="button" class="btn btn-success requires-confirmation" data-toggle="modal" data-target="#AlertVote{{ url_name }}">Vote</button>
                       {% include 'election/votealert.html' %}
                       {% else %}
-                      <button type="button" class="btn btn-success" disabled>Vote</button>
+                      <button type="button" class="btn btn-success requires-confirmation" disabled>Vote</button>
                       {% endif %}
                     {% else %}
                       {% if is_live %}
-                      <button type="button" class="btn btn-success vote-single" value="yes" data-url="{% url 'vote' name=url_name %}">Yes</button>
-                      <button type="button" class="btn btn-secondary vote-single" value="no" data-url="{% url 'vote' name=url_name %}">No</button>
+                      <button type="button" class="btn btn-success vote-single requires-confirmation" value="yes" data-url="{% url 'vote' name=url_name %}">Yes</button>
+                      <button type="button" class="btn btn-secondary vote-single requires-confirmation" value="no" data-url="{% url 'vote' name=url_name %}">No</button>
                       {% else %}
-                      <button type="button" class="btn btn-success vote-single" value="yes" disabled>Yes</button>
-                      <button type="button" class="btn btn-secondary vote-single" value="no" disabled>No</button>
+                      <button type="button" class="btn btn-success vote-single requires-confirmation" value="yes" disabled>Yes</button>
+                      <button type="button" class="btn btn-secondary vote-single requires-confirmation" value="no" disabled>No</button>
                       {% endif %}
                     {% endif %}
                   {% endif %}
@@ -193,6 +205,7 @@
   {% compress js file election %}
   <script src="{% static 'js/election_single_candidate_vote.js' %}"></script>
   <script src="{% static 'js/election_embed_video_ratio.js' %}"></script>
+  <script src="{% static 'js/election_confirmation.js' %}"></script>
     {% if result_visible %}
     <script src="{% static 'js/election_results.js' %}"></script>
     {% endif %}
