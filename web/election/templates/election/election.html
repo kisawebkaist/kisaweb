@@ -66,13 +66,19 @@
           </div>
         </div>
       </div>
-    </div>
-    <!-- "Debate" Heading -->
-    <div class="row justify-content-center">
-      <div class="section-heading">Debate</div>
-    </div>
-    <!-- Debate -->
-    <div class="container">
+      <!-- Confirmation: Non-Korean Passport -->
+      {% if user.is_authenticated and not has_voted and is_open %}
+      <div class="card mb-4 shadow">
+        <div class="card-body">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="non-korean-confirmation">
+            <label class="form-check-label" for="non-korean-confirmation">I confirm that I have a non-korean passport</label>
+          </div>
+          <small class="form-text text-muted">You must confirm that you have a non-Korean passport before voting.</small>
+        </div>
+      </div>
+      {% endif %}
+      <!-- "Debate" Heading -->
       <div class="row justify-content-center">
         <div class="col-12 col-sm-10 col-md-7">
           {% if election.debate_url %}
@@ -109,128 +115,69 @@
           </div>
           {% endif %}
         </div>
-      </div>
-      <!-- "Candidates" Heading -->
-      <div class="row justify-content-center pt-5">
-        <div class="section-heading">Candidates</div>
-      </div>
-      {% if is_live %}
-      <p class="text-center pb-3">
-        <em>
-          <b>Voting period:</b>
-          {{ election.start_datetime|date:"P D, jS M, Y" }} ~ {{ election.end_datetime|date:"P D, jS M, Y" }}
-        </em>
-        <a
-          class="btn text-light px-2 py-1 ml-2"
-          style="font-size: 12px; cursor: default; background-color: #ff5a5b"
-          >LIVE</a
-        >
-      </p>
-      {% else %}
-      <p class="text-center pb-3">
-        <em>
-          <b>Voting period:</b> {{ election.start_datetime|date:"P D, jS M, Y" }} ~ {{ election.end_datetime|date:"P D, jS M, Y" }}
-        </em>
-      </p>
-      {% endif %}
-      <!-- Candidates -->
-      <div class="row justify-content-center" id="candidates">
-        {% for candidate in election.candidates.all %}
-        <div class="card mx-3 mb-3 text-center">
-          <!-- Candidate Image -->
-          <div
-            class="overflow-hidden d-flex justify-content-center"
-            style="height: 200px"
-          >
-            {{ candidate.image_tag }}
-          </div>
-          <div class="card-body d-flex flex-column justify-content-between">
-            <!-- Name -->
-            <h5 class="card-title">{{ candidate.name }}</h5>
-            <div>
-              {% with url_name=candidate.name|replace_space %}
-              <!-- Profile Link -->
-              <p class="card-text">
-                <a href="{% url 'candidate' name=url_name %}">Candidate Profile</a>
-              </p>
-              {% if request.user.is_authenticated %}
-              {% if has_voted %}
-              <!-- Already Voted Button -->
-              <button type="button" class="btn btn-outline-light">
-                Already voted
-              </button>
-              {% else %}
-              {% if election.candidates.all|length > 1 %}
-              <!-- Voting Button -->
-              {% if is_live %}
-              <button
-                type="button"
-                class="btn btn-success"
-                data-toggle="modal"
-                data-target="#AlertVote{{ url_name }}"
-              >
-                Vote
-              </button>
-              {% include 'election/votealert.html' %}
-              {% else %}
-              <button type="button" class="btn btn-success" disabled>
-                Vote
-              </button>
-              {% endif %}
-              {% else %}
-              {% if is_live %}
-              <button
-                type="button"
-                class="btn btn-success vote-single"
-                value="yes"
-                data-url="{% url 'vote' name=url_name %}"
-              >
-                Yes
-              </button>
-              <button
-                type="button"
-                class="btn btn-secondary vote-single"
-                value="no"
-                data-url="{% url 'vote' name=url_name %}"
-              >
-                No
-              </button>
-              {% else %}
-              <button
-                type="button"
-                class="btn btn-success vote-single"
-                value="yes"
-                disabled
-              >
-                Yes
-              </button>
-              <button
-                type="button"
-                class="btn btn-secondary vote-single"
-                value="no"
-                disabled
-              >
-                No
-              </button>
-              {% endif %}
-              {% endif %}
-              {% endif %}
-              {% else %}
-              <!-- Login Voting Button -->
-              <a
-                class="btn btn-success"
-                href="{% url 'login' %}?next={% url 'election' %}"
-                >Login to vote</a
-              >
-              {% if PASSNI_ENABLED %}
-              <a
-                class="btn btn-outline-light ml-2"
-                href="{% url 'passni-login-init' %}?next={% url 'election' %}"
-                >Login via Pass-Ni</a
-              >
-              {% endif %}
-              {% endif %}
-              {% endwith %}
+        {% if is_live %}
+        <p class="text-center pb-3">
+          <em>
+            <b>Voting period:</b> 
+            {{ election.start_datetime|date:"P D, jS M, Y" }} ~ {{ election.end_datetime|date:"P D, jS M, Y" }}
+          </em>
+          <a class="btn text-light px-2 py-1 ml-2" style="font-size: 12px; cursor: default; background-color: #FF5A5B;">LIVE</a>
+        </p>
+        {% else %}
+        <p class="text-center pb-3"><em><b>Voting period:</b> {{ election.start_datetime|date:"P D, jS M, Y" }} ~ {{ election.end_datetime|date:"P D, jS M, Y" }}</em></p>
+        {% endif %}
+        <!-- Candidates -->
+        <div class="row justify-content-center" id="candidates">
+          {% for candidate in election.candidates.all %}
+          <div class="card mx-3 mb-3 text-center">
+            <!-- Candidate Image -->
+            <div class="overflow-hidden d-flex justify-content-center" style="height: 200px;">
+              {{ candidate.image_tag }}
+            </div>
+            <div class="card-body d-flex flex-column justify-content-between">
+              <!-- Name -->
+              <h5 class="card-title">
+                {{ candidate.name }}
+              </h5>
+              <div>
+                {% with url_name=candidate.name|replace_space %}
+                <!-- Profile Link -->
+                <p class="card-text">
+                  <a href="{% url 'candidate' name=url_name %}">Candidate Profile</a>
+                </p>
+                {% if request.user.is_authenticated %}
+                  {% if has_voted %}
+                  <!-- Already Voted Button -->
+                  <button type="button" class="btn btn-outline-light">Already voted</button>
+                  {% else %}
+                    {% if election.candidates.all|length > 1 %}
+                    <!-- Voting Button -->
+                      {% if is_live %}
+                        <button type="button" class="btn btn-success requires-confirmation" data-toggle="modal" data-target="#AlertVote{{ url_name }}">Vote</button>
+                      {% include 'election/votealert.html' %}
+                      {% else %}
+                      <button type="button" class="btn btn-success requires-confirmation" disabled>Vote</button>
+                      {% endif %}
+                    {% else %}
+                      {% if is_live %}
+                      <button type="button" class="btn btn-success vote-single requires-confirmation" value="yes" data-url="{% url 'vote' name=url_name %}">Yes</button>
+                      <button type="button" class="btn btn-secondary vote-single requires-confirmation" value="no" data-url="{% url 'vote' name=url_name %}">No</button>
+                      {% else %}
+                      <button type="button" class="btn btn-success vote-single requires-confirmation" value="yes" disabled>Yes</button>
+                      <button type="button" class="btn btn-secondary vote-single requires-confirmation" value="no" disabled>No</button>
+                      {% endif %}
+                    {% endif %}
+                  {% endif %}
+                {% else %}
+                <!-- Login Voting Button -->
+                  {% if authmethod == logindev %}
+                  <a class="btn btn-success" href="{% url 'admin:login' %}?next={% url 'election' %}">Login to vote</a>
+                  {% else %}
+                  <a class="btn btn-success" href="{% url 'login' %}?next={% url 'election' %}">Login to vote</a>
+                  {% endif %}
+                {% endif %}
+                {% endwith %}
+              </div>
             </div>
           </div>
         </div>
@@ -265,14 +212,15 @@
 {% endblock %}
 
 {% block js %}
-{% if result_visible %}
-<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-{% endif %}
-{% compress js file election %}
-<script src="{% static 'js/election_single_candidate_vote.js' %}"></script>
-<script src="{% static 'js/election_embed_video_ratio.js' %}"></script>
-{% if result_visible %}
-<script src="{% static 'js/election_results.js' %}"></script>
-{% endif %}
-{% endcompress %}
+  {% if result_visible %}
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  {% endif %}
+  {% compress js file election %}
+  <script src="{% static 'js/election_single_candidate_vote.js' %}"></script>
+  <script src="{% static 'js/election_embed_video_ratio.js' %}"></script>
+  <script src="{% static 'js/election_confirmation.js' %}"></script>
+    {% if result_visible %}
+    <script src="{% static 'js/election_results.js' %}"></script>
+    {% endif %}
+  {% endcompress %}
 {% endblock %}
